@@ -1,5 +1,4 @@
 // src/components/common/DataTable/DataTable.tsx
-import React from 'react';
 import { useReactTable, getCoreRowModel, flexRender, type ColumnDef } from '@tanstack/react-table';
 
 type Props<T> = {
@@ -10,23 +9,23 @@ type Props<T> = {
 export default function DataTable<T>({ data, columns }: Props<T>) {
   const table = useReactTable({ data, columns, getCoreRowModel: getCoreRowModel() });
   return (
-    <table className="w-full border">
-      <thead>
+    <table className="w-full">
+      <thead className="bg-gray-50">
         {table.getHeaderGroups().map(hg => (
-          <tr key={hg.id}>
+          <tr key={hg.id} className="border-b border-gray-200">
             {hg.headers.map(h => (
-              <th key={h.id} className="border-b px-2 py-1 text-left">
+              <th key={h.id} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {flexRender(h.column.columnDef.header, h.getContext())}
               </th>
             ))}
           </tr>
         ))}
       </thead>
-      <tbody>
+      <tbody className="bg-white divide-y divide-gray-200">
         {table.getRowModel().rows.map(row => (
-          <tr key={row.id} className="hover:bg-gray-50">
+          <tr key={row.id} className="hover:bg-gray-50 transition-colors">
             {row.getVisibleCells().map(cell => (
-              <td key={cell.id} className="border-b px-2 py-1">
+              <td key={cell.id} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </td>
             ))}

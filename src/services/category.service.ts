@@ -29,6 +29,11 @@ export const categoryService = {
   add: (body: Omit<Category, 'id'>) => http.post<Category>(`/api/Category/addCategory`, body),
   update: (body: Category) => http.put<Category>(`/api/Category/updateCategory`, body),
   remove: (id: number) => http.del<void>(`/api/Category/DeleteCategory/${id}`),
-  getPaginated: (query: PaginatedQuery) =>
-    http.post<{ items: Category[]; total: number }>(`/api/Category/getPaginatedCategorys`, query),
+  getPaginated: async (query: PaginatedQuery) => {
+    const response = await http.post<{ output: { result: Category[]; rowCount: number } }>(`/api/Category/getPaginatedCategorys`, query);
+    return {
+      items: response.output.result,
+      total: response.output.rowCount,
+    };
+  },
 };
