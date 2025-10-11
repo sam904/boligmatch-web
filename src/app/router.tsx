@@ -21,25 +21,25 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: 'login', element: <LoginPage /> },
-      {
-        path: 'admin',
-        element: (
-          <AuthGuard>
-            <RoleGuard roles={['admin']}>
-              <AdminLayout />
-            </RoleGuard>
-          </AuthGuard>
-        ),
-        children: [
-          { index: true, element: <CategoriesPage /> },
-          { path: 'categories', element: <CategoriesPage /> },
-          { path: 'subcategories', element: <SubCategoriesPage /> },
-          { path: 'partners', element: <PartnersPage /> },
-          { path: 'users', element: <UsersListPage /> },
-          { path: 'partner-subcategories', element: <PartnerSubCategoriesPage /> },
-        ],
-      },
       { path: '*', element: <NotFound /> },
+    ],
+  },
+  {
+    path: '/admin',
+    element: (
+      <AuthGuard>
+        <RoleGuard roles={['admin']}>
+          <AdminLayout />
+        </RoleGuard>
+      </AuthGuard>
+    ),
+    children: [
+      { index: true, element: <CategoriesPage /> },
+      { path: 'categories', element: <CategoriesPage /> },
+      { path: 'subcategories', element: <SubCategoriesPage /> },
+      { path: 'partners', element: <PartnersPage /> },
+      { path: 'users', element: <UsersListPage /> },
+      { path: 'partner-subcategories', element: <PartnerSubCategoriesPage /> },
     ],
   },
 ]);
