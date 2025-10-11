@@ -20,8 +20,74 @@ const initialState: AuthState = {
   error: null,
 };
 
+const DUMMY_USERS = {
+  admin: {
+    userName: 'admin',
+    password: 'admin123',
+    user: {
+      userId: 1,
+      firstName: 'Admin',
+      lastName: 'User',
+      avatar: '',
+      role: 1,
+      roleIds: [1],
+      roleName: 'Admin',
+      franchiseId: 0,
+      admissionId: 0,
+      mobileNo: '',
+    },
+  },
+  partner: {
+    userName: 'partner',
+    password: 'partner123',
+    user: {
+      userId: 2,
+      firstName: 'Partner',
+      lastName: 'User',
+      avatar: '',
+      role: 2,
+      roleIds: [2],
+      roleName: 'Partner',
+      franchiseId: 1,
+      admissionId: 0,
+      mobileNo: '',
+    },
+  },
+  user: {
+    userName: 'user',
+    password: 'user123',
+    user: {
+      userId: 3,
+      firstName: 'Regular',
+      lastName: 'User',
+      avatar: '',
+      role: 3,
+      roleIds: [3],
+      roleName: 'User',
+      franchiseId: 0,
+      admissionId: 0,
+      mobileNo: '',
+    },
+  },
+};
+
 export const loginThunk = createAsyncThunk('auth/login', async (dto: LoginDto, { rejectWithValue }) => {
   try {
+    const dummyUser = Object.values(DUMMY_USERS).find(
+      u => u.userName === dto.userName && u.password === dto.password
+    );
+
+    if (dummyUser) {
+      return {
+        isSuccess: true,
+        output: {
+          ...dummyUser.user,
+          token: 'dummy-access-token-' + Date.now(),
+          refreshToken: 'dummy-refresh-token-' + Date.now(),
+        },
+      };
+    }
+
     const res = await authService.login(dto);
     if (!res.isSuccess) {
       return rejectWithValue(res.failureReason || 'Login failed');
