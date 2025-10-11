@@ -14,7 +14,7 @@ export const favouritesService = {
     http.get<Favourite[]>(`/api/Favourites/getAllFavouritess`, { includeInActive }),
   add: (body: Omit<Favourite, 'id'>) => http.post<Favourite>(`/api/Favourites/addFavourites`, body),
   update: (body: Favourite) => http.put<Favourite>(`/api/Favourites/updateFavourites`, body),
-  remove: (id: number) => http.del<void>(`/api/Favourites/DeleteFavourites/${id}`),
+  remove: (id: number) => http.delete<void>(`/api/Favourites/DeleteFavourites/${id}`),
   getPaginated: (query: any) =>
     http.post<{ items: Favourite[]; total: number }>(
       `/api/Favourites/getPaginatedFavouritess`,

@@ -18,7 +18,7 @@ export const conversationService = {
   add: (body: Omit<Conversation, 'id'>) =>
     http.post<Conversation>(`/api/Conversation/addConversation`, body),
   update: (body: Conversation) => http.put<Conversation>(`/api/Conversation/updateConversation`, body),
-  remove: (id: number) => http.del<void>(`/api/Conversation/DeleteConversation/${id}`),
+  remove: (id: number) => http.delete<void>(`/api/Conversation/DeleteConversation/${id}`),
   getPaginated: (query: any) =>
     http.post<{ items: Conversation[]; total: number }>(
       `/api/Conversation/getPaginatedConversations`,

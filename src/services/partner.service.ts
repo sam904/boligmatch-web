@@ -22,5 +22,5 @@ export const partnerService = {
     http.put<Partner>('/Partners/updatePartners', data),
   
   delete: (id: number) => 
-    http.del<void>(`/Partners/DeletePartners/${id}`),
+    http.delete<void>(`/Partners/DeletePartners/${id}`),
 };

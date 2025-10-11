@@ -125,7 +125,7 @@ The application is configured to run on Replit:
   - Updated categoryService.getAll() to transform `{output: {result}}` → array
   - Updated subCategoryService.getAll() and getByCategoryId() with proper transformation
   - Updated partnerService.getAll() with response normalization
-  - Fixed partnerService.delete() to use correct http.del method
+  - Fixed partnerService.delete() to use correct http.delete method
   - Resolved "categories.map is not a function" error in PartnerSubCategoriesPage
   - All getAll() methods now return arrays with fallback to []
 

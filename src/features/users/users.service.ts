@@ -16,5 +16,5 @@ export const usersService = {
   list: (q: UsersQuery) => http.get<Paged<User>>('/users', q),
   create: (body: Partial<User>) => http.post<User>('/users', body),
   update: (id: string, body: Partial<User>) => http.put<User>(`/users/${id}`, body),
-  remove: (id: string) => http.del<void>(`/users/${id}`),
+  remove: (id: string) => http.delete<void>(`/users/${id}`),
 };

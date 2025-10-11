@@ -7,6 +7,6 @@ export const notificationReadStatusService = {
   getAll: (includeInActive = true) => http.get<NotificationReadStatus[]>(`/api/NotificationReadStatus/getAllNotificationReadStatuss`, { includeInActive }),
   add: (body: Omit<NotificationReadStatus, 'id'>) => http.post<NotificationReadStatus>(`/api/NotificationReadStatus/addNotificationReadStatus`, body),
   update: (body: NotificationReadStatus) => http.put<NotificationReadStatus>(`/api/NotificationReadStatus/updateNotificationReadStatus`, body),
-  remove: (id: number) => http.del<void>(`/api/NotificationReadStatus/DeleteNotificationReadStatus/${id}`),
+  remove: (id: number) => http.delete<void>(`/api/NotificationReadStatus/DeleteNotificationReadStatus/${id}`),
   getPaginated: (query: any) => http.post<{ items: NotificationReadStatus[]; total: number }>(`/api/NotificationReadStatus/getPaginatedNotificationReadStatuss`, query),
 };

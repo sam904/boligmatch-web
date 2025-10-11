@@ -34,5 +34,5 @@ export const subCategoryService = {
     http.put<SubCategory>('/api/SubCategories/updateSubCategories', data),
   
   delete: (id: number) => 
-    http.del<void>(`/api/SubCategories/DeleteSubCategories/${id}`),
+    http.delete<void>(`/api/SubCategories/DeleteSubCategories/${id}`),
 };

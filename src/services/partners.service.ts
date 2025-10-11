@@ -7,6 +7,6 @@ export const partnersService = {
   getAll: (includeInActive = true) => http.get<Partner[]>(`/api/Partners/getAllPartnerss`, { includeInActive }),
   add: (body: Omit<Partner, 'id'>) => http.post<Partner>(`/api/Partners/addPartners`, body),
   update: (body: Partner) => http.put<Partner>(`/api/Partners/updatePartners`, body),
-  remove: (id: number) => http.del<void>(`/api/Partners/DeletePartners/${id}`),
+  remove: (id: number) => http.delete<void>(`/api/Partners/DeletePartners/${id}`),
   getPaginated: (query: any) => http.post<{ items: Partner[]; total: number }>(`/api/Partners/getPaginatedPartnerss`, query),
 };
