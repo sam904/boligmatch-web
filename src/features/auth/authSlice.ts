@@ -13,7 +13,7 @@ type AuthState = {
 };
 
 const initialState: AuthState = {
-  user: null,
+  user: tokenStorage.getUser(),
   accessToken: tokenStorage.getAccess(),
   refreshToken: tokenStorage.getRefresh(),
   status: 'idle',
@@ -44,6 +44,7 @@ const authSlice = createSlice({
       state.user = null;
       state.accessToken = null;
       state.refreshToken = null;
+      state.error = null;
       tokenStorage.clearAll();
     },
   },
@@ -57,7 +58,7 @@ const authSlice = createSlice({
         state.status = 'idle';
         state.error = null;
         const { output } = payload;
-        state.user = {
+        const user = {
           userId: output.userId,
           firstName: output.firstName,
           lastName: output.lastName,
@@ -69,10 +70,12 @@ const authSlice = createSlice({
           admissionId: output.admissionId,
           mobileNo: output.mobileNo,
         };
+        state.user = user;
         state.accessToken = output.token;
         state.refreshToken = output.refreshToken;
         tokenStorage.setAccess(output.token);
         tokenStorage.setRefresh(output.refreshToken);
+        tokenStorage.setUser(user);
       })
       .addCase(loginThunk.rejected, (state, action) => { 
         state.status = 'error';
