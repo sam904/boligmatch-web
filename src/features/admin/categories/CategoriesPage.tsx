@@ -11,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { useDbTranslation } from '../../../hooks/useDbTranslation';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Category } from '../../../types/category';
 
@@ -25,6 +26,7 @@ type CategoryFormData = z.infer<typeof categorySchema>;
 
 export default function CategoriesPage() {
   const { t } = useTranslation();
+  const { translateCategory } = useDbTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const queryClient = useQueryClient();
@@ -60,7 +62,7 @@ export default function CategoriesPage() {
   }, [editingCategory, reset]);
 
   const createMutation = useMutation({
-    mutationFn: categoryService.create,
+    mutationFn: categoryService.add,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       toast.success(t('admin.categories.createSuccess'));
@@ -83,7 +85,7 @@ export default function CategoriesPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: categoryService.delete,
+    mutationFn: categoryService.remove,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       toast.success(t('admin.categories.deleteSuccess'));
@@ -117,12 +119,16 @@ export default function CategoriesPage() {
 
   const columns: ColumnDef<Category>[] = [
     { accessorKey: 'id', header: t('admin.categories.id') },
-    { accessorKey: 'name', header: t('admin.categories.name') },
+    { 
+      accessorKey: 'name', 
+      header: t('admin.categories.name'),
+      cell: ({ row }) => translateCategory(row.original.name)
+    },
     {
       accessorKey: 'imageUrl',
       header: t('admin.categories.image'),
       cell: ({ row }) => row.original.imageUrl ? (
-        <img src={row.original.imageUrl} alt={row.original.name} className="w-12 h-12 object-cover rounded" />
+        <img src={row.original.imageUrl} alt={translateCategory(row.original.name)} className="w-12 h-12 object-cover rounded" />
       ) : '-',
     },
     {

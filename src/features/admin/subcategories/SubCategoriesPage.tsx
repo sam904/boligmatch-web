@@ -12,6 +12,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import { useDbTranslation } from '../../../hooks/useDbTranslation';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { SubCategory } from '../../../types/subcategory';
 
@@ -26,6 +28,8 @@ const subCategorySchema = z.object({
 type SubCategoryFormData = z.infer<typeof subCategorySchema>;
 
 export default function SubCategoriesPage() {
+  const { t } = useTranslation();
+  const { translateCategory, translateSubCategory } = useDbTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSubCategory, setEditingSubCategory] = useState<SubCategory | null>(null);
   const queryClient = useQueryClient();
@@ -71,32 +75,32 @@ export default function SubCategoriesPage() {
     mutationFn: subCategoryService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['subcategories'] });
-      toast.success('SubCategory created successfully');
+      toast.success(t('admin.subcategories.createSuccess'));
       setIsModalOpen(false);
       reset();
     },
-    onError: () => toast.error('Failed to create subcategory'),
+    onError: () => toast.error(t('admin.subcategories.createError')),
   });
 
   const updateMutation = useMutation({
     mutationFn: subCategoryService.update,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['subcategories'] });
-      toast.success('SubCategory updated successfully');
+      toast.success(t('admin.subcategories.updateSuccess'));
       setIsModalOpen(false);
       setEditingSubCategory(null);
       reset();
     },
-    onError: () => toast.error('Failed to update subcategory'),
+    onError: () => toast.error(t('admin.subcategories.updateError')),
   });
 
   const deleteMutation = useMutation({
     mutationFn: subCategoryService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['subcategories'] });
-      toast.success('SubCategory deleted successfully');
+      toast.success(t('admin.subcategories.deleteSuccess'));
     },
-    onError: () => toast.error('Failed to delete subcategory'),
+    onError: () => toast.error(t('admin.subcategories.deleteError')),
   });
 
   const onSubmit = (data: SubCategoryFormData) => {
@@ -108,16 +112,23 @@ export default function SubCategoriesPage() {
   };
 
   const columns: ColumnDef<SubCategory>[] = [
-    { accessorKey: 'id', header: 'ID' },
-    { accessorKey: 'name', header: 'Name' },
+    { accessorKey: 'id', header: t('admin.subcategories.id') },
+    { 
+      accessorKey: 'name', 
+      header: t('admin.subcategories.name'),
+      cell: ({ row }) => translateSubCategory(row.original.name)
+    },
     {
       accessorKey: 'categoryName',
-      header: 'Category',
-      cell: ({ row }) => categories.find(c => c.id === row.original.categoryId)?.name || '-',
+      header: t('admin.subcategories.category'),
+      cell: ({ row }) => {
+        const category = categories.find(c => c.id === row.original.categoryId);
+        return category ? translateCategory(category.name) : '-';
+      },
     },
     {
       accessorKey: 'isActive',
-      header: 'Status',
+      header: t('common.status'),
       cell: ({ row }) => (
         <span 
           className="px-2 py-1 rounded text-sm text-white font-medium"
@@ -125,44 +136,66 @@ export default function SubCategoriesPage() {
             backgroundColor: row.original.isActive ? 'var(--color-secondary)' : 'var(--color-neutral)'
           }}
         >
-          {row.original.isActive ? 'Active' : 'Inactive'}
+          {row.original.isActive ? t('common.active') : t('common.inactive')}
         </span>
       ),
     },
     {
       id: 'actions',
-      header: 'Actions',
+      header: t('common.actions'),
       cell: ({ row }) => (
         <div className="flex gap-2">
           <Button variant="secondary" onClick={() => {
             setEditingSubCategory(row.original);
             setIsModalOpen(true);
-          }}>Edit</Button>
+          }}>{t('common.edit')}</Button>
           <Button variant="danger" onClick={() => {
-            if (window.confirm('Delete this subcategory?')) {
+            if (window.confirm(t('admin.subcategories.deleteConfirm'))) {
               deleteMutation.mutate(row.original.id);
             }
-          }}>Delete</Button>
+          }}>{t('common.delete')}</Button>
         </div>
       ),
     },
   ];
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Sub Categories</h1>
-        <Button onClick={() => {
-          setEditingSubCategory(null);
-          setIsModalOpen(true);
-        }}>Add SubCategory</Button>
+    <div className="p-8">
+      <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('admin.subcategories.title')}</h1>
+            <p className="text-gray-600">{t('admin.subcategories.subtitle')}</p>
+          </div>
+          <button
+            onClick={() => {
+              setEditingSubCategory(null);
+              setIsModalOpen(true);
+            }}
+            className="flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:opacity-90 bg-brand-gradient"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            {t('admin.subcategories.addSubCategory')}
+          </button>
+        </div>
       </div>
 
-      {isLoading ? <div>Loading...</div> : <DataTable data={subCategories} columns={columns} />}
+      {isLoading ? (
+        <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: 'var(--color-primary)' }}></div>
+          <p className="mt-4 text-gray-600">{t('common.loading')}</p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <DataTable data={subCategories} columns={columns} />
+        </div>
+      )}
 
       <Modal
         open={isModalOpen}
-        title={editingSubCategory ? 'Edit SubCategory' : 'Add SubCategory'}
+        title={editingSubCategory ? t('admin.subcategories.editSubCategory') : t('admin.subcategories.addSubCategory')}
         onClose={() => {
           setIsModalOpen(false);
           setEditingSubCategory(null);
@@ -170,27 +203,27 @@ export default function SubCategoriesPage() {
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Select
-            label="Category"
+            label={t('admin.subcategories.category')}
             error={errors.categoryId?.message}
             {...register('categoryId', { valueAsNumber: true })}
           >
             {categories.map(cat => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
+              <option key={cat.id} value={cat.id}>{translateCategory(cat.name)}</option>
             ))}
           </Select>
-          <Input label="Name" error={errors.name?.message} {...register('name')} />
-          <Input label="Image URL" error={errors.imageUrl?.message} {...register('imageUrl')} />
-          <Input label="Icon URL" error={errors.iconUrl?.message} {...register('iconUrl')} />
+          <Input label={t('admin.subcategories.name')} error={errors.name?.message} {...register('name')} />
+          <Input label={t('admin.subcategories.imageUrl')} error={errors.imageUrl?.message} {...register('imageUrl')} />
+          <Input label={t('admin.subcategories.iconUrl')} error={errors.iconUrl?.message} {...register('iconUrl')} />
           <div className="flex items-center gap-2">
             <input type="checkbox" id="isActive" {...register('isActive')} />
-            <label htmlFor="isActive">Active</label>
+            <label htmlFor="isActive">{t('common.active')}</label>
           </div>
           <div className="flex gap-2 justify-end">
             <Button type="button" variant="secondary" onClick={() => {
               setIsModalOpen(false);
               setEditingSubCategory(null);
-            }}>Cancel</Button>
-            <Button type="submit">{editingSubCategory ? 'Update' : 'Create'}</Button>
+            }}>{t('common.cancel')}</Button>
+            <Button type="submit">{editingSubCategory ? t('common.update') : t('common.create')}</Button>
           </div>
         </form>
       </Modal>
