@@ -1,4 +1,25 @@
 /* src/styles/index.css */
 @import "tailwindcss";
 
+:root {
+  --color-primary: #043428;
+  --color-primary-hover: #032820;
+  --color-secondary: #91C73D;
+  --color-secondary-hover: #7FB333;
+  --color-primary-light: rgba(4, 52, 40, 0.1);
+  --color-secondary-light: rgba(145, 199, 61, 0.1);
+  --color-neutral: #9ca3af;
+}
+
+.bg-brand-gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+}
+
+.bg-brand-light {
+  background: linear-gradient(135deg, 
+    rgba(4, 52, 40, 0.05), 
+    rgba(145, 199, 61, 0.05)
+  );
+}
+
 html, body, #root { height: 100%; }

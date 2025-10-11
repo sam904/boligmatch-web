@@ -7,11 +7,18 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export default function Button({ variant = 'primary', className, ...props }: Props) {
-  const base = 'px-4 py-2 rounded font-medium focus:outline-none disabled:opacity-50';
+  const base = 'px-4 py-2 rounded font-medium focus:outline-none disabled:opacity-50 transition-colors';
   const variants = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
-    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',
+    primary: 'text-white hover:opacity-90',
+    secondary: 'text-white hover:opacity-90',
     danger: 'bg-red-600 text-white hover:bg-red-700',
   };
-  return <button className={clsx(base, variants[variant], className)} {...props} />;
+  
+  const styles: React.CSSProperties = variant === 'primary' 
+    ? { backgroundColor: 'var(--color-primary)' }
+    : variant === 'secondary'
+    ? { backgroundColor: 'var(--color-secondary)' }
+    : {};
+  
+  return <button style={styles} className={clsx(base, variants[variant], className)} {...props} />;
 }

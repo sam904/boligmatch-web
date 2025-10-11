@@ -36,11 +36,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen flex items-center justify-center bg-brand-light">
       <div className="w-full max-w-md px-6">
         <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6">
           <div className="text-center space-y-2">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 bg-brand-gradient">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
@@ -75,7 +75,7 @@ export default function LoginPage() {
             
             <button 
               disabled={status === 'loading'} 
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-200 transform hover:-translate-y-0.5"
+              className="w-full py-3 px-4 rounded-xl text-white font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:-translate-y-0.5 bg-brand-gradient"
             >
               {status === 'loading' ? (
                 <span className="flex items-center justify-center">
@@ -92,7 +92,7 @@ export default function LoginPage() {
           </form>
 
           <div className="pt-4 border-t border-gray-200">
-            <div className="bg-blue-50 rounded-lg p-4 text-sm text-gray-600">
+            <div className="rounded-lg p-4 text-sm text-gray-600" style={{ backgroundColor: 'var(--color-primary-light)' }}>
               <p className="font-semibold text-gray-700 mb-2">Test Credentials:</p>
               <ul className="space-y-1">
                 <li><span className="font-medium">Admin:</span> admin / admin123</li>

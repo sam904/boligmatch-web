@@ -18,7 +18,7 @@ export default function Header() {
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-3 bg-blue-600 text-white shadow-md">
+    <header className="flex items-center justify-between px-6 py-3 text-white shadow-md" style={{ backgroundColor: 'var(--color-primary)' }}>
       <div className="flex items-center gap-4">
         <h1 className="text-xl font-bold">BoligMatch</h1>
         {user && (

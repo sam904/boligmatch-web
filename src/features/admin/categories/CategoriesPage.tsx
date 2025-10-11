@@ -129,7 +129,12 @@ export default function CategoriesPage() {
       accessorKey: 'isActive',
       header: t('common.status'),
       cell: ({ row }) => (
-        <span className={`px-2 py-1 rounded text-sm ${row.original.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+        <span 
+          className="px-2 py-1 rounded text-sm text-white font-medium"
+          style={{ 
+            backgroundColor: row.original.isActive ? 'var(--color-secondary)' : 'var(--color-neutral)'
+          }}
+        >
           {row.original.isActive ? t('common.active') : t('common.inactive')}
         </span>
       ),
@@ -156,7 +161,7 @@ export default function CategoriesPage() {
           </div>
           <button
             onClick={handleAddNew}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all"
+            className="flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:opacity-90 bg-brand-gradient"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -168,7 +173,7 @@ export default function CategoriesPage() {
 
       {isLoading ? (
         <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: 'var(--color-primary)' }}></div>
           <p className="mt-4 text-gray-600">{t('common.loading')}</p>
         </div>
       ) : (

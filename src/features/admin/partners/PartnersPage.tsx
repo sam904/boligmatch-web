@@ -119,7 +119,12 @@ export default function PartnersPage() {
       accessorKey: 'isActive',
       header: 'Status',
       cell: ({ row }) => (
-        <span className={`px-2 py-1 rounded text-sm ${row.original.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+        <span 
+          className="px-2 py-1 rounded text-sm text-white font-medium"
+          style={{ 
+            backgroundColor: row.original.isActive ? 'var(--color-secondary)' : 'var(--color-neutral)'
+          }}
+        >
           {row.original.isActive ? 'Active' : 'Inactive'}
         </span>
       ),

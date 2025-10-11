@@ -13,7 +13,7 @@ export default function AdminLayout() {
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
       isActive 
-        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg' 
+        ? 'bg-brand-gradient text-white shadow-lg' 
         : 'text-gray-400 hover:bg-gray-800 hover:text-white'
     }`;
 
@@ -22,7 +22,7 @@ export default function AdminLayout() {
       <aside className="w-72 bg-gradient-to-b from-gray-900 to-gray-800 text-white p-6 flex flex-col shadow-2xl">
         <div className="mb-8 pb-6 border-b border-gray-700">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-brand-gradient rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
@@ -33,7 +33,7 @@ export default function AdminLayout() {
           </div>
           <div className="bg-gray-800 rounded-xl p-3">
             <p className="text-sm font-medium text-white">{user?.firstName} {user?.lastName}</p>
-            <p className="text-xs text-blue-400 mt-1">{user?.roleName}</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--color-secondary)' }}>{user?.roleName}</p>
           </div>
         </div>
         
@@ -82,7 +82,7 @@ export default function AdminLayout() {
           </button>
         </div>
       </aside>
-      <main className="flex-1 bg-gradient-to-br from-gray-50 to-blue-50">
+      <main className="flex-1 bg-gray-50">
         <Outlet />
       </main>
     </div>

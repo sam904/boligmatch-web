@@ -24,7 +24,10 @@ export default function UsersListPage() {
       accessorKey: 'roleName',
       header: 'Role',
       cell: ({ row }) => (
-        <span className="px-2 py-1 rounded text-sm bg-blue-100 text-blue-800">
+        <span 
+          className="px-2 py-1 rounded text-sm text-white font-medium"
+          style={{ backgroundColor: 'var(--color-primary)' }}
+        >
           {row.original.roleName}
         </span>
       ),
@@ -33,7 +36,12 @@ export default function UsersListPage() {
       accessorKey: 'isActive',
       header: 'Status',
       cell: ({ row }) => (
-        <span className={`px-2 py-1 rounded text-sm ${row.original.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+        <span 
+          className="px-2 py-1 rounded text-sm text-white font-medium"
+          style={{ 
+            backgroundColor: row.original.isActive ? 'var(--color-secondary)' : 'var(--color-neutral)'
+          }}
+        >
           {row.original.isActive ? 'Active' : 'Inactive'}
         </span>
       ),
