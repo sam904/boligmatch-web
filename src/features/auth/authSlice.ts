@@ -2,23 +2,34 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { authService } from '../../services/auth.service';
 import { tokenStorage } from '../../lib/storage';
+import type { AuthUser, LoginDto } from '../../types/auth';
 
 type AuthState = {
-  user: { id: string; email: string; roles: string[] } | null;
+  user: AuthUser | null;
   accessToken: string | null;
   refreshToken: string | null;
   status: 'idle' | 'loading' | 'error';
+  error: string | null;
 };
+
 const initialState: AuthState = {
   user: null,
   accessToken: tokenStorage.getAccess(),
   refreshToken: tokenStorage.getRefresh(),
   status: 'idle',
+  error: null,
 };
 
-export const loginThunk = createAsyncThunk('auth/login', async (dto: { email: string; password: string }) => {
-  const res = await authService.login(dto);
-  return res;
+export const loginThunk = createAsyncThunk('auth/login', async (dto: LoginDto, { rejectWithValue }) => {
+  try {
+    const res = await authService.login(dto);
+    if (!res.isSuccess) {
+      return rejectWithValue(res.failureReason || 'Login failed');
+    }
+    return res;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || 'Login failed');
+  }
 });
 
 const authSlice = createSlice({
@@ -38,16 +49,35 @@ const authSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(loginThunk.pending, state => { state.status = 'loading'; })
+      .addCase(loginThunk.pending, state => { 
+        state.status = 'loading';
+        state.error = null;
+      })
       .addCase(loginThunk.fulfilled, (state, { payload }) => {
         state.status = 'idle';
-        state.user = payload.user;
-        state.accessToken = payload.accessToken;
-        state.refreshToken = payload.refreshToken;
-        tokenStorage.setAccess(payload.accessToken);
-        tokenStorage.setRefresh(payload.refreshToken);
+        state.error = null;
+        const { output } = payload;
+        state.user = {
+          userId: output.userId,
+          firstName: output.firstName,
+          lastName: output.lastName,
+          avatar: output.avatar,
+          role: output.role,
+          roleIds: output.roleIds,
+          roleName: output.roleName,
+          franchiseId: output.franchiseId,
+          admissionId: output.admissionId,
+          mobileNo: output.mobileNo,
+        };
+        state.accessToken = output.token;
+        state.refreshToken = output.refreshToken;
+        tokenStorage.setAccess(output.token);
+        tokenStorage.setRefresh(output.refreshToken);
       })
-      .addCase(loginThunk.rejected, state => { state.status = 'error'; });
+      .addCase(loginThunk.rejected, (state, action) => { 
+        state.status = 'error';
+        state.error = action.payload as string || 'Login failed';
+      });
   }
 });
 

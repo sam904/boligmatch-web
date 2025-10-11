@@ -1,14 +1,18 @@
 // src/app/router.tsx
-import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AppLayout from '../components/layout/AppLayout';
 import AdminLayout from '../components/layout/AdminLayout';
 import HomePage from '../pages/HomePage';
 import LoginPage from '../features/auth/LoginPage';
-import UsersPage from '../features/users/UsersPage';
 import AuthGuard from '../features/auth/AuthGuard';
 import RoleGuard from '../features/auth/RoleGuard';
 import NotFound from '../pages/NotFound';
+
+import CategoriesPage from '../features/admin/categories/CategoriesPage';
+import SubCategoriesPage from '../features/admin/subcategories/SubCategoriesPage';
+import PartnersPage from '../features/admin/partners/PartnersPage';
+import UsersListPage from '../features/admin/users/UsersListPage';
+import PartnerSubCategoriesPage from '../features/admin/partner-subcategories/PartnerSubCategoriesPage';
 
 const router = createBrowserRouter([
   {
@@ -27,12 +31,12 @@ const router = createBrowserRouter([
           </AuthGuard>
         ),
         children: [
-          { path: 'users', element: <UsersPage /> },
-          // Stub pages you can add later:
-          { path: 'categories', element: <div>Categories Admin</div> },
-          { path: 'conversations', element: <div>Conversations Admin</div> },
-          { path: 'favourites', element: <div>Favourites Admin</div> },
-          { path: 'files', element: <div>Files Admin</div> },
+          { index: true, element: <CategoriesPage /> },
+          { path: 'categories', element: <CategoriesPage /> },
+          { path: 'subcategories', element: <SubCategoriesPage /> },
+          { path: 'partners', element: <PartnersPage /> },
+          { path: 'users', element: <UsersListPage /> },
+          { path: 'partner-subcategories', element: <PartnerSubCategoriesPage /> },
         ],
       },
       { path: '*', element: <NotFound /> },

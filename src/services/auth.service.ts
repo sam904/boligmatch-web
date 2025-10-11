@@ -1,11 +1,9 @@
 // src/services/auth.service.ts
 import { http } from './http.service';
-
-export type LoginDto = { email: string; password: string };
-export type AuthUser = { id: string; email: string; roles: string[] };
+import type { LoginDto, LoginResponse, AuthUser } from '../types/auth';
 
 export const authService = {
-  login: (dto: LoginDto) => http.post<{ accessToken: string; refreshToken: string; user: AuthUser }>('/auth/login', dto),
+  login: (dto: LoginDto) => http.post<LoginResponse>('/User/authenticate', dto),
   me: () => http.get<AuthUser>('/auth/me'),
   logout: () => http.post<void>('/auth/logout'),
 };
