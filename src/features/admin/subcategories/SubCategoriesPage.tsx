@@ -253,6 +253,7 @@ export default function SubCategoriesPage() {
             error={errors.categoryId?.message}
             {...register('categoryId', { valueAsNumber: true })}
           >
+            <option value={0}>Select Category</option>
             {Array.isArray(categories) && categories.map(cat => (
               <option key={cat.id} value={cat.id}>{translateCategory(cat.name)}</option>
             ))}

@@ -33,6 +33,7 @@
     "react-i18next": "^16.0.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.3",
+    "react-select": "^5.10.2",
     "sonner": "^2.0.7",
     "tsx": "^4.20.6",
     "zod": "^4.1.11"
