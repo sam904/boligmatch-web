@@ -112,9 +112,10 @@ The application is configured to run on Replit:
 ## Recent Changes (October 2025)
 
 ### Authentication & API
-- ✅ Fixed SubCategories API endpoints to use correct paths (/SubCategories/*)
+- ✅ Fixed all API endpoints to include /api prefix (auth, categories, subcategories)
 - ✅ Removed dummy login fallback - now uses only real API authentication
 - ✅ Updated admin credentials: boligadmin@gmail.com / 123456
+- ✅ Fixed admin sidebar positioning to stick to top-left with fixed layout
 
 ### Image Upload & Storage
 - ✅ Integrated DigitalOcean Spaces for image uploads using AWS SDK
@@ -143,6 +144,14 @@ The application is configured to run on Replit:
 - ✅ Built useDbTranslation hook for dynamic content localization
 - ✅ Categories and SubCategories now display in English or Danish based on user preference
 - ✅ All admin pages fully internationalized
+
+### Data Fetching & Pagination
+- ✅ Refactored SubCategories page to use @tanstack/react-query with pagination
+- ✅ Implemented server-side pagination with search functionality
+- ✅ Added search input with icon, page size selector (10/25/50/100)
+- ✅ Fixed query invalidation with `exact: false` for proper data refresh after mutations
+- ✅ Implemented proper pagination boundary handling (minimum 1 page)
+- ✅ Auto-reset to page 1 when search term changes
 
 ### Design & Branding
 - ✅ Custom color scheme applied throughout:
