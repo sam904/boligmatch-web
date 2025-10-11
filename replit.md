@@ -109,10 +109,45 @@ The application is configured to run on Replit:
 - Port: 5000
 - HMR enabled for development
 
-## Recent Changes
-- ✅ Implemented role-based authentication with real API
-- ✅ Created comprehensive admin panel with CRUD operations
-- ✅ Added i18n support for English and Danish
-- ✅ Implemented session persistence
-- ✅ Created responsive layouts for admin and app
-- ✅ Added toast notifications for user feedback
+## Recent Changes (October 2025)
+
+### Authentication & API
+- ✅ Fixed SubCategories API endpoints to use correct paths (/SubCategories/*)
+- ✅ Removed dummy login fallback - now uses only real API authentication
+- ✅ Updated admin credentials: boligadmin@gmail.com / 123456
+
+### Image Upload & Storage
+- ✅ Integrated DigitalOcean Spaces for image uploads using AWS SDK
+- ✅ Created upload server running on port 3001 (proxied via Vite at /api/upload)
+- ✅ Configured with endpoint: https://boligmatch.blr1.digitaloceanspaces.com
+- ✅ Secure API keys stored in Replit secrets (DO_SPACES_ACCESS_KEY, DO_SPACES_SECRET_KEY)
+
+### UI/UX Enhancements
+- ✅ Added BoligMatch logo to Header and AdminLayout
+- ✅ Implemented collapsible sidebar with smooth animations
+  - Icon-only mode when collapsed
+  - Full labels and user card when expanded
+  - Toggle button with state persistence
+- ✅ Converted language switchers from buttons to dropdowns (EN/DA)
+- ✅ Enhanced Pagination component with:
+  - Search input with icon
+  - Page size selector (10, 25, 50, 100)
+  - Smart page number display with ellipsis
+  - "Showing X to Y of Z items" indicator
+  - Proper zero-items handling
+  - Full internationalization
+
+### Language Localization
+- ✅ Implemented database field translations for Categories and SubCategories
+- ✅ Created translation mapping system (dbTranslations.ts)
+- ✅ Built useDbTranslation hook for dynamic content localization
+- ✅ Categories and SubCategories now display in English or Danish based on user preference
+- ✅ All admin pages fully internationalized
+
+### Design & Branding
+- ✅ Custom color scheme applied throughout:
+  - Primary: #043428 (dark green)
+  - Secondary: #91C73D (lime green)
+  - Brand gradient backgrounds on CTAs
+- ✅ Consistent styling across all admin pages
+- ✅ Modern card-based layouts with shadows and rounded corners
