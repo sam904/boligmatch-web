@@ -24,8 +24,10 @@ export type PaginatedQuery = {
 
 export const categoryService = {
   getById: (id: number) => http.get<Category>(`/api/Category/getCategoryById/${id}`),
-  getAll: (includeInActive = false) =>
-    http.get<Category[]>(`/api/Category/getAllCategorys`, { includeInActive }),
+  getAll: async (includeInActive = false) => {
+    const response = await http.get<{ output: { result: Category[] } }>(`/api/Category/getAllCategorys`, { includeInActive });
+    return response.output?.result || [];
+  },
   add: (body: Omit<Category, 'id'>) => http.post<Category>(`/api/Category/addCategory`, body),
   update: (body: Category) => http.put<Category>(`/api/Category/updateCategory`, body),
   remove: (id: number) => http.del<void>(`/api/Category/DeleteCategory/${id}`),

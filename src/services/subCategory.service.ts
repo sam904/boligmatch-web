@@ -4,14 +4,18 @@ import type { SubCategory, SubCategoryDto } from '../types/subcategory';
 import type { PaginationRequest } from '../types/category';
 
 export const subCategoryService = {
-  getAll: (includeInActive = false) => 
-    http.get<SubCategory[]>(`/api/SubCategories/getAllSubCategoriess?includeInActive=${includeInActive}`),
+  getAll: async (includeInActive = false) => {
+    const response = await http.get<{ output: { result: SubCategory[] } }>(`/api/SubCategories/getAllSubCategoriess?includeInActive=${includeInActive}`);
+    return response.output?.result || [];
+  },
   
   getById: (id: number) => 
     http.get<SubCategory>(`/api/SubCategories/getSubCategoriesById/${id}`),
   
-  getByCategoryId: (categoryId: number, includeInActive = false) => 
-    http.get<SubCategory[]>(`/api/SubCategories/getSubCategorysByCategoryId/${categoryId}?includeInActive=${includeInActive}`),
+  getByCategoryId: async (categoryId: number, includeInActive = false) => {
+    const response = await http.get<{ output: { result: SubCategory[] } }>(`/api/SubCategories/getSubCategorysByCategoryId/${categoryId}?includeInActive=${includeInActive}`);
+    return response.output?.result || [];
+  },
   
   getPaginated: async (params: PaginationRequest) => {
     const response = await http.post<{ output: { result: SubCategory[]; rowCount: number } }>('/api/SubCategories/getPaginatedSubCategoriess', params);

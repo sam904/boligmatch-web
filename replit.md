@@ -111,7 +111,16 @@ The application is configured to run on Replit:
 
 ## Recent Changes (October 2025)
 
-### Latest Updates - Admin Panel UI Improvements
+### Latest Updates - Bug Fixes & Service Layer
+- ✅ **Fixed API Response Handling**:
+  - Updated categoryService.getAll() to transform `{output: {result}}` → array
+  - Updated subCategoryService.getAll() and getByCategoryId() with proper transformation
+  - Updated partnerService.getAll() with response normalization
+  - Fixed partnerService.delete() to use correct http.del method
+  - Resolved "categories.map is not a function" error in PartnerSubCategoriesPage
+  - All getAll() methods now return arrays with fallback to []
+
+### Admin Panel UI Improvements
 - ✅ **Restructured AdminLayout**:
   - Logo positioned in top-left corner of sticky header (stays on top when scrolling)
   - Header at top (h-16) with user info and language switcher, z-index 50

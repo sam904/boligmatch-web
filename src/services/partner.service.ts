@@ -4,8 +4,10 @@ import type { Partner, PartnerDto } from '../types/partner';
 import type { PaginationRequest, PaginatedResponse } from '../types/category';
 
 export const partnerService = {
-  getAll: (includeInActive = false) => 
-    http.get<Partner[]>(`/Partners/getAllPartners?includeInActive=${includeInActive}`),
+  getAll: async (includeInActive = false) => {
+    const response = await http.get<{ output: { result: Partner[] } }>(`/Partners/getAllPartners?includeInActive=${includeInActive}`);
+    return response.output?.result || [];
+  },
   
   getById: (id: number) => 
     http.get<Partner>(`/Partners/getPartnersById/${id}`),
@@ -20,5 +22,5 @@ export const partnerService = {
     http.put<Partner>('/Partners/updatePartners', data),
   
   delete: (id: number) => 
-    http.delete<void>(`/Partners/DeletePartners/${id}`),
+    http.del<void>(`/Partners/DeletePartners/${id}`),
 };
