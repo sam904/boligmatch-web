@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Category } from '../../../types/category';
 
@@ -23,6 +24,7 @@ const categorySchema = z.object({
 type CategoryFormData = z.infer<typeof categorySchema>;
 
 export default function CategoriesPage() {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const queryClient = useQueryClient();
@@ -61,32 +63,32 @@ export default function CategoriesPage() {
     mutationFn: categoryService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
-      toast.success('Category created successfully');
+      toast.success(t('admin.categories.createSuccess'));
       setIsModalOpen(false);
       reset();
     },
-    onError: () => toast.error('Failed to create category'),
+    onError: () => toast.error(t('admin.categories.createError')),
   });
 
   const updateMutation = useMutation({
     mutationFn: categoryService.update,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
-      toast.success('Category updated successfully');
+      toast.success(t('admin.categories.updateSuccess'));
       setIsModalOpen(false);
       setEditingCategory(null);
       reset();
     },
-    onError: () => toast.error('Failed to update category'),
+    onError: () => toast.error(t('admin.categories.updateError')),
   });
 
   const deleteMutation = useMutation({
     mutationFn: categoryService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
-      toast.success('Category deleted successfully');
+      toast.success(t('admin.categories.deleteSuccess'));
     },
-    onError: () => toast.error('Failed to delete category'),
+    onError: () => toast.error(t('admin.categories.deleteError')),
   });
 
   const onSubmit = (data: CategoryFormData) => {
@@ -103,7 +105,7 @@ export default function CategoriesPage() {
   };
 
   const handleDelete = (id: number) => {
-    if (window.confirm('Are you sure you want to delete this category?')) {
+    if (window.confirm(t('admin.categories.deleteConfirm'))) {
       deleteMutation.mutate(id);
     }
   };
@@ -114,31 +116,31 @@ export default function CategoriesPage() {
   };
 
   const columns: ColumnDef<Category>[] = [
-    { accessorKey: 'id', header: 'ID' },
-    { accessorKey: 'name', header: 'Name' },
+    { accessorKey: 'id', header: t('admin.categories.id') },
+    { accessorKey: 'name', header: t('admin.categories.name') },
     {
       accessorKey: 'imageUrl',
-      header: 'Image',
+      header: t('admin.categories.image'),
       cell: ({ row }) => row.original.imageUrl ? (
         <img src={row.original.imageUrl} alt={row.original.name} className="w-12 h-12 object-cover rounded" />
       ) : '-',
     },
     {
       accessorKey: 'isActive',
-      header: 'Status',
+      header: t('common.status'),
       cell: ({ row }) => (
         <span className={`px-2 py-1 rounded text-sm ${row.original.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-          {row.original.isActive ? 'Active' : 'Inactive'}
+          {row.original.isActive ? t('common.active') : t('common.inactive')}
         </span>
       ),
     },
     {
       id: 'actions',
-      header: 'Actions',
+      header: t('common.actions'),
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <Button variant="secondary" onClick={() => handleEdit(row.original)}>Edit</Button>
-          <Button variant="danger" onClick={() => handleDelete(row.original.id)}>Delete</Button>
+          <Button variant="secondary" onClick={() => handleEdit(row.original)}>{t('common.edit')}</Button>
+          <Button variant="danger" onClick={() => handleDelete(row.original.id)}>{t('common.delete')}</Button>
         </div>
       ),
     },
@@ -149,7 +151,7 @@ export default function CategoriesPage() {
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Categories</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('admin.categories.title')}</h1>
             <p className="text-gray-600">Manage and organize your categories</p>
           </div>
           <button
@@ -159,7 +161,7 @@ export default function CategoriesPage() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            Add Category
+            {t('admin.categories.addCategory')}
           </button>
         </div>
       </div>
@@ -167,7 +169,7 @@ export default function CategoriesPage() {
       {isLoading ? (
         <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Loading categories...</p>
+          <p className="mt-4 text-gray-600">{t('common.loading')}</p>
         </div>
       ) : (
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
@@ -177,29 +179,29 @@ export default function CategoriesPage() {
 
       <Modal
         open={isModalOpen}
-        title={editingCategory ? 'Edit Category' : 'Add Category'}
+        title={editingCategory ? t('admin.categories.editCategory') : t('admin.categories.addCategory')}
         onClose={() => {
           setIsModalOpen(false);
           setEditingCategory(null);
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input label="Name" error={errors.name?.message} {...register('name')} />
-          <Input label="Image URL" error={errors.imageUrl?.message} {...register('imageUrl')} />
-          <Input label="Icon URL" error={errors.iconUrl?.message} {...register('iconUrl')} />
+          <Input label={t('admin.categories.name')} error={errors.name?.message} {...register('name')} />
+          <Input label={t('admin.categories.imageUrl')} error={errors.imageUrl?.message} {...register('imageUrl')} />
+          <Input label={t('admin.categories.iconUrl')} error={errors.iconUrl?.message} {...register('iconUrl')} />
           <div className="flex items-center gap-2">
             <input type="checkbox" id="isActive" {...register('isActive')} />
-            <label htmlFor="isActive">Active</label>
+            <label htmlFor="isActive">{t('common.active')}</label>
           </div>
           <div className="flex gap-2 justify-end">
             <Button type="button" variant="secondary" onClick={() => {
               setIsModalOpen(false);
               setEditingCategory(null);
             }}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit">
-              {editingCategory ? 'Update' : 'Create'}
+              {editingCategory ? t('common.update') : t('common.create')}
             </Button>
           </div>
         </form>
