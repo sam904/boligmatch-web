@@ -25,8 +25,8 @@ export default function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      userName: 'aarti.chavan@skylynxtech.com',
-      password: '123456'
+      userName: '',
+      password: ''
     }
   });
 
