@@ -22,9 +22,9 @@ export default function AdminLayout() {
   const currentLang = i18n.language || 'en';
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="min-h-screen overflow-hidden bg-gray-50">
       {/* Top Header */}
-      <header className="sticky top-0 left-0 right-0 h-16 bg-gradient-to-r from-[#043428] to-[#065945] text-white shadow-lg z-50 flex items-center px-6">
+      <header className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-[#043428] to-[#065945] text-white shadow-lg z-50 flex items-center px-6">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="BoligMatch" className="h-8" />
           <h1 className="text-lg font-semibold">{t('admin.title')}</h1>
@@ -73,7 +73,7 @@ export default function AdminLayout() {
         </div>
       </header>
 
-      <div className="flex flex-1">
+      <div className="pt-16 flex">
         {/* Sidebar */}
         <aside className={`fixed top-16 left-0 bottom-0 bg-gradient-to-b from-gray-900 to-gray-800 text-white shadow-xl transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} flex flex-col z-40`}>
           <div className="p-3 border-b border-gray-700">
@@ -139,7 +139,7 @@ export default function AdminLayout() {
         </aside>
 
         {/* Main Content */}
-        <main className={`flex-1 bg-gray-50 transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'} overflow-y-auto`}>
+        <main className={`flex-1 bg-gray-50 transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'} h-[calc(100vh-4rem)] overflow-y-auto`}>
           <Outlet />
         </main>
       </div>
