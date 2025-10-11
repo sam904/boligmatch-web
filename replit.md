@@ -149,6 +149,8 @@ The application is configured to run on Replit:
 - ✅ Created useDebounce hook with 500ms delay for optimized search performance
 - ✅ Refactored Categories page to use @tanstack/react-query with getPaginated
 - ✅ Refactored SubCategories page to use @tanstack/react-query with getPaginated
+- ✅ Fixed API response handling to correctly parse `{output: {result, rowCount}}` structure
+- ✅ Services transform API response to normalized format for UI consumption
 - ✅ Implemented server-side pagination with debounced search functionality
 - ✅ Added search input with icon, page size selector (10/25/50/100)
 - ✅ Fixed query invalidation with `exact: false` for proper data refresh after mutations
@@ -161,5 +163,10 @@ The application is configured to run on Replit:
   - Primary: #043428 (dark green)
   - Secondary: #91C73D (lime green)
   - Brand gradient backgrounds on CTAs
+- ✅ Enhanced DataTable component with professional Tailwind styling
+  - Gray header background with uppercase text
+  - Hover effects and proper spacing
+  - Clean visual separation between rows
 - ✅ Consistent styling across all admin pages
 - ✅ Modern card-based layouts with shadows and rounded corners
+- ✅ Admin layout padding to prevent header overlap
