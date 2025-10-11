@@ -23,7 +23,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <aside className={`bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col shadow-2xl transition-all duration-300 ${isCollapsed ? 'w-20 px-2 py-6' : 'w-72 p-6'}`}>
+      <aside className={`fixed top-0 left-0 h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col shadow-2xl transition-all duration-300 ${isCollapsed ? 'w-20 px-2 py-6' : 'w-72 p-6'}`}>
         <div className={`mb-6 pb-4 border-b border-gray-700 ${isCollapsed ? '' : ''}`}>
           <div className="flex items-center justify-between mb-4">
             {!isCollapsed && <img src="/logo.png" alt="BoligMatch" className="h-10" />}
@@ -132,7 +132,7 @@ export default function AdminLayout() {
           </button>
         </div>
       </aside>
-      <main className="flex-1 bg-gray-50">
+      <main className={`flex-1 bg-gray-50 transition-all duration-300 ${isCollapsed ? 'ml-20' : 'ml-72'}`}>
         <Outlet />
       </main>
     </div>
