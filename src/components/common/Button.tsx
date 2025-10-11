@@ -7,7 +7,7 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export default function Button({ variant = 'primary', className, ...props }: Props) {
-  const base = 'px-4 py-2 rounded font-medium focus:outline-none disabled:opacity-50 transition-colors';
+  const base = 'px-4 py-2 rounded text-sm font-medium focus:outline-none disabled:opacity-50 transition-colors';
   const variants = {
     primary: 'text-white hover:opacity-90',
     secondary: 'text-white hover:opacity-90',

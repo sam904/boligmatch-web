@@ -54,12 +54,19 @@
     "adminDashboard": "Admin Dashboard",
     "adminDashboardDesc": "Få adgang til dit admin panel for at administrere systemet",
     "partnerDashboard": "Partner/Bruger Dashboard",
-    "partnerDashboardDesc": "Dit personlige dashboard indhold vises her"
+    "partnerDashboardDesc": "Dit personlige dashboard indhold vises her",
+    "easyManagement": "Nem Administration",
+    "easyManagementDesc": "Administrer kategorier, partnere og brugere med lethed",
+    "secureAccess": "Sikker Adgang",
+    "secureAccessDesc": "Rollebaseret godkendelse holder dine data sikre",
+    "multiLanguage": "Flersproget",
+    "multiLanguageDesc": "Fuld support for engelsk og dansk sprog"
   },
   "admin": {
     "title": "BoligMatch Admin",
     "categories": {
       "title": "Kategorier",
+      "subtitle": "Administrer alle kategorier",
       "addCategory": "Tilføj Kategori",
       "editCategory": "Rediger Kategori",
       "name": "Navn",

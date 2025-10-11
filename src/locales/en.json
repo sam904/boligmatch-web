@@ -54,12 +54,19 @@
     "adminDashboard": "Admin Dashboard",
     "adminDashboardDesc": "Access your admin panel to manage the system",
     "partnerDashboard": "Partner/User Dashboard",
-    "partnerDashboardDesc": "Your personalized dashboard content will appear here"
+    "partnerDashboardDesc": "Your personalized dashboard content will appear here",
+    "easyManagement": "Easy Management",
+    "easyManagementDesc": "Manage categories, partners, and users with ease",
+    "secureAccess": "Secure Access",
+    "secureAccessDesc": "Role-based authentication keeps your data secure",
+    "multiLanguage": "Multi-language",
+    "multiLanguageDesc": "Full support for English and Danish languages"
   },
   "admin": {
     "title": "BoligMatch Admin",
     "categories": {
       "title": "Categories",
+      "subtitle": "Manage all categories",
       "addCategory": "Add Category",
       "editCategory": "Edit Category",
       "name": "Name",

@@ -159,7 +159,7 @@ export default function SubCategoriesPage() {
       header: t('common.status'),
       cell: ({ row }) => (
         <span 
-          className="px-2 py-1 rounded text-sm text-white font-medium"
+          className="px-2 py-0.5 rounded text-xs text-white font-medium"
           style={{ 
             backgroundColor: row.original.isActive ? 'var(--color-secondary)' : 'var(--color-neutral)'
           }}
@@ -188,21 +188,21 @@ export default function SubCategoriesPage() {
   ];
 
   return (
-    <div className="p-8">
-      <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+    <div>
+      <div className="bg-white rounded-lg shadow-lg p-4 mb-4">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('admin.subcategories.title')}</h1>
-            <p className="text-gray-600">{t('admin.subcategories.subtitle')}</p>
+            <h1 className="text-xl font-bold text-gray-900">{t('admin.subcategories.title')}</h1>
+            <p className="text-gray-600 text-sm mt-1">{t('admin.subcategories.subtitle')}</p>
           </div>
           <button
             onClick={() => {
               setEditingSubCategory(null);
               setIsModalOpen(true);
             }}
-            className="flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:opacity-90 bg-brand-gradient"
+            className="flex items-center gap-2 px-4 py-2 text-sm text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:opacity-90 bg-brand-gradient"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             {t('admin.subcategories.addSubCategory')}
@@ -211,14 +211,14 @@ export default function SubCategoriesPage() {
       </div>
 
       {isLoading ? (
-        <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: 'var(--color-primary)' }}></div>
+        <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--color-primary)' }}></div>
           <p className="mt-4 text-gray-600">{t('common.loading')}</p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <DataTable data={subCategories} columns={columns} />
-          <div className="px-6 pb-6">
+          <div className="px-4 pb-4">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

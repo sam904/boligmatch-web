@@ -120,7 +120,7 @@ export default function PartnersPage() {
       header: 'Status',
       cell: ({ row }) => (
         <span 
-          className="px-2 py-1 rounded text-sm text-white font-medium"
+          className="px-2 py-0.5 rounded text-xs text-white font-medium"
           style={{ 
             backgroundColor: row.original.isActive ? 'var(--color-secondary)' : 'var(--color-neutral)'
           }}
@@ -149,16 +149,38 @@ export default function PartnersPage() {
   ];
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Partners</h1>
-        <Button onClick={() => {
-          setEditingPartner(null);
-          setIsModalOpen(true);
-        }}>Add Partner</Button>
+    <div>
+      <div className="bg-white rounded-lg shadow-lg p-4 mb-4">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">Partners</h1>
+            <p className="text-gray-600 text-sm mt-1">Manage your partners</p>
+          </div>
+          <button
+            onClick={() => {
+              setEditingPartner(null);
+              setIsModalOpen(true);
+            }}
+            className="flex items-center gap-2 px-4 py-2 text-sm text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:opacity-90 bg-brand-gradient"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add Partner
+          </button>
+        </div>
       </div>
 
-      {isLoading ? <div>Loading...</div> : <DataTable data={partners} columns={columns} />}
+      {isLoading ? (
+        <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--color-primary)' }}></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <DataTable data={partners} columns={columns} />
+        </div>
+      )}
 
       <Modal
         open={isModalOpen}

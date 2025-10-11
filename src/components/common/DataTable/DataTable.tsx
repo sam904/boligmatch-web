@@ -14,7 +14,7 @@ export default function DataTable<T>({ data, columns }: Props<T>) {
         {table.getHeaderGroups().map(hg => (
           <tr key={hg.id} className="border-b border-gray-200">
             {hg.headers.map(h => (
-              <th key={h.id} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th key={h.id} className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {flexRender(h.column.columnDef.header, h.getContext())}
               </th>
             ))}
@@ -25,7 +25,7 @@ export default function DataTable<T>({ data, columns }: Props<T>) {
         {table.getRowModel().rows.map(row => (
           <tr key={row.id} className="hover:bg-gray-50 transition-colors">
             {row.getVisibleCells().map(cell => (
-              <td key={cell.id} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td key={cell.id} className="px-4 py-3 text-sm text-gray-900">
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </td>
             ))}

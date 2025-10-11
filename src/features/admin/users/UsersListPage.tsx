@@ -25,7 +25,7 @@ export default function UsersListPage() {
       header: 'Role',
       cell: ({ row }) => (
         <span 
-          className="px-2 py-1 rounded text-sm text-white font-medium"
+          className="px-2 py-0.5 rounded text-xs text-white font-medium"
           style={{ backgroundColor: 'var(--color-primary)' }}
         >
           {row.original.roleName}
@@ -37,7 +37,7 @@ export default function UsersListPage() {
       header: 'Status',
       cell: ({ row }) => (
         <span 
-          className="px-2 py-1 rounded text-sm text-white font-medium"
+          className="px-2 py-0.5 rounded text-xs text-white font-medium"
           style={{ 
             backgroundColor: row.original.isActive ? 'var(--color-secondary)' : 'var(--color-neutral)'
           }}
@@ -49,12 +49,26 @@ export default function UsersListPage() {
   ];
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Users</h1>
+    <div>
+      <div className="bg-white rounded-lg shadow-lg p-4 mb-4">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">Users</h1>
+            <p className="text-gray-600 text-sm mt-1">View all users</p>
+          </div>
+        </div>
       </div>
 
-      {isLoading ? <div>Loading...</div> : <DataTable data={users} columns={columns} />}
+      {isLoading ? (
+        <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--color-primary)' }}></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <DataTable data={users} columns={columns} />
+        </div>
+      )}
     </div>
   );
 }

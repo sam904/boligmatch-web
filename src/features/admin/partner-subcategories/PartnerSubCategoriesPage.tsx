@@ -51,7 +51,7 @@ export default function PartnerSubCategoriesPage() {
     enabled: selectedCategoryId > 0,
   });
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<PartnerSubCategoryFormData>({
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<PartnerSubCategoryFormData>({
     resolver: zodResolver(partnerSubCategorySchema),
     defaultValues: {
       isActive: true,
@@ -139,7 +139,7 @@ export default function PartnerSubCategoriesPage() {
       header: 'Status',
       cell: ({ row }) => (
         <span 
-          className="px-2 py-1 rounded text-sm text-white font-medium"
+          className="px-2 py-0.5 rounded text-xs text-white font-medium"
           style={{ 
             backgroundColor: row.original.isActive ? 'var(--color-secondary)' : 'var(--color-neutral)'
           }}
@@ -168,17 +168,39 @@ export default function PartnerSubCategoriesPage() {
   ];
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Partner SubCategories</h1>
-        <Button onClick={() => {
-          setEditingItem(null);
-          setSelectedCategoryId(0);
-          setIsModalOpen(true);
-        }}>Add Mapping</Button>
+    <div>
+      <div className="bg-white rounded-lg shadow-lg p-4 mb-4">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">Partner SubCategories</h1>
+            <p className="text-gray-600 text-sm mt-1">Manage partner subcategory mappings</p>
+          </div>
+          <button
+            onClick={() => {
+              setEditingItem(null);
+              setSelectedCategoryId(0);
+              setIsModalOpen(true);
+            }}
+            className="flex items-center gap-2 px-4 py-2 text-sm text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:opacity-90 bg-brand-gradient"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add Mapping
+          </button>
+        </div>
       </div>
 
-      {isLoading ? <div>Loading...</div> : <DataTable data={items} columns={columns} />}
+      {isLoading ? (
+        <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--color-primary)' }}></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <DataTable data={items} columns={columns} />
+        </div>
+      )}
 
       <Modal
         open={isModalOpen}
