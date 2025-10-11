@@ -139,7 +139,7 @@ export default function AdminLayout() {
         </aside>
 
         {/* Main Content */}
-        <main className={`flex-1 bg-gray-50 transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'} p-4`}>
+        <main className={`flex-1 bg-gray-50 transition-all duration-300 ${isCollapsed ? 'ml-16' : 'ml-64'} p-3`}>
           <Outlet />
         </main>
       </div>

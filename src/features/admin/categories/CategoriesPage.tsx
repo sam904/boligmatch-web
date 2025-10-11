@@ -179,7 +179,7 @@ export default function CategoriesPage() {
 
   return (
     <div>
-      <div className="bg-white rounded-lg shadow p-4 mb-4">
+      <div className="bg-white rounded-lg shadow p-3 mb-3">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-xl font-bold text-gray-900">{t('admin.categories.title')}</h1>
