@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { subCategoryService } from '../../../services/subCategory.service';
 import { categoryService } from '../../../services/category.service';
 import DataTable from '../../../components/common/DataTable/DataTable';
+import Pagination from '../../../components/common/Pagination';
 import Modal from '../../../components/common/Modal';
 import Button from '../../../components/common/Button';
 import Input from '../../../components/common/Input';
@@ -32,15 +33,22 @@ export default function SubCategoriesPage() {
   const { translateCategory, translateSubCategory } = useDbTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSubCategory, setEditingSubCategory] = useState<SubCategory | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
   const queryClient = useQueryClient();
 
-  const { data: subCategories = [], isLoading } = useQuery({
-    queryKey: ['subcategories'],
-    queryFn: () => subCategoryService.getAll(true),
+  const { data: paginatedData, isLoading } = useQuery({
+    queryKey: ['subcategories', currentPage, pageSize, searchTerm],
+    queryFn: () => subCategoryService.getPaginated({
+      page: currentPage,
+      pageSize,
+      searchTerm: searchTerm || undefined,
+    }),
   });
 
   const { data: categories = [] } = useQuery({
-    queryKey: ['categories'],
+    queryKey: ['categories-all'],
     queryFn: () => categoryService.getAll(true),
   });
 
@@ -74,7 +82,7 @@ export default function SubCategoriesPage() {
   const createMutation = useMutation({
     mutationFn: subCategoryService.create,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['subcategories'] });
+      queryClient.invalidateQueries({ queryKey: ['subcategories'], exact: false });
       toast.success(t('admin.subcategories.createSuccess'));
       setIsModalOpen(false);
       reset();
@@ -85,7 +93,7 @@ export default function SubCategoriesPage() {
   const updateMutation = useMutation({
     mutationFn: subCategoryService.update,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['subcategories'] });
+      queryClient.invalidateQueries({ queryKey: ['subcategories'], exact: false });
       toast.success(t('admin.subcategories.updateSuccess'));
       setIsModalOpen(false);
       setEditingSubCategory(null);
@@ -97,7 +105,7 @@ export default function SubCategoriesPage() {
   const deleteMutation = useMutation({
     mutationFn: subCategoryService.delete,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['subcategories'] });
+      queryClient.invalidateQueries({ queryKey: ['subcategories'], exact: false });
       toast.success(t('admin.subcategories.deleteSuccess'));
     },
     onError: () => toast.error(t('admin.subcategories.deleteError')),
@@ -110,6 +118,24 @@ export default function SubCategoriesPage() {
       createMutation.mutate(data);
     }
   };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
+    setCurrentPage(1);
+  };
+
+  const subCategories = paginatedData?.data || [];
+  const totalItems = paginatedData?.total || 0;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
   const columns: ColumnDef<SubCategory>[] = [
     { accessorKey: 'id', header: t('admin.subcategories.id') },
@@ -190,6 +216,18 @@ export default function SubCategoriesPage() {
       ) : (
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           <DataTable data={subCategories} columns={columns} />
+          <div className="px-6 pb-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={pageSize}
+              onPageChange={handlePageChange}
+              onPageSizeChange={handlePageSizeChange}
+              searchTerm={searchTerm}
+              onSearchChange={handleSearchChange}
+            />
+          </div>
         </div>
       )}
 
@@ -207,7 +245,7 @@ export default function SubCategoriesPage() {
             error={errors.categoryId?.message}
             {...register('categoryId', { valueAsNumber: true })}
           >
-            {categories.map(cat => (
+            {Array.isArray(categories) && categories.map(cat => (
               <option key={cat.id} value={cat.id}>{translateCategory(cat.name)}</option>
             ))}
           </Select>
