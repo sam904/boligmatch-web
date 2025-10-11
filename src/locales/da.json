@@ -17,7 +17,12 @@
     "yes": "Ja",
     "no": "Nej",
     "confirm": "Bekræft",
-    "close": "Luk"
+    "close": "Luk",
+    "itemsPerPage": "Elementer pr. side",
+    "showing": "Viser",
+    "to": "til",
+    "of": "af",
+    "items": "elementer"
   },
   "auth": {
     "login": "Log ind",

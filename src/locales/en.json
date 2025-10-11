@@ -17,7 +17,12 @@
     "yes": "Yes",
     "no": "No",
     "confirm": "Confirm",
-    "close": "Close"
+    "close": "Close",
+    "itemsPerPage": "Items per page",
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "items": "items"
   },
   "auth": {
     "login": "Login",
