@@ -184,8 +184,8 @@ export default function PartnerSubCategoriesPage() {
   ];
 
   return (
-    <div>
-      <div className="bg-white rounded-lg shadow-lg p-3 mb-3">
+    <div className="p-3">
+      <div className="bg-white rounded-lg shadow-lg p-2 mb-2">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-xl font-bold text-gray-900">Partner SubCategories</h1>
