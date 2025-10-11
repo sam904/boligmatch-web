@@ -9,7 +9,8 @@ import DataTable from '../../../components/common/DataTable/DataTable';
 import SearchBar from '../../../components/common/SearchBar';
 import Modal from '../../../components/common/Modal';
 import Button from '../../../components/common/Button';
-import Select from '../../../components/common/Select';
+import SearchableSelectController from '../../../components/common/SearchableSelectController';
+import SearchableSelectWithCallback from '../../../components/common/SearchableSelectWithCallback';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -53,7 +54,7 @@ export default function PartnerSubCategoriesPage() {
     enabled: selectedCategoryId > 0,
   });
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<PartnerSubCategoryFormData>({
+  const { register, handleSubmit, control, formState: { errors }, reset, setValue } = useForm<PartnerSubCategoryFormData>({
     resolver: zodResolver(partnerSubCategorySchema),
     defaultValues: {
       isActive: true,
@@ -234,41 +235,35 @@ export default function PartnerSubCategoriesPage() {
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Select
+          <SearchableSelectController
+            name="partnerId"
+            control={control}
             label="Partner"
             error={errors.partnerId?.message}
-            {...register('partnerId', { valueAsNumber: true })}
-          >
-            {partners.map(partner => (
-              <option key={partner.id} value={partner.id}>{partner.name}</option>
-            ))}
-          </Select>
+            options={partners.map(p => ({ value: p.id, label: p.name }))}
+            placeholder="Select Partner"
+          />
           
-          <Select
+          <SearchableSelectWithCallback
             label="Category"
             value={selectedCategoryId}
-            onChange={(e) => {
-              setSelectedCategoryId(Number(e.target.value));
+            onChange={(value) => {
+              setSelectedCategoryId(Number(value));
               setValue('subCategoryId', 0);
             }}
-          >
-            <option value={0}>Select Category</option>
-            {categories.map(cat => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
-            ))}
-          </Select>
+            options={categories.map(c => ({ value: c.id, label: c.name }))}
+            placeholder="Select Category"
+          />
 
-          <Select
+          <SearchableSelectController
+            name="subCategoryId"
+            control={control}
             label="SubCategory"
             error={errors.subCategoryId?.message}
-            {...register('subCategoryId', { valueAsNumber: true })}
+            options={subCategories.map(s => ({ value: s.id, label: s.name }))}
+            placeholder="Select SubCategory"
             disabled={!selectedCategoryId}
-          >
-            <option value={0}>Select SubCategory</option>
-            {subCategories.map(sub => (
-              <option key={sub.id} value={sub.id}>{sub.name}</option>
-            ))}
-          </Select>
+          />
 
           <div className="flex items-center gap-2">
             <input type="checkbox" id="isActive" {...register('isActive')} />

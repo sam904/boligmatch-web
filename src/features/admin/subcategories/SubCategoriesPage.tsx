@@ -9,7 +9,7 @@ import SearchBar from '../../../components/common/SearchBar';
 import Modal from '../../../components/common/Modal';
 import Button from '../../../components/common/Button';
 import Input from '../../../components/common/Input';
-import Select from '../../../components/common/Select';
+import SearchableSelectController from '../../../components/common/SearchableSelectController';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -55,7 +55,7 @@ export default function SubCategoriesPage() {
     queryFn: () => categoryService.getAll(true),
   });
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<SubCategoryFormData>({
+  const { register, handleSubmit, control, formState: { errors }, reset } = useForm<SubCategoryFormData>({
     resolver: zodResolver(subCategorySchema),
     defaultValues: {
       isActive: true,
@@ -248,16 +248,17 @@ export default function SubCategoriesPage() {
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Select
+          <SearchableSelectController
+            name="categoryId"
+            control={control}
             label={t('admin.subcategories.category')}
             error={errors.categoryId?.message}
-            {...register('categoryId', { valueAsNumber: true })}
-          >
-            <option value={0}>Select Category</option>
-            {Array.isArray(categories) && categories.map(cat => (
-              <option key={cat.id} value={cat.id}>{translateCategory(cat.name)}</option>
-            ))}
-          </Select>
+            options={categories.map(cat => ({
+              value: cat.id,
+              label: translateCategory(cat.name)
+            }))}
+            placeholder="Select Category"
+          />
           <Input label={t('admin.subcategories.name')} error={errors.name?.message} {...register('name')} />
           <Input label={t('admin.subcategories.imageUrl')} error={errors.imageUrl?.message} {...register('imageUrl')} />
           <Input label={t('admin.subcategories.iconUrl')} error={errors.iconUrl?.message} {...register('iconUrl')} />
