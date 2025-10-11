@@ -146,12 +146,15 @@ The application is configured to run on Replit:
 - ✅ All admin pages fully internationalized
 
 ### Data Fetching & Pagination
-- ✅ Refactored SubCategories page to use @tanstack/react-query with pagination
-- ✅ Implemented server-side pagination with search functionality
+- ✅ Created useDebounce hook with 500ms delay for optimized search performance
+- ✅ Refactored Categories page to use @tanstack/react-query with getPaginated
+- ✅ Refactored SubCategories page to use @tanstack/react-query with getPaginated
+- ✅ Implemented server-side pagination with debounced search functionality
 - ✅ Added search input with icon, page size selector (10/25/50/100)
 - ✅ Fixed query invalidation with `exact: false` for proper data refresh after mutations
 - ✅ Implemented proper pagination boundary handling (minimum 1 page)
 - ✅ Auto-reset to page 1 when search term changes
+- ✅ All search inputs now use debouncing to reduce API calls
 
 ### Design & Branding
 - ✅ Custom color scheme applied throughout:
