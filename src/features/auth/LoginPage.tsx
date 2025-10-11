@@ -90,17 +90,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          <div className="pt-4 border-t border-gray-200">
-            <div className="rounded-lg p-4 text-sm text-gray-600" style={{ backgroundColor: 'var(--color-primary-light)' }}>
-              <p className="font-semibold text-gray-700 mb-2">Test Credentials:</p>
-              <ul className="space-y-1">
-                <li><span className="font-medium">Admin:</span> admin / admin123</li>
-                <li><span className="font-medium">Partner:</span> partner / partner123</li>
-                <li><span className="font-medium">User:</span> user / user123</li>
-              </ul>
-            </div>
-          </div>
         </div>
       </div>
     </div>
