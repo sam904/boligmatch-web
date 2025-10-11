@@ -111,7 +111,16 @@ The application is configured to run on Replit:
 
 ## Recent Changes (October 2025)
 
-### Latest Updates - Bug Fixes & Service Layer
+### Latest Updates - Searchable Dropdowns & UI Fixes
+- ✅ **Implemented Searchable Dropdowns**:
+  - Installed react-select for enhanced dropdown functionality
+  - Created SearchableSelectController component integrated with react-hook-form
+  - Created SearchableSelectWithCallback for dropdowns with custom onChange handlers
+  - Updated SubCategoriesPage with searchable category dropdown
+  - Updated PartnerSubCategoriesPage with searchable partner, category, and subcategory dropdowns
+  - Dropdowns styled with brand colors (#043428, #91C73D)
+  - Form properly resets subCategoryId when category changes
+
 - ✅ **Fixed API Response Handling**:
   - Updated categoryService.getAll() to transform `{output: {result}}` → array
   - Updated subCategoryService.getAll() and getByCategoryId() with proper transformation
@@ -119,6 +128,12 @@ The application is configured to run on Replit:
   - Fixed partnerService.delete() to use correct http.del method
   - Resolved "categories.map is not a function" error in PartnerSubCategoriesPage
   - All getAll() methods now return arrays with fallback to []
+
+- ✅ **Fixed Admin Layout Scrolling**:
+  - Fixed header to top with proper z-index (50)
+  - Content area scrolls independently below header
+  - Main content area: h-[calc(100vh-4rem)] with overflow-y-auto
+  - No duplicate headers, scrollbar starts from header bottom
 
 ### Admin Panel UI Improvements
 - ✅ **Restructured AdminLayout**:
