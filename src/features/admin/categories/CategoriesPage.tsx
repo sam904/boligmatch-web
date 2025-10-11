@@ -145,16 +145,34 @@ export default function CategoriesPage() {
   ];
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Categories</h1>
-        <Button onClick={handleAddNew}>Add Category</Button>
+    <div className="p-8">
+      <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Categories</h1>
+            <p className="text-gray-600">Manage and organize your categories</p>
+          </div>
+          <button
+            onClick={handleAddNew}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add Category
+          </button>
+        </div>
       </div>
 
       {isLoading ? (
-        <div>Loading...</div>
+        <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <p className="mt-4 text-gray-600">Loading categories...</p>
+        </div>
       ) : (
-        <DataTable data={categories} columns={columns} />
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <DataTable data={categories} columns={columns} />
+        </div>
       )}
 
       <Modal
