@@ -2,8 +2,6 @@
 import axios from 'axios';
 import { env } from './env';
 import { tokenStorage } from './storage';
-import { store } from '../app/store';
-import { logout, setTokens } from '../features/auth/authSlice';
 
 export const axiosClient = axios.create({
   baseURL: env.apiUrl,
@@ -53,6 +51,9 @@ axiosClient.interceptors.response.use(
 
         tokenStorage.setAccess(data.accessToken);
         tokenStorage.setRefresh(data.refreshToken);
+        
+        const { store } = await import('../app/store');
+        const { setTokens } = await import('../features/auth/authSlice');
         store.dispatch(setTokens({ accessToken: data.accessToken, refreshToken: data.refreshToken }));
 
         processQueue(data.accessToken);
@@ -60,7 +61,11 @@ axiosClient.interceptors.response.use(
         return axiosClient(original);
       } catch (e) {
         tokenStorage.clearAll();
+        
+        const { store } = await import('../app/store');
+        const { logout } = await import('../features/auth/authSlice');
         store.dispatch(logout());
+        
         processQueue(null);
         return Promise.reject(e);
       } finally {

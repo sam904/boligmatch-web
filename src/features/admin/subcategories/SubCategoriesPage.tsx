@@ -40,7 +40,7 @@ export default function SubCategoriesPage() {
     queryFn: () => categoryService.getAll(true),
   });
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<SubCategoryFormData>({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<SubCategoryFormData>({
     resolver: zodResolver(subCategorySchema),
     defaultValues: {
       isActive: true,
