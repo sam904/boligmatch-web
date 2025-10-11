@@ -5,23 +5,23 @@ import type { PaginationRequest, PaginatedResponse } from '../types/category';
 
 export const subCategoryService = {
   getAll: (includeInActive = false) => 
-    http.get<SubCategory[]>(`/SubCategory/getAllSubCategorys?includeInActive=${includeInActive}`),
+    http.get<SubCategory[]>(`/SubCategories/getAllSubCategoriess?includeInActive=${includeInActive}`),
   
   getById: (id: number) => 
-    http.get<SubCategory>(`/SubCategory/getSubCategoryById/${id}`),
+    http.get<SubCategory>(`/SubCategories/getSubCategoriesById/${id}`),
   
   getByCategoryId: (categoryId: number, includeInActive = false) => 
-    http.get<SubCategory[]>(`/SubCategory/getSubCategorysByCategoryId/${categoryId}?includeInActive=${includeInActive}`),
+    http.get<SubCategory[]>(`/SubCategories/getSubCategorysByCategoryId/${categoryId}?includeInActive=${includeInActive}`),
   
   getPaginated: (params: PaginationRequest) => 
-    http.post<PaginatedResponse<SubCategory>>('/SubCategory/getPaginatedSubCategorys', params),
+    http.post<PaginatedResponse<SubCategory>>('/SubCategories/getPaginatedSubCategoriess', params),
   
   create: (data: SubCategoryDto) => 
-    http.post<SubCategory>('/SubCategory/addSubCategory', data),
+    http.post<SubCategory>('/SubCategories/addSubCategories', data),
   
   update: (data: SubCategoryDto) => 
-    http.put<SubCategory>('/SubCategory/updateSubCategory', data),
+    http.put<SubCategory>('/SubCategories/updateSubCategories', data),
   
   delete: (id: number) => 
-    http.delete<void>(`/SubCategory/DeleteSubCategory/${id}`),
+    http.delete<void>(`/SubCategories/DeleteSubCategories/${id}`),
 };

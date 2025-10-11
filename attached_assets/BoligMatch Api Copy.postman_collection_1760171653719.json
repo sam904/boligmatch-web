@@ -1,0 +1,6236 @@
+{
+	"info": {
+		"_postman_id": "5222fe17-fadc-46fe-9268-af7391122be4",
+		"name": "BoligMatch Api Copy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42912438",
+		"_collection_link": "https://protod-9519.postman.co/workspace/Sagar-Sir~cde4f4ae-4b09-4680-823d-852610fcec5b/collection/42912438-5222fe17-fadc-46fe-9268-af7391122be4?action=share&source=collection_link&creator=42912438"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "Category",
+					"item": [
+						{
+							"name": "getCategoryById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Category/getCategoryById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Category/getCategoryById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Category",
+														"getCategoryById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Category/getCategoryById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Category",
+																"getCategoryById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllCategorys",
+							"item": [
+								{
+									"name": "/api/Category/getAllCategorys",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Category/getAllCategorys?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Category",
+												"getAllCategorys"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/Category/getAllCategorys?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Category",
+														"getAllCategorys"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addCategory",
+							"item": [
+								{
+									"name": "/api/Category/addCategory",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"string\",\n  \"imageUrl\": \"string\",\n  \"iconUrl\": \"string\",\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Category/addCategory",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Category",
+												"addCategory"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"name\": \"string\",\n  \"imageUrl\": \"string\",\n  \"iconUrl\": \"string\",\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Category/addCategory",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Category",
+														"addCategory"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updateCategory",
+							"item": [
+								{
+									"name": "/api/Category/updateCategory",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 6228,\n  \"name\": \"string\",\n  \"imageUrl\": \"string\",\n  \"iconUrl\": \"string\",\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Category/updateCategory",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Category",
+												"updateCategory"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 6228,\n  \"name\": \"string\",\n  \"imageUrl\": \"string\",\n  \"iconUrl\": \"string\",\n  \"isActive\": true\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Category/updateCategory",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Category",
+														"updateCategory"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeleteCategory",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Category/DeleteCategory/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Category/DeleteCategory/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Category",
+														"DeleteCategory",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Category/DeleteCategory/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Category",
+																"DeleteCategory",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedCategorys",
+							"item": [
+								{
+									"name": "/api/Category/getPaginatedCategorys",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Category/getPaginatedCategorys",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Category",
+												"getPaginatedCategorys"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Category/getPaginatedCategorys",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Category",
+														"getPaginatedCategorys"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Conversation",
+					"item": [
+						{
+							"name": "getConversationById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Conversation/getConversationById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Conversation/getConversationById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Conversation",
+														"getConversationById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Conversation/getConversationById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Conversation",
+																"getConversationById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllConversations",
+							"item": [
+								{
+									"name": "/api/Conversation/getAllConversations",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Conversation/getAllConversations?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Conversation",
+												"getAllConversations"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/Conversation/getAllConversations?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Conversation",
+														"getAllConversations"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addConversation",
+							"item": [
+								{
+									"name": "/api/Conversation/addConversation",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"messageSubject\": \"string\",\n  \"messageContent\": \"string\",\n  \"senderId\": 3537,\n  \"receiverId\": 4137,\n  \"type\": \"string\",\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Conversation/addConversation",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Conversation",
+												"addConversation"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"messageSubject\": \"string\",\n  \"messageContent\": \"string\",\n  \"senderId\": 3537,\n  \"receiverId\": 4137,\n  \"type\": \"string\",\n  \"isActive\": true\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Conversation/addConversation",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Conversation",
+														"addConversation"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updateConversation",
+							"item": [
+								{
+									"name": "/api/Conversation/updateConversation",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 4732,\n  \"messageSubject\": \"string\",\n  \"messageContent\": \"string\",\n  \"senderId\": 6521,\n  \"receiverId\": 3363,\n  \"type\": \"string\",\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Conversation/updateConversation",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Conversation",
+												"updateConversation"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 4732,\n  \"messageSubject\": \"string\",\n  \"messageContent\": \"string\",\n  \"senderId\": 6521,\n  \"receiverId\": 3363,\n  \"type\": \"string\",\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Conversation/updateConversation",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Conversation",
+														"updateConversation"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeleteConversation",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Conversation/DeleteConversation/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Conversation/DeleteConversation/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Conversation",
+														"DeleteConversation",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Conversation/DeleteConversation/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Conversation",
+																"DeleteConversation",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedConversations",
+							"item": [
+								{
+									"name": "/api/Conversation/getPaginatedConversations",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Conversation/getPaginatedConversations",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Conversation",
+												"getPaginatedConversations"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Conversation/getPaginatedConversations",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Conversation",
+														"getPaginatedConversations"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Favourites",
+					"item": [
+						{
+							"name": "getFavouritesById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Favourites/getFavouritesById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Favourites/getFavouritesById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Favourites",
+														"getFavouritesById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Favourites/getFavouritesById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Favourites",
+																"getFavouritesById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllFavouritess",
+							"item": [
+								{
+									"name": "/api/Favourites/getAllFavouritess",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Favourites/getAllFavouritess?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Favourites",
+												"getAllFavouritess"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/Favourites/getAllFavouritess?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Favourites",
+														"getAllFavouritess"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addFavourites",
+							"item": [
+								{
+									"name": "/api/Favourites/addFavourites",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"userId\": 129,\n  \"partnerId\": 3048,\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Favourites/addFavourites",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Favourites",
+												"addFavourites"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"userId\": 129,\n  \"partnerId\": 3048,\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Favourites/addFavourites",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Favourites",
+														"addFavourites"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updateFavourites",
+							"item": [
+								{
+									"name": "/api/Favourites/updateFavourites",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 1793,\n  \"userId\": 2769,\n  \"partnerId\": 3401,\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Favourites/updateFavourites",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Favourites",
+												"updateFavourites"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 1793,\n  \"userId\": 2769,\n  \"partnerId\": 3401,\n  \"isActive\": true\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Favourites/updateFavourites",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Favourites",
+														"updateFavourites"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeleteFavourites",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Favourites/DeleteFavourites/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Favourites/DeleteFavourites/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Favourites",
+														"DeleteFavourites",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Favourites/DeleteFavourites/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Favourites",
+																"DeleteFavourites",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedFavouritess",
+							"item": [
+								{
+									"name": "/api/Favourites/getPaginatedFavouritess",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Favourites/getPaginatedFavouritess",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Favourites",
+												"getPaginatedFavouritess"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Favourites/getPaginatedFavouritess",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Favourites",
+														"getPaginatedFavouritess"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Files",
+					"item": [
+						{
+							"name": "getFilesById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Files/getFilesById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Files/getFilesById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Files",
+														"getFilesById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Files/getFilesById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Files",
+																"getFilesById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllFiless",
+							"item": [
+								{
+									"name": "/api/Files/getAllFiless",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Files/getAllFiless?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Files",
+												"getAllFiless"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/Files/getAllFiless?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Files",
+														"getAllFiless"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addFiles",
+							"item": [
+								{
+									"name": "/api/Files/addFiles",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"partnerId\": 6902,\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"size\": 2006,\n  \"url\": \"string\",\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Files/addFiles",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Files",
+												"addFiles"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"partnerId\": 6902,\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"size\": 2006,\n  \"url\": \"string\",\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Files/addFiles",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Files",
+														"addFiles"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updateFiles",
+							"item": [
+								{
+									"name": "/api/Files/updateFiles",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 8408,\n  \"partnerId\": 717,\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"size\": 753,\n  \"url\": \"string\",\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Files/updateFiles",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Files",
+												"updateFiles"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 8408,\n  \"partnerId\": 717,\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"size\": 753,\n  \"url\": \"string\",\n  \"isActive\": true\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Files/updateFiles",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Files",
+														"updateFiles"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeleteFiles",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Files/DeleteFiles/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Files/DeleteFiles/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Files",
+														"DeleteFiles",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Files/DeleteFiles/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Files",
+																"DeleteFiles",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedFiless",
+							"item": [
+								{
+									"name": "/api/Files/getPaginatedFiless",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Files/getPaginatedFiless",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Files",
+												"getPaginatedFiless"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Files/getPaginatedFiless",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Files",
+														"getPaginatedFiless"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Notification",
+					"item": [
+						{
+							"name": "getNotificationById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Notification/getNotificationById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Notification/getNotificationById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Notification",
+														"getNotificationById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Notification/getNotificationById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Notification",
+																"getNotificationById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllNotifications",
+							"item": [
+								{
+									"name": "/api/Notification/getAllNotifications",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Notification/getAllNotifications?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Notification",
+												"getAllNotifications"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/Notification/getAllNotifications?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Notification",
+														"getAllNotifications"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addNotification",
+							"item": [
+								{
+									"name": "/api/Notification/addNotification",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Notification/addNotification",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Notification",
+												"addNotification"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Notification/addNotification",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Notification",
+														"addNotification"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updateNotification",
+							"item": [
+								{
+									"name": "/api/Notification/updateNotification",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 4397,\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Notification/updateNotification",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Notification",
+												"updateNotification"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 4397,\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"isActive\": true\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Notification/updateNotification",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Notification",
+														"updateNotification"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeleteNotification",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Notification/DeleteNotification/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Notification/DeleteNotification/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Notification",
+														"DeleteNotification",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Notification/DeleteNotification/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Notification",
+																"DeleteNotification",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedNotifications",
+							"item": [
+								{
+									"name": "/api/Notification/getPaginatedNotifications",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Notification/getPaginatedNotifications",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Notification",
+												"getPaginatedNotifications"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Notification/getPaginatedNotifications",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Notification",
+														"getPaginatedNotifications"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "NotificationReadStatus",
+					"item": [
+						{
+							"name": "getNotificationReadStatusById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/NotificationReadStatus/getNotificationReadStatusById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/NotificationReadStatus/getNotificationReadStatusById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"NotificationReadStatus",
+														"getNotificationReadStatusById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/NotificationReadStatus/getNotificationReadStatusById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"NotificationReadStatus",
+																"getNotificationReadStatusById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllNotificationReadStatuss",
+							"item": [
+								{
+									"name": "/api/NotificationReadStatus/getAllNotificationReadStatuss",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/NotificationReadStatus/getAllNotificationReadStatuss?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"NotificationReadStatus",
+												"getAllNotificationReadStatuss"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/NotificationReadStatus/getAllNotificationReadStatuss?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"NotificationReadStatus",
+														"getAllNotificationReadStatuss"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addNotificationReadStatus",
+							"item": [
+								{
+									"name": "/api/NotificationReadStatus/addNotificationReadStatus",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"userId\": 677,\n  \"isRead\": false,\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/NotificationReadStatus/addNotificationReadStatus",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"NotificationReadStatus",
+												"addNotificationReadStatus"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"userId\": 677,\n  \"isRead\": false,\n  \"isActive\": true\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/NotificationReadStatus/addNotificationReadStatus",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"NotificationReadStatus",
+														"addNotificationReadStatus"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updateNotificationReadStatus",
+							"item": [
+								{
+									"name": "/api/NotificationReadStatus/updateNotificationReadStatus",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 1780,\n  \"userId\": 6582,\n  \"isRead\": true,\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/NotificationReadStatus/updateNotificationReadStatus",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"NotificationReadStatus",
+												"updateNotificationReadStatus"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 1780,\n  \"userId\": 6582,\n  \"isRead\": true,\n  \"isActive\": true\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/NotificationReadStatus/updateNotificationReadStatus",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"NotificationReadStatus",
+														"updateNotificationReadStatus"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeleteNotificationReadStatus",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/NotificationReadStatus/DeleteNotificationReadStatus/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/NotificationReadStatus/DeleteNotificationReadStatus/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"NotificationReadStatus",
+														"DeleteNotificationReadStatus",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/NotificationReadStatus/DeleteNotificationReadStatus/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"NotificationReadStatus",
+																"DeleteNotificationReadStatus",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedNotificationReadStatuss",
+							"item": [
+								{
+									"name": "/api/NotificationReadStatus/getPaginatedNotificationReadStatuss",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/NotificationReadStatus/getPaginatedNotificationReadStatuss",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"NotificationReadStatus",
+												"getPaginatedNotificationReadStatuss"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/NotificationReadStatus/getPaginatedNotificationReadStatuss",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"NotificationReadStatus",
+														"getPaginatedNotificationReadStatuss"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Partners",
+					"item": [
+						{
+							"name": "getPartnersById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Partners/getPartnersById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Partners/getPartnersById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Partners",
+														"getPartnersById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Partners/getPartnersById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Partners",
+																"getPartnersById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllPartnerss",
+							"item": [
+								{
+									"name": "/api/Partners/getAllPartnerss",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Partners/getAllPartnerss?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Partners",
+												"getAllPartnerss"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/Partners/getAllPartnerss?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Partners",
+														"getAllPartnerss"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addPartners",
+							"item": [
+								{
+									"name": "/api/Partners/addPartners",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"userId\": 1644,\n  \"address\": \"string\",\n  \"businessUnit\": 3944,\n  \"videoUrl\": \"string\",\n  \"logoUrl\": \"string\",\n  \"cvr\": 7820,\n  \"descriptionShort\": \"string\",\n  \"textField1\": \"string\",\n  \"textField2\": \"string\",\n  \"textField3\": \"string\",\n  \"textField4\": \"string\",\n  \"textField5\": \"string\",\n  \"imageUrl1\": \"string\",\n  \"imageUrl2\": \"string\",\n  \"imageUrl3\": \"string\",\n  \"imageUrl4\": \"string\",\n  \"imageUrl5\": \"string\",\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Partners/addPartners",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Partners",
+												"addPartners"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"userId\": 1644,\n  \"address\": \"string\",\n  \"businessUnit\": 3944,\n  \"videoUrl\": \"string\",\n  \"logoUrl\": \"string\",\n  \"cvr\": 7820,\n  \"descriptionShort\": \"string\",\n  \"textField1\": \"string\",\n  \"textField2\": \"string\",\n  \"textField3\": \"string\",\n  \"textField4\": \"string\",\n  \"textField5\": \"string\",\n  \"imageUrl1\": \"string\",\n  \"imageUrl2\": \"string\",\n  \"imageUrl3\": \"string\",\n  \"imageUrl4\": \"string\",\n  \"imageUrl5\": \"string\",\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Partners/addPartners",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Partners",
+														"addPartners"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updatePartners",
+							"item": [
+								{
+									"name": "/api/Partners/updatePartners",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 6425,\n  \"userId\": 8283,\n  \"address\": \"string\",\n  \"businessUnit\": 5945,\n  \"videoUrl\": \"string\",\n  \"logoUrl\": \"string\",\n  \"cvr\": 3681,\n  \"descriptionShort\": \"string\",\n  \"textField1\": \"string\",\n  \"textField2\": \"string\",\n  \"textField3\": \"string\",\n  \"textField4\": \"string\",\n  \"textField5\": \"string\",\n  \"imageUrl1\": \"string\",\n  \"imageUrl2\": \"string\",\n  \"imageUrl3\": \"string\",\n  \"imageUrl4\": \"string\",\n  \"imageUrl5\": \"string\",\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Partners/updatePartners",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Partners",
+												"updatePartners"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 6425,\n  \"userId\": 8283,\n  \"address\": \"string\",\n  \"businessUnit\": 5945,\n  \"videoUrl\": \"string\",\n  \"logoUrl\": \"string\",\n  \"cvr\": 3681,\n  \"descriptionShort\": \"string\",\n  \"textField1\": \"string\",\n  \"textField2\": \"string\",\n  \"textField3\": \"string\",\n  \"textField4\": \"string\",\n  \"textField5\": \"string\",\n  \"imageUrl1\": \"string\",\n  \"imageUrl2\": \"string\",\n  \"imageUrl3\": \"string\",\n  \"imageUrl4\": \"string\",\n  \"imageUrl5\": \"string\",\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Partners/updatePartners",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Partners",
+														"updatePartners"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeletePartners",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Partners/DeletePartners/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Partners/DeletePartners/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Partners",
+														"DeletePartners",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Partners/DeletePartners/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Partners",
+																"DeletePartners",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedPartnerss",
+							"item": [
+								{
+									"name": "/api/Partners/getPaginatedPartnerss",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Partners/getPaginatedPartnerss",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Partners",
+												"getPaginatedPartnerss"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Partners/getPaginatedPartnerss",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Partners",
+														"getPaginatedPartnerss"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "PartnerSubCategories",
+					"item": [
+						{
+							"name": "getPartnerSubCategoriesById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/PartnerSubCategories/getPartnerSubCategoriesById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/PartnerSubCategories/getPartnerSubCategoriesById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"PartnerSubCategories",
+														"getPartnerSubCategoriesById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/PartnerSubCategories/getPartnerSubCategoriesById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"PartnerSubCategories",
+																"getPartnerSubCategoriesById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllPartnerSubCategoriess",
+							"item": [
+								{
+									"name": "/api/PartnerSubCategories/getAllPartnerSubCategoriess",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/PartnerSubCategories/getAllPartnerSubCategoriess?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"PartnerSubCategories",
+												"getAllPartnerSubCategoriess"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/PartnerSubCategories/getAllPartnerSubCategoriess?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"PartnerSubCategories",
+														"getAllPartnerSubCategoriess"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addPartnerSubCategories",
+							"item": [
+								{
+									"name": "/api/PartnerSubCategories/addPartnerSubCategories",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"patnerId\": 780,\n  \"subCategoryId\": 8486,\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/PartnerSubCategories/addPartnerSubCategories",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"PartnerSubCategories",
+												"addPartnerSubCategories"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"patnerId\": 780,\n  \"subCategoryId\": 8486,\n  \"isActive\": true\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/PartnerSubCategories/addPartnerSubCategories",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"PartnerSubCategories",
+														"addPartnerSubCategories"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updatePartnerSubCategories",
+							"item": [
+								{
+									"name": "/api/PartnerSubCategories/updatePartnerSubCategories",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 6792,\n  \"patnerId\": 9317,\n  \"subCategoryId\": 33,\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/PartnerSubCategories/updatePartnerSubCategories",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"PartnerSubCategories",
+												"updatePartnerSubCategories"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 6792,\n  \"patnerId\": 9317,\n  \"subCategoryId\": 33,\n  \"isActive\": true\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/PartnerSubCategories/updatePartnerSubCategories",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"PartnerSubCategories",
+														"updatePartnerSubCategories"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeletePartnerSubCategories",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/PartnerSubCategories/DeletePartnerSubCategories/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/PartnerSubCategories/DeletePartnerSubCategories/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"PartnerSubCategories",
+														"DeletePartnerSubCategories",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/PartnerSubCategories/DeletePartnerSubCategories/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"PartnerSubCategories",
+																"DeletePartnerSubCategories",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedPartnerSubCategoriess",
+							"item": [
+								{
+									"name": "/api/PartnerSubCategories/getPaginatedPartnerSubCategoriess",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/PartnerSubCategories/getPaginatedPartnerSubCategoriess",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"PartnerSubCategories",
+												"getPaginatedPartnerSubCategoriess"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/PartnerSubCategories/getPaginatedPartnerSubCategoriess",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"PartnerSubCategories",
+														"getPaginatedPartnerSubCategoriess"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Recommendation",
+					"item": [
+						{
+							"name": "getRecommendationById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Recommendation/getRecommendationById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Recommendation/getRecommendationById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Recommendation",
+														"getRecommendationById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Recommendation/getRecommendationById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Recommendation",
+																"getRecommendationById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllRecommendations",
+							"item": [
+								{
+									"name": "/api/Recommendation/getAllRecommendations",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Recommendation/getAllRecommendations?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Recommendation",
+												"getAllRecommendations"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/Recommendation/getAllRecommendations?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Recommendation",
+														"getAllRecommendations"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addRecommendation",
+							"item": [
+								{
+									"name": "/api/Recommendation/addRecommendation",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"patnerId\": 2115,\n  \"email\": \"string\",\n  \"description\": \"string\",\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Recommendation/addRecommendation",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Recommendation",
+												"addRecommendation"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"patnerId\": 2115,\n  \"email\": \"string\",\n  \"description\": \"string\",\n  \"isActive\": true\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Recommendation/addRecommendation",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Recommendation",
+														"addRecommendation"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updateRecommendation",
+							"item": [
+								{
+									"name": "/api/Recommendation/updateRecommendation",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 2731,\n  \"patnerId\": 1989,\n  \"email\": \"string\",\n  \"description\": \"string\",\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Recommendation/updateRecommendation",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Recommendation",
+												"updateRecommendation"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 2731,\n  \"patnerId\": 1989,\n  \"email\": \"string\",\n  \"description\": \"string\",\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Recommendation/updateRecommendation",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Recommendation",
+														"updateRecommendation"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeleteRecommendation",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/Recommendation/DeleteRecommendation/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/Recommendation/DeleteRecommendation/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Recommendation",
+														"DeleteRecommendation",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/Recommendation/DeleteRecommendation/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"Recommendation",
+																"DeleteRecommendation",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedRecommendations",
+							"item": [
+								{
+									"name": "/api/Recommendation/getPaginatedRecommendations",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Recommendation/getPaginatedRecommendations",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Recommendation",
+												"getPaginatedRecommendations"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/Recommendation/getPaginatedRecommendations",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"Recommendation",
+														"getPaginatedRecommendations"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "SubCategories",
+					"item": [
+						{
+							"name": "getSubCategoriesById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/SubCategories/getSubCategoriesById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/SubCategories/getSubCategoriesById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"SubCategories",
+														"getSubCategoriesById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/SubCategories/getSubCategoriesById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"SubCategories",
+																"getSubCategoriesById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllSubCategoriess",
+							"item": [
+								{
+									"name": "/api/SubCategories/getAllSubCategoriess",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/SubCategories/getAllSubCategoriess?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"SubCategories",
+												"getAllSubCategoriess"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/SubCategories/getAllSubCategoriess?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"SubCategories",
+														"getAllSubCategoriess"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addSubCategories",
+							"item": [
+								{
+									"name": "/api/SubCategories/addSubCategories",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"name\": \"string\",\n  \"categoryId\": 8921,\n  \"imageUrl\": \"string\",\n  \"iconUrl\": \"string\",\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/SubCategories/addSubCategories",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"SubCategories",
+												"addSubCategories"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"name\": \"string\",\n  \"categoryId\": 8921,\n  \"imageUrl\": \"string\",\n  \"iconUrl\": \"string\",\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/SubCategories/addSubCategories",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"SubCategories",
+														"addSubCategories"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updateSubCategories",
+							"item": [
+								{
+									"name": "/api/SubCategories/updateSubCategories",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 912,\n  \"name\": \"string\",\n  \"categoryId\": 4012,\n  \"imageUrl\": \"string\",\n  \"iconUrl\": \"string\",\n  \"isActive\": true\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/SubCategories/updateSubCategories",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"SubCategories",
+												"updateSubCategories"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 912,\n  \"name\": \"string\",\n  \"categoryId\": 4012,\n  \"imageUrl\": \"string\",\n  \"iconUrl\": \"string\",\n  \"isActive\": true\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/SubCategories/updateSubCategories",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"SubCategories",
+														"updateSubCategories"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeleteSubCategories",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/SubCategories/DeleteSubCategories/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/SubCategories/DeleteSubCategories/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"SubCategories",
+														"DeleteSubCategories",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/SubCategories/DeleteSubCategories/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"SubCategories",
+																"DeleteSubCategories",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedSubCategoriess",
+							"item": [
+								{
+									"name": "/api/SubCategories/getPaginatedSubCategoriess",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/SubCategories/getPaginatedSubCategoriess",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"SubCategories",
+												"getPaginatedSubCategoriess"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/SubCategories/getPaginatedSubCategoriess",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"SubCategories",
+														"getPaginatedSubCategoriess"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "getUserById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/User/getUserById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/User/getUserById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"User",
+														"getUserById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/User/getUserById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"User",
+																"getUserById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllUsers",
+							"item": [
+								{
+									"name": "/api/User/getAllUsers",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/User/getAllUsers?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"getAllUsers"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/User/getAllUsers?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"User",
+														"getAllUsers"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addUser",
+							"item": [
+								{
+									"name": "/api/User/addUser",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"firstName\": \"string\",\n  \"middleName\": \"string\",\n  \"lastName\": \"string\",\n  \"email\": \"string\",\n  \"password\": \"string\",\n  \"mobileNo\": \"string\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/User/addUser",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"addUser"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"firstName\": \"string\",\n  \"middleName\": \"string\",\n  \"lastName\": \"string\",\n  \"email\": \"string\",\n  \"password\": \"string\",\n  \"mobileNo\": \"string\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/User/addUser",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"User",
+														"addUser"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updateUser",
+							"item": [
+								{
+									"name": "/api/User/updateUser",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 7257,\n  \"firstName\": \"string\",\n  \"middleName\": \"string\",\n  \"lastName\": \"string\",\n  \"fullName\": \"string\",\n  \"email\": \"string\",\n  \"mobileNo\": \"string\",\n  \"dateOfBirth\": \"string\",\n  \"photoPath\": \"string\",\n  \"hash\": \"string\",\n  \"salt\": \"string\",\n  \"token\": \"string\",\n  \"refreshToken\": \"string\",\n  \"refreshTokenExpiryTime\": \"2022-07-24T05:33:48.844Z\",\n  \"isEmailVerify\": true,\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/User/updateUser",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"updateUser"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 7257,\n  \"firstName\": \"string\",\n  \"middleName\": \"string\",\n  \"lastName\": \"string\",\n  \"fullName\": \"string\",\n  \"email\": \"string\",\n  \"mobileNo\": \"string\",\n  \"dateOfBirth\": \"string\",\n  \"photoPath\": \"string\",\n  \"hash\": \"string\",\n  \"salt\": \"string\",\n  \"token\": \"string\",\n  \"refreshToken\": \"string\",\n  \"refreshTokenExpiryTime\": \"2022-07-24T05:33:48.844Z\",\n  \"isEmailVerify\": true,\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/User/updateUser",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"User",
+														"updateUser"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeleteUser",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/User/DeleteUser/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/User/DeleteUser/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"User",
+														"DeleteUser",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/User/DeleteUser/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"User",
+																"DeleteUser",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedUsers",
+							"item": [
+								{
+									"name": "/api/User/getPaginatedUsers",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/User/getPaginatedUsers",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"getPaginatedUsers"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/User/getPaginatedUsers",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"User",
+														"getPaginatedUsers"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "authenticate",
+							"item": [
+								{
+									"name": "/api/User/authenticate",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"userName\": \"string\",\n  \"password\": \"string\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/User/authenticate",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"authenticate"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"userName\": \"string\",\n  \"password\": \"string\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/User/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"User",
+														"authenticate"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "UserRole",
+					"item": [
+						{
+							"name": "getUserRoleById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/UserRole/getUserRoleById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/UserRole/getUserRoleById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"UserRole",
+														"getUserRoleById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/UserRole/getUserRoleById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"UserRole",
+																"getUserRoleById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllUserRoles",
+							"item": [
+								{
+									"name": "/api/UserRole/getAllUserRoles",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/UserRole/getAllUserRoles?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"UserRole",
+												"getAllUserRoles"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/UserRole/getAllUserRoles?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"UserRole",
+														"getAllUserRoles"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addUserRole",
+							"item": [
+								{
+									"name": "/api/UserRole/addUserRole",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"roleName\": \"string\",\n  \"description\": \"string\",\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/UserRole/addUserRole",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"UserRole",
+												"addUserRole"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"roleName\": \"string\",\n  \"description\": \"string\",\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/UserRole/addUserRole",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"UserRole",
+														"addUserRole"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updateUserRole",
+							"item": [
+								{
+									"name": "/api/UserRole/updateUserRole",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 5899,\n  \"roleName\": \"string\",\n  \"description\": \"string\",\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/UserRole/updateUserRole",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"UserRole",
+												"updateUserRole"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 5899,\n  \"roleName\": \"string\",\n  \"description\": \"string\",\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/UserRole/updateUserRole",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"UserRole",
+														"updateUserRole"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeleteUserRole",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/UserRole/DeleteUserRole/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/UserRole/DeleteUserRole/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"UserRole",
+														"DeleteUserRole",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/UserRole/DeleteUserRole/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"UserRole",
+																"DeleteUserRole",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedUserRoles",
+							"item": [
+								{
+									"name": "/api/UserRole/getPaginatedUserRoles",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/UserRole/getPaginatedUserRoles",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"UserRole",
+												"getPaginatedUserRoles"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/UserRole/getPaginatedUserRoles",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"UserRole",
+														"getPaginatedUserRoles"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "UserRoleMapping",
+					"item": [
+						{
+							"name": "getUserRoleMappingById",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/UserRoleMapping/getUserRoleMappingById/:id",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/UserRoleMapping/getUserRoleMappingById/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"UserRoleMapping",
+														"getUserRoleMappingById",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/UserRoleMapping/getUserRoleMappingById/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"UserRoleMapping",
+																"getUserRoleMappingById",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getAllUserRoleMappings",
+							"item": [
+								{
+									"name": "/api/UserRoleMapping/getAllUserRoleMappings",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/UserRoleMapping/getAllUserRoleMappings?includeInActive=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"UserRoleMapping",
+												"getAllUserRoleMappings"
+											],
+											"query": [
+												{
+													"key": "includeInActive",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/api/UserRoleMapping/getAllUserRoleMappings?includeInActive=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"UserRoleMapping",
+														"getAllUserRoleMappings"
+													],
+													"query": [
+														{
+															"key": "includeInActive",
+															"value": "true"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "addUserRoleMapping",
+							"item": [
+								{
+									"name": "/api/UserRoleMapping/addUserRoleMapping",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"userId\": 3260,\n  \"roleId\": 1406,\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/UserRoleMapping/addUserRoleMapping",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"UserRoleMapping",
+												"addUserRoleMapping"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"userId\": 3260,\n  \"roleId\": 1406,\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/UserRoleMapping/addUserRoleMapping",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"UserRoleMapping",
+														"addUserRoleMapping"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "updateUserRoleMapping",
+							"item": [
+								{
+									"name": "/api/UserRoleMapping/updateUserRoleMapping",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 9300,\n  \"userId\": 3076,\n  \"roleId\": 9045,\n  \"isActive\": false\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/UserRoleMapping/updateUserRoleMapping",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"UserRoleMapping",
+												"updateUserRoleMapping"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"id\": 9300,\n  \"userId\": 3076,\n  \"roleId\": 9045,\n  \"isActive\": false\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/UserRoleMapping/updateUserRoleMapping",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"UserRoleMapping",
+														"updateUserRoleMapping"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DeleteUserRoleMapping",
+							"item": [
+								{
+									"name": "{id}",
+									"item": [
+										{
+											"name": "/api/UserRoleMapping/DeleteUserRoleMapping/:id",
+											"request": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/UserRoleMapping/DeleteUserRoleMapping/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"UserRoleMapping",
+														"DeleteUserRoleMapping",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "6693"
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "DELETE",
+														"header": [
+															{
+																"key": "Authorization",
+																"value": "<API Key>",
+																"description": "Added as a part of security scheme: apikey"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/UserRoleMapping/DeleteUserRoleMapping/:id",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"UserRoleMapping",
+																"DeleteUserRoleMapping",
+																":id"
+															],
+															"variable": [
+																{
+																	"key": "id"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "getPaginatedUserRoleMappings",
+							"item": [
+								{
+									"name": "/api/UserRoleMapping/getPaginatedUserRoleMappings",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/UserRoleMapping/getPaginatedUserRoleMappings",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"UserRoleMapping",
+												"getPaginatedUserRoleMappings"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Authorization",
+														"value": "<API Key>",
+														"description": "Added as a part of security scheme: apikey"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"page\": 9246,\n  \"pageSize\": 1031,\n  \"searchTerm\": \"string\",\n  \"sortDirection\": \"string\",\n  \"sortField\": \"string\",\n  \"userId\": 1246,\n  \"isFeatured\": 6543,\n  \"isPrivateCourse\": true,\n  \"isPublish\": true,\n  \"statusId\": 5805\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/api/UserRoleMapping/getPaginatedUserRoleMappings",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"UserRoleMapping",
+														"getPaginatedUserRoleMappings"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "{{apiKey}}",
+				"type": "string"
+			},
+			{
+				"key": "in",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "/"
+		}
+	]
+}
