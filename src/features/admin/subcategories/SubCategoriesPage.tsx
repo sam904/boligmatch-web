@@ -15,6 +15,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useDbTranslation } from '../../../hooks/useDbTranslation';
+import { useDebounce } from '../../../hooks/useDebounce';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { SubCategory } from '../../../types/subcategory';
 
@@ -36,14 +37,15 @@ export default function SubCategoriesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
   const { data: paginatedData, isLoading } = useQuery({
-    queryKey: ['subcategories', currentPage, pageSize, searchTerm],
+    queryKey: ['subcategories', currentPage, pageSize, debouncedSearchTerm],
     queryFn: () => subCategoryService.getPaginated({
       page: currentPage,
       pageSize,
-      searchTerm: searchTerm || undefined,
+      searchTerm: debouncedSearchTerm || undefined,
     }),
   });
 

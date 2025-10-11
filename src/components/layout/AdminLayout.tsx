@@ -132,7 +132,7 @@ export default function AdminLayout() {
           </button>
         </div>
       </aside>
-      <main className={`flex-1 bg-gray-50 transition-all duration-300 ${isCollapsed ? 'ml-20' : 'ml-72'}`}>
+      <main className={`flex-1 bg-gray-50 transition-all duration-300 ${isCollapsed ? 'ml-20' : 'ml-72'} pt-6`}>
         <Outlet />
       </main>
     </div>

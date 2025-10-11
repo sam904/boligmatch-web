@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { categoryService } from '../../../services/category.service';
 import DataTable from '../../../components/common/DataTable/DataTable';
+import Pagination from '../../../components/common/Pagination';
 import Modal from '../../../components/common/Modal';
 import Button from '../../../components/common/Button';
 import Input from '../../../components/common/Input';
@@ -12,6 +13,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useDbTranslation } from '../../../hooks/useDbTranslation';
+import { useDebounce } from '../../../hooks/useDebounce';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Category } from '../../../types/category';
 
@@ -29,11 +31,19 @@ export default function CategoriesPage() {
   const { translateCategory } = useDbTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
-  const { data: categories = [], isLoading } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => categoryService.getAll(true),
+  const { data: paginatedData, isLoading } = useQuery({
+    queryKey: ['categories', currentPage, pageSize, debouncedSearchTerm],
+    queryFn: () => categoryService.getPaginated({
+      page: currentPage,
+      pageSize,
+      searchTerm: debouncedSearchTerm || undefined,
+    }),
   });
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<CategoryFormData>({
@@ -64,7 +74,7 @@ export default function CategoriesPage() {
   const createMutation = useMutation({
     mutationFn: categoryService.add,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ['categories'], exact: false });
       toast.success(t('admin.categories.createSuccess'));
       setIsModalOpen(false);
       reset();
@@ -75,7 +85,7 @@ export default function CategoriesPage() {
   const updateMutation = useMutation({
     mutationFn: categoryService.update,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ['categories'], exact: false });
       toast.success(t('admin.categories.updateSuccess'));
       setIsModalOpen(false);
       setEditingCategory(null);
@@ -87,7 +97,7 @@ export default function CategoriesPage() {
   const deleteMutation = useMutation({
     mutationFn: categoryService.remove,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ['categories'], exact: false });
       toast.success(t('admin.categories.deleteSuccess'));
     },
     onError: () => toast.error(t('admin.categories.deleteError')),
@@ -101,21 +111,23 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleEdit = (category: Category) => {
-    setEditingCategory(category);
-    setIsModalOpen(true);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
-  const handleDelete = (id: number) => {
-    if (window.confirm(t('admin.categories.deleteConfirm'))) {
-      deleteMutation.mutate(id);
-    }
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1);
   };
 
-  const handleAddNew = () => {
-    setEditingCategory(null);
-    setIsModalOpen(true);
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
+    setCurrentPage(1);
   };
+
+  const categories = paginatedData?.items || [];
+  const totalItems = paginatedData?.total || 0;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
   const columns: ColumnDef<Category>[] = [
     { accessorKey: 'id', header: t('admin.categories.id') },
@@ -150,8 +162,15 @@ export default function CategoriesPage() {
       header: t('common.actions'),
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <Button variant="secondary" onClick={() => handleEdit(row.original)}>{t('common.edit')}</Button>
-          <Button variant="danger" onClick={() => handleDelete(row.original.id)}>{t('common.delete')}</Button>
+          <Button variant="secondary" onClick={() => {
+            setEditingCategory(row.original);
+            setIsModalOpen(true);
+          }}>{t('common.edit')}</Button>
+          <Button variant="danger" onClick={() => {
+            if (window.confirm(t('admin.categories.deleteConfirm'))) {
+              deleteMutation.mutate(row.original.id);
+            }
+          }}>{t('common.delete')}</Button>
         </div>
       ),
     },
@@ -163,10 +182,13 @@ export default function CategoriesPage() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('admin.categories.title')}</h1>
-            <p className="text-gray-600">Manage and organize your categories</p>
+            <p className="text-gray-600">{t('admin.categories.subtitle')}</p>
           </div>
           <button
-            onClick={handleAddNew}
+            onClick={() => {
+              setEditingCategory(null);
+              setIsModalOpen(true);
+            }}
             className="flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:opacity-90 bg-brand-gradient"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -185,6 +207,18 @@ export default function CategoriesPage() {
       ) : (
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           <DataTable data={categories} columns={columns} />
+          <div className="px-6 pb-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={pageSize}
+              onPageChange={handlePageChange}
+              onPageSizeChange={handlePageSizeChange}
+              searchTerm={searchTerm}
+              onSearchChange={handleSearchChange}
+            />
+          </div>
         </div>
       )}
 
@@ -208,12 +242,8 @@ export default function CategoriesPage() {
             <Button type="button" variant="secondary" onClick={() => {
               setIsModalOpen(false);
               setEditingCategory(null);
-            }}>
-              {t('common.cancel')}
-            </Button>
-            <Button type="submit">
-              {editingCategory ? t('common.update') : t('common.create')}
-            </Button>
+            }}>{t('common.cancel')}</Button>
+            <Button type="submit">{editingCategory ? t('common.update') : t('common.create')}</Button>
           </div>
         </form>
       </Modal>
