@@ -1,11 +1,12 @@
 // src/features/admin/partner-subcategories/PartnerSubCategoriesPage.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { partnerSubCategoryService } from '../../../services/partnerSubCategory.service';
 import { partnerService } from '../../../services/partner.service';
 import { subCategoryService } from '../../../services/subCategory.service';
 import { categoryService } from '../../../services/category.service';
 import DataTable from '../../../components/common/DataTable/DataTable';
+import SearchBar from '../../../components/common/SearchBar';
 import Modal from '../../../components/common/Modal';
 import Button from '../../../components/common/Button';
 import Select from '../../../components/common/Select';
@@ -28,6 +29,7 @@ export default function PartnerSubCategoriesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<PartnerSubCategory | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
+  const [searchTerm, setSearchTerm] = useState('');
   const queryClient = useQueryClient();
 
   const { data: items = [], isLoading } = useQuery({
@@ -117,6 +119,20 @@ export default function PartnerSubCategoriesPage() {
     }
   };
 
+  const filteredItems = useMemo(() => {
+    if (!searchTerm) return items;
+    const lowerSearch = searchTerm.toLowerCase();
+    return items.filter(item => {
+      const partner = partners.find(p => p.id === item.partnerId);
+      const category = categories.find(c => c.id === item.categoryId);
+      return (
+        partner?.name?.toLowerCase().includes(lowerSearch) ||
+        category?.name?.toLowerCase().includes(lowerSearch) ||
+        item.subCategoryName?.toLowerCase().includes(lowerSearch)
+      );
+    });
+  }, [items, searchTerm, partners, categories]);
+
   const columns: ColumnDef<PartnerSubCategory>[] = [
     { accessorKey: 'id', header: 'ID' },
     {
@@ -198,7 +214,13 @@ export default function PartnerSubCategoriesPage() {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <DataTable data={items} columns={columns} />
+          <div className="p-4 border-b border-gray-200">
+            <SearchBar
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+            />
+          </div>
+          <DataTable data={filteredItems} columns={columns} />
         </div>
       )}
 

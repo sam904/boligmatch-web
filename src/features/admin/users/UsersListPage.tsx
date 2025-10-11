@@ -1,15 +1,30 @@
 // src/features/admin/users/UsersListPage.tsx
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { userService } from '../../../services/user.service';
 import DataTable from '../../../components/common/DataTable/DataTable';
+import SearchBar from '../../../components/common/SearchBar';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { User } from '../../../types/user';
 
 export default function UsersListPage() {
+  const [searchTerm, setSearchTerm] = useState('');
+  
   const { data: users = [], isLoading } = useQuery({
     queryKey: ['users'],
     queryFn: () => userService.getAll(true),
   });
+
+  const filteredUsers = useMemo(() => {
+    if (!searchTerm) return users;
+    const lowerSearch = searchTerm.toLowerCase();
+    return users.filter(user => 
+      user.firstName?.toLowerCase().includes(lowerSearch) ||
+      user.lastName?.toLowerCase().includes(lowerSearch) ||
+      user.email?.toLowerCase().includes(lowerSearch) ||
+      user.mobileNo?.toLowerCase().includes(lowerSearch)
+    );
+  }, [users, searchTerm]);
 
   const columns: ColumnDef<User>[] = [
     { accessorKey: 'userId', header: 'ID' },
@@ -66,7 +81,13 @@ export default function UsersListPage() {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <DataTable data={users} columns={columns} />
+          <div className="p-4 border-b border-gray-200">
+            <SearchBar
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+            />
+          </div>
+          <DataTable data={filteredUsers} columns={columns} />
         </div>
       )}
     </div>

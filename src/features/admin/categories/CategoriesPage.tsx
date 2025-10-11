@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { categoryService } from '../../../services/category.service';
 import DataTable from '../../../components/common/DataTable/DataTable';
 import Pagination from '../../../components/common/Pagination';
+import SearchBar from '../../../components/common/SearchBar';
 import Modal from '../../../components/common/Modal';
 import Button from '../../../components/common/Button';
 import Input from '../../../components/common/Input';
@@ -206,6 +207,14 @@ export default function CategoriesPage() {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="p-4 border-b border-gray-200">
+            <SearchBar
+              searchTerm={searchTerm}
+              onSearchChange={handleSearchChange}
+              pageSize={pageSize}
+              onPageSizeChange={handlePageSizeChange}
+            />
+          </div>
           <DataTable data={categories} columns={columns} />
           <div className="px-4 pb-4">
             <Pagination
@@ -214,9 +223,6 @@ export default function CategoriesPage() {
               totalItems={totalItems}
               pageSize={pageSize}
               onPageChange={handlePageChange}
-              onPageSizeChange={handlePageSizeChange}
-              searchTerm={searchTerm}
-              onSearchChange={handleSearchChange}
             />
           </div>
         </div>

@@ -1,8 +1,9 @@
 // src/features/admin/partners/PartnersPage.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { partnerService } from '../../../services/partner.service';
 import DataTable from '../../../components/common/DataTable/DataTable';
+import SearchBar from '../../../components/common/SearchBar';
 import Modal from '../../../components/common/Modal';
 import Button from '../../../components/common/Button';
 import Input from '../../../components/common/Input';
@@ -29,6 +30,7 @@ type PartnerFormData = z.infer<typeof partnerSchema>;
 export default function PartnersPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const queryClient = useQueryClient();
 
   const { data: partners = [], isLoading } = useQuery({
@@ -109,6 +111,16 @@ export default function PartnersPage() {
     }
   };
 
+  const filteredPartners = useMemo(() => {
+    if (!searchTerm) return partners;
+    const lowerSearch = searchTerm.toLowerCase();
+    return partners.filter(partner => 
+      partner.name?.toLowerCase().includes(lowerSearch) ||
+      partner.email?.toLowerCase().includes(lowerSearch) ||
+      partner.city?.toLowerCase().includes(lowerSearch)
+    );
+  }, [partners, searchTerm]);
+
   const columns: ColumnDef<Partner>[] = [
     { accessorKey: 'id', header: 'ID' },
     { accessorKey: 'name', header: 'Name' },
@@ -178,7 +190,13 @@ export default function PartnersPage() {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <DataTable data={partners} columns={columns} />
+          <div className="p-4 border-b border-gray-200">
+            <SearchBar
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+            />
+          </div>
+          <DataTable data={filteredPartners} columns={columns} />
         </div>
       )}
 
