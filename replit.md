@@ -90,7 +90,7 @@ VITE_API_URL=https://boligmatchapi-production.up.railway.app
 
 ## Authentication Flow
 1. Navigate to `/login`
-2. Enter credentials (default: aarti.chavan@skylynxtech.com / 123456)
+2. Enter credentials (Admin: boligadmin@gmail.com / 123456)
 3. System validates and returns user info with role
 4. Admin users → redirected to `/admin`
 5. Other users → redirected to `/`
