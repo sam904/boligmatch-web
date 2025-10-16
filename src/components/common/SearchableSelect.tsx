@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react';
+// src/components/common/SearchableSelect.tsx
 import Select, { type StylesConfig } from 'react-select';
 
 interface Option {
@@ -17,74 +17,80 @@ interface SearchableSelectProps {
   isClearable?: boolean;
 }
 
-const SearchableSelect = forwardRef<any, SearchableSelectProps>(
-  ({ label, error, options, value, onChange, placeholder = 'Select...', disabled = false, isClearable = false }, ref) => {
-    const [selectedOption, setSelectedOption] = useState<Option | null>(
-      options.find(opt => opt.value === value) || null
-    );
+export default function SearchableSelect({
+  label,
+  error,
+  options,
+  value,
+  onChange,
+  placeholder = 'Select...',
+  disabled = false,
+  isClearable = false,
+}: SearchableSelectProps) {
+  const customStyles: StylesConfig<Option, false> = {
+    control: (base, state) => ({
+      ...base,
+      borderColor: error ? '#f43f5e' : state.isFocused ? '#91C73D' : '#d1d5db',
+      boxShadow: state.isFocused ? '0 0 0 1px #91C73D, 0 1px 2px 0 rgb(0 0 0 / 0.05)' : '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+      '&:hover': {
+        borderColor: error ? '#f43f5e' : '#91C73D',
+      },
+      minHeight: '44px',
+      backgroundColor: disabled ? '#f8fafc' : 'white',
+      borderRadius: '8px',
+      fontSize: '14px',
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected
+        ? '#91C73D'
+        : state.isFocused
+        ? '#91C73D20'
+        : 'white',
+      color: state.isSelected ? 'white' : '#1f2937',
+      fontSize: '14px',
+      '&:active': {
+        backgroundColor: '#91C73D',
+      },
+    }),
+    menu: (base) => ({
+      ...base,
+      borderRadius: '8px',
+      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+      zIndex: 9999,
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: '#94a3b8',
+    }),
+  };
 
-    const customStyles: StylesConfig<Option, false> = {
-      control: (base, state) => ({
-        ...base,
-        borderColor: error ? '#ef4444' : state.isFocused ? '#043428' : '#d1d5db',
-        boxShadow: state.isFocused ? '0 0 0 1px #043428' : 'none',
-        '&:hover': {
-          borderColor: error ? '#ef4444' : '#043428',
-        },
-        minHeight: '38px',
-        backgroundColor: disabled ? '#f3f4f6' : 'white',
-      }),
-      option: (base, state) => ({
-        ...base,
-        backgroundColor: state.isSelected
-          ? '#043428'
-          : state.isFocused
-          ? '#91C73D20'
-          : 'white',
-        color: state.isSelected ? 'white' : '#1f2937',
-        '&:active': {
-          backgroundColor: '#043428',
-        },
-      }),
-      menu: (base) => ({
-        ...base,
-        zIndex: 9999,
-      }),
-    };
+  const selectedOption = options.find(opt => opt.value === value) || null;
 
-    const handleChange = (newValue: Option | null) => {
-      setSelectedOption(newValue);
-      if (onChange && newValue) {
-        onChange(newValue.value);
-      }
-    };
-
-    return (
-      <div className="w-full">
-        {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {label}
-          </label>
-        )}
-        <Select
-          ref={ref}
-          options={options}
-          value={selectedOption}
-          onChange={handleChange}
-          placeholder={placeholder}
-          styles={customStyles}
-          isDisabled={disabled}
-          isClearable={isClearable}
-          isSearchable={true}
-        />
-        {error && (
-          <p className="mt-1 text-sm text-red-600">{error}</p>
-        )}
-      </div>
-    );
-  }
-);
-
-SearchableSelect.displayName = 'SearchableSelect';
-
-export default SearchableSelect;
+  return (
+    <div className="w-full">
+      {label && (
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          {label}
+        </label>
+      )}
+      <Select
+        options={options}
+        value={selectedOption}
+        onChange={(newValue) => {
+          if (onChange && newValue) {
+            onChange(newValue.value);
+          }
+        }}
+        placeholder={placeholder}
+        styles={customStyles}
+        isDisabled={disabled}
+        isClearable={isClearable}
+        isSearchable={true}
+      />
+      {error && (
+        <p className="mt-2 text-sm text-rose-600">{error}</p>
+      )}
+    </div>
+  );
+}

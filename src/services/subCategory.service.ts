@@ -5,20 +5,20 @@ import type { PaginationRequest } from '../types/category';
 
 export const subCategoryService = {
   getAll: async (includeInActive = false) => {
-    const response = await http.get<{ output: { result: SubCategory[] } }>(`/api/SubCategories/getAllSubCategoriess?includeInActive=${includeInActive}`);
+    const response = await http.get<{ output: { result: SubCategory[] } }>(`/SubCategories/getAllSubCategoriess?includeInActive=${includeInActive}`);
     return response.output?.result || [];
   },
   
   getById: (id: number) => 
-    http.get<SubCategory>(`/api/SubCategories/getSubCategoriesById/${id}`),
+    http.get<SubCategory>(`/SubCategories/getSubCategoriesById/${id}`),
   
   getByCategoryId: async (categoryId: number, includeInActive = false) => {
-    const response = await http.get<{ output: { result: SubCategory[] } }>(`/api/SubCategories/getSubCategorysByCategoryId/${categoryId}?includeInActive=${includeInActive}`);
+    const response = await http.get<{ output: { result: SubCategory[] } }>(`/SubCategories/getSubCategorysByCategoryId/${categoryId}?includeInActive=${includeInActive}`);
     return response.output?.result || [];
   },
   
   getPaginated: async (params: PaginationRequest) => {
-    const response = await http.post<{ output: { result: SubCategory[]; rowCount: number } }>('/api/SubCategories/getPaginatedSubCategoriess', params);
+    const response = await http.post<{ output: { result: SubCategory[]; rowCount: number } }>('/SubCategories/getPaginatedSubCategoriess', params);
     return {
       data: response.output.result,
       total: response.output.rowCount,
@@ -28,11 +28,11 @@ export const subCategoryService = {
   },
   
   create: (data: SubCategoryDto) => 
-    http.post<SubCategory>('/api/SubCategories/addSubCategories', data),
+    http.post<SubCategory>('/SubCategories/addSubCategories', data),
   
   update: (data: SubCategoryDto) => 
-    http.put<SubCategory>('/api/SubCategories/updateSubCategories', data),
+    http.put<SubCategory>('/SubCategories/updateSubCategories', data),
   
   delete: (id: number) => 
-    http.delete<void>(`/api/SubCategories/DeleteSubCategories/${id}`),
+    http.delete<void>(`/SubCategories/DeleteSubCategories/${id}`),
 };

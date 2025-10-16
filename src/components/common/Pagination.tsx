@@ -51,33 +51,33 @@ export default function Pagination({
   };
 
   return (
-    <div className="flex items-center justify-between flex-wrap gap-4 mt-4">
+    <div className="flex items-center justify-between px-2 py-4">
       <div className="text-sm text-gray-600">
-        {t('common.showing')} {startItem} {t('common.to')} {endItem} {t('common.of')} {totalItems} {t('common.items')}
+        {t('common.showing')} <span className="font-medium">{startItem}</span> {t('common.to')} <span className="font-medium">{endItem}</span> {t('common.of')} <span className="font-medium">{totalItems}</span> {t('common.items')}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
 
         {getPageNumbers().map((page, index) =>
           page === '...' ? (
-            <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-400">...</span>
+            <span key={`ellipsis-${index}`} className="flex items-center justify-center w-9 h-9 text-gray-400">...</span>
           ) : (
             <button
               key={page}
               onClick={() => onPageChange(page as number)}
-              className={`px-4 py-2 rounded-lg transition-colors text-sm ${
+              className={`flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium transition-all duration-200 ${
                 currentPage === page
-                  ? 'text-white shadow-lg bg-brand-gradient'
-                  : 'border border-gray-300 hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-[#043428] to-[#91C73D] text-white shadow-sm'
+                  : 'text-gray-700 hover:bg-gray-100 border border-transparent'
               }`}
             >
               {page}
@@ -88,9 +88,9 @@ export default function Pagination({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>

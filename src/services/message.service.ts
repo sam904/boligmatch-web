@@ -10,11 +10,11 @@ export type Message = {
 };
 
 export const messageService = {
-  getById: (id: number) => http.get<Message>(`/api/Message/getMessageById/${id}`),
-  getAll: () => http.get<Message[]>(`/api/Message/getAllMessages`),
-  add: (body: Omit<Message, 'id'>) => http.post<Message>(`/api/Message/addMessage`, body),
-  update: (body: Message) => http.put<Message>(`/api/Message/updateMessage`, body),
-  remove: (id: number) => http.delete<void>(`/api/Message/DeleteMessage/${id}`),
+  getById: (id: number) => http.get<Message>(`/Message/getMessageById/${id}`),
+  getAll: () => http.get<Message[]>(`/Message/getAllMessages`),
+  add: (body: Omit<Message, 'id'>) => http.post<Message>(`/Message/addMessage`, body),
+  update: (body: Message) => http.put<Message>(`/Message/updateMessage`, body),
+  remove: (id: number) => http.delete<void>(`/Message/DeleteMessage/${id}`),
   getPaginated: (query: any) =>
-    http.post<{ items: Message[]; total: number }>(`/api/Message/getPaginatedMessages`, query),
+    http.post<{ items: Message[]; total: number }>(`/Message/getPaginatedMessages`, query),
 };

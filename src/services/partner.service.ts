@@ -5,7 +5,7 @@ import type { PaginationRequest, PaginatedResponse } from '../types/category';
 
 export const partnerService = {
   getAll: async (includeInActive = false) => {
-    const response = await http.get<{ output: { result: Partner[] } }>(`/Partners/getAllPartners?includeInActive=${includeInActive}`);
+    const response = await http.get<{ output: { result: Partner[] } }>(`/Partners/getAllPartnerss?includeInActive=${includeInActive}`);
     return response.output?.result || [];
   },
   
@@ -13,7 +13,7 @@ export const partnerService = {
     http.get<Partner>(`/Partners/getPartnersById/${id}`),
   
   getPaginated: (params: PaginationRequest) => 
-    http.post<PaginatedResponse<Partner>>('/Partners/getPaginatedPartners', params),
+    http.post<PaginatedResponse<Partner>>('/Partners/getPaginatedPartnerss', params),
   
   create: (data: PartnerDto) => 
     http.post<Partner>('/Partners/addPartners', data),
