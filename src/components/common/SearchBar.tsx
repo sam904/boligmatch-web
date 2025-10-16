@@ -4,15 +4,15 @@ import { useTranslation } from 'react-i18next';
 interface SearchBarProps {
   searchTerm: string;
   onSearchChange: (term: string) => void;
-  pageSize?: number;
-  onPageSizeChange?: (size: number) => void;
+  //pageSize?: number;
+  //onPageSizeChange?: (size: number) => void;
 }
 
 export default function SearchBar({
   searchTerm,
   onSearchChange,
-  pageSize,
-  onPageSizeChange,
+  //pageSize,
+  //onPageSizeChange,
 }: SearchBarProps) {
   const { t } = useTranslation();
 
@@ -38,7 +38,7 @@ export default function SearchBar({
         </div>
       </div>
 
-      {onPageSizeChange && pageSize && (
+      {/* {onPageSizeChange && pageSize && (
         <div className="flex items-center gap-3">
           <label className="text-sm font-medium text-gray-700">{t('common.itemsPerPage')}:</label>
           <select
@@ -52,7 +52,7 @@ export default function SearchBar({
             <option value={100}>100</option>
           </select>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
