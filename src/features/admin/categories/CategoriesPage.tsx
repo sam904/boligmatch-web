@@ -8,6 +8,7 @@ import SearchBar from '../../../components/common/SearchBar';
 import Modal from '../../../components/common/Modal';
 import Button from '../../../components/common/Button';
 import Input from '../../../components/common/Input';
+import ImageUpload from '../../../components/common/ImageUpload';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -47,12 +48,18 @@ export default function CategoriesPage() {
     }),
   });
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<CategoryFormData>({
+  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
       isActive: true,
+      imageUrl: '',
+      iconUrl: '',
     },
   });
+
+  // Watch the imageUrl and iconUrl values
+  const imageUrlValue = watch('imageUrl');
+  const iconUrlValue = watch('iconUrl');
 
   useEffect(() => {
     if (editingCategory) {
@@ -211,8 +218,6 @@ export default function CategoriesPage() {
             <SearchBar
               searchTerm={searchTerm}
               onSearchChange={handleSearchChange}
-              pageSize={pageSize}
-              onPageSizeChange={handlePageSizeChange}
             />
           </div>
           <DataTable data={categories} columns={columns} />
@@ -237,13 +242,35 @@ export default function CategoriesPage() {
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input label={t('admin.categories.name')} error={errors.name?.message} {...register('name')} />
-          <Input label={t('admin.categories.imageUrl')} error={errors.imageUrl?.message} {...register('imageUrl')} />
-          <Input label={t('admin.categories.iconUrl')} error={errors.iconUrl?.message} {...register('iconUrl')} />
+          <Input 
+            label={t('admin.categories.name')} 
+            error={errors.name?.message} 
+            {...register('name')} 
+          />
+          
+          {/* Image Upload for Category Image */}
+          <ImageUpload
+            label={t('admin.categories.imageUrl')}
+            value={imageUrlValue}
+            onChange={(url) => setValue('imageUrl', url, { shouldValidate: true })}
+            folder="categories/images"
+            error={errors.imageUrl?.message}
+          />
+
+          {/* Image Upload for Category Icon */}
+          <ImageUpload
+            label={t('admin.categories.iconUrl')}
+            value={iconUrlValue}
+            onChange={(url) => setValue('iconUrl', url, { shouldValidate: true })}
+            folder="categories/icons"
+            error={errors.iconUrl?.message}
+          />
+
           <div className="flex items-center gap-2">
             <input type="checkbox" id="isActive" {...register('isActive')} />
             <label htmlFor="isActive">{t('common.active')}</label>
           </div>
+          
           <div className="flex gap-2 justify-end">
             <Button type="button" variant="secondary" onClick={() => {
               setIsModalOpen(false);
