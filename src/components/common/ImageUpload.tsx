@@ -1,6 +1,6 @@
 // src/components/common/ImageUpload.tsx
 import { useRef, useState } from 'react';
-import { uploadService } from '../../services/upload.service';
+import { uploadService } from '../../services/uploadS3.service';
 import Button from './Button';
 import { toast } from 'sonner';
 
