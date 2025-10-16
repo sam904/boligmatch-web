@@ -17,3 +17,26 @@ export interface User {
   createdAt?: string;
   updatedAt?: string;
 }
+
+// Request DTOs for API calls
+export interface CreateUserRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobileNo: string;
+  isActive: boolean;
+  role?: number;
+  roleIds?: string;
+}
+
+export interface UpdateUserRequest extends CreateUserRequest {
+  id: number;
+}
+
+// Response types
+export interface PaginatedUsersResponse {
+  output: {
+    result: User[];
+    rowCount: number;
+  };
+}
