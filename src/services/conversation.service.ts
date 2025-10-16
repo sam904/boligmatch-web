@@ -12,16 +12,16 @@ export type Conversation = {
 };
 
 export const conversationService = {
-  getById: (id: number) => http.get<Conversation>(`/api/Conversation/getConversationById/${id}`),
+  getById: (id: number) => http.get<Conversation>(`/Conversation/getConversationById/${id}`),
   getAll: (includeInActive = false) =>
-    http.get<Conversation[]>(`/api/Conversation/getAllConversations`, { includeInActive }),
+    http.get<Conversation[]>(`/Conversation/getAllConversations`, { includeInActive }),
   add: (body: Omit<Conversation, 'id'>) =>
-    http.post<Conversation>(`/api/Conversation/addConversation`, body),
-  update: (body: Conversation) => http.put<Conversation>(`/api/Conversation/updateConversation`, body),
-  remove: (id: number) => http.delete<void>(`/api/Conversation/DeleteConversation/${id}`),
+    http.post<Conversation>(`/Conversation/addConversation`, body),
+  update: (body: Conversation) => http.put<Conversation>(`/Conversation/updateConversation`, body),
+  remove: (id: number) => http.delete<void>(`/Conversation/DeleteConversation/${id}`),
   getPaginated: (query: any) =>
     http.post<{ items: Conversation[]; total: number }>(
-      `/api/Conversation/getPaginatedConversations`,
+      `/Conversation/getPaginatedConversations`,
       query
     ),
 };

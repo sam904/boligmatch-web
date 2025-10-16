@@ -34,7 +34,7 @@ src/
 
 ### Authentication
 - Role-based authentication using JWT tokens
-- API Endpoint: `/api/User/authenticate`
+- API Endpoint: `/User/authenticate`
 - Credentials stored in localStorage
 - Role-based routing (Admin → /admin, Partner/User → /)
 - Session persistence across page refreshes
@@ -72,7 +72,7 @@ src/
 - Axios client with automatic token attachment
 
 ## Available Scripts
-- `npm run dev` - Start development server (port 5000)
+- `npm run dev` - Start development server (port 3000)
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
 - `npm run lint` - Run ESLint
@@ -106,7 +106,7 @@ All services follow the pattern:
 ## Deployment
 The application is configured to run on Replit:
 - Host: 0.0.0.0
-- Port: 5000
+- Port: 3000
 - HMR enabled for development
 
 ## Recent Changes (October 2025)
@@ -174,14 +174,13 @@ The application is configured to run on Replit:
 ## Recent Changes (October 2025)
 
 ### Authentication & API
-- ✅ Fixed all API endpoints to include /api prefix (auth, categories, subcategories)
 - ✅ Removed dummy login fallback - now uses only real API authentication
 - ✅ Updated admin credentials: boligadmin@gmail.com / 123456
 - ✅ Fixed admin sidebar positioning to stick to top-left with fixed layout
 
 ### Image Upload & Storage
 - ✅ Integrated DigitalOcean Spaces for image uploads using AWS SDK
-- ✅ Created upload server running on port 3001 (proxied via Vite at /api/upload)
+- ✅ Created upload server running on port 3001 (proxied via Vite at /upload)
 - ✅ Configured with endpoint: https://boligmatch.blr1.digitaloceanspaces.com
 - ✅ Secure API keys stored in Replit secrets (DO_SPACES_ACCESS_KEY, DO_SPACES_SECRET_KEY)
 
