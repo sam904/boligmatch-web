@@ -39,10 +39,10 @@ export default function UserDashboardPage() {
       {userData && (
         <div className="absolute top-50 left-26 z-10">
           <div className="text-white leading-14">
-            <h1 className="text-[64px] font-[800] mb-2 plus-jakarta-sans">
+            <h1 className="text-[64px] font-[800] mb-2 ">
               Mit Boligmatch+
             </h1>
-            <h2 className="text-[64px] font-[500] plus-jakarta-sans">
+            <h2 className="text-[64px] font-[500] ">
               {userData.firstName} {userData.lastName}
             </h2>
             {/* <p className="text-lg opacity-90 mt-1">

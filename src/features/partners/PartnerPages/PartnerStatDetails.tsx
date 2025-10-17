@@ -41,12 +41,12 @@ function PartnerStatDetails() {
                   }}
                 >
                   {/* Number */}
-                  <div className="text-4xl font-bold text-white plus-jakarta-sans mb-2">
+                  <div className="text-4xl font-bold text-white  mb-2">
                     {stat.number}
                   </div>
                   {/* Label */}
                   <div className="text-center px-2">
-                    <p className="text-white text-sm plus-jakarta-sans leading-tight">
+                    <p className="text-white text-sm  leading-tight">
                       {stat.label}
                     </p>
                   </div>
@@ -59,7 +59,7 @@ function PartnerStatDetails() {
         {/* Text Block Section */}
         <div className="max-w-7xl mx-auto">
           <div className="p-8">
-            <p className="text-white text-lg leading-relaxed plus-jakarta-sans">
+            <p className="text-white text-lg leading-relaxed ">
               Sa dolut magnis ea sitas sed es ea verum rererum, et molorer
               itatecerovit venite cum qui nis nonecab orporuptam et ut ut endae
               pa dolorectem nus magnatium et quae magniste laborem imus et mi,

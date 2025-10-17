@@ -36,7 +36,7 @@ const SupplierProfile = () => {
             <button
               className="bg-[#91C73D] text-white px-6 py-3 rounded-lg hover:bg-[#06351E] transition-colors flex items-center gap-2"
               style={{
-                fontFamily: "Figtree",
+                // fontFamily: "Figtree",
                 fontSize: "20px",
                 fontWeight: 600,
                 lineHeight: "100%",
@@ -48,7 +48,7 @@ const SupplierProfile = () => {
             <button
               className="bg-[#91C73D] text-white px-6 py-3 rounded-lg hover:bg-[#7BA832] transition-colors flex items-center gap-2"
               style={{
-                fontFamily: "Figtree",
+                // fontFamily: "Figtree",
                 fontSize: "20px",
                 fontWeight: 600,
                 lineHeight: "100%",
@@ -60,7 +60,7 @@ const SupplierProfile = () => {
             <button
               className="bg-[#91C73D] text-white px-6 py-3 rounded-lg hover:bg-[#7BA832] transition-colors flex items-center gap-2  "
               style={{
-                fontFamily: "Figtree",
+                // fontFamily: "Figtree",
                 fontSize: "20px",
                 fontWeight: 600,
                 lineHeight: "100%",
