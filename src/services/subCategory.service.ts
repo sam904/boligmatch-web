@@ -4,9 +4,10 @@ import type { SubCategory, SubCategoryDto } from '../types/subcategory';
 import type { PaginationRequest } from '../types/category';
 
 export const subCategoryService = {
-  getAll: async (includeInActive = false) => {
-    const response = await http.get<{ output: { result: SubCategory[] } }>(`/SubCategories/getAllSubCategoriess?includeInActive=${includeInActive}`);
-    return response.output?.result || [];
+ getAll: async (includeInActive = false) => {
+    const response = await http.get<any>(`/SubCategories/getAllSubCategoriess?includeInActive=${includeInActive}`);
+    // Your API returns array directly in output, not output.result
+    return response.output || [];
   },
   
   getById: (id: number) => 

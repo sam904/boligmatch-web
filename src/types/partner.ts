@@ -4,6 +4,7 @@ export interface Partner {
   id: number;
   userId: number;
   address: string;
+  businessName: string; // NEW FIELD
   businessUnit: number;
   videoUrl?: string;
   logoUrl?: string;
@@ -30,6 +31,7 @@ export interface PartnerDto {
   id?: number;
   userId: number;
   address: string;
+  businessName: string; // NEW FIELD
   businessUnit: number;
   videoUrl?: string;
   logoUrl?: string;
