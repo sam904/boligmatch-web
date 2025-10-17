@@ -448,7 +448,7 @@ export default function SubCategoriesPage() {
           {/* Left side: Title */}
           <div>
             <h1 className="text-xl font-bold text-gray-900">{t('admin.subcategories.title') || 'Subcategories'}</h1>
-            <p className="text-gray-600 text-sm mt-1">{t('admin.subcategories.subtitle') || 'Manage your subcategories'}</p>
+            <p className="text-gray-600 text-sm mt-1">{t('admin.subcategories.subtitle') || 'Manage subcategories linked to categories'}</p>
           </div>
 
           {/* Right side: Filters, SearchBar and Add Subcategory button */}
