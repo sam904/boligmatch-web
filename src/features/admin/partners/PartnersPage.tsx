@@ -14,13 +14,14 @@ import Select from '../../../components/common/Select';
 import ImageUpload from '../../../components/common/ImageUpload';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { optional, z } from 'zod';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from '../../../hooks/useDebounce';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Partner } from '../../../types/partner';
 import { categoryService } from '../../../services/category.service';
+import type { SubCategory } from '../../../types/subcategory';
 
 // Image Preview Modal Component
 function ImagePreviewModal({ imageUrl, isOpen, onClose }: { imageUrl: string; isOpen: boolean; onClose: () => void }) {
@@ -71,9 +72,10 @@ const partnerSubCategorySchema = z.object({
 });
 
 const partnerSchema = z.object({
-  userId: z.number().min(1, 'User ID is required'),
+  userId: z.number().optional(),
   address: z.string().min(1, 'Address is required'),
   businessUnit: z.number().min(1, 'Business Unit is required'),
+  businessName: z.string().min(1, 'Business Name is required'), 
   videoUrl: z.string().optional(),
   logoUrl: z.string().optional(),
   cvr: z.number().min(0, 'CVR is required'),
@@ -94,8 +96,9 @@ const partnerSchema = z.object({
 
 // Create a manual type that matches the schema exactly
 type PartnerFormData = {
-  userId: number;
+  userId?: number;
   address: string;
+  businessName: string;
   businessUnit: number;
   videoUrl?: string;
   logoUrl?: string;
@@ -165,11 +168,12 @@ export default function PartnersPage() {
   });
 
   // Fetch sub categories from API
-  const { data: subCategories = [], isLoading: isLoadingSubCategories } = useQuery({
-    queryKey: ['subCategories'],
-    queryFn: () => subCategoryService.getAll(true), // include inactive if needed
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+ // In your component, update the useQuery for subCategories
+const { data: subCategories = [], isLoading: isLoadingSubCategories } = useQuery<SubCategory[]>({
+  queryKey: ['subCategories'],
+  queryFn: () => subCategoryService.getAll(true),
+  staleTime: 5 * 60 * 1000,
+});
 
   // Fetch categories to get category names for display
   const { data: categories = [] } = useQuery({
@@ -179,10 +183,10 @@ export default function PartnersPage() {
   });
 
   // Function to get category name by ID
-  const getCategoryName = (categoryId: number) => {
-    const category = categories.find(cat => cat.id === categoryId);
-    return category ? category.name : `Category ${categoryId}`;
-  };
+ const getCategoryName = (categoryId: number) => {
+  const category = categories.find(cat => cat.id === categoryId);
+  return category ? category.name : `Category ${categoryId}`;
+};
 
   const { 
     register, 
@@ -200,6 +204,8 @@ export default function PartnersPage() {
       cvr: 0,
       businessUnit: 0,
       userId: 0,
+      businessName: '',
+      address:'',
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
     },
   });
@@ -223,6 +229,7 @@ export default function PartnersPage() {
       const formData: PartnerFormData = {
         userId: editingPartner.userId,
         address: editingPartner.address,
+        businessName: editingPartner.businessName,
         businessUnit: editingPartner.businessUnit,
         videoUrl: editingPartner.videoUrl || '',
         logoUrl: editingPartner.logoUrl || '',
@@ -259,6 +266,7 @@ export default function PartnersPage() {
       userId: 0,
       address: '',
       businessUnit: 0,
+      businessName: '',
       videoUrl: '',
       logoUrl: '',
       cvr: 0,
@@ -349,7 +357,7 @@ export default function PartnersPage() {
     let isValid = false;
     
     if (currentStep === 1) {
-      isValid = await trigger(['userId', 'address', 'businessUnit', 'cvr']);
+      isValid = await trigger(['address', 'businessUnit','businessName', 'cvr']);
     } else if (currentStep === 2) {
       isValid = await trigger(['videoUrl', 'logoUrl', 'descriptionShort']);
     } else if (currentStep === 3) {
@@ -423,7 +431,7 @@ export default function PartnersPage() {
 
   const columns: ColumnDef<Partner>[] = [
     { accessorKey: 'id', header: 'ID' },
-    { accessorKey: 'userId', header: 'User ID' },
+    { accessorKey: 'businessName', header: 'Business Name' },
     { accessorKey: 'address', header: 'Address' },
     { accessorKey: 'businessUnit', header: 'Business Unit' },
     { accessorKey: 'cvr', header: 'CVR' },
@@ -471,30 +479,37 @@ export default function PartnersPage() {
 
   const renderStepContent = () => {
     switch (currentStep) {
-      case 1:
+    // In renderStepContent() - update case 1
+case 1:
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-gray-900">Basic Information</h3>
+            
+            {/* Removed User ID field */}
+            
             <div className="grid grid-cols-2 gap-4">
-              <Input 
-                label="User ID" 
-                type="number"
-                error={errors.userId?.message} 
-                {...register('userId', { valueAsNumber: true })} 
-              />
+              <Input label="Business Name" error={errors.businessName?.message} {...register('businessName')} />
               <Input 
                 label="Business Unit" 
                 type="number"
                 error={errors.businessUnit?.message} 
                 {...register('businessUnit', { valueAsNumber: true })} 
               />
+              <Input 
+                label="CVR" 
+                type="number"
+                error={errors.cvr?.message} 
+                {...register('cvr', { valueAsNumber: true })} 
+              />
             </div>
-            <Input label="Address" error={errors.address?.message} {...register('address')} />
-            <Input 
-              label="CVR" 
-              type="number"
-              error={errors.cvr?.message} 
-              {...register('cvr', { valueAsNumber: true })} 
+            
+            {/* Changed Address from Input to TextArea */}
+            <TextArea 
+              label="Address" 
+              error={errors.address?.message} 
+              rows={3}
+              placeholder="Enter full address"
+              {...register('address')} 
             />
           </div>
         );
@@ -610,80 +625,83 @@ export default function PartnersPage() {
         );
       
       case 5:
-        return (
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">Sub Categories</h3>
-            <p className="text-sm text-gray-600">
-              Add one or more sub categories for this partner
-            </p>
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-medium text-gray-900">Sub Categories</h3>
+      <p className="text-sm text-gray-600">
+        Add one or more sub categories for this partner
+      </p>
 
-            {isLoadingSubCategories ? (
-              <div className="text-center py-4">
-                <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                <p className="mt-2 text-gray-600">Loading sub categories...</p>
+      {isLoadingSubCategories ? (
+        <div className="text-center py-4">
+          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+          <p className="mt-2 text-gray-600">Loading sub categories...</p>
+        </div>
+      ) : (
+        <>
+          {fields.map((field, index) => (
+            <div key={field.id} className="flex items-end gap-4 p-4 border border-gray-200 rounded-lg">
+              <div className="flex-1">
+                <Select
+                  label={`Sub Category ${index + 1}`}
+                  error={errors.parSubCatlst?.[index]?.subCategoryId?.message}
+                  {...register(`parSubCatlst.${index}.subCategoryId`, { 
+                    valueAsNumber: true,
+                    required: "Sub Category is required" 
+                  })}
+                >
+                  <option value={0}>Select Sub Category</option>
+                  {subCategories
+                    .filter(subCat => subCat.isActive) // Only show active sub categories
+                    .map(subCat => (
+                      <option key={subCat.id} value={subCat.id}>
+                        {subCat.name} ({getCategoryName(subCat.categoryId)})
+                      </option>
+                    ))
+                  }
+                </Select>
               </div>
-            ) : (
-              <>
-                {fields.map((field, index) => (
-                  <div key={field.id} className="flex items-end gap-4 p-4 border border-gray-200 rounded-lg">
-                    <div className="flex-1">
-                      <Select
-                        label={`Sub Category ${index + 1}`}
-                        error={errors.parSubCatlst?.[index]?.subCategoryId?.message}
-                        {...register(`parSubCatlst.${index}.subCategoryId`, { valueAsNumber: true })}
-                      >
-                        <option value={0}>Select Sub Category</option>
-                        {subCategories
-                          .filter(subCat => subCat.isActive) // Only show active sub categories
-                          .map(subCat => (
-                            <option key={subCat.id} value={subCat.id}>
-                              {subCat.name} ({getCategoryName(subCat.categoryId)})
-                            </option>
-                          ))
-                        }
-                      </Select>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 mb-1">
-                      <input 
-                        type="checkbox" 
-                        id={`isActive-${index}`}
-                        {...register(`parSubCatlst.${index}.isActive`)} 
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                      />
-                      <label htmlFor={`isActive-${index}`} className="text-sm font-medium text-gray-700">
-                        Active
-                      </label>
-                    </div>
+              
+              <div className="flex items-center gap-2 mb-1">
+                <input 
+                  type="checkbox" 
+                  id={`isActive-${index}`}
+                  {...register(`parSubCatlst.${index}.isActive`)} 
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                />
+                <label htmlFor={`isActive-${index}`} className="text-sm font-medium text-gray-700">
+                  Active
+                </label>
+              </div>
 
-                    {fields.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="danger"
-                        onClick={() => removeSubCategoryField(index)}
-                        className="mb-1"
-                      >
-                        Remove
-                      </Button>
-                    )}
-                  </div>
-                ))}
-
+              {fields.length > 1 && (
                 <Button
                   type="button"
-                  variant="secondary"
-                  onClick={addSubCategoryField}
+                  variant="danger"
+                  onClick={() => removeSubCategoryField(index)}
+                  className="mb-1"
                 >
-                  Add Another Sub Category
+                  Remove
                 </Button>
+              )}
+            </div>
+          ))}
 
-                {errors.parSubCatlst && !errors.parSubCatlst.root && (
-                  <p className="text-red-500 text-sm mt-2">{errors.parSubCatlst.message}</p>
-                )}
-              </>
-            )}
-          </div>
-        );
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={addSubCategoryField}
+          >
+            Add Another Sub Category
+          </Button>
+
+          {errors.parSubCatlst && !errors.parSubCatlst.root && (
+            <p className="text-red-500 text-sm mt-2">{errors.parSubCatlst.message}</p>
+          )}
+        </>
+      )}
+    </div>
+  );
       
       default:
         return null;
