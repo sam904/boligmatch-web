@@ -377,7 +377,7 @@ export default function CategoriesPage() {
           {/* Left side: Title */}
           <div>
             <h1 className="text-xl font-bold text-gray-900">{t('admin.categories.title') || "Categories"}</h1>
-            <p className="text-gray-600 text-sm mt-1">{t('admin.categories.subtitle') || "Manage your categories"}</p>
+            <p className="text-gray-600 text-sm mt-1">{t('admin.categories.subtitle') || "Manage all categories"}</p>
           </div>
 
           {/* Right side: Filters, SearchBar and Add Category button */}

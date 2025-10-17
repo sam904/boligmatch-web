@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { partnerService } from '../../../services/partner.service';
+import { subCategoryService } from '../../../services/subCategory.service';
 import DataTable from '../../../components/common/DataTable/DataTable';
 import Pagination from '../../../components/common/Pagination';
 import SearchBar from '../../../components/common/SearchBar';
@@ -10,6 +11,7 @@ import Input from '../../../components/common/Input';
 import Stepper from '../../../components/common/Stepper';
 import TextArea from '../../../components/common/TextArea';
 import Select from '../../../components/common/Select';
+import ImageUpload from '../../../components/common/ImageUpload';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -18,6 +20,47 @@ import { useTranslation } from 'react-i18next';
 import { useDebounce } from '../../../hooks/useDebounce';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Partner } from '../../../types/partner';
+import { categoryService } from '../../../services/category.service';
+
+// Image Preview Modal Component
+function ImagePreviewModal({ imageUrl, isOpen, onClose }: { imageUrl: string; isOpen: boolean; onClose: () => void }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center bg-black/50 z-50 p-4">
+      <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
+        <div className="flex justify-between items-center p-4 border-b">
+          <h3 className="text-lg font-semibold">Image Preview</h3>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div className="p-4 flex justify-center items-center max-h-[70vh] overflow-auto">
+          <img 
+            src={imageUrl} 
+            alt="Preview" 
+            className="max-w-full max-h-full object-contain"
+          />
+        </div>
+        <div className="p-4 border-t text-center">
+          <a 
+            href={imageUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-800 underline"
+          >
+            Open original image in new tab
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // Fix the schema - explicitly set isActive as boolean
 const partnerSubCategorySchema = z.object({
@@ -87,14 +130,6 @@ interface PartnerWithSubCategories extends Partner {
   }>;
 }
 
-// Mock data for sub categories - replace with actual API call
-const mockSubCategories = [
-  { id: 1, name: 'Technology', categoryId: 1, categoryName: 'IT' },
-  { id: 2, name: 'Marketing', categoryId: 2, categoryName: 'Business' },
-  { id: 3, name: 'Consulting', categoryId: 2, categoryName: 'Business' },
-  { id: 4, name: 'Design', categoryId: 3, categoryName: 'Creative' },
-];
-
 export default function PartnersPage() {
   const { t } = useTranslation();
   const [editingPartner, setEditingPartner] = useState<PartnerWithSubCategories | null>(null);
@@ -104,6 +139,10 @@ export default function PartnersPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [previewImage, setPreviewImage] = useState<{ url: string; isOpen: boolean }>({
+    url: '',
+    isOpen: false
+  });
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
@@ -122,7 +161,28 @@ export default function PartnersPage() {
       pageSize,
       searchTerm: debouncedSearchTerm || undefined,
     }),
+    enabled: !showForm, // Don't fetch data when form is open
   });
+
+  // Fetch sub categories from API
+  const { data: subCategories = [], isLoading: isLoadingSubCategories } = useQuery({
+    queryKey: ['subCategories'],
+    queryFn: () => subCategoryService.getAll(true), // include inactive if needed
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Fetch categories to get category names for display
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => categoryService.getAll(true),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Function to get category name by ID
+  const getCategoryName = (categoryId: number) => {
+    const category = categories.find(cat => cat.id === categoryId);
+    return category ? category.name : `Category ${categoryId}`;
+  };
 
   const { 
     register, 
@@ -131,6 +191,8 @@ export default function PartnersPage() {
     reset, 
     trigger,
     control,
+    setValue,
+    watch,
   } = useForm<PartnerFormData>({
     resolver: zodResolver(partnerSchema as any), // Use any to bypass the type issues
     defaultValues: {
@@ -141,6 +203,14 @@ export default function PartnersPage() {
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
     },
   });
+
+  // Watch image URLs for preview
+  const logoUrlValue = watch('logoUrl');
+  const imageUrl1Value = watch('imageUrl1');
+  const imageUrl2Value = watch('imageUrl2');
+  const imageUrl3Value = watch('imageUrl3');
+  const imageUrl4Value = watch('imageUrl4');
+  const imageUrl5Value = watch('imageUrl5');
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -342,6 +412,10 @@ export default function PartnersPage() {
     }
   };
 
+  const handleImagePreview = (url: string) => {
+    setPreviewImage({ url, isOpen: true });
+  };
+
   // Map the API response based on your structure
   const partners = paginatedData?.output?.result || [];
   const totalItems = paginatedData?.output?.rowCount || 0;
@@ -430,7 +504,17 @@ export default function PartnersPage() {
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-gray-900">Media & Description</h3>
             <Input label="Video URL" error={errors.videoUrl?.message} {...register('videoUrl')} />
-            <Input label="Logo URL" error={errors.logoUrl?.message} {...register('logoUrl')} />
+            
+            {/* Logo URL with ImageUpload */}
+            <ImageUpload
+              label="Logo URL"
+              value={logoUrlValue}
+              onChange={(url) => setValue('logoUrl', url)}
+              onPreview={handleImagePreview}
+              folder="partners/logos"
+              error={errors.logoUrl?.message}
+            />
+            
             <TextArea 
               label="Short Description" 
               error={errors.descriptionShort?.message} 
@@ -459,11 +543,56 @@ export default function PartnersPage() {
             
             <div className="space-y-3">
               <h4 className="font-medium text-gray-700">Image URLs</h4>
-              <Input label="Image URL 1" error={errors.imageUrl1?.message} {...register('imageUrl1')} />
-              <Input label="Image URL 2" error={errors.imageUrl2?.message} {...register('imageUrl2')} />
-              <Input label="Image URL 3" error={errors.imageUrl3?.message} {...register('imageUrl3')} />
-              <Input label="Image URL 4" error={errors.imageUrl4?.message} {...register('imageUrl4')} />
-              <Input label="Image URL 5" error={errors.imageUrl5?.message} {...register('imageUrl5')} />
+              
+              {/* Image URL 1 with ImageUpload */}
+              <ImageUpload
+                label="Image URL 1"
+                value={imageUrl1Value}
+                onChange={(url) => setValue('imageUrl1', url)}
+                onPreview={handleImagePreview}
+                folder="partners/images"
+                error={errors.imageUrl1?.message}
+              />
+
+              {/* Image URL 2 with ImageUpload */}
+              <ImageUpload
+                label="Image URL 2"
+                value={imageUrl2Value}
+                onChange={(url) => setValue('imageUrl2', url)}
+                onPreview={handleImagePreview}
+                folder="partners/images"
+                error={errors.imageUrl2?.message}
+              />
+
+              {/* Image URL 3 with ImageUpload */}
+              <ImageUpload
+                label="Image URL 3"
+                value={imageUrl3Value}
+                onChange={(url) => setValue('imageUrl3', url)}
+                onPreview={handleImagePreview}
+                folder="partners/images"
+                error={errors.imageUrl3?.message}
+              />
+
+              {/* Image URL 4 with ImageUpload */}
+              <ImageUpload
+                label="Image URL 4"
+                value={imageUrl4Value}
+                onChange={(url) => setValue('imageUrl4', url)}
+                onPreview={handleImagePreview}
+                folder="partners/images"
+                error={errors.imageUrl4?.message}
+              />
+
+              {/* Image URL 5 with ImageUpload */}
+              <ImageUpload
+                label="Image URL 5"
+                value={imageUrl5Value}
+                onChange={(url) => setValue('imageUrl5', url)}
+                onPreview={handleImagePreview}
+                folder="partners/images"
+                error={errors.imageUrl5?.message}
+              />
             </div>
 
             <div className="flex items-center gap-2 pt-4">
@@ -488,58 +617,70 @@ export default function PartnersPage() {
               Add one or more sub categories for this partner
             </p>
 
-            {fields.map((field, index) => (
-              <div key={field.id} className="flex items-end gap-4 p-4 border border-gray-200 rounded-lg">
-                <div className="flex-1">
-                  <Select
-                    label={`Sub Category ${index + 1}`}
-                    error={errors.parSubCatlst?.[index]?.subCategoryId?.message}
-                    {...register(`parSubCatlst.${index}.subCategoryId`, { valueAsNumber: true })}
-                  >
-                    <option value={0}>Select Sub Category</option>
-                    {mockSubCategories.map(subCat => (
-                      <option key={subCat.id} value={subCat.id}>
-                        {subCat.name} ({subCat.categoryName})
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-                
-                <div className="flex items-center gap-2 mb-1">
-                  <input 
-                    type="checkbox" 
-                    id={`isActive-${index}`}
-                    {...register(`parSubCatlst.${index}.isActive`)} 
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                  />
-                  <label htmlFor={`isActive-${index}`} className="text-sm font-medium text-gray-700">
-                    Active
-                  </label>
-                </div>
-
-                {fields.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="danger"
-                    onClick={() => removeSubCategoryField(index)}
-                    className="mb-1"
-                  >
-                    Remove
-                  </Button>
-                )}
+            {isLoadingSubCategories ? (
+              <div className="text-center py-4">
+                <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                <p className="mt-2 text-gray-600">Loading sub categories...</p>
               </div>
-            ))}
+            ) : (
+              <>
+                {fields.map((field, index) => (
+                  <div key={field.id} className="flex items-end gap-4 p-4 border border-gray-200 rounded-lg">
+                    <div className="flex-1">
+                      <Select
+                        label={`Sub Category ${index + 1}`}
+                        error={errors.parSubCatlst?.[index]?.subCategoryId?.message}
+                        {...register(`parSubCatlst.${index}.subCategoryId`, { valueAsNumber: true })}
+                      >
+                        <option value={0}>Select Sub Category</option>
+                        {subCategories
+                          .filter(subCat => subCat.isActive) // Only show active sub categories
+                          .map(subCat => (
+                            <option key={subCat.id} value={subCat.id}>
+                              {subCat.name} ({getCategoryName(subCat.categoryId)})
+                            </option>
+                          ))
+                        }
+                      </Select>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 mb-1">
+                      <input 
+                        type="checkbox" 
+                        id={`isActive-${index}`}
+                        {...register(`parSubCatlst.${index}.isActive`)} 
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                      />
+                      <label htmlFor={`isActive-${index}`} className="text-sm font-medium text-gray-700">
+                        Active
+                      </label>
+                    </div>
 
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={addSubCategoryField}
-            >
-              Add Another Sub Category
-            </Button>
+                    {fields.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="danger"
+                        onClick={() => removeSubCategoryField(index)}
+                        className="mb-1"
+                      >
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                ))}
 
-            {errors.parSubCatlst && !errors.parSubCatlst.root && (
-              <p className="text-red-500 text-sm mt-2">{errors.parSubCatlst.message}</p>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={addSubCategoryField}
+                >
+                  Add Another Sub Category
+                </Button>
+
+                {errors.parSubCatlst && !errors.parSubCatlst.root && (
+                  <p className="text-red-500 text-sm mt-2">{errors.parSubCatlst.message}</p>
+                )}
+              </>
             )}
           </div>
         );
@@ -551,33 +692,37 @@ export default function PartnersPage() {
 
   return (
     <div className="p-3">
-      <div className="bg-white rounded-lg shadow-lg p-2 mb-2">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">Partners</h1>
-            <p className="text-gray-600 text-sm mt-1">Manage your partners</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="w-64">
-              <SearchBar
-                searchTerm={searchTerm}
-                onSearchChange={handleSearchChange}
-              />
+      {/* Header Section - Only show when form is NOT open */}
+      {!showForm && (
+        <div className="bg-white rounded-lg shadow-lg p-2 mb-2">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">{t('admin.partners.title') || "Partners"}</h1>
+              <p className="text-gray-600 text-sm mt-1">{t('admin.partners.subtitle') || "Manage your partners"}</p>
             </div>
-            <button
-              onClick={handleAddPartner}
-              disabled={showForm}
-              className="flex items-center gap-2 px-4 py-2 text-sm text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:opacity-90 bg-brand-gradient disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              {t('admin.partners.addPartner')}
-            </button>
+            <div className="flex items-center gap-4">
+              <div className="w-64">
+                <SearchBar
+                  searchTerm={searchTerm}
+                  onSearchChange={handleSearchChange}
+                />
+              </div>
+              <button
+                onClick={handleAddPartner}
+                disabled={showForm}
+                className="flex items-center gap-2 px-4 py-2 text-sm text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:opacity-90 bg-brand-gradient disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                {t('admin.partners.addPartner')}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
+      {/* Form Section - Only show when form is open */}
       {showForm && (
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
@@ -592,7 +737,7 @@ export default function PartnersPage() {
           <Stepper currentStep={currentStep} steps={steps} className="mb-8" />
           
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="max-h-96 overflow-y-auto px-1 mb-6">
+            <div className="px-1 mb-6">
               {renderStepContent()}
             </div>
             
@@ -633,26 +778,38 @@ export default function PartnersPage() {
         </div>
       )}
 
-      {isLoading ? (
-        <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--color-primary)' }}></div>
-          <p className="mt-4 text-gray-600">{t('common.loading')}</p>
-        </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <DataTable data={partners} columns={columns} />
-          <div className="px-4 pb-4">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              pageSize={pageSize}
-              onPageChange={handlePageChange}
-              onPageSizeChange={handlePageSizeChange}
-            />
-          </div>
-        </div>
+      {/* Data Table Section - Only show when form is NOT open */}
+      {!showForm && (
+        <>
+          {isLoading ? (
+            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--color-primary)' }}></div>
+              <p className="mt-4 text-gray-600">{t('common.loading')}</p>
+            </div>
+          ) : (
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <DataTable data={partners} columns={columns} />
+              <div className="px-4 pb-4">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  pageSize={pageSize}
+                  onPageChange={handlePageChange}
+                  onPageSizeChange={handlePageSizeChange}
+                />
+              </div>
+            </div>
+          )}
+        </>
       )}
+
+      {/* Image Preview Modal */}
+      <ImagePreviewModal
+        imageUrl={previewImage.url}
+        isOpen={previewImage.isOpen}
+        onClose={() => setPreviewImage({ url: '', isOpen: false })}
+      />
     </div>
   );
 }
