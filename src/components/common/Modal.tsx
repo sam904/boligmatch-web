@@ -12,11 +12,11 @@ type Props = {
 export default function Modal({ open, title, onClose, children }: Props) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div className="bg-white rounded shadow-lg w-full max-w-lg p-6">
+    <div className="fixed inset-0 flex items-center justify-center bg-blackz-50">
+      <div className="w-full max-w-lg">
         <div className="flex justify-between items-center mb-4">
           {title && <h2 className="text-lg font-semibold">{title}</h2>}
-          <Button variant="secondary" onClick={onClose}>✕</Button>
+          {/* <Button variant="secondary" onClick={onClose}>✕</Button> */}
         </div>
         <div>{children}</div>
       </div>
