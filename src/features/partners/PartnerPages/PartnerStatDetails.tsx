@@ -1,4 +1,3 @@
-import React from "react";
 import partnerRingImg from "/src/assets/userImages/partnerringImg.png";
 import sampleImg from "/src/assets/userImages/footerLogo.svg";
 
