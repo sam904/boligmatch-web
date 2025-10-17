@@ -418,23 +418,25 @@ export default function SubCategoriesPage() {
       header: t('common.actions') || "Actions",
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            icon={FaEdit}
-            title={t('common.edit') || "Edit subcategory"}
+          <button
+            type="button"
             onClick={() => {
               setEditingSubCategory(row.original);
               setIsModalOpen(true);
             }}
-          />
-          <Button
-            variant="ghost"
-            size="sm"
-            icon={FaTrash}
-            title={t('common.delete') || "Delete subcategory"}
+            className="p-2 text-gray-600 transition-colors"
+            title={t('common.edit') || "Edit user"}
+          >
+            <FaEdit className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
             onClick={() => handleDeleteSubCategory(row.original)}
-          />
+            className="p-2 text-red-600 transition-colors"
+            title={t('common.delete') || "Delete user"}
+          >
+            <FaTrash className="w-4 h-4" />
+          </button>
         </div>
       ),
     },
