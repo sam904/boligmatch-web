@@ -1,5 +1,5 @@
 // src/features/admin/categories/CategoriesPage.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react'; // Add useMemo
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { categoryService } from '../../../services/category.service';
 import DataTable from '../../../components/common/DataTable/DataTable';
@@ -84,6 +84,7 @@ export default function CategoriesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('active'); // Add status filter state
   const [previewImage, setPreviewImage] = useState<{ url: string; isOpen: boolean }>({
     url: '',
     isOpen: false
@@ -91,6 +92,7 @@ export default function CategoriesPage() {
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
+  // Fetch all categories without filtering
   const { data: paginatedData, isLoading } = useQuery({
     queryKey: ['categories', currentPage, pageSize, debouncedSearchTerm],
     queryFn: () => categoryService.getPaginated({
@@ -232,6 +234,11 @@ export default function CategoriesPage() {
     setCurrentPage(1);
   };
 
+  const handleStatusFilterChange = (filter: 'all' | 'active' | 'inactive') => {
+    setStatusFilter(filter);
+    setCurrentPage(1); // Reset to first page when filter changes
+  };
+
   const handleDeleteCategory = (category: Category) => {
     if (!category.id) return;
     
@@ -248,9 +255,34 @@ export default function CategoriesPage() {
     clearErrors();
   };
 
-  const categories = paginatedData?.items || [];
-  const totalItems = paginatedData?.total || 0;
+  // Get all categories from API response
+  const allCategories = paginatedData?.items || [];
+
+  // Apply client-side filtering based on status filter
+  const filteredCategories = useMemo(() => {
+    let filtered = allCategories;
+
+    // Apply status filter
+    if (statusFilter === 'active') {
+      filtered = filtered.filter(category => category.isActive === true);
+    } else if (statusFilter === 'inactive') {
+      filtered = filtered.filter(category => category.isActive === false);
+    }
+    // If statusFilter is 'all', no filtering needed
+
+    return filtered;
+  }, [allCategories, statusFilter]);
+
+  // For pagination, we need to handle the filtered data
+  const totalItems = filteredCategories.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+
+  // Get current page items
+  const currentPageItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredCategories.slice(startIndex, endIndex);
+  }, [filteredCategories, currentPage, pageSize]);
 
   const columns: ColumnDef<Category>[] = [
     { 
@@ -348,8 +380,21 @@ export default function CategoriesPage() {
             <p className="text-gray-600 text-sm mt-1">{t('admin.categories.subtitle') || "Manage your categories"}</p>
           </div>
 
-          {/* Right side: SearchBar and Add Category button */}
+          {/* Right side: Filters, SearchBar and Add Category button */}
           <div className="flex items-center gap-4">
+            {/* Status Filter Dropdown */}
+            <div className="w-32">
+              <select 
+                value={statusFilter}
+                onChange={(e) => handleStatusFilterChange(e.target.value as 'all' | 'active' | 'inactive')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="all">All</option>
+              </select>
+            </div>
+
             <div className="w-64">
               <SearchBar
                 searchTerm={searchTerm}
@@ -379,7 +424,7 @@ export default function CategoriesPage() {
       ) : (
         /* Data Table */
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <DataTable data={categories} columns={columns} />
+          <DataTable data={currentPageItems} columns={columns} />
           <div className="px-4 pb-4">
             <Pagination
               currentPage={currentPage}
