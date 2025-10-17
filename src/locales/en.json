@@ -42,7 +42,6 @@
     "subcategories": "Sub Categories",
     "partners": "Partners",
     "users": "Users",
-    "partnerSubcategories": "Partner SubCategories",
     "dashboard": "Dashboard"
   },
   "home": {
@@ -128,24 +127,6 @@
       "mobile": "Mobile",
       "role": "Role",
       "id": "ID"
-    },
-    "partnerSubcategories": {
-      "title": "Partner SubCategories",
-      "addMapping": "Add Mapping",
-      "editMapping": "Edit Partner SubCategory",
-      "partner": "Partner",
-      "category": "Category",
-      "subcategory": "SubCategory",
-      "selectCategory": "Select Category",
-      "selectSubcategory": "Select SubCategory",
-      "id": "ID",
-      "deleteConfirm": "Delete this relationship?",
-      "createSuccess": "Partner SubCategory created successfully",
-      "updateSuccess": "Partner SubCategory updated successfully",
-      "deleteSuccess": "Partner SubCategory deleted successfully",
-      "createError": "Failed to create partner subcategory",
-      "updateError": "Failed to update partner subcategory",
-      "deleteError": "Failed to delete partner subcategory"
     }
   },
   "validation": {

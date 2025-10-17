@@ -12,7 +12,6 @@ import CategoriesPage from '../features/admin/categories/CategoriesPage';
 import SubCategoriesPage from '../features/admin/subcategories/SubCategoriesPage';
 import PartnersPage from '../features/admin/partners/PartnersPage';
 import UsersListPage from '../features/admin/users/UsersListPage';
-import PartnerSubCategoriesPage from '../features/admin/partner-subcategories/PartnerSubCategoriesPage';
 
 const router = createBrowserRouter([
   {
@@ -39,7 +38,6 @@ const router = createBrowserRouter([
       { path: 'subcategories', element: <SubCategoriesPage /> },
       { path: 'partners', element: <PartnersPage /> },
       { path: 'users', element: <UsersListPage /> },
-      { path: 'partner-subcategories', element: <PartnerSubCategoriesPage /> },
     ],
   },
 ]);

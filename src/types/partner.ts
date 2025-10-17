@@ -2,28 +2,57 @@
 
 export interface Partner {
   id: number;
-  name: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  city?: string;
-  zipCode?: string;
-  imageUrl?: string;
+  userId: number;
+  address: string;
+  businessUnit: number;
+  videoUrl?: string;
+  logoUrl?: string;
+  cvr: number;
+  descriptionShort?: string;
+  textField1?: string;
+  textField2?: string;
+  textField3?: string;
+  textField4?: string;
+  textField5?: string;
+  imageUrl1?: string;
+  imageUrl2?: string;
+  imageUrl3?: string;
+  imageUrl4?: string;
+  imageUrl5?: string;
   isActive: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  createdBy: number;
+  createdDate: string;
+  modifiedBy?: number | null;
+  modifiedDate?: string | null;
 }
 
 export interface PartnerDto {
   id?: number;
-  name: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  city?: string;
-  zipCode?: string;
-  imageUrl?: string;
+  userId: number;
+  address: string;
+  businessUnit: number;
+  videoUrl?: string;
+  logoUrl?: string;
+  cvr: number;
+  descriptionShort?: string;
+  textField1?: string;
+  textField2?: string;
+  textField3?: string;
+  textField4?: string;
+  textField5?: string;
+  imageUrl1?: string;
+  imageUrl2?: string;
+  imageUrl3?: string;
+  imageUrl4?: string;
+  imageUrl5?: string;
   isActive: boolean;
+  createdBy?: number;
+  parSubCatlst?: Array<{
+    id?: number;
+    patnerId?: number;
+    subCategoryId: number;
+    isActive: boolean;
+  }>;
 }
 
 export interface PartnerSubCategory {
@@ -42,4 +71,11 @@ export interface PartnerSubCategoryDto {
   partnerId: number;
   subCategoryId: number;
   isActive: boolean;
+}
+
+export interface PaginatedPartnersResponse {
+  output: {
+    result: Partner[];
+    rowCount: number;
+  };
 }
