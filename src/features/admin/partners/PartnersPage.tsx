@@ -14,7 +14,7 @@ import Select from '../../../components/common/Select';
 import ImageUpload from '../../../components/common/ImageUpload';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { optional, z } from 'zod';
+import { z } from 'zod';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from '../../../hooks/useDebounce';
