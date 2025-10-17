@@ -1,26 +1,28 @@
 // src/services/partner.service.ts
 import { http } from './http.service';
-import type { Partner, PartnerDto } from '../types/partner';
-import type { PaginationRequest, PaginatedResponse } from '../types/category';
+import type { Partner, PartnerDto, PaginatedPartnersResponse } from '../types/partner';
 
 export const partnerService = {
   getAll: async (includeInActive = false) => {
-    const response = await http.get<{ output: { result: Partner[] } }>(`/Partners/getAllPartnerss?includeInActive=${includeInActive}`);
+    const response = await http.get<{ output: { result: Partner[] } }>(`/Partner/getAllPartners?includeInActive=${includeInActive}`);
     return response.output?.result || [];
   },
   
   getById: (id: number) => 
-    http.get<Partner>(`/Partners/getPartnersById/${id}`),
+    http.get<Partner>(`/Partner/getPartnerById/${id}`),
   
-  getPaginated: (params: PaginationRequest) => 
-    http.post<PaginatedResponse<Partner>>('/Partners/getPaginatedPartnerss', params),
+  getPaginated: (query: {
+    page: number;
+    pageSize: number;
+    searchTerm?: string;
+  }) => http.post<PaginatedPartnersResponse>('/Partner/getPaginatedPartners', query),
   
   create: (data: PartnerDto) => 
-    http.post<Partner>('/Partners/addPartners', data),
+    http.post<Partner>('/Partner/addPartner', data),
   
   update: (data: PartnerDto) => 
-    http.put<Partner>('/Partners/updatePartners', data),
+    http.put<Partner>('/Partner/updatePartner', data),
   
   delete: (id: number) => 
-    http.delete<void>(`/Partners/DeletePartners/${id}`),
+    http.delete<void>(`/Partner/DeletePartner/${id}`),
 };
