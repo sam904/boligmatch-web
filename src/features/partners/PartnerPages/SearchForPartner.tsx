@@ -1,7 +1,7 @@
 import parentStatisticsImg from "/src/assets/userImages/parentStasts.png";
 import PartnerHeader from "./PartnerHeader";
 import Statistik from "/src/assets/userImages/Statistik.svg";
-import MinProfil from "/src/assets/userImages/MinProfil.svg";
+// import MinProfil from "/src/assets/userImages/MinProfil.svg";
 import Partnere from "/src/assets/userImages/search-normal.svg";
 import dashboard1 from "/src/assets/userImages/dashboard1.png";
 import dashboard2 from "/src/assets/userImages/dashboard1.png";
@@ -27,10 +27,10 @@ function SearchForPartner() {
         <div className="flex flex-col">
           <div className="flex-1 flex items-center px-60 py-6">
             <div className="text-white">
-              <h1 className="text-5xl md:text-5xl font-[800] plus-jakarta-sans tracking-tight leading-tight mb-4">
+              <h1 className="text-5xl md:text-5xl font-[800]  tracking-tight leading-tight mb-4">
                 Partner Dashboard
               </h1>
-              <h2 className="text-3xl md:text-4xl font-[500] plus-jakarta-sans tracking-tight">
+              <h2 className="text-3xl md:text-4xl font-[500]  tracking-tight">
                 Kabel-specialisten
               </h2>
             </div>
@@ -41,16 +41,16 @@ function SearchForPartner() {
                 <div className="h-[29px] w-[29px] flex items-center justify-center">
                   <img src={Statistik} alt="" />
                 </div>
-                <span className="text-[20px] font-medium plus-jakarta-sans">
+                <span className="text-[20px] font-medium ">
                   Statistik
                 </span>
               </button>
 
               <button className="flex items-center space-x-3 px-12 py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
                 <div className="h-[29px] w-[29px] flex items-center justify-center">
-                  <img src={MinProfil} alt="" />
+                  {/* <img src={MinProfil} alt="" /> */}
                 </div>
-                <span className="text-[20px] font-medium plus-jakarta-sans">
+                <span className="text-[20px] font-medium ">
                   Min profil
                 </span>
               </button>
@@ -59,7 +59,7 @@ function SearchForPartner() {
                 <div className="h-[29px] w-[29px] flex items-center justify-center">
                   <img src={Partnere} alt=""  />
                 </div>
-                <span className="text-[20px] font-medium plus-jakarta-sans">
+                <span className="text-[20px] font-medium ">
                   Partnere
                 </span>
               </button>

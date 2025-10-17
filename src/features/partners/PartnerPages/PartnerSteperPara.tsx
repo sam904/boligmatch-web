@@ -39,7 +39,7 @@ function ParentSteperPara() {
       <div className="flex items-start justify-center px-4 sm:px-6 py-8 sm:py-12 md:py-14">
         <div className="max-w-6xl mx-auto text-center">
           <div className="space-y-0">
-            <p className="text-white text-[16px] sm:text-[17px] md:text-[18px] leading-relaxed font-[300] plus-jakarta-sans tracking-tight">
+            <p className="text-white text-[16px] sm:text-[17px] md:text-[18px] leading-relaxed font-[300]  tracking-tight">
               Velkommen til Boligmatch+ partnerskaber. Vi er godt i gang med at
               skabe et netværk af dygtige og troværdige leverandører til
               hjemmet, så boliginteresserede nemt og trygt kan søge efter
@@ -51,7 +51,7 @@ function ParentSteperPara() {
               én eller flere af vores partnere fremfor konkurrerende
               virksomheder.
             </p>
-            <p className="text-white text-[16px] sm:text-[17px] md:text-[18px] leading-relaxed font-[300] plus-jakarta-sans mt-4 tracking-tight">
+            <p className="text-white text-[16px] sm:text-[17px] md:text-[18px] leading-relaxed font-[300]  mt-4 tracking-tight">
               Vi tror på, at et stærkt samarbejde skal gå begge veje, hvor vi
               fungerer som hinandens ambassadører og støtter hinanden i at skabe
               værdi. Som partner hos Boligmatch får I adgang til en række
@@ -64,7 +64,7 @@ function ParentSteperPara() {
       </div>
       <div className="bg-[#053628] min-h-screen px-4 sm:px-6 py-8 sm:py-10">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 md:mb-16 plus-jakarta-sans">
+          <h2 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 md:mb-16 ">
             Hvilke fordele får du som Boligmatch+ partner?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
@@ -87,10 +87,10 @@ function ParentSteperPara() {
                     className="h-[60px] w-[72px] sm:h-[70px] sm:w-[84px] md:h-[82px] md:w-[98px]"
                   />
                 </div>
-                <h3 className="text-white text-lg sm:text-xl font-bold mb-2 sm:mb-3 plus-jakarta-sans text-center flex-shrink-0">
+                <h3 className="text-white text-lg sm:text-xl font-bold mb-2 sm:mb-3  text-center flex-shrink-0">
                   {benefit.title}
                 </h3>
-                <p className="text-white text-xs sm:text-sm leading-relaxed plus-jakarta-sans text-center flex-grow">
+                <p className="text-white text-xs sm:text-sm leading-relaxed  text-center flex-grow">
                   {benefit.description}
                 </p>
               </div>
