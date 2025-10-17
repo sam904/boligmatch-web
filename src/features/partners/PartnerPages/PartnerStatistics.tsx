@@ -20,7 +20,7 @@ function ParentStatistics() {
         <PartnerHeader />
 
         <div className="flex flex-col">
-          <div className="flex-1 flex items-center px-60 py-6">
+          <div className="flex-1 flex items-center absolute top-42 left-30  px-12 py-6">
             <div className="text-white">
               <h1 className="text-5xl md:text-5xl font-[800] plus-jakarta-sans tracking-tight leading-tight mb-4">
                 Partner Dashboard
