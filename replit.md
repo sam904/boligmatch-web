@@ -55,10 +55,6 @@ src/
 4. **Users List**
    - Display users with their roles
    - View user information
-   
-5. **Partner SubCategories**
-   - Manage partner-subcategory relationships
-   - Cascading selection (Category → SubCategory)
 
 ### Internationalization (i18n)
 - Full English and Danish language support
