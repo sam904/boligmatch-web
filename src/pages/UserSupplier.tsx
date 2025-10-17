@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import userLogo from "/src/assets/userImages/userLogo.png";
+// import userLogo from "/src/assets/userImages/userLogo.png";
 import userDashboard from "/src/assets/userImages/user-supplier.png";
-import userHeader from "/src/assets/userImages/userHeader.png";
-import userHeaderHamburger from "/src/assets/userImages/userHeaderHamburger.png";
+// import userHeader from "/src/assets/userImages/userHeader.png";
+// import userHeaderHamburger from "/src/assets/userImages/userHeaderHamburger.png";
 
 // Category images
 import Elektriker from "../assets/userSupplier/Elektriker.png";
@@ -49,6 +49,7 @@ const ServiceCard: React.FC<Service> = ({ icon, title, description }) => (
 
 const UserSupplier = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  console.log("isScrolled", isScrolled);
   const [active, setActive] = useState("Elektriker");
 
   const categories: Category[] = [

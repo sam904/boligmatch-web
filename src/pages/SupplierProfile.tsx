@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import userLogo from "/src/assets/userImages/userLogo.png";
+// import userLogo from "/src/assets/userImages/userLogo.png";
 import supplierProfile from "../assets/supplierProfile/suppliier-profile-hero.png";
-import userHeader from "/src/assets/userImages/userHeader.png";
-import userHeaderHamburger from "/src/assets/userImages/userHeaderHamburger.png";
+// import userHeader from "/src/assets/userImages/userHeader.png";
+// import userHeaderHamburger from "/src/assets/userImages/userHeaderHamburger.png";
 import heartIcon from "/src/assets/userImages/Lag_1.svg";
 import share from "../assets/supplierProfile/share.png";
 import chat from "../assets/supplierProfile/chat.png";
-import { Star, MapPin, Wrench, Info, Users } from "lucide-react";
+import { Star, MapPin, Info, Users } from "lucide-react";
 import UserHeader from "../features/users/UserPages/UserHeader";
 
 const SupplierProfile = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  console.log("isScrolled-->", isScrolled);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);

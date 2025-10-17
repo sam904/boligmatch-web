@@ -20,7 +20,7 @@ import PartnerDashboard from "../features/partners/PartnerDashboard";
 import ParentStatistics from "../features/partners/PartnerPages/PartnerStatistics";
 import PartnerProfileShortcut from "../features/partners/PartnerPages/PartnerProfileShortcut";
 import SearchForPartner from "../features/partners/PartnerPages/SearchForPartner";
-import UserLayout from "../components/layout/UserLayout";
+// import UserLayout from "../components/layout/UserLayout";
 import UserSupplier from "../pages/UserSupplier";
 import SupplierProfile from "../pages/SupplierProfile";
 

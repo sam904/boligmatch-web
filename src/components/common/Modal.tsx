@@ -1,6 +1,6 @@
 // src/components/common/Modal.tsx
 import type { ReactNode } from 'react';
-import Button from './Button';
+// import Button from './Button';
 
 type Props = {
   open: boolean;
@@ -9,7 +9,7 @@ type Props = {
   children: ReactNode;
 };
 
-export default function Modal({ open, title, onClose, children }: Props) {
+export default function Modal({ open, title, children }: Props) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-blackz-50">

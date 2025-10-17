@@ -1,4 +1,3 @@
-import React from "react";
 import parentStatisticsImg from "/src/assets/userImages/parentStasts.png";
 import PartnerHeader from "./PartnerHeader";
 import Statistik from "/src/assets/userImages/Statistik.svg";

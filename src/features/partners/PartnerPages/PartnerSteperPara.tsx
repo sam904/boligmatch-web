@@ -1,4 +1,3 @@
-import React from "react";
 import partnerCartImg from "/src/assets/userImages/partnerCardImg.svg";
 import sampleImg from "/src/assets/userImages/footerLogo.svg";
 
@@ -37,10 +36,10 @@ function ParentSteperPara() {
   ];
   return (
     <div className="bg-[#053628]">
-      <div className="flex items-start justify-center px-6 py-14">
+      <div className="flex items-start justify-center px-4 sm:px-6 py-8 sm:py-12 md:py-14">
         <div className="max-w-6xl mx-auto text-center">
           <div className="space-y-0">
-            <p className="text-white text-[18px] leading-relaxed font-[300] plus-jakarta-sans tracking-tight">
+            <p className="text-white text-[16px] sm:text-[17px] md:text-[18px] leading-relaxed font-[300] plus-jakarta-sans tracking-tight">
               Velkommen til Boligmatch+ partnerskaber. Vi er godt i gang med at
               skabe et netværk af dygtige og troværdige leverandører til
               hjemmet, så boliginteresserede nemt og trygt kan søge efter
@@ -52,7 +51,7 @@ function ParentSteperPara() {
               én eller flere af vores partnere fremfor konkurrerende
               virksomheder.
             </p>
-            <p className="text-white text-[18px] leading-relaxed font-[300] plus-jakarta-sans mt-4 tracking-tight ">
+            <p className="text-white text-[16px] sm:text-[17px] md:text-[18px] leading-relaxed font-[300] plus-jakarta-sans mt-4 tracking-tight">
               Vi tror på, at et stærkt samarbejde skal gå begge veje, hvor vi
               fungerer som hinandens ambassadører og støtter hinanden i at skabe
               værdi. Som partner hos Boligmatch får I adgang til en række
@@ -63,36 +62,35 @@ function ParentSteperPara() {
           </div>
         </div>
       </div>
-      <div className="bg-[#053628] min-h-screen px-6 py-10">
+      <div className="bg-[#053628] min-h-screen px-4 sm:px-6 py-8 sm:py-10">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-white text-4xl md:text-5xl font-bold text-center mb-16 plus-jakarta-sans">
+          <h2 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 md:mb-16 plus-jakarta-sans">
             Hvilke fordele får du som Boligmatch+ partner?
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {benefits.map((benefit, index) => (
               <div
                 key={index}
-                className="p-6 transition-colors duration-300"
+                className="p-4 sm:p-5 md:p-6 transition-colors duration-300 w-full h-full flex flex-col"
                 style={{
                   background:
                     "linear-gradient(155.76deg, #041412 2.48%, #013425 97.87%)",
-                  width: "330px",
-                  height: "428px",
                   borderRadius: "10px",
                   opacity: 1,
+                  minHeight: "350px",
                 }}
               >
-                <div className="mb-4 flex justify-center">
+                <div className="mb-3 sm:mb-4 flex justify-center flex-shrink-0">
                   <img
                     src={partnerCartImg}
                     alt=""
-                    className="h-[82px] w-[98px]"
+                    className="h-[60px] w-[72px] sm:h-[70px] sm:w-[84px] md:h-[82px] md:w-[98px]"
                   />
                 </div>
-                <h3 className="text-white text-xl font-bold mb-3 plus-jakarta-sans text-center plus-jakarta-sans">
+                <h3 className="text-white text-lg sm:text-xl font-bold mb-2 sm:mb-3 plus-jakarta-sans text-center flex-shrink-0">
                   {benefit.title}
                 </h3>
-                <p className="text-white text-sm leading-relaxed plus-jakarta-sans text-center plus-jakarta-sans">
+                <p className="text-white text-xs sm:text-sm leading-relaxed plus-jakarta-sans text-center flex-grow">
                   {benefit.description}
                 </p>
               </div>
@@ -100,14 +98,17 @@ function ParentSteperPara() {
           </div>
         </div>
       </div>
-      <div className="bg-[#043428] flex flex-col justify-center items-center py-22 space-y-2">
+      <div className="bg-[#043428] flex flex-col justify-center items-center py-8 sm:py-12 md:py-16 lg:py-22 space-y-2 px-4">
         <div className="text-center">
-          <div className="mb-4">
-            <img src={sampleImg} alt="" />
+          <div className="mb-3 sm:mb-4">
+            <img src={sampleImg} alt="Boligmatch Logo" className="h-auto w-auto max-w-[120px] sm:max-w-[150px] md:max-w-none" />
           </div>
         </div>
-        <p className="text-white text-sm">
-          Teningve 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
+        <p className="text-white text-xs sm:text-sm text-center leading-relaxed">
+          Teningve 7 2610 Rødovre<br className="sm:hidden" />
+          <span className="hidden sm:inline"> </span>Tlf <a href="tel:70228288" className="text-[#91C73D] hover:underline">70228288</a><br className="sm:hidden" />
+          <span className="hidden sm:inline"> </span><a href="mailto:info@boligmatch.dk" className="text-[#91C73D] hover:underline">info@boligmatch.dk</a><br className="sm:hidden" />
+          <span className="hidden sm:inline"> </span>CVR 33160437
         </p>
       </div>
     </div>
