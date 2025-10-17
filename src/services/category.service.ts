@@ -25,9 +25,14 @@ export type PaginatedQuery = {
 export const categoryService = {
   getById: (id: number) => http.get<Category>(`/Category/getCategoryById/${id}`),
   getAll: async (includeInActive = false) => {
-    const response = await http.get<{ output: { result: Category[] } }>(`/Category/getAllCategorys`, { includeInActive });
-    return response.output?.result || [];
-  },
+  const response = await http.get<{ 
+    output: Category[]; // Direct array in output
+    isSuccess: boolean;
+    errorMessage: string | null;
+  }>(`/Category/getAllCategorys?includeInActive=${includeInActive}`);
+  
+  return response.output || [];
+},
   add: (body: Omit<Category, 'id'>) => http.post<Category>(`/Category/addCategory`, body),
   update: (body: Category) => http.put<Category>(`/Category/updateCategory`, body),
   remove: (id: number) => http.delete<void>(`/Category/DeleteCategory/${id}`),
