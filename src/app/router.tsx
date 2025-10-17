@@ -14,12 +14,13 @@ import CategoriesPage from "../features/admin/categories/CategoriesPage";
 import SubCategoriesPage from "../features/admin/subcategories/SubCategoriesPage";
 import PartnersPage from "../features/admin/partners/PartnersPage";
 import UsersListPage from "../features/admin/users/UsersListPage";
+// import PartnerSubCategoriesPage from "../features/admin/partner-subcategories/PartnerSubCategoriesPage";
 import UserDashboardPage from "../pages/UserDashboardPage";
 import PartnerDashboard from "../features/partners/PartnerDashboard";
 import ParentStatistics from "../features/partners/PartnerPages/PartnerStatistics";
 import PartnerProfileShortcut from "../features/partners/PartnerPages/PartnerProfileShortcut";
 import SearchForPartner from "../features/partners/PartnerPages/SearchForPartner";
-import UserLayout from "../components/layout/UserLayout";
+// import UserLayout from "../components/layout/UserLayout";
 import UserSupplier from "../pages/UserSupplier";
 import SupplierProfile from "../pages/SupplierProfile";
 
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
       { path: "subcategories", element: <SubCategoriesPage /> },
       { path: "partners", element: <PartnersPage /> },
       { path: "users", element: <UsersListPage /> },
+      // { path: "partner-subcategories", element: <PartnerSubCategoriesPage /> },
     ],
   },
 ]);

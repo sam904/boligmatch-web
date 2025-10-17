@@ -1,4 +1,3 @@
-import React from "react";
 import PartnerHeader from "./PartnerPages/PartnerHeader";
 import partnerlandingImg from "/src/assets/userImages/partnerDashboard.png";
 import PartnerSteper from "./PartnerPages/PartnerSteper";
