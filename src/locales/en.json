@@ -91,6 +91,8 @@
       "category": "Category",
       "imageUrl": "Image URL",
       "iconUrl": "Icon URL",
+      "image": "Image",
+      "icon": "Icon",
       "id": "ID",
       "deleteConfirm": "Delete this subcategory?",
       "createSuccess": "SubCategory created successfully",
