@@ -25,8 +25,9 @@ export default function AdminLayout() {
     <div className="flex h-screen overflow-hidden bg-gray-50">
       {/* Sidebar */}
       <aside className={`flex-shrink-0 bg-gradient-to-b from-gray-900 to-gray-800 text-white shadow-xl transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'} flex flex-col`}>
-        <div className="p-3 border-b border-gray-700 flex items-center gap-3">
-          {!isCollapsed && <img src="/logo.png" alt="BoligMatch" className="h-8" />}
+        <div className="p-3 border-b border-gray-700 flex items-center">
+          {!isCollapsed && <img src="/logo.png" alt="BoligMatch" className="h-12" />}
+          {!isCollapsed && <img src="/favIcon1.svg" alt="BoligMatch" className="h-7" />}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="p-2 hover:bg-gray-700 rounded-lg transition-colors ml-auto"
@@ -87,7 +88,7 @@ export default function AdminLayout() {
         {/* Header */}
         <header className="flex-shrink-0 h-16 bg-gradient-to-r from-[#043428] to-[#065945] text-white shadow-lg flex items-center px-6 justify-between">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="BoligMatch" className="h-8" />
+            {/* <img src="/logo.png" alt="BoligMatch" className="h-8" /> */}
             <h1 className="text-lg font-semibold">{t('admin.title')}</h1>
           </div>
           <div className="flex items-center gap-4">

@@ -69,6 +69,7 @@
       "addCategory": "Add Category",
       "editCategory": "Edit Category",
       "name": "Name",
+      "description": "Desscription",
       "imageUrl": "Image URL",
       "iconUrl": "Icon URL",
       "image": "Image",
@@ -126,9 +127,11 @@
     "users": {
       "title": "Users",
       "subtitle": "View all users",
-      "name": "Name",
+      "editUser": "Edit User",
+      "firstName": "First Name",
+      "lastName": "Last Name",
       "email": "Email",
-      "mobile": "Mobile",
+      "mobileNo": "Mobile No",
       "role": "Role",
       "id": "ID"
     }

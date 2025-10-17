@@ -15,17 +15,23 @@ export default function Stepper({ currentStep, steps, className = '' }: StepperP
           <React.Fragment key={step}>
             <div className="flex flex-col items-center">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold border-2 ${
+                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold border-2 transition-colors duration-300 ${
                   index + 1 <= currentStep
-                    ? 'bg-blue-600 border-blue-600 text-white'
-                    : 'bg-white border-gray-300 text-gray-500'
+                    ? index + 1 === currentStep
+                      ? 'bg-green-500 border-green-500 text-white' // Current step - medium green
+                      : 'bg-green-700 border-green-700 text-white' // Completed steps - dark green
+                    : 'bg-white border-gray-300 text-gray-500' // Future steps
                 }`}
               >
                 {index + 1}
               </div>
               <span
-                className={`text-xs mt-2 font-medium text-center ${
-                  index + 1 <= currentStep ? 'text-blue-600' : 'text-gray-500'
+                className={`text-xs mt-2 font-medium text-center transition-colors duration-300 ${
+                  index + 1 <= currentStep 
+                    ? index + 1 === currentStep
+                      ? 'text-green-600' // Current step label - medium green
+                      : 'text-green-800' // Completed steps label - dark green
+                    : 'text-gray-500' // Future steps label
                 }`}
               >
                 {step}
@@ -35,8 +41,10 @@ export default function Stepper({ currentStep, steps, className = '' }: StepperP
             {/* Connector line between steps */}
             {index < steps.length - 1 && (
               <div
-                className={`flex-1 h-1 ${
-                  index + 1 < currentStep ? 'bg-blue-600' : 'bg-gray-300'
+                className={`flex-1 h-1 transition-colors duration-300 ${
+                  index + 1 < currentStep 
+                    ? 'bg-green-600' // Completed connector - medium green
+                    : 'bg-gray-300' // Future connector
                 }`}
                 style={{ minWidth: '40px' }}
               />

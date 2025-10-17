@@ -3,6 +3,7 @@
 export interface Category {
   id: number;
   name: string;
+  description?: string;
   imageUrl?: string;
   iconUrl?: string;
   isActive: boolean;
@@ -11,6 +12,7 @@ export interface Category {
 export interface CategoryDto {
   id?: number;
   name: string;
+  description?: string;
   imageUrl?: string;
   iconUrl?: string;
   isActive: boolean;

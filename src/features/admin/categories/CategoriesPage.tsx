@@ -19,12 +19,16 @@ import { useDebounce } from '../../../hooks/useDebounce';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Category } from '../../../types/category';
 import { FaEdit, FaTrash } from "react-icons/fa";
+import TextArea from '../../../components/common/TextArea';
 
 // Enhanced validation schema with required imageUrl
 const categorySchema = z.object({
   name: z.string()
     .min(1, "Category name is required")
     .max(100, "Category name must be less than 100 characters"),
+  description: z.string()
+    .max(500, "Description must be less than 500 characters") // Add description validation
+    .optional(),
   imageUrl: z.string()
     .min(1, "Image URL is required")
     .url("Please enter a valid URL for the image"),
@@ -118,6 +122,7 @@ export default function CategoriesPage() {
     defaultValues: {
       name: '',
       isActive: true,
+      description: '',
       imageUrl: '',
       iconUrl: '',
     },
@@ -127,11 +132,13 @@ export default function CategoriesPage() {
   const imageUrlValue = watch('imageUrl');
   const iconUrlValue = watch('iconUrl');
   const nameValue = watch('name');
+  const descriptionValue = watch('description');
 
   useEffect(() => {
     if (editingCategory) {
       reset({
         name: editingCategory.name,
+        description: editingCategory.description || '',
         imageUrl: editingCategory.imageUrl || '',
         iconUrl: editingCategory.iconUrl || '',
         isActive: editingCategory.isActive,
@@ -139,6 +146,7 @@ export default function CategoriesPage() {
     } else {
       reset({
         name: '',
+        description: '',
         imageUrl: '',
         iconUrl: '',
         isActive: true,
@@ -295,6 +303,19 @@ export default function CategoriesPage() {
       cell: ({ row }) => translateCategory(row.original.name)
     },
     {
+      accessorKey: 'description',
+      header: t('admin.categories.description') || "Description", // Add description column
+      cell: ({ row }) => {
+        const description = row.original.description;
+        if (!description) return '-';
+        
+        // Truncate long descriptions
+        return description.length > 50 
+          ? `${description.substring(0, 50)}...` 
+          : description;
+      },
+    },
+    {
       accessorKey: 'imageUrl',
       header: t('admin.categories.image') || "Image",
       cell: ({ row }) => {
@@ -347,23 +368,25 @@ export default function CategoriesPage() {
       header: t('common.actions') || "Actions",
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            icon={FaEdit}
-            title={t('common.edit') || "Edit category"}
+          <button
+            type="button"
             onClick={() => {
               setEditingCategory(row.original);
               setIsModalOpen(true);
             }}
-          />
-          <Button
-            variant="ghost"
-            size="sm"
-            icon={FaTrash}
-            title={t('common.delete') || "Delete category"}
+            className="p-2 text-gray-600 transition-colors"
+            title={t('common.edit') || "Edit user"}
+          >
+            <FaEdit className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
             onClick={() => handleDeleteCategory(row.original)}
-          />
+            className="p-2 text-red-600 transition-colors"
+            title={t('common.delete') || "Delete user"}
+          >
+            <FaTrash className="w-4 h-4" />
+          </button>
         </div>
       ),
     },
@@ -458,6 +481,21 @@ export default function CategoriesPage() {
           <div className="text-xs text-gray-500 -mt-2">
             {nameValue?.length || 0}/100 characters
           </div>
+
+          {/* Description TextArea */}
+          <TextArea
+            label={t('admin.categories.description') || "Description"}
+            error={errors.description?.message}
+            {...register('description')}
+            maxLength={500}
+            placeholder="Enter category description (optional)"
+            rows={4}
+          />
+          
+          {/* Character count for description */}
+          <div className="text-xs text-gray-500 -mt-2">
+            {descriptionValue?.length || 0}/500 characters
+          </div>
           
           {/* Image Upload for Category Image - Now Required */}
           <ImageUpload
@@ -508,6 +546,7 @@ export default function CategoriesPage() {
               </div>
               <ul className="text-red-700 text-sm mt-1 list-disc list-inside">
                 {errors.name && <li>{errors.name.message}</li>}
+                {errors.description && <li>{errors.description.message}</li>}
                 {errors.imageUrl && <li>{errors.imageUrl.message}</li>}
                 {errors.iconUrl && <li>{errors.iconUrl.message}</li>}
               </ul>
