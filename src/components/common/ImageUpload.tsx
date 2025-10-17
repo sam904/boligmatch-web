@@ -1,5 +1,6 @@
+// src/components/common/ImageUpload.tsx
 import { useRef, useState } from 'react';
-import { uploadService } from '../../services/upload.service';
+import { uploadService } from '../../services/uploadS3.service';
 import Button from './Button';
 import { toast } from 'sonner';
 
@@ -13,7 +14,6 @@ interface ImageUploadProps {
 
 export default function ImageUpload({ label, value, onChange, folder = 'images', error }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState(value || '');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +34,6 @@ export default function ImageUpload({ label, value, onChange, folder = 'images',
     setUploading(true);
     try {
       const url = await uploadService.uploadImage(file, folder);
-      setPreview(url);
       onChange(url);
       toast.success('Image uploaded successfully');
     } catch (error) {
@@ -42,21 +41,47 @@ export default function ImageUpload({ label, value, onChange, folder = 'images',
       toast.error('Failed to upload image');
     } finally {
       setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
+  };
+
+  const handleRemove = () => {
+    onChange('');
   };
 
   return (
     <div className="w-full">
       <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
       
-      <div className="flex items-start gap-4">
-        {preview && (
-          <div className="relative w-24 h-24 border-2 border-gray-200 rounded-lg overflow-hidden">
-            <img src={preview} alt="Preview" className="w-full h-full object-cover" />
-          </div>
-        )}
+      <div className="flex gap-3">
+        {/* Input Field */}
+        <div className="flex-1 relative">
+          <input
+            type="text"
+            value={value || ''}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="Enter image URL or upload file"
+            className="w-full px-3 py-2 pr-20 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          
+          {/* Clear button inside input */}
+          {value && (
+            <button
+              type="button"
+              onClick={handleRemove}
+              className="absolute right-12 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
         
-        <div className="flex-1">
+        {/* Upload Button */}
+        <div className="flex-shrink-0">
           <input
             ref={fileInputRef}
             type="file"
@@ -70,17 +95,62 @@ export default function ImageUpload({ label, value, onChange, folder = 'images',
             variant="secondary"
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
+            className="min-w-[120px] h-full"
           >
-            {uploading ? 'Uploading...' : preview ? 'Change Image' : 'Upload Image'}
+            {uploading ? (
+              <span className="flex items-center gap-2">
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Uploading...
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Upload
+              </span>
+            )}
           </Button>
-          
-          {value && !preview && (
-            <p className="mt-2 text-sm text-gray-500 truncate">{value}</p>
-          )}
         </div>
       </div>
+
+      {/* Preview */}
+      {value && (
+        <div className="mt-3 flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="w-12 h-12 flex-shrink-0 bg-white rounded border overflow-hidden">
+            <img 
+              src={value} 
+              alt="Preview" 
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-gray-600 truncate">{value}</p>
+            <p className="text-xs text-gray-400 mt-1">Image preview</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleRemove}
+            className="flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+      )}
       
-      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+      {error && (
+        <p className="mt-2 text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg border border-red-200">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

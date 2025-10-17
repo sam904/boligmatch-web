@@ -73,6 +73,7 @@
       "imageUrl": "Image URL",
       "iconUrl": "Icon URL",
       "image": "Image",
+      "icon": "Icon",
       "id": "ID",
       "deleteConfirm": "Are you sure you want to delete this category?",
       "createSuccess": "Category created successfully",

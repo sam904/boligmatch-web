@@ -1,4 +1,4 @@
-
+// src/components/common/Modal.tsx
 import type { ReactNode } from 'react';
 import Button from './Button';
 

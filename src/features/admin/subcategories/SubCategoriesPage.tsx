@@ -190,26 +190,35 @@ export default function SubCategoriesPage() {
 
   return (
     <div className="p-3">
-      <div className="bg-white rounded-lg shadow-lg p-2 mb-2">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">{t('admin.subcategories.title')}</h1>
-            <p className="text-gray-600 text-sm mt-1">{t('admin.subcategories.subtitle')}</p>
-          </div>
-          <button
-            onClick={() => {
-              setEditingSubCategory(null);
-              setIsModalOpen(true);
-            }}
-            className="flex items-center gap-2 px-4 py-2 text-sm text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:opacity-90 bg-brand-gradient"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            {t('admin.subcategories.addSubCategory')}
-          </button>
-        </div>
+     <div className="bg-white rounded-lg shadow-lg p-2 mb-2">
+  <div className="flex justify-between items-center">
+    {/* Left side: Title */}
+    <div>
+      <h1 className="text-xl font-bold text-gray-900">{t('admin.subcategories.title')}</h1>
+      <p className="text-gray-600 text-sm mt-1">{t('admin.subcategories.subtitle')}</p>
+    </div>
+
+    {/* Right side: SearchBar and Add SubCategory button */}
+    <div className="flex items-center gap-4">
+      <div className="w-64">
+        <SearchBar
+          searchTerm={searchTerm}
+          onSearchChange={handleSearchChange}
+        />
       </div>
+      <Button
+        variant="primary"
+        size="md"
+        onClick={() => {
+          setEditingSubCategory(null);
+          setIsModalOpen(true);
+        }}
+      >
+        {t('admin.subcategories.addSubCategory')}
+      </Button>
+    </div>
+  </div>
+</div>
 
       {isLoading ? (
         <div className="bg-white rounded-lg shadow-lg p-8 text-center">
@@ -218,14 +227,6 @@ export default function SubCategoriesPage() {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="p-4 border-b border-gray-200">
-            <SearchBar
-              searchTerm={searchTerm}
-              onSearchChange={handleSearchChange}
-              pageSize={pageSize}
-              onPageSizeChange={handlePageSizeChange}
-            />
-          </div>
           <DataTable data={subCategories} columns={columns} />
           <div className="px-4 pb-4">
             <Pagination
@@ -234,6 +235,7 @@ export default function SubCategoriesPage() {
               totalItems={totalItems}
               pageSize={pageSize}
               onPageChange={handlePageChange}
+              onPageSizeChange={handlePageSizeChange}
             />
           </div>
         </div>

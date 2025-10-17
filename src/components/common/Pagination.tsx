@@ -7,6 +7,7 @@ interface PaginationProps {
   totalItems: number;
   pageSize: number;
   onPageChange: (page: number) => void;
+  onPageSizeChange?: (size: number) => void; // Add this prop
 }
 
 export default function Pagination({
@@ -15,8 +16,11 @@ export default function Pagination({
   totalItems,
   pageSize,
   onPageChange,
+  onPageSizeChange
 }: PaginationProps) {
   const { t } = useTranslation();
+  const pageSizeOptions = [10, 25, 50, 100];
+
 
   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endItem = totalItems === 0 ? 0 : Math.min(currentPage * pageSize, totalItems);
@@ -51,33 +55,52 @@ export default function Pagination({
   };
 
   return (
-    <div className="flex items-center justify-between flex-wrap gap-4 mt-4">
+    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-4">
+      {/* Page Size Selector - Left Side */}
+      {onPageSizeChange && (
+        <div className="flex items-center gap-3">
+          <label className="text-sm text-gray-600">
+            {t('common.itemsPerPage') || 'Items per page'}:
+          </label>
+          <select
+            value={pageSize}
+            onChange={(e) => onPageSizeChange(Number(e.target.value))}
+            className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200"
+          >
+            {pageSizeOptions.map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
       <div className="text-sm text-gray-600">
-        {t('common.showing')} {startItem} {t('common.to')} {endItem} {t('common.of')} {totalItems} {t('common.items')}
+        {t('common.showing')} <span className="font-medium">{startItem}</span> {t('common.to')} <span className="font-medium">{endItem}</span> {t('common.of')} <span className="font-medium">{totalItems}</span> {t('common.items')}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
 
         {getPageNumbers().map((page, index) =>
           page === '...' ? (
-            <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-400">...</span>
+            <span key={`ellipsis-${index}`} className="flex items-center justify-center w-9 h-9 text-gray-400">...</span>
           ) : (
             <button
               key={page}
               onClick={() => onPageChange(page as number)}
-              className={`px-4 py-2 rounded-lg transition-colors text-sm ${
+              className={`flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium transition-all duration-200 ${
                 currentPage === page
-                  ? 'text-white shadow-lg bg-brand-gradient'
-                  : 'border border-gray-300 hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-[#043428] to-[#91C73D] text-white shadow-sm'
+                  : 'text-gray-700 hover:bg-gray-100 border border-transparent'
               }`}
             >
               {page}
@@ -88,9 +111,9 @@ export default function Pagination({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
@@ -98,3 +121,118 @@ export default function Pagination({
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // src/components/common/Pagination.tsx
+// import { useTranslation } from 'react-i18next';
+
+// interface PaginationProps {
+//   currentPage: number;
+//   totalPages: number;
+//   totalItems: number;
+//   pageSize: number;
+//   onPageChange: (page: number) => void;
+//   onPageSizeChange?: (size: number) => void; // Add this prop
+// }
+
+// export default function Pagination({
+//   currentPage,
+//   totalPages,
+//   totalItems,
+//   pageSize,
+//   onPageChange,
+// }: PaginationProps) {
+//   const { t } = useTranslation();
+
+//   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+//   const endItem = totalItems === 0 ? 0 : Math.min(currentPage * pageSize, totalItems);
+
+//   const getPageNumbers = () => {
+//     const pages: (number | string)[] = [];
+//     const maxVisible = 5;
+    
+//     if (totalPages <= maxVisible) {
+//       for (let i = 1; i <= totalPages; i++) {
+//         pages.push(i);
+//       }
+//     } else {
+//       if (currentPage <= 3) {
+//         for (let i = 1; i <= 4; i++) pages.push(i);
+//         pages.push('...');
+//         pages.push(totalPages);
+//       } else if (currentPage >= totalPages - 2) {
+//         pages.push(1);
+//         pages.push('...');
+//         for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
+//       } else {
+//         pages.push(1);
+//         pages.push('...');
+//         for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+//         pages.push('...');
+//         pages.push(totalPages);
+//       }
+//     }
+    
+//     return pages;
+//   };
+
+//   return (
+//     <div className="flex items-center justify-between px-2 py-4">
+//       <div className="text-sm text-gray-600">
+//         {t('common.showing')} <span className="font-medium">{startItem}</span> {t('common.to')} <span className="font-medium">{endItem}</span> {t('common.of')} <span className="font-medium">{totalItems}</span> {t('common.items')}
+//       </div>
+
+//       <div className="flex items-center gap-1">
+//         <button
+//           onClick={() => onPageChange(currentPage - 1)}
+//           disabled={currentPage === 1}
+//           className="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+//         >
+//           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+//           </svg>
+//         </button>
+
+//         {getPageNumbers().map((page, index) =>
+//           page === '...' ? (
+//             <span key={`ellipsis-${index}`} className="flex items-center justify-center w-9 h-9 text-gray-400">...</span>
+//           ) : (
+//             <button
+//               key={page}
+//               onClick={() => onPageChange(page as number)}
+//               className={`flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium transition-all duration-200 ${
+//                 currentPage === page
+//                   ? 'bg-gradient-to-r from-[#043428] to-[#91C73D] text-white shadow-sm'
+//                   : 'text-gray-700 hover:bg-gray-100 border border-transparent'
+//               }`}
+//             >
+//               {page}
+//             </button>
+//           )
+//         )}
+
+//         <button
+//           onClick={() => onPageChange(currentPage + 1)}
+//           disabled={currentPage === totalPages}
+//           className="flex items-center justify-center w-9 h-9 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+//         >
+//           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+//           </svg>
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
