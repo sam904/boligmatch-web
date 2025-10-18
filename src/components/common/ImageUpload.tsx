@@ -77,7 +77,7 @@ export default function ImageUpload({
               type="text"
               value={value || ''}
               onChange={(e) => onChange(e.target.value)}
-              placeholder="Enter image URL or upload file"
+              placeholder="upload image"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
             />
             {/* Clear button inside input */}
@@ -86,7 +86,7 @@ export default function ImageUpload({
                 type="button"
                 onClick={handleRemove}
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
-                title="Clear URL"
+                title="Clear Image"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
