@@ -10,7 +10,6 @@ import Button from '../../../components/common/Button';
 import Input from '../../../components/common/Input';
 import Stepper from '../../../components/common/Stepper';
 import TextArea from '../../../components/common/TextArea';
-import Select from '../../../components/common/Select';
 import ImageUpload from '../../../components/common/ImageUpload';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,6 +21,8 @@ import type { ColumnDef } from '@tanstack/react-table';
 import type { Partner } from '../../../types/partner';
 import { categoryService } from '../../../services/category.service';
 import type { SubCategory } from '../../../types/subcategory';
+import SearchableSelectController from '../../../components/common/SearchableSelectController';
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 // Image Preview Modal Component
 function ImagePreviewModal({ imageUrl, isOpen, onClose }: { imageUrl: string; isOpen: boolean; onClose: () => void }) {
@@ -189,26 +190,26 @@ const { data: subCategories = [], isLoading: isLoadingSubCategories } = useQuery
 };
 
   const { 
-    register, 
-    handleSubmit, 
-    formState: { errors }, 
-    reset, 
-    trigger,
-    control,
-    setValue,
-    watch,
-  } = useForm<PartnerFormData>({
-    resolver: zodResolver(partnerSchema as any), // Use any to bypass the type issues
-    defaultValues: {
-      isActive: true,
-      cvr: 0,
-      businessUnit: 0,
-      userId: 0,
-      businessName: '',
-      address:'',
-      parSubCatlst: [{ subCategoryId: 0, isActive: true }],
-    },
-  });
+  register, 
+  handleSubmit, 
+  formState: { errors }, 
+  reset, 
+  trigger,
+  control,
+  setValue,
+  watch,
+} = useForm<PartnerFormData>({
+  resolver: zodResolver(partnerSchema as any),
+  defaultValues: {
+    isActive: true,
+    cvr: 0,
+    businessUnit: 0,
+    userId: 0,
+    businessName: '',
+    address:'',
+    parSubCatlst: [{ subCategoryId: 0, isActive: true }], // Changed from 0 instead of first option
+  },
+});
 
   // Watch image URLs for preview
   const logoUrlValue = watch('logoUrl');
@@ -224,71 +225,70 @@ const { data: subCategories = [], isLoading: isLoadingSubCategories } = useQuery
   });
 
   useEffect(() => {
-    if (editingPartner && showForm) {
-      // Transform the partner data to match the form structure
-      const formData: PartnerFormData = {
-        userId: editingPartner.userId,
-        address: editingPartner.address,
-        businessName: editingPartner.businessName,
-        businessUnit: editingPartner.businessUnit,
-        videoUrl: editingPartner.videoUrl || '',
-        logoUrl: editingPartner.logoUrl || '',
-        cvr: editingPartner.cvr,
-        descriptionShort: editingPartner.descriptionShort || '',
-        textField1: editingPartner.textField1 || '',
-        textField2: editingPartner.textField2 || '',
-        textField3: editingPartner.textField3 || '',
-        textField4: editingPartner.textField4 || '',
-        textField5: editingPartner.textField5 || '',
-        imageUrl1: editingPartner.imageUrl1 || '',
-        imageUrl2: editingPartner.imageUrl2 || '',
-        imageUrl3: editingPartner.imageUrl3 || '',
-        imageUrl4: editingPartner.imageUrl4 || '',
-        imageUrl5: editingPartner.imageUrl5 || '',
-        isActive: editingPartner.isActive,
-        parSubCatlst: editingPartner.parSubCatlst && editingPartner.parSubCatlst.length > 0 
-          ? editingPartner.parSubCatlst.map((subCat) => ({
-              id: subCat.id,
-              patnerId: subCat.patnerId,
-              subCategoryId: subCat.subCategoryId,
-              isActive: subCat.isActive,
-            }))
-          : [{ subCategoryId: 0, isActive: true }],
-      };
-      reset(formData);
-    } else if (!showForm) {
-      resetForm();
-    }
-  }, [editingPartner, showForm, reset]);
+  if (editingPartner && showForm) {
+    // Transform the partner data to match the form structure
+    const formData: PartnerFormData = {
+      userId: editingPartner.userId,
+      address: editingPartner.address,
+      businessName: editingPartner.businessName,
+      businessUnit: editingPartner.businessUnit,
+      videoUrl: editingPartner.videoUrl || '',
+      logoUrl: editingPartner.logoUrl || '',
+      cvr: editingPartner.cvr,
+      descriptionShort: editingPartner.descriptionShort || '',
+      textField1: editingPartner.textField1 || '',
+      textField2: editingPartner.textField2 || '',
+      textField3: editingPartner.textField3 || '',
+      textField4: editingPartner.textField4 || '',
+      textField5: editingPartner.textField5 || '',
+      imageUrl1: editingPartner.imageUrl1 || '',
+      imageUrl2: editingPartner.imageUrl2 || '',
+      imageUrl3: editingPartner.imageUrl3 || '',
+      imageUrl4: editingPartner.imageUrl4 || '',
+      imageUrl5: editingPartner.imageUrl5 || '',
+      isActive: editingPartner.isActive,
+      parSubCatlst: editingPartner.parSubCatlst && editingPartner.parSubCatlst.length > 0 
+        ? editingPartner.parSubCatlst.map((subCat) => ({
+            id: subCat.id,
+            patnerId: subCat.patnerId,
+            subCategoryId: subCat.subCategoryId,
+            isActive: subCat.isActive,
+          }))
+        : [{ subCategoryId: 0, isActive: true }], // Changed from 0
+    };
+    reset(formData);
+  } else if (!showForm) {
+    resetForm();
+  }
+}, [editingPartner, showForm, reset]);
 
   const resetForm = () => {
-    const defaultValues: PartnerFormData = {
-      userId: 0,
-      address: '',
-      businessUnit: 0,
-      businessName: '',
-      videoUrl: '',
-      logoUrl: '',
-      cvr: 0,
-      descriptionShort: '',
-      textField1: '',
-      textField2: '',
-      textField3: '',
-      textField4: '',
-      textField5: '',
-      imageUrl1: '',
-      imageUrl2: '',
-      imageUrl3: '',
-      imageUrl4: '',
-      imageUrl5: '',
-      isActive: true,
-      parSubCatlst: [{ subCategoryId: 0, isActive: true }],
-    };
-    reset(defaultValues);
-    setCurrentStep(1);
-    setEditingPartner(null);
+  const defaultValues: PartnerFormData = {
+    userId: 0,
+    address: '',
+    businessUnit: 0,
+    businessName: '',
+    videoUrl: '',
+    logoUrl: '',
+    cvr: 0,
+    descriptionShort: '',
+    textField1: '',
+    textField2: '',
+    textField3: '',
+    textField4: '',
+    textField5: '',
+    imageUrl1: '',
+    imageUrl2: '',
+    imageUrl3: '',
+    imageUrl4: '',
+    imageUrl5: '',
+    isActive: true,
+    parSubCatlst: [{ subCategoryId: 0, isActive: true }], // Changed from 0
   };
-
+  reset(defaultValues);
+  setCurrentStep(1);
+  setEditingPartner(null);
+};
   const createMutation = useMutation({
     mutationFn: partnerService.create,
     onSuccess: () => {
@@ -436,45 +436,42 @@ const { data: subCategories = [], isLoading: isLoadingSubCategories } = useQuery
     { accessorKey: 'businessUnit', header: 'Business Unit' },
     { accessorKey: 'cvr', header: 'CVR' },
     {
-      accessorKey: 'isActive',
-      header: 'Status',
-      cell: ({ row }) => (
-        <span 
-          className="px-2 py-0.5 rounded text-xs text-white font-medium"
-          style={{ 
-            backgroundColor: row.original.isActive ? 'var(--color-secondary)' : 'var(--color-neutral)'
-          }}
+    accessorKey: 'isActive',
+    header: 'Status',
+    cell: ({ row }) => (
+      <span className="px-2 py-0.5 rounded text-xs text-white font-medium" style={{ backgroundColor: row.original.isActive ? 'var(--color-secondary)' : 'var(--color-neutral)' }}>
+        {row.original.isActive ? 'Active' : 'Inactive'}
+      </span>
+    ),
+  },
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => (
+      <div className="flex gap-2">
+        <button
+          onClick={() => handleEditPartner(row.original)}
+          disabled={showForm}
+          className="p-2 text-gray-600 transition-colors"
+          title="Edit partner"
         >
-          {row.original.isActive ? 'Active' : 'Inactive'}
-        </span>
-      ),
-    },
-    {
-      id: 'actions',
-      header: 'Actions',
-      cell: ({ row }) => (
-        <div className="flex gap-2">
-          <Button 
-            variant="secondary" 
-            onClick={() => handleEditPartner(row.original)}
-            disabled={showForm}
-          >
-            {t('common.edit')}
-          </Button>
-          <Button 
-            variant="danger" 
-            onClick={() => {
-              if (window.confirm(t('admin.partners.deleteConfirm') || 'Delete this partner?')) {
-                deleteMutation.mutate(row.original.id);
-              }
-            }}
-            disabled={showForm}
-          >
-            {t('common.delete')}
-          </Button>
-        </div>
-      ),
-    },
+          <FaEdit className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => {
+            if (window.confirm(t('admin.partners.deleteConfirm') || 'Delete this partner?')) {
+              deleteMutation.mutate(row.original.id);
+            }
+          }}
+          disabled={showForm}
+          className="p-2 text-red-600 transition-colors"
+          title="Delete partner"
+        >
+          <FaTrash className="w-4 h-4" />
+        </button>
+      </div>
+    ),
+  },
   ];
 
   const renderStepContent = () => {
@@ -518,11 +515,11 @@ case 1:
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-gray-900">Media & Description</h3>
-            <Input label="Video URL" error={errors.videoUrl?.message} {...register('videoUrl')} />
+            <Input label="Video Upload" error={errors.videoUrl?.message} {...register('videoUrl')} />
             
-            {/* Logo URL with ImageUpload */}
+            {/* Logo Upload with ImageUpload */}
             <ImageUpload
-              label="Logo URL"
+              label="Logo Upload"
               value={logoUrlValue}
               onChange={(url) => setValue('logoUrl', url)}
               onPreview={handleImagePreview}
@@ -559,9 +556,9 @@ case 1:
             <div className="space-y-3">
               <h4 className="font-medium text-gray-700">Image URLs</h4>
               
-              {/* Image URL 1 with ImageUpload */}
+              {/* Image Upload 1 with ImageUpload */}
               <ImageUpload
-                label="Image URL 1"
+                label="Image Upload 1"
                 value={imageUrl1Value}
                 onChange={(url) => setValue('imageUrl1', url)}
                 onPreview={handleImagePreview}
@@ -569,9 +566,9 @@ case 1:
                 error={errors.imageUrl1?.message}
               />
 
-              {/* Image URL 2 with ImageUpload */}
+              {/* Image Upload 2 with ImageUpload */}
               <ImageUpload
-                label="Image URL 2"
+                label="Image Upload 2"
                 value={imageUrl2Value}
                 onChange={(url) => setValue('imageUrl2', url)}
                 onPreview={handleImagePreview}
@@ -579,9 +576,9 @@ case 1:
                 error={errors.imageUrl2?.message}
               />
 
-              {/* Image URL 3 with ImageUpload */}
+              {/* Image Upload 3 with ImageUpload */}
               <ImageUpload
-                label="Image URL 3"
+                label="Image Upload 3"
                 value={imageUrl3Value}
                 onChange={(url) => setValue('imageUrl3', url)}
                 onPreview={handleImagePreview}
@@ -589,9 +586,9 @@ case 1:
                 error={errors.imageUrl3?.message}
               />
 
-              {/* Image URL 4 with ImageUpload */}
+              {/* Image Upload 4 with ImageUpload */}
               <ImageUpload
-                label="Image URL 4"
+                label="Image Upload 4"
                 value={imageUrl4Value}
                 onChange={(url) => setValue('imageUrl4', url)}
                 onPreview={handleImagePreview}
@@ -599,9 +596,9 @@ case 1:
                 error={errors.imageUrl4?.message}
               />
 
-              {/* Image URL 5 with ImageUpload */}
+              {/* Image Upload 5 with ImageUpload */}
               <ImageUpload
-                label="Image URL 5"
+                label="Image Upload 5"
                 value={imageUrl5Value}
                 onChange={(url) => setValue('imageUrl5', url)}
                 onPreview={handleImagePreview}
@@ -624,7 +621,7 @@ case 1:
           </div>
         );
       
-      case 5:
+   case 5:
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-medium text-gray-900">Sub Categories</h3>
@@ -642,24 +639,28 @@ case 1:
           {fields.map((field, index) => (
             <div key={field.id} className="flex items-end gap-4 p-4 border border-gray-200 rounded-lg">
               <div className="flex-1">
-                <Select
+                <SearchableSelectController
+                  name={`parSubCatlst.${index}.subCategoryId`}
+                  control={control}
                   label={`Sub Category ${index + 1}`}
                   error={errors.parSubCatlst?.[index]?.subCategoryId?.message}
-                  {...register(`parSubCatlst.${index}.subCategoryId`, { 
-                    valueAsNumber: true,
-                    required: "Sub Category is required" 
-                  })}
-                >
-                  <option value={0}>Select Sub Category</option>
-                  {subCategories
-                    .filter(subCat => subCat.isActive) // Only show active sub categories
-                    .map(subCat => (
-                      <option key={subCat.id} value={subCat.id}>
-                        {subCat.name} ({getCategoryName(subCat.categoryId)})
-                      </option>
-                    ))
+                  options={subCategories
+                    .filter(subCat => subCat.isActive)
+                    .map(subCat => ({
+                      value: subCat.id,
+                      label: `${subCat.name} (${getCategoryName(subCat.categoryId)})`
+                    }))
                   }
-                </Select>
+                  placeholder={
+                    isLoadingSubCategories 
+                      ? "Loading sub categories..." 
+                      : subCategories.filter(subCat => subCat.isActive).length === 0 
+                        ? "No active sub categories available" 
+                        : "Select Sub Category"
+                  }
+                  disabled={isLoadingSubCategories || subCategories.filter(subCat => subCat.isActive).length === 0}
+                  required={true}
+                />
               </div>
               
               <div className="flex items-center gap-2 mb-1">
@@ -691,9 +692,25 @@ case 1:
             type="button"
             variant="secondary"
             onClick={addSubCategoryField}
+            disabled={subCategories.filter(subCat => subCat.isActive).length === 0}
           >
             Add Another Sub Category
           </Button>
+
+          {/* Show warning if no active subcategories */}
+          {!isLoadingSubCategories && subCategories.filter(subCat => subCat.isActive).length === 0 && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <div className="flex items-center gap-2 text-yellow-800">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <span className="text-sm font-medium">No Active Sub Categories Available</span>
+              </div>
+              <p className="text-yellow-700 text-sm mt-1">
+                You need to create active subcategories before adding them to partners.
+              </p>
+            </div>
+          )}
 
           {errors.parSubCatlst && !errors.parSubCatlst.root && (
             <p className="text-red-500 text-sm mt-2">{errors.parSubCatlst.message}</p>
