@@ -60,3 +60,35 @@ body,
 . {
   font-family: "Plus Jakarta Sans", sans-serif;
 } */
+
+/* -------- Roasting Script -------- */
+@font-face {
+  font-family: "Roasting Script";
+  src: url("/src/assets/fonts/Roasting Script.woff") format("woff"),
+       url("/src/assets/fonts/Roasting Script.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.rosting-script {
+  font-family: "Roasting Script", cursive;
+}
+
+
+/* ----- Roasting Script ------------ */
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("/src/assets/fonts/PlusJakartaSans-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("/src/assets/fonts/PlusJakartaSans-Italic-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+}
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+}

@@ -3,7 +3,7 @@ import type {
   User, 
   CreateUserRequest, 
   UpdateUserRequest,
-  PaginatedUsersResponse 
+  PaginatedUsersResponse
 } from '../types/user';
 
 export const userService = {

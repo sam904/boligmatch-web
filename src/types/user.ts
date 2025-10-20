@@ -24,6 +24,7 @@ export interface CreateUserRequest {
   lastName: string;
   email: string;
   mobileNo: string;
+  password: string;
   isActive: boolean;
   role?: number;
   roleIds?: string;
@@ -32,6 +33,7 @@ export interface CreateUserRequest {
 export interface UpdateUserRequest extends CreateUserRequest {
   id: number;
 }
+
 
 // Response types
 export interface PaginatedUsersResponse {
