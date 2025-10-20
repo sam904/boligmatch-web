@@ -4,12 +4,14 @@ import userLogo from "/src/assets/userImages/footerLogo.svg";
 import userHeader from "/src/assets/userImages/userHeader.png";
 import userHeaderHamburger from "/src/assets/userImages/userHeaderHamburger.png";
 import UserModal from "../../../components/common/UserModal";
+import LoginChoiceModal from "../../../components/common/LoginChoiceModal";
 import { useTranslation } from "react-i18next";
 
 function UserHeader() {
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isChoiceModalOpen, setIsChoiceModalOpen] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [userData, setUserData] = useState<any>(null);
@@ -78,7 +80,7 @@ function UserHeader() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => setShowLangDropdown(!showLangDropdown)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors text-white"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors text-white cursor-pointer"
             >
               <span className="text-sm font-medium">
                 {currentLang.toUpperCase()}
@@ -98,13 +100,13 @@ function UserHeader() {
               </svg>
             </button>
             {showLangDropdown && (
-              <div className="absolute top-full right-30 mt-0 w-40 bg-white rounded-lg shadow-xl overflow-hidden z-50">
+              <div className="absolute top-full right-24 -mt-2 w-40 bg-white rounded-lg shadow-xl overflow-hidden z-50">
                 <button
                   onClick={() => {
                     i18n.changeLanguage("en");
                     setShowLangDropdown(false);
                   }}
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   English (EN)
                 </button>
@@ -113,7 +115,7 @@ function UserHeader() {
                     i18n.changeLanguage("da");
                     setShowLangDropdown(false);
                   }}
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   Dansk (DA)
                 </button>
@@ -154,7 +156,7 @@ function UserHeader() {
             ) : (
               <button
                 className="p-2 text-white transition-colors"
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => setIsChoiceModalOpen(true)}
               >
                 <img
                   src={userHeader}
@@ -180,6 +182,16 @@ function UserHeader() {
         </div>
       </header>
 
+      {/* Choice Modal */}
+      <LoginChoiceModal 
+        open={isChoiceModalOpen} 
+        onClose={() => setIsChoiceModalOpen(false)}
+        onSelect={() => {
+          setIsChoiceModalOpen(false);
+          setIsModalOpen(true);
+        }}
+      />
+      
       {/* User Modal */}
       <UserModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>

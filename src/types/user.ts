@@ -24,6 +24,8 @@ export interface CreateUserRequest {
   lastName: string;
   email: string;
   mobileNo: string;
+  // Optional: required for self-signup, not required for admin edits
+  password?: string;
   isActive: boolean;
   role?: number;
   roleIds?: string;
@@ -32,6 +34,7 @@ export interface CreateUserRequest {
 export interface UpdateUserRequest extends CreateUserRequest {
   id: number;
 }
+
 
 // Response types
 export interface PaginatedUsersResponse {

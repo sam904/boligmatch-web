@@ -33,7 +33,9 @@
     "signIn": "Log ind",
     "loginTitle": "BoligMatch Login",
     "welcomeBack": "Velkommen tilbage",
-    "pleaseLogin": "Log venligst ind for at få adgang til systemet"
+    "pleaseLogin": "Log venligst ind for at få adgang til systemet",
+    "forgotPassword": "Har du glemt dit kodeord?",
+    "userRole":"Bruger"
   },
   "nav": {
     "home": "Hjem",
@@ -147,6 +149,15 @@
       "deleteError": "Kunne ikke slette partner underkategori"
     }
   },
+  "landing": {
+    "signUpButton": "Tilmeld dig her",
+    "mainTitle": "Gratis livsstilsunivers for bolig og fritid",
+    "subtitle": "Samlingssted for dygtige leverandører til boligen.",
+    "description": "Håndværkere, rådgivere, køkkenbrands, livsstilsprodukter og meget mere. Vi har samlet et bredt udvalg af boligens vigtigste leverandører, og præsenterer dem alle gennem korte profilvideoer, Trustpilot anmeldelser og let fordøjelige beskrivelser. Som boliginteresseret kan du således på en intuitiv måde med ganske få klik finde produkter og services blandt vores partnere, og det er vores håb, at vi dermed gør den ofte lidt udfordrende øvelse med at finde god og troværdig hjælp helt enkel og tryg. Vi har nemlig selv udvalgt og gennemgået hver enkelt partner. Velkommen til Boligmatch+.",
+    "transparentJourney": "Gennemskuelig boligrejse på et helt nyt niveau.",
+    "futureDescription": "I fremtiden kommer du som kunde hos Boligmatch også til at kunne følge din købs- eller salgsproces step for step på en intuitiv måde på Boligmatch+ platformen. Her får du et klart overblik over alle trin, aktiviteter og opgaver, så du altid ved, hvor du er i processen. Herud over kommer vi med nogle fordele, som ikke før er set i branchen. Opret dig gratis som bruger på Boligmatch+ her – så kan du allerede i dag komme igang med at søge efter leverandører, og samtidig automatisk holde dig opdateret om de kommende fordele.",
+    "contactInfo": "Teningve 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437"
+  },
   "validation": {
     "required": "Dette felt er påkrævet",
     "nameRequired": "Navn er påkrævet",
@@ -157,6 +168,34 @@
     "categoryRequired": "Kategori er påkrævet",
     "subcategoryRequired": "Underkategori er påkrævet",
     "partnerRequired": "Partner er påkrævet"
+  },
+  "signup": {
+    "title": "Opret dig som bruger",
+    "firstName": "Fornavn",
+    "lastName": "Efternavn",
+    "postalCode": "Postnr.",
+    "mobileNumber": "Mobilnr.",
+    "email": "Email",
+    "password": "Adgangskode",
+    "passwordRequirements": "Brug mindst 6 tegn (der skelnes mellem store og små bogstaver) med mindst et tal eller specialtegn.",
+    "termsText1": "Ved at oprette dig som bruger på Boligmatch+ accepterer du, at Boligmatch må kontakte dig om køb, salg og rådgivning om bolighandel via email, og sende nyhedsbreve med tilbud og fordele",
+    "termsText2": "Du accepterer samtidig vores vilkår og betingelser for opbevaring og behandling af data",
+    "acceptButton": "Acceptér",
+    "nameRequired": "Navn er påkrævet",
+    "postalCodeRequired": "Postnummer er påkrævet",
+    "mobileRequired": "Mobilnummer er påkrævet",
+    "emailRequired": "Email er påkrævet",
+    "emailInvalid": "Ugyldig email adresse",
+    "passwordRequired": "Adgangskode er påkrævet",
+    "passwordMinLength": "Adgangskode skal være mindst 6 tegn"
+  }
+  ,
+  "userDashboard": {
+    "buttons": {
+      "partners": "Partnere",
+      "favorites": "Favoritter",
+      "messages": "Beskeder"
+    }
   }
 }
   
