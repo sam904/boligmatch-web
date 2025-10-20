@@ -189,5 +189,13 @@
     "passwordRequired": "Adgangskode er påkrævet",
     "passwordMinLength": "Adgangskode skal være mindst 6 tegn"
   }
+  ,
+  "userDashboard": {
+    "buttons": {
+      "partners": "Partnere",
+      "favorites": "Favoritter",
+      "messages": "Beskeder"
+    }
+  }
 }
   

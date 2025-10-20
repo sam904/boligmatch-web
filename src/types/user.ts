@@ -24,7 +24,8 @@ export interface CreateUserRequest {
   lastName: string;
   email: string;
   mobileNo: string;
-  password: string;
+  // Optional: required for self-signup, not required for admin edits
+  password?: string;
   isActive: boolean;
   role?: number;
   roleIds?: string;

@@ -19,6 +19,7 @@ import ELVagn from "../assets/userSupplier/EL-Vagn.png";
 import Denelektriskeduo from "../assets/userSupplier/Den elektriske duo.png";
 import Kabespecialisten from "../assets/userSupplier/Kabel-specialisten.png";
 import UserHeader from "../features/users/UserPages/UserHeader";
+import { useNavigate } from "react-router-dom";
 
 interface Category {
   name: string;
@@ -32,7 +33,8 @@ interface Service {
 }
 
 // --- Card component ---
-const ServiceCard: React.FC<Service> = ({ icon, title, description }) => (
+type ServiceCardProps = Service & { onMoreInfo: () => void };
+const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, onMoreInfo }) => (
   <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 w-[380px] h-[430px] flex flex-col items-center justify-between p-8 text-center">
     <img src={icon} alt={title} className="w-23 h-20 mt-4" />
 
@@ -41,7 +43,10 @@ const ServiceCard: React.FC<Service> = ({ icon, title, description }) => (
       <p className="text-gray-600  leading-relaxed">{description}</p>
     </div>
 
-    <button className="font-bold text-black mt-6 mb-4 hover:underline">
+    <button
+      onClick={onMoreInfo}
+      className="font-bold text-black mt-6 mb-4 hover:underline cursor-pointer"
+    >
       More info
     </button>
   </div>
@@ -49,6 +54,7 @@ const ServiceCard: React.FC<Service> = ({ icon, title, description }) => (
 
 const UserSupplier = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
   console.log("isScrolled", isScrolled);
   const [active, setActive] = useState("Elektriker");
 
@@ -120,10 +126,9 @@ const UserSupplier = () => {
             key={cat.name}
             onClick={() => setActive(cat.name)}
             className={`flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-300 text-white
-              ${
-                active === cat.name
-                  ? "bg-[#b6e924] text-black shadow-lg scale-105"
-                  : "hover:text-[#b6e924] hover:bg-white/10"
+              ${active === cat.name
+                ? "bg-[#b6e924] text-black shadow-lg scale-105"
+                : "hover:text-[#b6e924] hover:bg-white/10"
               }`}
           >
             <img src={cat.icon} alt={cat.name} className="w-7 h-7" />
@@ -135,7 +140,11 @@ const UserSupplier = () => {
       <section className="bg-[#0b3b35] w-full flex justify-center ">
         <div className="flex flex-wrap justify-start gap-10 max-w-7xl">
           {services.map((service, idx) => (
-            <ServiceCard key={idx} {...service} />
+            <ServiceCard
+              key={idx}
+              {...service}
+              onMoreInfo={() => navigate("/userDashboard/supplier-profile")}
+            />
           ))}
         </div>
       </section>

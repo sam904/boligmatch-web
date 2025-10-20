@@ -36,7 +36,7 @@ const ServiceCarousel: React.FC = () => {
     },
     {
       id: 3,
-      title: "Håndværkere",
+      title: "Håndværkeresdsds",
       description:
         "Tømrer, murer, elektriker, VVS, maler, glarmester, handyman, fugemand",
       icon: swaperIcons3,

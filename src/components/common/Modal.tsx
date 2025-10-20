@@ -1,6 +1,5 @@
 // src/components/common/Modal.tsx
 import type { ReactNode } from 'react';
-import Button from './Button';
 
 type Props = {
   open: boolean;
@@ -13,8 +12,6 @@ type Props = {
 
 export default function Modal({ 
   open, 
-  title, 
-  onClose, 
   children, 
   maxHeight = "85vh", 
   maxWidth = "max-w-4xl" 

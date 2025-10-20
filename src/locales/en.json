@@ -177,6 +177,13 @@
     "emailInvalid": "Invalid email address",
     "passwordRequired": "Password is required",
     "passwordMinLength": "Password must be at least 6 characters"
+  },
+  "userDashboard": {
+    "buttons": {
+      "partners": "Partners",
+      "favorites": "Saved as favorite",
+      "messages": "Messages"
+    }
   }
 }
   
