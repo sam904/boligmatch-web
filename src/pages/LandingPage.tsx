@@ -9,14 +9,10 @@ import landingPageIcons2 from "/src/assets/userImages/2.svg";
 import landingPageIcons3 from "/src/assets/userImages/3.svg";
 import landingPageIcons4 from "/src/assets/userImages/4.svg";
 import { useTranslation } from "react-i18next";
-import LoginChoiceModal from "../components/common/LoginChoiceModal";
-import UserModal from "../components/common/UserModal";
 import SignUpModal from "../components/common/SignUpModal";
 
 export default function LandingPage() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [showLoginChoice, setShowLoginChoice] = useState(false);
-  const [showUserModal, setShowUserModal] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const { t } = useTranslation();
   
@@ -31,12 +27,6 @@ export default function LandingPage() {
       }}
     >
       <UserHeader />
-      <LoginChoiceModal 
-        open={showLoginChoice} 
-        onClose={() => setShowLoginChoice(false)} 
-        onSelect={() => { setShowLoginChoice(false); setShowUserModal(true); }}
-      />
-      <UserModal open={showUserModal} onClose={() => setShowUserModal(false)} />
       <SignUpModal open={showSignUpModal} onClose={() => setShowSignUpModal(false)} />
       <div className="absolute top-22 left-36 flex max-w-6xl mx-auto px-12 justify-between mt-0 h-[calc(100vh-100vh)]">
         <div>
@@ -59,7 +49,7 @@ export default function LandingPage() {
         <div className="flex justify-center">
           <button 
             onClick={() => setShowSignUpModal(true)}
-            className="bg-[#91C73D] rounded-lg px-4 font-semibold py-2 text-white hover:bg-[#7fb32d] transition-colors"
+            className="bg-[#91C73D] rounded-lg cursor-pointer px-4 font-semibold py-2 text-white hover:bg-[#7fb32d] transition-colors"
           >
             {t('landing.signUpButton')}
           </button>

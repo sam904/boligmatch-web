@@ -43,11 +43,10 @@ export default function UserModal({ open, onClose }: UserModalProps) {
   React.useEffect(() => {
     if (token && user) {
       onClose();
-      if (
-        user.roleName.toLowerCase() === "user" ||
-        user.roleName.toLowerCase() === "partner"
-      ) {
+      if (user.roleName.toLowerCase() === "user") {
         // navigate("/userDashboard/dashboard");
+      } else if (user.roleName.toLowerCase() === "partner") {
+        // navigate("/partnerDashboard");
       } else {
         navigate("/");
       }

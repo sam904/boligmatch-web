@@ -12,6 +12,7 @@ type Props = {
 
 export default function Modal({ 
   open, 
+  onClose,
   children, 
   maxHeight = "85vh", 
   maxWidth = "max-w-4xl" 
@@ -19,8 +20,15 @@ export default function Modal({
   if (!open) return null;
   
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div className={`w-full ${maxWidth} rounded-lg shadow-xl p-6 mx-4`} style={{ maxHeight: maxHeight }}>
+    <div 
+      className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+      onClick={onClose}
+    >
+      <div 
+        className={`w-full ${maxWidth} rounded-lg shadow-xl p-6 mx-4`} 
+        style={{ maxHeight: maxHeight }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none]" style={{ maxHeight: `calc(${maxHeight} - 100px)` }}>
           <div className="[-webkit-overflow-scrolling:touch]">
             {/* Hide scrollbar for Webkit browsers */}
