@@ -1,3 +1,4 @@
+// src/services/user.service.ts
 import { http } from './http.service';
 import type { 
   User, 
@@ -12,10 +13,8 @@ export const userService = {
   getAll: (includeInActive = false) =>
     http.get<User[]>(`/User/getAllUsers?includeInActive=${includeInActive}`),
   
-  // Use proper types for adding users
   add: (body: CreateUserRequest) => http.post<User>(`/User/addUser`, body),
   
-  // Use proper types for updating users
   update: (body: UpdateUserRequest) => http.put<User>(`/User/updateUser`, body),
   
   remove: (id: number) => http.delete<void>(`/User/DeleteUser/${id}`),
@@ -25,24 +24,15 @@ export const userService = {
     pageSize: number;
     searchTerm?: string;
   }) => http.post<PaginatedUsersResponse>(`/User/getPaginatedUsers`, query),
+
+  resetUserPassword: (data: { 
+    email: string; 
+    newPassword: string;
+  }) => http.post<boolean>(`/Password/resetPassword`, {
+    email: data.email,
+    newPassword: data.newPassword,
+    hash: "",
+    salt: "",
+    otp: 0,
+  }),
 };
-
-
-
-
-
-
-// // src/services/user.service.ts
-// import { http } from './http.service';
-// import type { User } from '../types/user';
-
-// export const userService = {
-//   getById: (id: number) => http.get<User>(`/User/getUserById/${id}`),
-//   getAll: (includeInActive = false) =>
-//     http.get<User[]>(`/User/getAllUsers?includeInActive=${includeInActive}`),
-//   add: (body: Omit<User, 'userId'>) => http.post<User>(`/User/addUser`, body),
-//   update: (body: User) => http.put<User>(`/User/updateUser`, body),
-//   remove: (id: number) => http.delete<void>(`/User/DeleteUser/${id}`),
-//   getPaginated: (query: any) =>
-//     http.post<{ items: User[]; total: number }>(`/User/getPaginatedUsers`, query),
-// };

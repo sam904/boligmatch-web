@@ -250,11 +250,43 @@ export default function CategoriesPage() {
   const handleDeleteCategory = (category: Category) => {
     if (!category.id) return;
     
+    const categoryName = translateCategory(category.name);
     const confirmMessage = t('admin.categories.deleteConfirm') || "Are you sure you want to delete this category?";
     
-    if (window.confirm(confirmMessage)) {
-      deleteMutation.mutate(category.id);
-    }
+    toast(
+      <div className="w-full">
+        <div className="font-semibold text-gray-900 mb-2">Confirm Deletion</div>
+        <div className="text-sm text-gray-600 mb-4">
+          {confirmMessage}
+          <br />
+          <strong>Category: {categoryName}</strong>
+        </div>
+        <div className="flex gap-2 justify-end">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => toast.dismiss()}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => {
+              deleteMutation.mutate(category.id);
+              toast.dismiss();
+            }}
+          >
+            Delete
+          </Button>
+        </div>
+      </div>,
+      {
+        duration: 10000, // 10 seconds
+        position: 'top-center',
+        closeButton: true,
+      }
+    );
   };
 
   const handleModalClose = () => {
@@ -374,16 +406,16 @@ export default function CategoriesPage() {
               setEditingCategory(row.original);
               setIsModalOpen(true);
             }}
-            className="p-2 text-gray-600 transition-colors"
-            title={t('common.edit') || "Edit user"}
+            className="p-2 text-gray-600 transition-colors hover:text-blue-600"
+            title={t('common.edit') || "Edit category"}
           >
             <FaEdit className="w-4 h-4" />
           </button>
           <button
             type="button"
             onClick={() => handleDeleteCategory(row.original)}
-            className="p-2 text-red-600 transition-colors"
-            title={t('common.delete') || "Delete user"}
+            className="p-2 text-red-600 transition-colors hover:text-red-700"
+            title={t('common.delete') || "Delete category"}
           >
             <FaTrash className="w-4 h-4" />
           </button>
