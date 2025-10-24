@@ -23,6 +23,9 @@ export const partnerService = {
   update: (data: PartnerDto) => 
     http.put<Partner>('/Partner/updatePartner', data),
   
+  refetchPartner: (id: number) => 
+    http.get<Partner>(`/Partner/getPartnerById/${id}`),
+  
   delete: (id: number) => 
     http.delete<void>(`/Partner/DeletePartner/${id}`),
 };

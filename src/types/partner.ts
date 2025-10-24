@@ -1,10 +1,14 @@
 // src/types/partner.ts
 
+// In your types/partner.ts file, update the Partner interface:
 export interface Partner {
   id: number;
   userId: number;
+  categoryId: number;
   address: string;
-  businessName: string; // NEW FIELD
+  businessName: string;
+  email: string;
+  mobileNo: number;
   businessUnit: number;
   videoUrl?: string;
   logoUrl?: string;
@@ -25,13 +29,18 @@ export interface Partner {
   createdDate: string;
   modifiedBy?: number | null;
   modifiedDate?: string | null;
+  parSubCatlst?: PartnerSubCategory[];
+  parDoclst?: PartnerDocument[];
 }
 
 export interface PartnerDto {
   id?: number;
   userId: number;
+  categoryId: number;
   address: string;
-  businessName: string; // NEW FIELD
+  businessName: string;
+  email: string;
+  mobileNo: number;
   businessUnit: number;
   videoUrl?: string;
   logoUrl?: string;
@@ -49,28 +58,32 @@ export interface PartnerDto {
   imageUrl5?: string;
   isActive: boolean;
   createdBy?: number;
-  parSubCatlst?: Array<{
-    id?: number;
-    patnerId?: number;
-    subCategoryId: number;
-    isActive: boolean;
-  }>;
+  parSubCatlst?: PartnerSubCategory[];
+  parDoclst?: PartnerDocument[];
+}
+export interface PartnerSubCategory {
+  id?: number;
+  partnerId?: number;
+  subCategoryId: number;
+  isActive: boolean;
+  subCategories?: string;
+  categorys?: string;
 }
 
-export interface PartnerSubCategory {
-  id: number;
-  partnerId: number;
-  partnerName?: string;
-  subCategoryId: number;
-  subCategoryName?: string;
-  categoryId?: number;
-  categoryName?: string;
+
+export interface PartnerDocument {
+  id?: number;
+  partnerId?: number;
+  documentName: string;
+  documentUrl: string;
   isActive: boolean;
 }
 
+
+
 export interface PartnerSubCategoryDto {
   id?: number;
-  partnerId: number;
+  partnerId: number; // FIXED TYPO: patnerId -> partnerId
   subCategoryId: number;
   isActive: boolean;
 }
