@@ -10,6 +10,8 @@
     "update": "Update",
     "add": "Add",
     "search": "Search",
+    "export": "Export",
+    "exporting": "Exporting...",
     "actions": "Actions",
     "status": "Status",
     "active": "Active",
@@ -71,7 +73,7 @@
       "addCategory": "Add Category",
       "editCategory": "Edit Category",
       "name": "Name",
-      "description": "Desscription",
+      "description": "Description",
       "imageUrl": "Image Upload",
       "iconUrl": "Icon Upload",
       "image": "Image",
@@ -97,7 +99,7 @@
       "image": "Image",
       "icon": "Icon",
       "id": "ID",
-      "deleteConfirm": "Delete this subcategory?",
+      "deleteConfirm": "Are you sure you want to delete this subcategory?",
       "createSuccess": "SubCategory created successfully",
       "updateSuccess": "SubCategory updated successfully",
       "deleteSuccess": "SubCategory deleted successfully",
@@ -118,7 +120,7 @@
       "zipCode": "Zip Code",
       "imageUrl": "Image URL",
       "id": "ID",
-      "deleteConfirm": "Delete this partner?",
+      "deleteConfirm": "Are you sure you want to delete this partner?",
       "createSuccess": "Partner created successfully",
       "updateSuccess": "Partner updated successfully",
       "deleteSuccess": "Partner deleted successfully",
@@ -129,13 +131,16 @@
     "users": {
       "title": "Users",
       "subtitle": "View all users",
+      "name": "Name",
       "editUser": "Edit User",
       "firstName": "First Name",
       "lastName": "Last Name",
       "email": "Email",
       "mobileNo": "Mobile No",
       "role": "Role",
-      "id": "ID"
+      "resetPassword": "Reset Password",
+      "id": "ID",
+      "deleteConfirm": "Are you sure you want to delete this user?"
     }
   },
   "landing": {

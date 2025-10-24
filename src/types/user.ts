@@ -5,7 +5,7 @@ export interface User {
   userId: number;
   firstName: string;
   lastName: string;
-  email?: string;
+  email: string;
   mobileNo?: string;
   avatar?: string;
   role: number;
@@ -35,6 +35,14 @@ export interface UpdateUserRequest extends CreateUserRequest {
   id: number;
 }
 
+// Password reset types
+export interface ResetPasswordRequest {
+  email: string;
+  newPassword: string;
+  hash: string;
+  salt: string;
+  otp: number;
+}
 
 // Response types
 export interface PaginatedUsersResponse {

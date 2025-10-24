@@ -279,11 +279,43 @@ export default function SubCategoriesPage() {
   const handleDeleteSubCategory = (subCategory: SubCategory) => {
     if (!subCategory.id) return;
     
+    const subCategoryName = translateSubCategory(subCategory.name);
     const confirmMessage = t('admin.subcategories.deleteConfirm') || 'Are you sure you want to delete this subcategory?';
     
-    if (window.confirm(confirmMessage)) {
-      deleteMutation.mutate(subCategory.id);
-    }
+    toast(
+      <div className="w-full">
+        <div className="font-semibold text-gray-900 mb-2">Confirm Deletion</div>
+        <div className="text-sm text-gray-600 mb-4">
+          {confirmMessage}
+          <br />
+          <strong>Subcategory: {subCategoryName}</strong>
+        </div>
+        <div className="flex gap-2 justify-end">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => toast.dismiss()}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => {
+              deleteMutation.mutate(subCategory.id);
+              toast.dismiss();
+            }}
+          >
+            Delete
+          </Button>
+        </div>
+      </div>,
+      {
+        duration: 10000, // 10 seconds
+        position: 'top-center',
+        closeButton: true,
+      }
+    );
   };
 
   const handleModalClose = () => {
@@ -414,16 +446,16 @@ export default function SubCategoriesPage() {
               setEditingSubCategory(row.original);
               setIsModalOpen(true);
             }}
-            className="p-2 text-gray-600 transition-colors"
-            title={t('common.edit') || "Edit user"}
+            className="p-2 text-gray-600 transition-colors hover:text-blue-600"
+            title={t('common.edit') || "Edit subcategory"}
           >
             <FaEdit className="w-4 h-4" />
           </button>
           <button
             type="button"
             onClick={() => handleDeleteSubCategory(row.original)}
-            className="p-2 text-red-600 transition-colors"
-            title={t('common.delete') || "Delete user"}
+            className="p-2 text-red-600 transition-colors hover:text-red-700"
+            title={t('common.delete') || "Delete subcategory"}
           >
             <FaTrash className="w-4 h-4" />
           </button>
