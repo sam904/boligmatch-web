@@ -1,6 +1,6 @@
 // src/components/common/Modal.tsx
 import type { ReactNode } from 'react';
-import Button from './Button';
+// import Button from './Button';
 
 type Props = {
   open: boolean;

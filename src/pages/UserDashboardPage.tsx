@@ -26,7 +26,8 @@ export default function UserDashboardPage() {
   >("default");
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [fav, setFav] = useState();
+  // const [fav, setFav] = useState();
+  // console.log("fav", fav);
 
   useEffect(() => {
     // Get user data from localStorage
@@ -72,7 +73,7 @@ export default function UserDashboardPage() {
           setLoading(true);
           const favData = await favouritesService.getById(user.userId);
           console.log("Favourite data:", favData);
-          setFav(favData);
+          // setFav(favData?.output)
         }
       } catch (error) {
         console.error("Error fetching user or favourite data:", error);

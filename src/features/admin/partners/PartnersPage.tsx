@@ -357,6 +357,7 @@ export default function PartnersPage() {
   const updateMutation = useMutation({
     mutationFn: partnerService.update,
     onSuccess: (data, variables) => {
+      console.log("data", data);
       queryClient.invalidateQueries({ queryKey: ['partners'] });
       queryClient.invalidateQueries({ queryKey: ['partner', variables.id] });
       toast.success(t('admin.partners.updateSuccess') || 'Partner updated successfully');

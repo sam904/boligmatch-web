@@ -6,7 +6,7 @@ import supplierProfile from "../assets/supplierProfile/suppliier-profile-hero.pn
 import heartIcon from "/src/assets/userImages/Lag_1.svg";
 import share from "../assets/supplierProfile/share.png";
 import chat from "../assets/supplierProfile/chat.png";
-import { Star, MapPin, Info, Users } from "lucide-react";
+import { Star } from "lucide-react";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import { useTranslation } from "react-i18next";
 import shareModel from "/src/assets/userImages/shareModelImg.png";
@@ -23,6 +23,7 @@ const SupplierProfile = () => {
     null | "recommend" | "contact"
   >(null);
   const [isAddingToFavorites, setIsAddingToFavorites] = useState(false);
+  console.log('isAddingToFavorites', isAddingToFavorites)
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
