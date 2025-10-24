@@ -17,6 +17,7 @@ interface SearchableSelectControllerProps<T extends FieldValues> {
   disabled?: boolean;
   isClearable?: boolean;
   required?: boolean;
+  onChange?: (value: number | string) => void; // Add this line
 }
 
 export default function SearchableSelectController<T extends FieldValues>({
@@ -29,6 +30,7 @@ export default function SearchableSelectController<T extends FieldValues>({
   disabled = false,
   isClearable = false,
   required = false,
+  onChange, // Add this line
 }: SearchableSelectControllerProps<T>) {
   const customStyles: StylesConfig<Option, false> = {
     control: (base, state) => ({
@@ -72,39 +74,42 @@ export default function SearchableSelectController<T extends FieldValues>({
         </label>
       )}
     
-<Controller
-  name={name}
-  control={control}
-  render={({ field }) => {
-    // Find the selected option based on field value
-    const selectedOption = options.find(option => 
-      option.value === field.value
-    );
+      <Controller
+        name={name}
+        control={control}
+        render={({ field }) => {
+          // Find the selected option based on field value
+          const selectedOption = options.find(option => 
+            option.value === field.value
+          );
 
-    return (
-      <Select
-        {...field}
-        options={options}
-        value={selectedOption}
-        onChange={(selected) => {
-          // Update the form field with the selected value
-          field.onChange(selected?.value || 0);
+          return (
+            <Select
+              {...field}
+              options={options}
+              value={selectedOption}
+              onChange={(selected) => {
+                const newValue = selected?.value || 0;
+                // Update the form field with the selected value
+                field.onChange(newValue);
+                // Call the custom onChange callback if provided
+                onChange?.(newValue);
+              }}
+              onBlur={field.onBlur}
+              placeholder={placeholder}
+              styles={customStyles}
+              isDisabled={disabled}
+              isClearable={isClearable}
+              isSearchable={true}
+              noOptionsMessage={({ inputValue }) =>
+                inputValue ? 'No options found' : 'No options available'
+              }
+              // Add this to ensure proper handling of empty value
+              isOptionSelected={(option) => option.value === field.value}
+            />
+          );
         }}
-        onBlur={field.onBlur}
-        placeholder={placeholder}
-        styles={customStyles}
-        isDisabled={disabled}
-        isClearable={isClearable}
-        isSearchable={true}
-        noOptionsMessage={({ inputValue }) =>
-          inputValue ? 'No options found' : 'No options available'
-        }
-        // Add this to ensure proper handling of empty value
-        isOptionSelected={(option) => option.value === field.value}
       />
-    );
-  }}
-/>
       {error && (
         <p className="mt-1 text-sm text-red-600">{error}</p>
       )}
