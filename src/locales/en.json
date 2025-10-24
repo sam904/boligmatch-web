@@ -184,6 +184,39 @@
       "favorites": "Saved as favorite",
       "messages": "Messages"
     }
-  }
+  },
+  "supplierProfile": {
+    "contactButton": "Contact Supplier",
+    "saveFavoriteButton": "Save as Favorite",
+    "recommendation":"Recommend us to others",
+    "conversation":"Conversations",
+    "recommendModal": {
+      "title": "Recommend us to others",
+      "description": "Do you think a friend could use our service? Send them a message here",
+      "email": "Email",
+      "comment": "Comment",
+      "send": "Send"
+    },
+    "contactModal": {
+      "title": "Contact us",
+      "description": "Send us a short description of your project. We will contact you as soon as possible for a non-binding chat. We look forward to helping you.",
+      "subject": "Subject",
+      "body": "Description",
+      "send": "Send",
+      "contactInfo": "Contact information"
+    }
+  },
+ "sidebar": {
+  "home": "Home",
+  "dashboard": "Dashboard",
+  "favourites": "Favourites",
+  "partners": "Partners",
+  "messages": "Messages",
+  "profileSettings": "Profile Settings",
+  "privacyPolicy": "Privacy Policy",
+  "termsOfService": "Terms of Service",
+  "signOut": "Sign Out"
+}
+
 }
   

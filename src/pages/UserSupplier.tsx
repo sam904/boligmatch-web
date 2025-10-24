@@ -14,10 +14,6 @@ import Tomrer from "../assets/userSupplier/Tømrer.png";
 import Murer from "../assets/userSupplier/Murer.png";
 import VVS from "../assets/userSupplier/VVS.png";
 import JimmysELservice from "../assets/userSupplier/Jimmys EL-service.png";
-import ElektrikerJohn from "../assets/userSupplier/ElektrikerJohn.png";
-import ELVagn from "../assets/userSupplier/EL-Vagn.png";
-import Denelektriskeduo from "../assets/userSupplier/Den elektriske duo.png";
-import Kabespecialisten from "../assets/userSupplier/Kabel-specialisten.png";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import { useNavigate } from "react-router-dom";
 
@@ -32,15 +28,29 @@ interface Service {
   description: string;
 }
 
+interface SubCategoryData {
+  category: string;
+  categoryDescription: string;
+  subCategory: string;
+  subCategoryDescription: string;
+}
+
 // --- Card component ---
 type ServiceCardProps = Service & { onMoreInfo: () => void };
-const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, onMoreInfo }) => (
-  <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 w-[380px] h-[430px] flex flex-col items-center justify-between p-8 text-center">
-    <img src={icon} alt={title} className="w-23 h-20 mt-4" />
+const ServiceCard: React.FC<ServiceCardProps> = ({
+  icon,
+  title,
+  description,
+  onMoreInfo,
+}) => (
+  <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-[413px] h-[453px] flex flex-col items-center justify-between p-8 text-center">
+    <div className="mt-[48.46px]">
+      <img src={icon} alt={title} className="w-16 h-16" />
+    </div>
 
-    <div>
-      <h3 className="text-2xl font-bold text-gray-900 mb-3 ">{title}</h3>
-      <p className="text-gray-600  leading-relaxed">{description}</p>
+    <div className="flex-1 flex flex-col justify-center">
+      <h3 className="text-2xl font-bold text-gray-900 mb-3">{title}</h3>
+      <p className="text-gray-600 leading-relaxed">{description}</p>
     </div>
 
     <button
@@ -57,6 +67,8 @@ const UserSupplier = () => {
   const navigate = useNavigate();
   console.log("isScrolled", isScrolled);
   const [active, setActive] = useState("Elektriker");
+  const [subCategories, setSubCategories] = useState<SubCategoryData[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const categories: Category[] = [
     { name: "Tømrer", icon: Tomrer },
@@ -69,38 +81,30 @@ const UserSupplier = () => {
     { name: "Fugemand", icon: Fugemand },
   ];
 
-  const services: Service[] = [
-    {
-      icon: JimmysELservice,
-      title: "Jimmys EL–service",
-      description:
-        "Omnimus voluptate quatem nisquas acipsum sinicta epudae la aliquodi repella des et etur, occus dolorem spelene cturiandaeXim repudae et aped ma ationsequ...",
-    },
-    {
-      icon: ElektrikerJohn,
-      title: "ElektrikerJohn",
-      description:
-        "Omnimus voluptate quatem nisquas acipsum sinicta epudae la aliquodi repella des et etur, occus dolorem spelene cturiandaeXim repudae et aped ma ationsequ...",
-    },
-    {
-      icon: ELVagn,
-      title: "EL–Vagn",
-      description:
-        "Omnimus voluptate quatem nisquas acipsum sinicta epudae la aliquodi repella des et etur, occus dolorem spelene cturiandaeXim repudae et aped ma ationsequ...",
-    },
-    {
-      icon: Denelektriskeduo,
-      title: "Den elektriske duo",
-      description:
-        "Omnimus voluptate quatem nisquas acipsum sinicta epudae la aliquodi repella des et etur, occus dolorem spelene cturiandaeXim repudae et aped ma ationsequ...",
-    },
-    {
-      icon: Kabespecialisten,
-      title: "Kabel–specialisten",
-      description:
-        "Omnimus voluptate quatem nisquas acipsum sinicta epudae la aliquodi repella des et etur, occus dolorem spelene cturiandaeXim repudae et aped ma ationsequ...",
-    },
-  ];
+  // Load subcategories from localStorage
+  useEffect(() => {
+    const loadSubCategories = () => {
+      try {
+        const subCategoriesData = localStorage.getItem("bm_subcategories");
+        console.log(
+          "Raw subcategories data from localStorage:",
+          subCategoriesData
+        );
+        if (subCategoriesData) {
+          const parsedData = JSON.parse(subCategoriesData);
+          setSubCategories(parsedData.output);
+        } else {
+          console.log("No subcategories data found in localStorage");
+        }
+      } catch (error) {
+        console.error("Error loading subcategories from localStorage:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSubCategories();
+  }, []);
 
   // Sticky navbar effect
   useEffect(() => {
@@ -126,9 +130,10 @@ const UserSupplier = () => {
             key={cat.name}
             onClick={() => setActive(cat.name)}
             className={`flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-300 text-white
-              ${active === cat.name
-                ? "bg-[#b6e924] text-black shadow-lg scale-105"
-                : "hover:text-[#b6e924] hover:bg-white/10"
+              ${
+                active === cat.name
+                  ? "bg-[#b6e924] text-black shadow-lg scale-105"
+                  : "hover:text-[#b6e924] hover:bg-white/10"
               }`}
           >
             <img src={cat.icon} alt={cat.name} className="w-7 h-7" />
@@ -137,15 +142,37 @@ const UserSupplier = () => {
         ))}
       </section>
 
-      <section className="bg-[#0b3b35] w-full flex justify-center ">
-        <div className="flex flex-wrap justify-start gap-10 max-w-7xl">
-          {services.map((service, idx) => (
-            <ServiceCard
-              key={idx}
-              {...service}
-              onMoreInfo={() => navigate("/userDashboard/supplier-profile")}
-            />
-          ))}
+      <section className="bg-[#0b3b35] w-full flex justify-center py-12">
+        <div className="grid grid-cols-3 gap-10 max-w-7xl px-8">
+          {loading ? (
+            <div className="col-span-3 flex justify-center items-center h-64">
+              <div className="text-white text-lg">Loading subcategories...</div>
+            </div>
+          ) : subCategories.length > 0 ? (
+            <>
+              {console.log("Rendering subcategories:", subCategories)}
+              {subCategories.map((subCategory, idx) => {
+                console.log(`Rendering subcategory ${idx}:`, subCategory);
+                return (
+                  <ServiceCard
+                    key={idx}
+                    icon={JimmysELservice} 
+                    title={subCategory.subCategory}
+                    description={subCategory.subCategoryDescription}
+                    onMoreInfo={() =>
+                      navigate("/userDashboard/supplier-profile")
+                    }
+                  />
+                );
+              })}
+            </>
+          ) : (
+            <div className="col-span-3 flex justify-center items-center h-64">
+              <div className="text-white text-lg">
+                No subcategories available
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

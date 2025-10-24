@@ -196,6 +196,40 @@
       "favorites": "Favoritter",
       "messages": "Beskeder"
     }
-  }
+  },
+  "supplierProfile": {
+    "contactButton": "Kontakt Leverandør",
+    "saveFavoriteButton": "Gem som Favorit",
+    "recommendation":"Anbefal os til andre",
+    "conversation":"Samtaler",
+    "recommendModal": {
+      "title": "Anbefal os til andre",
+      "description": "Teanker du at en ven kunne gøre brug af vores service, så send en besked til vedkommende her",
+      "email": "Email",
+      "comment": "Kommentar",
+      "send": "Send"
+    },
+    "contactModal": {
+      "title": "Kontakt os",
+      "description": "Send os en kort beskrivelse af dit projekt. Så tager vi kontakt dig hurtigst muligt for en uforpligtende snak. Vi glæder os til at hjælpe dig.",
+      "subject": "Emne",
+      "body": "Beskrivelse",
+      "send": "Send",
+      "contactInfo": "Kontaktinformation"
+    }
+   
+  },
+ "sidebar": {
+  "home": "Hjem",
+  "dashboard": "Betjeningspanel",
+  "favourites": "Favoritter",
+  "partners": "Partnere",
+  "messages": "Beskeder",
+  "profileSettings": "Profilindstillinger",
+  "privacyPolicy": "Privatlivspolitik",
+  "termsOfService": "Vilkår for brug",
+  "signOut": "Log ud"
+}
+
 }
   
