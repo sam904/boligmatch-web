@@ -20,7 +20,8 @@ import { useDbTranslation } from '../../../hooks/useDbTranslation';
 import { useDebounce } from '../../../hooks/useDebounce';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { SubCategory } from '../../../types/subcategory';
-import { FaEdit, FaTrash } from "react-icons/fa";
+import Select from '../../../components/common/Select';
+import { IconTrash, IconPencil } from '../../../components/common/Icons/Index';
 
 // Enhanced validation schema
 const subCategorySchema = z.object({
@@ -85,7 +86,7 @@ export default function SubCategoriesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSubCategory, setEditingSubCategory] = useState<SubCategory | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('active'); // Add status filter state
   const [previewImage, setPreviewImage] = useState<{ url: string; isOpen: boolean }>({
@@ -259,11 +260,6 @@ export default function SubCategoriesPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-  };
-
-  const handlePageSizeChange = (size: number) => {
-    setPageSize(size);
-    setCurrentPage(1);
   };
 
   const handleSearchChange = (term: string) => {
@@ -446,18 +442,18 @@ export default function SubCategoriesPage() {
               setEditingSubCategory(row.original);
               setIsModalOpen(true);
             }}
-            className="p-2 text-gray-600 transition-colors hover:text-blue-600"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t('common.edit') || "Edit subcategory"}
           >
-            <FaEdit className="w-4 h-4" />
+             <IconPencil/>
           </button>
           <button
             type="button"
             onClick={() => handleDeleteSubCategory(row.original)}
-            className="p-2 text-red-600 transition-colors hover:text-red-700"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t('common.delete') || "Delete subcategory"}
           >
-            <FaTrash className="w-4 h-4" />
+            <IconTrash/>
           </button>
         </div>
       ),
@@ -467,7 +463,7 @@ export default function SubCategoriesPage() {
   return (
     <div className="p-3">
       {/* Header Section */}
-      <div className="bg-white rounded-lg shadow-lg p-2 mb-2">
+      <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
           {/* Left side: Title */}
           <div>
@@ -479,15 +475,15 @@ export default function SubCategoriesPage() {
           <div className="flex items-center gap-4">
             {/* Status Filter Dropdown */}
             <div className="w-32">
-              <select 
+              <Select 
                 value={statusFilter}
                 onChange={(e) => handleStatusFilterChange(e.target.value as 'all' | 'active' | 'inactive')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#91C73D] focus:ring-2 focus:ring-[#91C73D]/20 focus:outline-none transition-colors duration-200"
               >
                 <option value="active">{t('common.active') || "Active"}</option>
                 <option value="inactive">{t('common.inactive') || "Inactive"}</option>
                 <option value="all">{t('common.all') || "All"}</option>
-              </select>
+              </Select>
             </div>
 
             <div className="w-64">
@@ -526,7 +522,6 @@ export default function SubCategoriesPage() {
               totalItems={totalItems}
               pageSize={pageSize}
               onPageChange={handlePageChange}
-              onPageSizeChange={handlePageSizeChange}
             />
           </div>
         </div>

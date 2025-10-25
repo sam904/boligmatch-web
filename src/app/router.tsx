@@ -21,6 +21,7 @@ import PartnerProfileShortcut from "../features/partners/PartnerPages/PartnerPro
 import SearchForPartner from "../features/partners/PartnerPages/SearchForPartner";
 import UserSupplier from "../pages/UserSupplier";
 import SupplierProfile from "../pages/SupplierProfile";
+import DashboardPage from "../features/admin/dashboard/DashboardPage";
 
 const router = createBrowserRouter([
   {
@@ -74,6 +75,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <CategoriesPage /> },
+      { path: "dashboard", element: <DashboardPage /> },
       { path: "categories", element: <CategoriesPage /> },
       { path: "subcategories", element: <SubCategoriesPage /> },
       { path: "partners", element: <PartnersPage /> },
