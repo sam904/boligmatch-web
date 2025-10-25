@@ -14,16 +14,35 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { FaEdit, FaTrash, FaFileExport, FaKey } from "react-icons/fa";
+import { FaFileExport, FaKey } from "react-icons/fa";
+import { IconTrash, IconPencil } from '../../../components/common/Icons/Index';
 import type { ColumnDef } from "@tanstack/react-table";
 import type { User } from "../../../types/user";
 import { exportToExcel } from "../../../utils/export.utils";
+import Select from "../../../components/common/Select";
 
 const userSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email address"),
-  mobileNo: z.string().min(1, "Mobile number is required"),
+  mobileNo: z
+    .string()
+    .min(1, "Mobile number is required")
+    .refine(
+      (value) => {
+        // Handle empty string case
+        if (!value) return false;
+
+        // Check if it's exactly "0" or a 10-digit number
+        if (value === "0") return true;
+
+        // Check if it's exactly 10 digits
+        return /^\d{10}$/.test(value);
+      },
+      {
+        message: "Mobile number must be exactly 10 digits or 0 (if optional)",
+      }
+    ),
   isActive: z.boolean(),
 });
 
@@ -48,7 +67,7 @@ export default function UsersListPage() {
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [resettingUser, setResettingUser] = useState<User | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
@@ -257,11 +276,6 @@ export default function UsersListPage() {
     setCurrentPage(page);
   };
 
-  const handlePageSizeChange = (size: number) => {
-    setPageSize(size);
-    setCurrentPage(1);
-  };
-
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
     setCurrentPage(1);
@@ -279,7 +293,7 @@ export default function UsersListPage() {
     const confirmMessage =
       t("admin.users.deleteConfirm") ||
       "Are you sure you want to delete this user?";
-    
+
     // Use Sonner toast for confirmation instead of window.confirm
     toast(
       <div className="w-full">
@@ -292,11 +306,7 @@ export default function UsersListPage() {
           <span className="text-xs">Email: {user.email}</span>
         </div>
         <div className="flex gap-2 justify-end">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => toast.dismiss()}
-          >
+          <Button variant="secondary" size="sm" onClick={() => toast.dismiss()}>
             Cancel
           </Button>
           <Button
@@ -313,7 +323,7 @@ export default function UsersListPage() {
       </div>,
       {
         duration: 10000, // 10 seconds
-        position: 'top-center',
+        position: "top-center",
         closeButton: true,
       }
     );
@@ -452,16 +462,16 @@ export default function UsersListPage() {
               setEditingUser(row.original);
               setIsModalOpen(true);
             }}
-            className="p-2 text-gray-600 transition-colors hover:text-blue-600"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("common.edit") || "Edit user"}
           >
-            <FaEdit className="w-4 h-4" />
+           <IconPencil/>
           </button>
           <button
             type="button"
             onClick={() => handleResetPassword(row.original)}
             disabled={resetPasswordMutation.isPending}
-            className="p-2 text-green-600 transition-colors hover:text-green-700 disabled:opacity-50"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("admin.users.resetPassword") || "Reset Password"}
           >
             <FaKey className="w-4 h-4" />
@@ -469,10 +479,10 @@ export default function UsersListPage() {
           <button
             type="button"
             onClick={() => handleDeleteUser(row.original)}
-            className="p-2 text-red-600 transition-colors hover:text-red-700"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("common.delete") || "Delete user"}
           >
-            <FaTrash className="w-4 h-4" />
+            <IconTrash/>
           </button>
         </div>
       ),
@@ -482,7 +492,7 @@ export default function UsersListPage() {
   return (
     <div className="p-3">
       {/* Header Section */}
-      <div className="bg-white rounded-lg shadow-lg p-2 mb-2">
+      <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
           {/* Left side: Title */}
           <div>
@@ -498,21 +508,21 @@ export default function UsersListPage() {
           <div className="flex items-center gap-4">
             {/* Status Filter Dropdown */}
             <div className="w-32">
-              <select
+              <Select
                 value={statusFilter}
                 onChange={(e) =>
                   handleStatusFilterChange(
                     e.target.value as "all" | "active" | "inactive"
                   )
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#91C73D] focus:ring-2 focus:ring-[#91C73D]/20 focus:outline-none transition-colors duration-200"
               >
                 <option value="active">{t("common.active") || "Active"}</option>
                 <option value="inactive">
                   {t("common.inactive") || "Inactive"}
                 </option>
                 <option value="all">{t("common.all") || "All"}</option>
-              </select>
+              </Select>
             </div>
 
             <div className="w-64">
@@ -528,9 +538,10 @@ export default function UsersListPage() {
               size="md"
               onClick={handleExportUsers}
               disabled={isExporting}
-              className="flex items-center gap-2 whitespace-nowrap"
+              className="flex items-center justify-center gap-3 whitespace-nowrap min-w-[140px] px-6 py-2.5"
+              icon={FaFileExport}
+              iconPosition="left"
             >
-              <FaFileExport className="w-4 h-4" />
               {isExporting
                 ? t("common.exporting") || "Exporting..."
                 : t("common.export") || "Export"}
@@ -561,7 +572,6 @@ export default function UsersListPage() {
               totalItems={totalItems}
               pageSize={pageSize}
               onPageChange={handlePageChange}
-              onPageSizeChange={handlePageSizeChange}
             />
           </div>
         </div>

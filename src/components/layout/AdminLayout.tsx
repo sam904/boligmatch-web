@@ -43,24 +43,39 @@ export default function AdminLayout() {
         </div>
         
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+          {/* Dashboard */}
+          <NavLink to="/admin/dashboard" className={navLinkClass} title={isCollapsed ? t('nav.dashboard') : ''}>
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2zm0 8l2.5-1.5L8 15l3.5-4.5 5 6" />
+            </svg>
+            {!isCollapsed && <span>{t('nav.dashboard')}</span>}
+          </NavLink>
+
+          {/* Categories */}
           <NavLink to="/admin/categories" className={navLinkClass} title={isCollapsed ? t('nav.categories') : ''}>
             <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
             {!isCollapsed && <span>{t('nav.categories')}</span>}
           </NavLink>
+
+          {/* Subcategories */}
           <NavLink to="/admin/subcategories" className={navLinkClass} title={isCollapsed ? t('nav.subcategories') : ''}>
             <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7m14 6l-7 7-7-7" />
             </svg>
             {!isCollapsed && <span>{t('nav.subcategories')}</span>}
           </NavLink>
+
+          {/* Partners */}
           <NavLink to="/admin/partners" className={navLinkClass} title={isCollapsed ? t('nav.partners') : ''}>
             <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
             {!isCollapsed && <span>{t('nav.partners')}</span>}
           </NavLink>
+
+          {/* Users */}
           <NavLink to="/admin/users" className={navLinkClass} title={isCollapsed ? t('nav.users') : ''}>
             <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -88,7 +103,6 @@ export default function AdminLayout() {
         {/* Header */}
         <header className="flex-shrink-0 h-16 bg-gradient-to-r from-[#043428] to-[#065945] text-white shadow-lg flex items-center px-6 justify-between">
           <div className="flex items-center gap-3">
-            {/* <img src="/logo.png" alt="BoligMatch" className="h-8" /> */}
             <h1 className="text-lg font-semibold">{t('admin.title')}</h1>
           </div>
           <div className="flex items-center gap-4">

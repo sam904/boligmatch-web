@@ -122,7 +122,7 @@ export default function DocumentUpload({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="Document URL or upload file"
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+            className={`w-full px-3 py-2 border rounded-md focus:border-[#91C73D] focus:ring-2 focus:ring-[#91C73D]/20 focus:outline-none ${
               error ? 'border-red-500' : 'border-gray-300'
             }`}
             disabled={isUploading}

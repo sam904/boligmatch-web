@@ -78,7 +78,7 @@ if (file.size > maxSize) {
               value={value || ''}
               onChange={(e) => onChange(e.target.value)}
               placeholder="upload image"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-[#91C73D] focus:ring-2 focus:ring-[#91C73D]/20 focus:outline-none pr-10"
             />
             {/* Clear button inside input */}
             {value && (
