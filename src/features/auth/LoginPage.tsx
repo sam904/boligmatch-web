@@ -1,101 +1,184 @@
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useTranslation } from 'react-i18next';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { loginThunk } from './authSlice';
-import Input from '../../components/common/Input';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useTranslation } from "react-i18next";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { loginThunk } from "./authSlice";
+import Input from "../../components/common/Input";
+import { Navigate, useLocation } from "react-router-dom";
+import login_cover from "../../../public/login_cover.png";
+import Lag_1 from "../../../public/Lag_1.png";
+import Vector from "../../../public/Vector.png";
 
 const schema = z.object({
-  userName: z.string().min(1, 'Username is required'),
-  password: z.string().min(1, 'Password is required'),
+  userName: z.string().min(1, "Username/Email is required"),
+  password: z.string().min(1, "Password is required"),
 });
 
 export default function LoginPage() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const status = useAppSelector(s => s.auth.status);
-  const token = useAppSelector(s => s.auth.accessToken);
-  const user = useAppSelector(s => s.auth.user);
-  const error = useAppSelector(s => s.auth.error);
+  const status = useAppSelector((s) => s.auth.status);
+  const token = useAppSelector((s) => s.auth.accessToken);
+  const user = useAppSelector((s) => s.auth.user);
+  const error = useAppSelector((s) => s.auth.error);
   const loc = useLocation();
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      userName: '',
-      password: ''
-    }
+      userName: "",
+      password: "",
+    },
   });
 
   if (token && user) {
-    const redirectTo = user.roleName.toLowerCase() === 'admin' 
-      ? '/admin' 
-      : user.roleName.toLowerCase() === 'user'
-        ? '/userDashboard/dashboard'
-        : user.roleName.toLowerCase() === 'partner'
-          ? '/partnerDashboard'
-          : '/';
-    return <Navigate to={(loc.state as any)?.from?.pathname ?? redirectTo} replace />;
+    const redirectTo =
+      user.roleName.toLowerCase() === "admin"
+        ? "/admin"
+        : user.roleName.toLowerCase() === "user"
+        ? "/userDashboard/dashboard"
+        : user.roleName.toLowerCase() === "partner"
+        ? "/partnerDashboard"
+        : "/";
+    return (
+      <Navigate to={(loc.state as any)?.from?.pathname ?? redirectTo} replace />
+    );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-brand-light">
-      <div className="w-full max-w-md px-6">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6">
-          <div className="text-center space-y-2">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 bg-brand-gradient">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900">{t('auth.loginTitle')}</h1>
-            <p className="text-gray-500">Welcome back! Please login to continue</p>
+    <div className="min-h-screen flex bg-white">
+      {/* Left Side - Login Form */}
+      <div className="flex flex-col justify-center w-full lg:w-1/2 px-8 sm:px-12 md:px-20">
+        {/* Centered Logo */}
+        <div className="flex justify-center mb-12">
+          <img
+            src={Lag_1}
+            alt="boligmatch logo"
+            className="h-16 object-contain"
+          />
+        </div>
+
+        {/* Login Header - Centered */}
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-bold text-gray-900 mb-3">Login</h2>
+          <p className="text-gray-600 text-lg">
+            Enter your Credentials to access your account
+          </p>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit((data) => dispatch(loginThunk(data)))}
+          className="space-y-6 max-w-md mx-auto w-full"
+        >
+          <div>
+            <label className="block text-gray-700 font-medium mb-2 text-sm">
+              Username/Email
+            </label>
+            <input
+              type="text"
+              {...register("userName")}
+              className={`w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#004E34] focus:outline-none transition-colors ${
+                errors.userName ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Enter your username or email"
+            />
+            {errors.userName && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.userName.message}
+              </p>
+            )}
           </div>
 
-          {error && (
-            <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg">
-              <div className="flex items-center">
-                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-                {error}
-              </div>
-            </div>
-          )}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2 text-sm">
+              Password
+            </label>
+            <input
+              type="password"
+              {...register("password")}
+              className={`w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#004E34] focus:outline-none transition-colors ${
+                errors.password ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Enter your password"
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
 
-          <form onSubmit={handleSubmit(d => dispatch(loginThunk(d)))} className="space-y-5">
-            <Input 
-              label={t('auth.username')} 
-              error={errors.userName?.message} 
-              {...register('userName')} 
-            />
-            <Input 
-              label={t('auth.password')} 
-              error={errors.password?.message} 
-              type="password" 
-              {...register('password')} 
-            />
-            
-            <button 
-              disabled={status === 'loading'} 
-              className="w-full py-3 px-4 rounded-xl text-white font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:-translate-y-0.5 bg-brand-gradient"
+          {/* Remember + Forgot */}
+          <div className="flex justify-between items-center text-sm text-gray-600">
+            <label className="flex items-center">
+              <input type="checkbox" className="mr-2 rounded" />
+              Remember for 30 days
+            </label>
+            <a href="#" className="text-[#004E34] hover:underline font-medium">
+              Forgot password?
+            </a>
+          </div>
+
+          {/* Login Button */}
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="w-full bg-[#004E34] text-white py-3 rounded-lg font-semibold hover:bg-[#003b27] transition-all duration-200 shadow-md"
+          >
+            {status === "loading" ? "Signing In..." : "Login"}
+          </button>
+
+          {/* OR Divider */}
+          <div className="flex items-center my-6">
+            <div className="flex-grow border-t border-gray-300"></div>
+            <span className="mx-4 text-gray-500 text-sm">or</span>
+            <div className="flex-grow border-t border-gray-300"></div>
+          </div>
+
+          {/* Social Login Buttons */}
+          <div className="space-y-4">
+            <button
+              type="button"
+              className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition-all duration-200 font-medium"
             >
-              {status === 'loading' ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  {t('auth.signingIn')}
-                </span>
-              ) : (
-                t('auth.signIn')
-              )}
+              <img
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                alt="Google"
+                className="w-5 h-5"
+              />
+              Sign in with Google
             </button>
-          </form>
-        </div>
+            <button
+              type="button"
+              className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition-all duration-200 font-medium"
+            >
+              <img src={Vector} alt="Apple" className="w-5 h-5" />
+              Sign in with Apple
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Right Side - Image */}
+      <div className="hidden lg:block lg:w-1/2">
+        <img
+          src={login_cover}
+          alt="Login cover"
+          className="w-full h-screen object-cover"
+        />
       </div>
     </div>
   );
