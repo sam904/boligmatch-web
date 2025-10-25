@@ -1,5 +1,4 @@
-// src/features/admin/partners/PartnersPage.tsx
-import { useState, useEffect, useMemo } from "react"; // Added useMemo
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { partnerService } from "../../../services/partner.service";
 import { subCategoryService } from "../../../services/subCategory.service";
@@ -20,18 +19,14 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "../../../hooks/useDebounce";
 import type { ColumnDef } from "@tanstack/react-table";
-import type {
-  Partner,
-  PartnerDocument,
-  PartnerSubCategory,
-} from "../../../types/partner";
+import type { Partner, PartnerDocument, PartnerSubCategory } from "../../../types/partner";
 import { categoryService } from "../../../services/category.service";
 import type { SubCategory } from "../../../types/subcategory";
 import type { Category } from "../../../types/category";
 import SearchableSelectController from "../../../components/common/SearchableSelectController";
 import DocumentUpload from "../../../components/common/DocumentUpload";
-import { FaEdit, FaTrash, FaFileExport } from "react-icons/fa"; // Added FaFileExport
-import { exportToExcel } from "../../../utils/export.utils"; // Added export utility
+import { FaEdit, FaTrash, FaFileExport } from "react-icons/fa";
+import { exportToExcel } from "../../../utils/export.utils";
 
 // Image Preview Modal Component
 function ImagePreviewModal({
@@ -50,42 +45,51 @@ function ImagePreviewModal({
       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
         <div className="flex justify-between items-center p-4 border-b">
           <h3 className="text-lg font-semibold">Image Preview</h3>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
         <div className="p-4 flex justify-center items-center max-h-[70vh] overflow-auto">
-          <img
-            src={imageUrl}
-            alt="Preview"
-            className="max-w-full max-h-full object-contain"
-          />
+          <img src={imageUrl} alt="Preview" className="max-w-full max-h-full object-contain" />
         </div>
         <div className="p-4 border-t text-center">
-          <a
-            href={imageUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 underline"
-          >
+          <a href={imageUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">
             Open original image in new tab
           </a>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// Logo Upload Component with 512x512 or smaller Validation
+function LogoUploadWithValidation({
+  value,
+  onChange,
+  onPreview,
+  error,
+}: {
+  value: string;
+  onChange: (url: string) => void;
+  onPreview: (url: string) => void;
+  error?: string;
+}) {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 mb-2">
+        <ImageUpload
+          label="Company Logo"
+          value={value}
+          onChange={onChange}
+          onPreview={onPreview}
+          folder="partners/logos"
+          error={error}
+          maxWidth={512}
+          maxHeight={512}
+          showDimensionValidation={true}
+        />
       </div>
     </div>
   );
@@ -111,10 +115,14 @@ const partnerSchema = z.object({
   userId: z.number().optional(),
   categoryId: z.number().min(1, "Category is required"),
   address: z.string().min(1, "Address is required"),
-  businessUnit: z.number().min(1, "Business Unit is required"),
   businessName: z.string().min(1, "Business Name is required"),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
-  mobileNo: z.number().optional(),
+  mobileNo: z.string()
+    .min(10, "Mobile number must be at least 10 digits")
+    .max(15, "Mobile number cannot exceed 15 digits")
+    .regex(/^[0-9+-\s()]+$/, "Mobile number can only contain numbers, +, -, (, ) and spaces")
+    .optional()
+    .or(z.literal("")),
   videoUrl: z.string().optional(),
   logoUrl: z.string().optional(),
   cvr: z.number().min(0, "CVR is required"),
@@ -144,7 +152,7 @@ type PartnerFormData = {
   address: string;
   businessName: string;
   email?: string;
-  mobileNo?: number;
+  mobileNo?: string;
   businessUnit: number;
   videoUrl?: string;
   logoUrl?: string;
@@ -165,48 +173,47 @@ type PartnerFormData = {
   parDoclst: PartnerDocument[];
 };
 
+type FieldPath<T> = keyof T | string;
+type ValidFieldNames = FieldPath<PartnerFormData> | `parDoclst.${number}.${keyof PartnerDocument}` | `parSubCatlst.${number}.${keyof PartnerSubCategory}`;
+
+const handleDocumentPreview = (url: string) => {
+  window.open(url, "_blank");
+};
+
 export default function PartnersPage() {
   const { t } = useTranslation();
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "active" | "inactive"
-  >("active"); // Added status filter
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("active");
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [isExporting, setIsExporting] = useState(false); // Added export state
-  const [previewImage, setPreviewImage] = useState<{
-    url: string;
-    isOpen: boolean;
-  }>({
+  const [isExporting, setIsExporting] = useState(false);
+  const [previewImage, setPreviewImage] = useState<{ url: string; isOpen: boolean }>({
     url: "",
     isOpen: false,
   });
-  const [previewVideo, setPreviewVideo] = useState<{
-    url: string;
-    isOpen: boolean;
-  }>({
+  const [previewVideo, setPreviewVideo] = useState<{ url: string; isOpen: boolean }>({
     url: "",
     isOpen: false,
   });
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
-  // UPDATED: Steps reordered - Documents is now step 5, Categories & Sub Categories is step 6
   const steps = [
     "Basic Information",
     "Media & Description",
     "Text Fields",
     "Images & Status",
-    "Documents", // MOVED TO STEP 5
-    "Categories & Sub Categories", // MOVED TO STEP 6
+    "Documents",
+    "Categories & Sub Categories",
   ];
 
-  // Initialize react-hook-form FIRST
   const {
     register,
     handleSubmit,
@@ -216,24 +223,24 @@ export default function PartnersPage() {
     control,
     setValue,
     watch,
+  
   } = useForm<PartnerFormData>({
     resolver: zodResolver(partnerSchema as any),
     defaultValues: {
       isActive: true,
       cvr: 0,
-      businessUnit: 0,
+      businessUnit: 1,
       categoryId: 0,
-      userId: 0,
+      userId: 2,
       businessName: "",
       email: "",
-      mobileNo: 0,
+      mobileNo: "",
       address: "",
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
       parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
     },
   });
 
-  // Initialize field arrays AFTER control is defined
   const {
     fields: subCategoryFields,
     append: appendSubCategory,
@@ -252,7 +259,6 @@ export default function PartnersPage() {
     name: "parDoclst",
   });
 
-  // Watch values AFTER form initialization
   const logoUrlValue = watch("logoUrl");
   const videoUrlValue = watch("videoUrl");
   const imageUrl1Value = watch("imageUrl1");
@@ -262,7 +268,93 @@ export default function PartnersPage() {
   const imageUrl5Value = watch("imageUrl5");
   const categoryIdValue = watch("categoryId");
 
-  // Fetch all partners without client-side filtering
+  // Check if a step is completed
+  const isStepCompleted = async (step: number): Promise<boolean> => {
+    const stepFields: Record<number, ValidFieldNames[]> = {
+      1: [
+        "businessName",
+        "email",
+        "mobileNo",
+        "businessUnit",
+        "cvr",
+        "address",
+      ],
+      2: ["videoUrl", "logoUrl", "descriptionShort"],
+      3: [
+        "textField1",
+        "textField2",
+        "textField3",
+        "textField4",
+        "textField5",
+      ],
+      4: [
+        "imageUrl1",
+        "imageUrl2",
+        "imageUrl3",
+        "imageUrl4",
+        "imageUrl5",
+        "isActive",
+      ],
+      5: [],
+      6: ["categoryId"],
+    };
+
+    // For steps 5 and 6, we need to check array fields
+    if (step === 5) {
+      const documentValidations = documentFields.map((_, index) =>
+        trigger([
+          `parDoclst.${index}.documentName`,
+          `parDoclst.${index}.documentUrl`,
+          `parDoclst.${index}.isActive`,
+        ] as any)
+      );
+      const documentResults = await Promise.all(documentValidations);
+      return documentResults.every((result) => result);
+    }
+
+    if (step === 6) {
+      const categoryValid = await trigger("categoryId", { shouldFocus: false });
+      const subCategoryValidations = subCategoryFields.map((_, index) =>
+        trigger([
+          `parSubCatlst.${index}.subCategoryId`,
+          `parSubCatlst.${index}.isActive`,
+        ] as any)
+      );
+      const subCategoryResults = await Promise.all(subCategoryValidations);
+      return categoryValid && subCategoryResults.every((result) => result);
+    }
+
+    // For regular steps
+    if (stepFields[step].length > 0) {
+      return await trigger(stepFields[step] as any, { shouldFocus: false });
+    }
+
+    return true;
+  };
+
+  // Update completed steps when current step changes
+  useEffect(() => {
+    const updateCompletedSteps = async () => {
+      const newCompletedSteps = [...completedSteps];
+      
+      // Check all previous steps
+      for (let step = 1; step < currentStep; step++) {
+        if (!newCompletedSteps.includes(step)) {
+          const isValid = await isStepCompleted(step);
+          if (isValid && !newCompletedSteps.includes(step)) {
+            newCompletedSteps.push(step);
+          }
+        }
+      }
+      
+      setCompletedSteps(newCompletedSteps);
+    };
+
+    if (currentStep > 1) {
+      updateCompletedSteps();
+    }
+  }, [currentStep]);
+
   const { data: paginatedData, isLoading } = useQuery({
     queryKey: ["partners", currentPage, pageSize, debouncedSearchTerm],
     queryFn: () =>
@@ -274,36 +366,29 @@ export default function PartnersPage() {
     enabled: !showForm,
   });
 
-  const { data: categories = [], isLoading: isLoadingCategories } = useQuery<
-    Category[]
-  >({
+  const { data: categories = [], isLoading: isLoadingCategories } = useQuery<Category[]>({
     queryKey: ["categories"],
     queryFn: () => categoryService.getAll(true),
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: subCategories = [], isLoading: isLoadingSubCategories } =
-    useQuery<SubCategory[]>({
-      queryKey: ["subCategories", selectedCategoryId],
-      queryFn: () => subCategoryService.getAll(true),
-      staleTime: 5 * 60 * 1000,
-      select: (data) => {
-        if (selectedCategoryId > 0) {
-          return data.filter(
-            (subCat) => subCat.categoryId === selectedCategoryId
-          );
-        }
-        return data;
-      },
-    });
+  const { data: subCategories = [], isLoading: isLoadingSubCategories } = useQuery<SubCategory[]>({
+    queryKey: ["subCategories", selectedCategoryId],
+    queryFn: () => subCategoryService.getAll(true),
+    staleTime: 5 * 60 * 1000,
+    select: (data) => {
+      if (selectedCategoryId > 0) {
+        return data.filter((subCat) => subCat.categoryId === selectedCategoryId);
+      }
+      return data;
+    },
+  });
 
-  // Function to get category name by ID
   const getCategoryName = (categoryId: number) => {
     const category = categories.find((cat) => cat.id === categoryId);
     return category ? category.name : `Category ${categoryId}`;
   };
 
-  // Update selected category when categoryId changes in form
   useEffect(() => {
     if (categoryIdValue && categoryIdValue > 0) {
       setSelectedCategoryId(categoryIdValue);
@@ -311,14 +396,15 @@ export default function PartnersPage() {
   }, [categoryIdValue]);
 
   useEffect(() => {
+    console.log("useEffect for editing partner triggered:", { editingPartner, showForm });
     if (editingPartner && showForm) {
       const formData: PartnerFormData = {
-        userId: editingPartner.userId,
+        userId: editingPartner.userId || 2, 
         categoryId: editingPartner.categoryId,
         address: editingPartner.address,
         businessName: editingPartner.businessName,
-        email: editingPartner.email,
-        mobileNo: editingPartner.mobileNo,
+        email: editingPartner.email || "",
+        mobileNo: editingPartner.mobileNo || "",
         businessUnit: editingPartner.businessUnit,
         videoUrl: editingPartner.videoUrl || "",
         logoUrl: editingPartner.logoUrl || "",
@@ -341,7 +427,7 @@ export default function PartnersPage() {
                 id: subCat.id,
                 partnerId: subCat.partnerId,
                 subCategoryId: subCat.subCategoryId,
-                isActive: subCat.isActive,
+                isActive: subCat.isActive ?? true,
               }))
             : [{ subCategoryId: 0, isActive: true }],
         parDoclst:
@@ -351,12 +437,15 @@ export default function PartnersPage() {
                 partnerId: doc.partnerId,
                 documentName: doc.documentName,
                 documentUrl: doc.documentUrl,
-                isActive: doc.isActive,
+                isActive: doc.isActive ?? true,
               }))
             : [{ documentName: "", documentUrl: "", isActive: true }],
       };
       reset(formData);
       setSelectedCategoryId(editingPartner.categoryId);
+      
+      // Mark all steps as completed for editing mode
+      setCompletedSteps([1, 2, 3, 4, 5, 6]);
     } else if (!showForm) {
       resetForm();
     }
@@ -364,13 +453,13 @@ export default function PartnersPage() {
 
   const resetForm = () => {
     const defaultValues: PartnerFormData = {
-      userId: 0,
+      userId: 2,
       categoryId: 0,
       address: "",
-      businessUnit: 0,
+      businessUnit: 1,
       businessName: "",
       email: "",
-      mobileNo: 0,
+      mobileNo: "",
       videoUrl: "",
       logoUrl: "",
       cvr: 0,
@@ -393,21 +482,18 @@ export default function PartnersPage() {
     setCurrentStep(1);
     setEditingPartner(null);
     setSelectedCategoryId(0);
+    setCompletedSteps([]);
   };
 
   const createMutation = useMutation({
     mutationFn: partnerService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["partners"], exact: false });
-      toast.success(
-        t("admin.partners.createSuccess") || "Partner created successfully"
-      );
+      toast.success(t("admin.partners.createSuccess") || "Partner created successfully");
       handleFormClose();
     },
     onError: () => {
-      toast.error(
-        t("admin.partners.createError") || "Failed to create partner"
-      );
+      toast.error(t("admin.partners.createError") || "Failed to create partner");
       setIsSubmitting(false);
     },
   });
@@ -415,18 +501,15 @@ export default function PartnersPage() {
   const updateMutation = useMutation({
     mutationFn: partnerService.update,
     onSuccess: (variables) => {
+      console.log("Update mutation called with variables:", variables);
       queryClient.invalidateQueries({ queryKey: ["partners"] });
       queryClient.invalidateQueries({ queryKey: ["partner", variables.id] });
-      toast.success(
-        t("admin.partners.updateSuccess") || "Partner updated successfully"
-      );
+      toast.success(t("admin.partners.updateSuccess") || "Partner updated successfully");
       handleFormClose();
     },
     onError: (error) => {
       console.error("Update mutation error:", error);
-      toast.error(
-        t("admin.partners.updateError") || "Failed to update partner"
-      );
+      toast.error(t("admin.partners.updateError") || "Failed to update partner");
       setIsSubmitting(false);
     },
   });
@@ -435,37 +518,23 @@ export default function PartnersPage() {
     mutationFn: partnerService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["partners"], exact: false });
-      toast.success(
-        t("admin.partners.deleteSuccess") || "Partner deleted successfully"
-      );
+      toast.success(t("admin.partners.deleteSuccess") || "Partner deleted successfully");
     },
-    onError: () =>
-      toast.error(
-        t("admin.partners.deleteError") || "Failed to delete partner"
-      ),
+    onError: () => toast.error(t("admin.partners.deleteError") || "Failed to delete partner"),
   });
 
-  // Export functionality
   const handleExportPartners = async () => {
     try {
       setIsExporting(true);
-
-      // Prepare export parameters according to API spec
       const exportParams: Record<string, any> = {
         includeIsActive: true,
       };
-
-      // Add search term if present
       if (debouncedSearchTerm) {
         exportParams.searchTerm = debouncedSearchTerm;
       }
-
       console.log("Exporting partners with params:", exportParams);
-
-      // Use the export utility with ReportType = 'Partner'
       await exportToExcel("Partner", exportParams);
     } catch (error) {
-      // Error is already handled in exportToExcel utility
       console.error("Export failed:", error);
     } finally {
       setIsExporting(false);
@@ -474,6 +543,15 @@ export default function PartnersPage() {
 
   const onSubmit = async (data: PartnerFormData) => {
     if (isSubmitting) return;
+
+    console.log("onSubmit called with data:", data);
+
+    const isValid = await trigger();
+    if (!isValid) {
+      console.log("Form validation failed:", errors);
+      toast.error("Please fix form errors before submitting");
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -519,46 +597,78 @@ export default function PartnersPage() {
   const handleNext = async () => {
     if (isSubmitting) return;
 
-    let isValid = false;
+    let isValid = true;
 
-    if (currentStep === 1) {
-      isValid = await trigger([
-        "address",
-        "businessUnit",
+    const stepFields: Record<number, ValidFieldNames[]> = {
+      1: [
         "businessName",
+        "email",
+        "mobileNo",
+        "businessUnit",
         "cvr",
-      ]);
-    } else if (currentStep === 2) {
-      isValid = await trigger(["videoUrl", "logoUrl", "descriptionShort"]);
-    } else if (currentStep === 3) {
-      isValid = await trigger([
+        "address",
+      ],
+      2: ["videoUrl", "logoUrl", "descriptionShort"],
+      3: [
         "textField1",
         "textField2",
         "textField3",
         "textField4",
         "textField5",
-      ]);
-    } else if (currentStep === 4) {
-      isValid = await trigger([
+      ],
+      4: [
         "imageUrl1",
         "imageUrl2",
         "imageUrl3",
         "imageUrl4",
         "imageUrl5",
         "isActive",
-      ]);
-    } else if (currentStep === 5) {
-      // UPDATED: Now validating documents in step 5
-      isValid = await trigger(["parDoclst"]);
-    } else if (currentStep === 6) {
-      // UPDATED: Now validating categories in step 6
-      isValid = await trigger(["categoryId", "parSubCatlst"]);
-    } else {
-      isValid = true;
+      ],
+      5: [],
+      6: ["categoryId"],
+    };
+
+    if (stepFields[currentStep].length > 0) {
+      isValid = await trigger(stepFields[currentStep] as any, { shouldFocus: true });
+    }
+
+    if (currentStep === 5) {
+      const documentValidations = documentFields.map((_, index) =>
+        trigger([
+          `parDoclst.${index}.documentName`,
+          `parDoclst.${index}.documentUrl`,
+          `parDoclst.${index}.isActive`,
+        ] as any)
+      );
+      const documentResults = await Promise.all(documentValidations);
+      isValid = isValid && documentResults.every((result) => result);
+    }
+
+    if (currentStep === 6) {
+      const categoryValid = await trigger("categoryId", { shouldFocus: true });
+      isValid = isValid && categoryValid;
+
+      const subCategoryValidations = subCategoryFields.map((_, index) =>
+        trigger([
+          `parSubCatlst.${index}.subCategoryId`,
+          `parSubCatlst.${index}.isActive`,
+        ] as any)
+      );
+      const subCategoryResults = await Promise.all(subCategoryValidations);
+      isValid = isValid && subCategoryResults.every((result) => result);
     }
 
     if (isValid && currentStep < steps.length) {
       setCurrentStep((prev) => prev + 1);
+      // Add current step to completed steps
+      if (!completedSteps.includes(currentStep)) {
+        setCompletedSteps([...completedSteps, currentStep]);
+      }
+    } else {
+      console.log("Validation errors:", errors);
+      toast.error(
+        "Please fix all form errors in this step before proceeding"
+      );
     }
   };
 
@@ -567,13 +677,48 @@ export default function PartnersPage() {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+  // New function to handle step click
+  const handleStepClick = async (step: number) => {
+    if (isSubmitting) return;
+    
+    // Allow navigation to completed steps or previous steps
+    if (step < currentStep || completedSteps.includes(step)) {
+      setCurrentStep(step);
+    } 
+    // For steps ahead, validate current step first
+    else if (step === currentStep + 1) {
+      await handleNext();
+    }
+    // For steps further ahead, validate all intermediate steps
+    else if (step > currentStep) {
+      let canNavigate = true;
+      
+      // Validate all steps from current to target step
+      for (let i = currentStep; i < step; i++) {
+        const isValid = await isStepCompleted(i);
+        if (!isValid) {
+          canNavigate = false;
+          toast.error(`Please complete step ${i} before proceeding to step ${step}`);
+          break;
+        }
+      }
+      
+      if (canNavigate) {
+        setCurrentStep(step);
+        // Mark all intermediate steps as completed
+        const newCompletedSteps = [...completedSteps];
+        for (let i = currentStep; i < step; i++) {
+          if (!newCompletedSteps.includes(i)) {
+            newCompletedSteps.push(i);
+          }
+        }
+        setCompletedSteps(newCompletedSteps);
+      }
+    }
   };
 
-  const handlePageSizeChange = (size: number) => {
-    setPageSize(size);
-    setCurrentPage(1);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const handleSearchChange = (term: string) => {
@@ -581,10 +726,9 @@ export default function PartnersPage() {
     setCurrentPage(1);
   };
 
-  // Add status filter handler
   const handleStatusFilterChange = (filter: "all" | "active" | "inactive") => {
     setStatusFilter(filter);
-    setCurrentPage(1); // Reset to first page when filter changes
+    setCurrentPage(1);
   };
 
   const handleFormClose = () => {
@@ -608,11 +752,8 @@ export default function PartnersPage() {
     if (!partner.id) return;
 
     const partnerName = partner.businessName;
-    const confirmMessage =
-      t("admin.partners.deleteConfirm") ||
-      "Are you sure you want to delete this partner?";
+    const confirmMessage = t("admin.partners.deleteConfirm") || "Are you sure you want to delete this partner?";
 
-    // Use Sonner toast for confirmation instead of window.confirm
     toast(
       <div className="w-full">
         <div className="font-semibold text-gray-900 mb-2">Confirm Deletion</div>
@@ -640,7 +781,7 @@ export default function PartnersPage() {
         </div>
       </div>,
       {
-        duration: 10000, // 10 seconds
+        duration: 10000,
         position: "top-center",
         closeButton: true,
       }
@@ -675,44 +816,35 @@ export default function PartnersPage() {
     setPreviewVideo({ url, isOpen: true });
   };
 
-  // Handle category change - reset subcategories when category changes
   const handleCategoryChange = (categoryId: number | string) => {
-    const categoryIdNum =
-      typeof categoryId === "string" ? parseInt(categoryId, 10) : categoryId;
+    console.log("Category changed to:", categoryId);
+    const categoryIdNum = typeof categoryId === "string" ? parseInt(categoryId, 10) : categoryId;
 
     setSelectedCategoryId(categoryIdNum);
 
-    // Reset all subcategory fields when category changes
     if (subCategoryFields.length > 0) {
       subCategoryFields.forEach((_, index) => {
         setValue(`parSubCatlst.${index}.subCategoryId`, 0);
+        setValue(`parSubCatlst.${index}.isActive`, true);
       });
     }
   };
 
-  // Map the API response based on your structure
   const allPartners = paginatedData?.output?.result || [];
 
-  // Apply client-side filtering based on status filter
   const filteredPartners = useMemo(() => {
     let filtered = allPartners;
-
-    // Apply status filter
     if (statusFilter === "active") {
       filtered = filtered.filter((partner) => partner.isActive === true);
     } else if (statusFilter === "inactive") {
       filtered = filtered.filter((partner) => partner.isActive === false);
     }
-    // If statusFilter is 'all', no filtering needed
-
     return filtered;
   }, [allPartners, statusFilter]);
 
-  // For pagination, we need to handle the filtered data
   const totalItems = filteredPartners.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
-  // Get current page items
   const currentPageItems = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
@@ -728,8 +860,8 @@ export default function PartnersPage() {
       cell: ({ row }) => getCategoryName(row.original.categoryId),
     },
     { accessorKey: "address", header: "Address" },
-    { accessorKey: "businessUnit", header: "Business Unit" },
     { accessorKey: "cvr", header: "CVR" },
+    { accessorKey: "mobileNo", header: "Mobile Number" },
     {
       accessorKey: "isActive",
       header: "Status",
@@ -737,9 +869,7 @@ export default function PartnersPage() {
         <span
           className="px-2 py-0.5 rounded text-xs text-white font-medium"
           style={{
-            backgroundColor: row.original.isActive
-              ? "var(--color-secondary)"
-              : "var(--color-neutral)",
+            backgroundColor: row.original.isActive ? "var(--color-secondary)" : "var(--color-neutral)",
           }}
         >
           {row.original.isActive ? "Active" : "Inactive"}
@@ -777,10 +907,7 @@ export default function PartnersPage() {
       case 1:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">
-              Basic Information
-            </h3>
-
+            <h3 className="text-lg font-medium text-gray-900">Basic Information</h3>
             <div className="grid grid-cols-2 gap-4">
               <Input
                 label="Business Name"
@@ -796,13 +923,8 @@ export default function PartnersPage() {
               <Input
                 label="Mobile Number"
                 error={errors.mobileNo?.message}
-                {...register("mobileNo", { valueAsNumber: true })}
-              />
-              <Input
-                label="Business Unit"
-                type="number"
-                error={errors.businessUnit?.message}
-                {...register("businessUnit", { valueAsNumber: true })}
+                {...register("mobileNo")} 
+                placeholder="Enter mobile number"
               />
               <Input
                 label="CVR"
@@ -811,7 +933,6 @@ export default function PartnersPage() {
                 {...register("cvr", { valueAsNumber: true })}
               />
             </div>
-
             <TextArea
               label="Address"
               error={errors.address?.message}
@@ -825,30 +946,23 @@ export default function PartnersPage() {
       case 2:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">
-              Media & Description
-            </h3>
-
-            {/* Video Upload with VideoUpload component */}
+            <h3 className="text-lg font-medium text-gray-900">Media & Description</h3>
             <VideoUpload
               label="Video Upload"
-              value={videoUrlValue}
+              value={videoUrlValue || ""}
               onChange={(url) => setValue("videoUrl", url)}
               onPreview={handleVideoPreview}
               folder="partners/videos"
               error={errors.videoUrl?.message}
             />
-
-            {/* Logo Upload with ImageUpload */}
-            <ImageUpload
-              label="Logo Upload"
-              value={logoUrlValue}
+            
+            <LogoUploadWithValidation
+              value={logoUrlValue || ""}
               onChange={(url) => setValue("logoUrl", url)}
               onPreview={handleImagePreview}
-              folder="partners/logos"
               error={errors.logoUrl?.message}
             />
-
+            
             <TextArea
               label="Short Description"
               error={errors.descriptionShort?.message}
@@ -862,44 +976,21 @@ export default function PartnersPage() {
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-gray-900">Text Fields</h3>
-            <Input
-              label="Text Field 1"
-              error={errors.textField1?.message}
-              {...register("textField1")}
-            />
-            <Input
-              label="Text Field 2"
-              error={errors.textField2?.message}
-              {...register("textField2")}
-            />
-            <Input
-              label="Text Field 3"
-              error={errors.textField3?.message}
-              {...register("textField3")}
-            />
-            <Input
-              label="Text Field 4"
-              error={errors.textField4?.message}
-              {...register("textField4")}
-            />
-            <Input
-              label="Text Field 5"
-              error={errors.textField5?.message}
-              {...register("textField5")}
-            />
+            <Input label="Text Field 1" error={errors.textField1?.message} {...register("textField1")} />
+            <Input label="Text Field 2" error={errors.textField2?.message} {...register("textField2")} />
+            <Input label="Text Field 3" error={errors.textField3?.message} {...register("textField3")} />
+            <Input label="Text Field 4" error={errors.textField4?.message} {...register("textField4")} />
+            <Input label="Text Field 5" error={errors.textField5?.message} {...register("textField5")} />
           </div>
         );
 
       case 4:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">
-              Images & Status
-            </h3>
-
+            <h3 className="text-lg font-medium text-gray-900">Images & Status</h3>
             <div className="space-y-3">
               <h4 className="font-medium text-gray-700">Image URLs</h4>
-
+              
               <ImageUpload
                 label="Image Upload 1"
                 value={imageUrl1Value}
@@ -907,8 +998,10 @@ export default function PartnersPage() {
                 onPreview={handleImagePreview}
                 folder="partners/images"
                 error={errors.imageUrl1?.message}
+                exactDimensions={{ width: 1440, height: 710 }}
+                showDimensionValidation={true}
               />
-
+              
               <ImageUpload
                 label="Image Upload 2"
                 value={imageUrl2Value}
@@ -916,8 +1009,10 @@ export default function PartnersPage() {
                 onPreview={handleImagePreview}
                 folder="partners/images"
                 error={errors.imageUrl2?.message}
+                exactDimensions={{ width: 439, height: 468 }}
+                showDimensionValidation={true}
               />
-
+              
               <ImageUpload
                 label="Image Upload 3"
                 value={imageUrl3Value}
@@ -926,7 +1021,6 @@ export default function PartnersPage() {
                 folder="partners/images"
                 error={errors.imageUrl3?.message}
               />
-
               <ImageUpload
                 label="Image Upload 4"
                 value={imageUrl4Value}
@@ -935,7 +1029,6 @@ export default function PartnersPage() {
                 folder="partners/images"
                 error={errors.imageUrl4?.message}
               />
-
               <ImageUpload
                 label="Image Upload 5"
                 value={imageUrl5Value}
@@ -945,44 +1038,21 @@ export default function PartnersPage() {
                 error={errors.imageUrl5?.message}
               />
             </div>
-
-            <div className="flex items-center gap-2 pt-4">
-              <input
-                type="checkbox"
-                id="isActive"
-                {...register("isActive")}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-              />
-              <label
-                htmlFor="isActive"
-                className="text-sm font-medium text-gray-700"
-              >
-                {t("common.active")}
-              </label>
-            </div>
+            
           </div>
         );
 
-      // UPDATED: Case 5 is now Documents
       case 5:
         return (
           <div className="space-y-6">
             <h3 className="text-lg font-medium text-gray-900">Documents</h3>
-
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-700 mb-3">
-                Partner Documents
-              </h4>
+              <h4 className="font-medium text-gray-700 mb-3">Partner Documents</h4>
               <p className="text-sm text-gray-600 mb-4">
-                Add one or more documents for this partner (business licenses,
-                contracts, certificates, etc.)
+                Add one or more documents for this partner (business licenses, contracts, certificates, etc.)
               </p>
-
               {documentFields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="border border-gray-200 rounded-lg p-4 mb-4 bg-white"
-                >
+                <div key={field.id} className="border border-gray-200 rounded-lg p-4 mb-4 bg-white">
                   <div className="space-y-4 mb-4">
                     <Input
                       label={`Document Name ${index + 1}`}
@@ -991,40 +1061,17 @@ export default function PartnersPage() {
                       placeholder="Enter document name (e.g., Business License, Contract, Certificate)"
                       required
                     />
-
-                    {/* Using the new DocumentUpload component */}
                     <DocumentUpload
                       label={`Document File ${index + 1}`}
                       value={watch(`parDoclst.${index}.documentUrl`)}
-                      onChange={(url) =>
-                        setValue(`parDoclst.${index}.documentUrl`, url)
-                      }
-                      onPreview={(url) => {
-                        // Open document in new tab for preview
-                        window.open(url, "_blank");
-                      }}
+                      onChange={(url) => setValue(`parDoclst.${index}.documentUrl`, url)}
+                      onPreview={handleDocumentPreview}
                       folder="partners/documents"
                       error={errors.parDoclst?.[index]?.documentUrl?.message}
                       required
                     />
                   </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id={`doc-isActive-${index}`}
-                        {...register(`parDoclst.${index}.isActive` as const)}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                      />
-                      <label
-                        htmlFor={`doc-isActive-${index}`}
-                        className="text-sm font-medium text-gray-700"
-                      >
-                        Active
-                      </label>
-                    </div>
-
+                  <div className="flex items-center justify-end">
                     {documentFields.length > 1 && (
                       <Button
                         type="button"
@@ -1038,38 +1085,21 @@ export default function PartnersPage() {
                   </div>
                 </div>
               ))}
-
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={addDocumentField}
-              >
+              <Button type="button" variant="secondary" onClick={addDocumentField}>
                 + Add Another Document
               </Button>
-
               {errors.parDoclst && !errors.parDoclst.root && (
-                <p className="text-red-500 text-sm mt-2">
-                  {errors.parDoclst.message}
-                </p>
+                <p className="text-red-500 text-sm mt-2">{errors.parDoclst.message}</p>
               )}
             </div>
-
-            {/* Uploaded Documents Summary */}
-            {documentFields.some((_, index) => {
-              const docUrl = watch(`parDoclst.${index}.documentUrl` as const);
-              return !!docUrl;
-            }) && (
+            {documentFields.some((_, index) => watch(`parDoclst.${index}.documentUrl` as const)) && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-medium text-blue-800 mb-3">
-                  Uploaded Documents
-                </h4>
+                <h4 className="font-medium text-blue-800 mb-3">Uploaded Documents</h4>
                 <div className="space-y-2">
                   {documentFields.map((field, index) => {
                     const docUrl = watch(`parDoclst.${index}.documentUrl`);
                     const docName = watch(`parDoclst.${index}.documentName`);
-
                     if (!docUrl) return null;
-
                     const getFileIcon = (url: string) => {
                       if (url.includes(".pdf")) return "📄 PDF";
                       if (url.includes(".doc")) return "📝 Word";
@@ -1078,23 +1108,13 @@ export default function PartnersPage() {
                       if (url.includes(".txt")) return "📃 Text";
                       return "📎 File";
                     };
-
                     return (
-                      <div
-                        key={field.id}
-                        className="flex items-center justify-between p-3 bg-white rounded-lg border"
-                      >
+                      <div key={field.id} className="flex items-center justify-between p-3 bg-white rounded-lg border">
                         <div className="flex items-center gap-3">
-                          <span className="text-lg">
-                            {getFileIcon(docUrl).split(" ")[0]}
-                          </span>
+                          <span className="text-lg">{getFileIcon(docUrl).split(" ")[0]}</span>
                           <div>
-                            <p className="text-sm font-medium text-gray-900">
-                              {docName || `Document ${index + 1}`}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {getFileIcon(docUrl)}
-                            </p>
+                            <p className="text-sm font-medium text-gray-900">{docName || `Document ${index + 1}`}</p>
+                            <p className="text-xs text-gray-500">{getFileIcon(docUrl)}</p>
                           </div>
                         </div>
                         <div className="flex gap-2">
@@ -1121,26 +1141,16 @@ export default function PartnersPage() {
           </div>
         );
 
-      // UPDATED: Case 6 is now Categories & Sub Categories
       case 6:
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-medium text-gray-900">
-              Categories & Sub Categories
-            </h3>
-
-            {/* Category Selection */}
+            <h3 className="text-lg font-medium text-gray-900">Categories & Sub Categories</h3>
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-700 mb-3">
-                Select Category
-              </h4>
-
+              <h4 className="font-medium text-gray-700 mb-3">Select Category</h4>
               {isLoadingCategories ? (
                 <div className="text-center py-2">
                   <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-                  <p className="mt-1 text-gray-600 text-sm">
-                    Loading categories...
-                  </p>
+                  <p className="mt-1 text-gray-600 text-sm">Loading categories...</p>
                 </div>
               ) : (
                 <SearchableSelectController
@@ -1161,78 +1171,51 @@ export default function PartnersPage() {
                       ? "No active categories available"
                       : "Select Category"
                   }
-                  disabled={
-                    isLoadingCategories ||
-                    categories.filter((cat) => cat.isActive).length === 0
-                  }
+                  disabled={isLoadingCategories || categories.filter((cat) => cat.isActive).length === 0}
                   required={true}
                   onChange={handleCategoryChange}
                 />
               )}
-
-              {!isLoadingCategories &&
-                categories.filter((cat) => cat.isActive).length === 0 && (
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
-                    <div className="flex items-center gap-2 text-yellow-800">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-                        />
-                      </svg>
-                      <span className="text-sm font-medium">
-                        No Active Categories Available
-                      </span>
-                    </div>
-                    <p className="text-yellow-700 text-sm mt-1">
-                      You need to create active categories before adding
-                      partners.
-                    </p>
+              {!isLoadingCategories && categories.filter((cat) => cat.isActive).length === 0 && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
+                  <div className="flex items-center gap-2 text-yellow-800">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                      />
+                    </svg>
+                    <span className="text-sm font-medium">No Active Categories Available</span>
                   </div>
-                )}
+                  <p className="text-yellow-700 text-sm mt-1">
+                    You need to create active categories before adding partners.
+                  </p>
+                </div>
+              )}
             </div>
-
-            {/* Sub Categories Section */}
             {selectedCategoryId > 0 && (
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-medium text-gray-700 mb-3">
-                  Sub Categories
-                </h4>
+                <h4 className="font-medium text-gray-700 mb-3">Sub Categories</h4>
                 <p className="text-sm text-gray-600 mb-4">
-                  Add one or more sub categories for this partner under the
-                  selected category
+                  Add one or more sub categories for this partner under the selected category
                 </p>
-
                 {isLoadingSubCategories ? (
                   <div className="text-center py-4">
                     <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                    <p className="mt-2 text-gray-600">
-                      Loading sub categories...
-                    </p>
+                    <p className="mt-2 text-gray-600">Loading sub categories...</p>
                   </div>
                 ) : (
                   <>
                     {subCategoryFields.map((field, index) => (
-                      <div
-                        key={field.id}
-                        className="flex items-end gap-4 p-4 border border-gray-200 rounded-lg mb-3"
-                      >
+                      <div key={field.id} className="flex items-end gap-4 p-4 border border-gray-200 rounded-lg mb-3">
                         <div className="flex-1">
                           <SearchableSelectController
                             name={`parSubCatlst.${index}.subCategoryId`}
                             control={control}
                             label={`Sub Category ${index + 1}`}
-                            error={
-                              errors.parSubCatlst?.[index]?.subCategoryId
-                                ?.message
-                            }
+                            error={errors.parSubCatlst?.[index]?.subCategoryId?.message}
                             options={subCategories
                               .filter((subCat) => subCat.isActive)
                               .map((subCat) => ({
@@ -1242,36 +1225,14 @@ export default function PartnersPage() {
                             placeholder={
                               isLoadingSubCategories
                                 ? "Loading sub categories..."
-                                : subCategories.filter(
-                                    (subCat) => subCat.isActive
-                                  ).length === 0
+                                : subCategories.filter((subCat) => subCat.isActive).length === 0
                                 ? "No active sub categories available for this category"
                                 : "Select Sub Category"
                             }
-                            disabled={
-                              isLoadingSubCategories ||
-                              subCategories.filter((subCat) => subCat.isActive)
-                                .length === 0
-                            }
+                            disabled={isLoadingSubCategories || subCategories.filter((subCat) => subCat.isActive).length === 0}
                             required={true}
                           />
                         </div>
-
-                        <div className="flex items-center gap-2 mb-1">
-                          <input
-                            type="checkbox"
-                            id={`isActive-${index}`}
-                            {...register(`parSubCatlst.${index}.isActive`)}
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                          />
-                          <label
-                            htmlFor={`isActive-${index}`}
-                            className="text-sm font-medium text-gray-700"
-                          >
-                            Active
-                          </label>
-                        </div>
-
                         {subCategoryFields.length > 1 && (
                           <Button
                             type="button"
@@ -1284,67 +1245,43 @@ export default function PartnersPage() {
                         )}
                       </div>
                     ))}
-
                     <Button
                       type="button"
                       variant="secondary"
                       onClick={addSubCategoryField}
-                      disabled={
-                        subCategories.filter((subCat) => subCat.isActive)
-                          .length === 0
-                      }
+                      disabled={subCategories.filter((subCat) => subCat.isActive).length === 0}
                     >
                       Add Another Sub Category
                     </Button>
-
-                    {!isLoadingSubCategories &&
-                      subCategories.filter((subCat) => subCat.isActive)
-                        .length === 0 && (
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
-                          <div className="flex items-center gap-2 text-yellow-800">
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-                              />
-                            </svg>
-                            <span className="text-sm font-medium">
-                              No Active Sub Categories Available
-                            </span>
-                          </div>
-                          <p className="text-yellow-700 text-sm mt-1">
-                            There are no active subcategories available for the
-                            selected category.
-                          </p>
+                    {!isLoadingSubCategories && subCategories.filter((subCat) => subCat.isActive).length === 0 && (
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
+                        <div className="flex items-center gap-2 text-yellow-800">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                            />
+                          </svg>
+                          <span className="text-sm font-medium">No Active Sub Categories Available</span>
                         </div>
-                      )}
+                        <p className="text-yellow-700 text-sm mt-1">
+                          There are no active subcategories available for the selected category.
+                        </p>
+                      </div>
+                    )}
                   </>
                 )}
-
                 {errors.parSubCatlst && !errors.parSubCatlst.root && (
-                  <p className="text-red-500 text-sm mt-2">
-                    {errors.parSubCatlst.message}
-                  </p>
+                  <p className="text-red-500 text-sm mt-2">{errors.parSubCatlst.message}</p>
                 )}
               </div>
             )}
-
             {selectedCategoryId === 0 && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
                 <div className="flex items-center justify-center gap-2 text-blue-800">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -1369,28 +1306,18 @@ export default function PartnersPage() {
 
   return (
     <div className="p-3">
-      {/* Header Section - Only show when form is NOT open */}
       {!showForm && (
         <div className="bg-white rounded-lg shadow-lg p-2 mb-2">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-bold text-gray-900">
-                {t("admin.partners.title") || "Partners"}
-              </h1>
-              <p className="text-gray-600 text-sm mt-1">
-                {t("admin.partners.subtitle") || "Manage your partners"}
-              </p>
+              <h1 className="text-xl font-bold text-gray-900">{t("admin.partners.title") || "Partners"}</h1>
+              <p className="text-gray-600 text-sm mt-1">{t("admin.partners.subtitle") || "Manage your partners"}</p>
             </div>
             <div className="flex items-center gap-4">
-              {/* Status Filter Dropdown */}
               <div className="w-32">
                 <select
                   value={statusFilter}
-                  onChange={(e) =>
-                    handleStatusFilterChange(
-                      e.target.value as "all" | "active" | "inactive"
-                    )
-                  }
+                  onChange={(e) => handleStatusFilterChange(e.target.value as "all" | "active" | "inactive")}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 >
                   <option value="active">Active</option>
@@ -1398,15 +1325,9 @@ export default function PartnersPage() {
                   <option value="all">All</option>
                 </select>
               </div>
-
               <div className="w-64">
-                <SearchBar
-                  searchTerm={searchTerm}
-                  onSearchChange={handleSearchChange}
-                />
+                <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
               </div>
-
-              {/* Export Button */}
               <Button
                 variant="secondary"
                 size="md"
@@ -1415,28 +1336,15 @@ export default function PartnersPage() {
                 className="flex items-center gap-2 whitespace-nowrap"
               >
                 <FaFileExport className="w-4 h-4" />
-                {isExporting
-                  ? t("common.exporting") || "Exporting..."
-                  : t("common.export") || "Export"}
+                {isExporting ? t("common.exporting") || "Exporting..." : t("common.export") || "Export"}
               </Button>
-
               <button
                 onClick={handleAddPartner}
                 disabled={showForm}
                 className="flex items-center gap-2 px-4 py-2 text-sm text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:opacity-90 bg-brand-gradient disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
                 {t("admin.partners.addPartner")}
               </button>
@@ -1444,67 +1352,50 @@ export default function PartnersPage() {
           </div>
         </div>
       )}
-
-      {/* Form Section - Only show when form is open */}
       {showForm && (
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-900">
-              {editingPartner
-                ? t("admin.partners.editPartner")
-                : t("admin.partners.addPartner")}
+              {editingPartner ? t("admin.partners.editPartner") : t("admin.partners.addPartner")}
             </h2>
-            <Button
-              variant="secondary"
-              onClick={handleFormClose}
-              disabled={isSubmitting}
-            >
+            <Button variant="secondary" onClick={handleFormClose} disabled={isSubmitting}>
               {t("common.cancel")}
             </Button>
           </div>
-
-          <Stepper currentStep={currentStep} steps={steps} className="mb-8" />
-
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <Stepper 
+            currentStep={currentStep} 
+            steps={steps} 
+            className="mb-8"
+            onStepClick={handleStepClick}
+            completedSteps={completedSteps}
+          />
+          <form
+            onSubmit={handleSubmit((data) => {
+              console.log("Form submission triggered with data:", data);
+              onSubmit(data);
+            })}
+          >
             <div className="px-1 mb-6">{renderStepContent()}</div>
-
             <div className="flex justify-between pt-6 mt-4 border-t border-gray-200">
               <div>
                 {currentStep > 1 && (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={handleBack}
-                    disabled={isSubmitting}
-                  >
+                  <Button type="button" variant="secondary" onClick={handleBack} disabled={isSubmitting}>
                     Back
                   </Button>
                 )}
               </div>
-
               <div className="flex gap-2">
                 {currentStep < steps.length ? (
-                  <Button
-                    type="button"
-                    onClick={handleNext}
-                    disabled={isSubmitting}
-                  >
+                  <Button key="next" type="button" onClick={handleNext} disabled={isSubmitting}>
                     Next
                   </Button>
                 ) : (
                   <Button
+                    key="submit"
                     type="submit"
-                    disabled={
-                      isSubmitting ||
-                      createMutation.isPending ||
-                      updateMutation.isPending
-                    }
+                    disabled={isSubmitting || createMutation.isPending || updateMutation.isPending}
                   >
-                    {isSubmitting
-                      ? "Submitting..."
-                      : editingPartner
-                      ? t("common.update")
-                      : t("common.create")}
+                    {isSubmitting ? "Submitting..." : editingPartner ? t("common.update") : t("common.create")}
                   </Button>
                 )}
               </div>
@@ -1512,16 +1403,11 @@ export default function PartnersPage() {
           </form>
         </div>
       )}
-
-      {/* Data Table Section - Only show when form is NOT open */}
       {!showForm && (
         <>
           {isLoading ? (
             <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-              <div
-                className="inline-block animate-spin rounded-full h-8 w-8 border-b-2"
-                style={{ borderColor: "var(--color-primary)" }}
-              ></div>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: "var(--color-primary)" }}></div>
               <p className="mt-4 text-gray-600">{t("common.loading")}</p>
             </div>
           ) : (
@@ -1534,22 +1420,17 @@ export default function PartnersPage() {
                   totalItems={totalItems}
                   pageSize={pageSize}
                   onPageChange={handlePageChange}
-                  onPageSizeChange={handlePageSizeChange}
                 />
               </div>
             </div>
           )}
         </>
       )}
-
-      {/* Image Preview Modal */}
       <ImagePreviewModal
         imageUrl={previewImage.url}
         isOpen={previewImage.isOpen}
         onClose={() => setPreviewImage({ url: "", isOpen: false })}
       />
-
-      {/* Video Preview Modal */}
       <VideoPreviewModal
         videoUrl={previewVideo.url}
         isOpen={previewVideo.isOpen}
@@ -1558,3 +1439,18 @@ export default function PartnersPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

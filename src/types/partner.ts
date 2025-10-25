@@ -8,7 +8,7 @@ export interface Partner {
   address: string;
   businessName: string;
   email: string;
-  mobileNo: number;
+  mobileNo: string;
   businessUnit: number;
   videoUrl?: string;
   logoUrl?: string;
@@ -40,7 +40,7 @@ export interface PartnerDto {
   address: string;
   businessName: string;
   email: string;
-  mobileNo: number;
+  mobileNo: string;
   businessUnit: number;
   videoUrl?: string;
   logoUrl?: string;
