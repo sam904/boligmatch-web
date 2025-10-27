@@ -160,7 +160,7 @@ const UserSupplier = () => {
                     title={subCategory.subCategory}
                     description={subCategory.subCategoryDescription}
                     onMoreInfo={() =>
-                      navigate("/userDashboard/supplier-profile")
+                      navigate("/userProfile/supplier-profile")
                     }
                   />
                 );

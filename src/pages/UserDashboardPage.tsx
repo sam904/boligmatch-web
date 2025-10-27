@@ -16,6 +16,29 @@ import searchImg from "/src/assets/userImages/search-normal.svg";
 import favoriteImg from "/src/assets/userImages/favouriteIcon.svg";
 import chatModelImg from "/src/assets/userImages/chatModelImg.svg";
 import { favouritesService } from "../services/favourites.service";
+import { conversationService } from "../services/conversation.service";
+import { toast } from "sonner";
+
+interface FavouriteItem {
+  id?: number;
+  userId?: number;
+  partnerId?: number;
+  isActive?: boolean;
+  [key: string]: any;
+}
+
+interface ConversationItem {
+  id?: number;
+  messageSubject?: string;
+  messageContent?: string;
+  senderId?: number;
+  receiverId?: number;
+  type?: string;
+  partner?: string;
+  topic?: string;
+  timestamp?: string;
+  [key: string]: any;
+}
 
 export default function UserDashboardPage() {
   const [userData, setUserData] = useState<any>(null);
@@ -24,10 +47,12 @@ export default function UserDashboardPage() {
   const [activeView, setActiveView] = useState<
     "default" | "favorites" | "messages"
   >("default");
+  const [favorites, setFavorites] = useState<FavouriteItem[]>([]);
+  const [conversations, setConversations] = useState<ConversationItem[]>([]);
+  const [favoritesLoading, setFavoritesLoading] = useState(false);
+  const [conversationsLoading, setConversationsLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  // const [fav, setFav] = useState();
-  // console.log("fav", fav);
 
   useEffect(() => {
     // Get user data from localStorage
@@ -62,29 +87,6 @@ export default function UserDashboardPage() {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const getUserDataAndFav = async () => {
-      try {
-        const userStr = localStorage.getItem("bm_user");
-        if (userStr) {
-          const user = JSON.parse(userStr);
-          setUserData(user);
-
-          setLoading(true);
-          const favData = await favouritesService.getById(user.userId);
-          console.log("Favourite data:", favData);
-          // setFav(favData?.output)
-        }
-      } catch (error) {
-        console.error("Error fetching user or favourite data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getUserDataAndFav();
-  }, []);
-
   // Helper function to get images and icons for categories
   const getCategoryAssets = (index: number) => {
     const images = [dashboard1, dashboard2, dashboard3];
@@ -94,67 +96,6 @@ export default function UserDashboardPage() {
       icon: icons[index % icons.length],
     };
   };
-
-  // Mock data for favorites (service providers)
-  const favoriteProviders = [
-    {
-      id: 1,
-      name: "Kabel - specialisten",
-      profession: "Elektriker",
-      category: "Håndværkere",
-      logo: "/src/assets/userSupplier/Kabel-specialisten.png",
-    },
-    {
-      id: 2,
-      name: "Gudrun Maler",
-      profession: "Maler",
-      category: "Håndværkere",
-      logo: "/src/assets/userSupplier/Gudrun Maler.png",
-    },
-    {
-      id: 3,
-      name: "Tommy Tømrer",
-      profession: "Tømrer",
-      category: "Håndværkere",
-      logo: "/src/assets/userSupplier/Tommy Tømrer.png",
-    },
-    {
-      id: 4,
-      name: "Timmos VVS",
-      profession: "VVS",
-      category: "Håndværkere",
-      logo: "/src/assets/userSupplier/Timmos VVS.png",
-    },
-    {
-      id: 5,
-      name: "Gudrun Maler",
-      profession: "Murer",
-      category: "Håndværkere",
-      logo: "/src/assets/userSupplier/Gudrun Maler.png",
-    },
-  ];
-
-  // Mock data for messages (conversations)
-  const conversations = [
-    {
-      id: 1,
-      partner: "Kabel-specialisten",
-      topic: "Ny EL-tavle samt skift af LED-pærer i baderum",
-      timestamp: "2 timer siden",
-    },
-    {
-      id: 2,
-      partner: "Timmos VVS",
-      topic: "Skift af armatur i køkken",
-      timestamp: "4 timer siden",
-    },
-    {
-      id: 3,
-      partner: "Murer Pete",
-      topic: "Opmuring af sokkel på garage",
-      timestamp: "1 dag siden",
-    },
-  ];
 
   // Handle category click - fetch subcategories and navigate to UserSupplier page
   const handleCategoryClick = async (categoryId: number) => {
@@ -168,23 +109,93 @@ export default function UserDashboardPage() {
       // Store subcategories in localStorage to pass to UserSupplier page
       localStorage.setItem("bm_subcategories", JSON.stringify(subCategories));
       console.log("Stored subcategories in localStorage:", subCategories);
-      navigate("/userDashboard/user-supplier");
+      navigate("/userProfile/user-supplier");
     } catch (error) {
       console.error("Error fetching subcategories:", error);
       // Still navigate even if API fails
-      navigate("/userDashboard/user-supplier");
+      navigate("/userProfile/user-supplier");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fetch favorites from API
+  const fetchFavorites = async () => {
+    try {
+      setFavoritesLoading(true);
+      if (!userData?.userId) {
+        toast.error("User not found");
+        return;
+      }
+
+      const payload = {
+        page: 1,
+        pageSize: 10,
+        searchTerm: "",
+        sortDirection: "asc",
+        sortField: "id",
+        userId: userData.userId,
+      };
+
+      console.log("Fetching favorites with payload:", payload);
+      const response = await favouritesService.getPaginated(payload);
+      console.log("Favorites API response:", response);
+
+      // Extract favorites from response
+      const favoritesData = response?.items || [];
+      setFavorites(favoritesData);
+    } catch (error) {
+      console.error("Error fetching favorites:", error);
+      toast.error("Failed to load favorites");
+      setFavorites([]);
+    } finally {
+      setFavoritesLoading(false);
+    }
+  };
+
+  // Fetch conversations from API
+  const fetchConversations = async () => {
+    try {
+      setConversationsLoading(true);
+      if (!userData?.userId) {
+        toast.error("User not found");
+        return;
+      }
+
+      const payload = {
+        page: 1,
+        pageSize: 10,
+        searchTerm: "",
+        sortDirection: "asc",
+        sortField: "id",
+        userId: userData.userId,
+      };
+
+      console.log("Fetching conversations with payload:", payload);
+      const response = await conversationService.getPaginated(payload);
+      console.log("Conversations API response:", response);
+
+      // Extract conversations from response
+      const conversationsData = response?.items || [];
+      setConversations(conversationsData);
+    } catch (error) {
+      console.error("Error fetching conversations:", error);
+      toast.error("Failed to load conversations");
+      setConversations([]);
+    } finally {
+      setConversationsLoading(false);
     }
   };
 
   // Handle button clicks
   const handleFavoritesClick = () => {
     setActiveView("favorites");
+    fetchFavorites();
   };
 
   const handleMessagesClick = () => {
     setActiveView("messages");
+    fetchConversations();
   };
 
   const handlePartnersClick = () => {
@@ -209,9 +220,6 @@ export default function UserDashboardPage() {
             <h2 className="text-[64px] font-[500] ">
               {userData.firstName} {userData.lastName}
             </h2>
-            {/* <p className="text-lg opacity-90 mt-1">
-              {userData.roleName}
-            </p> */}
           </div>
         </div>
       )}
@@ -223,7 +231,7 @@ export default function UserDashboardPage() {
           {/* Partnere - dark button with search icon */}
           <button
             onClick={handlePartnersClick}
-            className="flex items-center gap-3 bg-[#0b3b35] text-white rounded-2xl px-7 py-4 shadow-md hover:opacity-90 transition"
+            className="flex items-center gap-3 bg-[#0b3b35] text-white rounded-2xl px-7 py-4 shadow-md hover:opacity-90 transition cursor-pointer"
             type="button"
           >
             <img src={searchImg} alt="" className="h-6 w-6" />
@@ -235,7 +243,7 @@ export default function UserDashboardPage() {
           {/* Saved as favorite - light green with heart icon */}
           <button
             onClick={handleFavoritesClick}
-            className="flex items-center gap-3 bg-[#91C73D] text-white rounded-2xl px-7 py-4 shadow-md hover:opacity-90 transition"
+            className="flex items-center gap-3 bg-[#91C73D] text-white rounded-2xl px-7 py-4 shadow-md hover:opacity-90 transition cursor-pointer"
             type="button"
           >
             <img src={favoriteImg} alt="" className="h-6 w-6" />
@@ -247,7 +255,7 @@ export default function UserDashboardPage() {
           {/* Samtaler - light green button */}
           <button
             onClick={handleMessagesClick}
-            className="flex items-center gap-3 bg-[#91C73D] text-white rounded-2xl px-7 py-4 shadow-md hover:opacity-90 transition font-medium"
+            className="flex items-center gap-3 bg-[#91C73D] text-white rounded-2xl px-7 py-4 shadow-md hover:opacity-90 transition font-medium cursor-pointer"
             type="button"
           >
             <img src={commentImg} alt="" className="h-6 w-6" />
@@ -259,7 +267,7 @@ export default function UserDashboardPage() {
       </div>
       <div className="bg-[#06351e] py-16">
         <div className="max-w-6xl mx-auto px-12">
-          {loading ? (
+          {loading && activeView === "default" ? (
             <div className="flex justify-center items-center h-64">
               <div className="text-white text-lg">Loading...</div>
             </div>
@@ -277,7 +285,7 @@ export default function UserDashboardPage() {
                         className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
                       >
                         {/* Background Image */}
-                        <div className="relative h-48">
+                        <div className="relative h-56">
                           <img
                             src={category.imageUrl || assets.image}
                             alt={category.name}
@@ -331,41 +339,46 @@ export default function UserDashboardPage() {
                   <h2 className="text-white text-2xl font-bold mb-6">
                     Mine Favoritter
                   </h2>
-                  <div className="space-y-3">
-                    {favoriteProviders.map((provider) => (
-                      <div
-                        key={provider.id}
-                        className="bg-white rounded-lg p-4 flex items-center gap-4 hover:shadow-lg transition-shadow cursor-pointer"
-                      >
-                        {/* Provider Logo */}
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <img
-                            src={provider.logo}
-                            alt={provider.name}
-                            className="w-8 h-8 object-contain"
-                            onError={(e) => {
-                              e.currentTarget.style.display = "none";
-                            }}
-                          />
-                        </div>
-
-                        {/* Provider Info */}
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium text-gray-500">
-                              {provider.category}
-                            </span>
+                  {favoritesLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                      <div className="text-white text-lg">Loading favorites...</div>
+                    </div>
+                  ) : favorites.length > 0 ? (
+                    <div className="space-y-3">
+                      {favorites.map((favorite) => (
+                        <div
+                          key={favorite.id}
+                          className="bg-white rounded-lg p-4 flex items-center gap-4 hover:shadow-lg transition-shadow cursor-pointer"
+                        >
+                          {/* Provider Logo */}
+                          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <div className="text-sm font-semibold text-gray-600">
+                              #{favorite.partnerId}
+                            </div>
                           </div>
-                          <h3 className="text-lg font-semibold text-gray-800">
-                            {provider.name}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            {provider.profession}
-                          </p>
+
+                          {/* Provider Info */}
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-gray-500">
+                                Partner ID: {favorite.partnerId}
+                              </span>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-800">
+                              Favorite #{favorite.id}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {favorite.isActive ? "Active" : "Inactive"}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-white text-lg text-center py-8">
+                      No favorites found
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -375,45 +388,55 @@ export default function UserDashboardPage() {
                   <h2 className="text-white text-2xl font-bold mb-6">
                     Mine Samtaler
                   </h2>
-                  <div className="space-y-3">
-                    {conversations.map((conversation) => (
-                      <div
-                        key={conversation.id}
-                        className="bg-white rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-sm font-medium text-gray-500">
-                                Partner
-                              </span>
-                              <span className="text-sm text-gray-700">
-                                {conversation.partner}
-                              </span>
+                  {conversationsLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                      <div className="text-white text-lg">Loading conversations...</div>
+                    </div>
+                  ) : conversations.length > 0 ? (
+                    <div className="space-y-3">
+                      {conversations.map((conversation) => (
+                        <div
+                          key={conversation.id}
+                          className="bg-white rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="text-sm font-medium text-gray-500">
+                                  Subject
+                                </span>
+                                <span className="text-sm text-gray-700">
+                                  {conversation.messageSubject || "N/A"}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-gray-500">
+                                  Content
+                                </span>
+                                <span className="text-sm text-gray-700 truncate">
+                                  {conversation.messageContent || "N/A"}
+                                </span>
+                              </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium text-gray-500">
-                                Emne
+                              <span className="text-sm text-gray-500">
+                                Read more
                               </span>
-                              <span className="text-sm text-gray-700">
-                                {conversation.topic}
-                              </span>
+                              <img
+                                src={chatModelImg}
+                                alt="Chat"
+                                className="w-4 h-4"
+                              />
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-500">
-                              Læs mere
-                            </span>
-                            <img
-                              src={chatModelImg}
-                              alt="Chat"
-                              className="w-4 h-4"
-                            />
-                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-white text-lg text-center py-8">
+                      No conversations found
+                    </div>
+                  )}
                 </div>
               )}
             </>

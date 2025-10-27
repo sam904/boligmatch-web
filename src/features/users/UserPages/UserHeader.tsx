@@ -55,8 +55,8 @@ function UserHeader() {
     // Close dropdown
     setShowUserDropdown(false);
 
-    // Redirect to userDashboard
-    navigate("/userDashboard");
+    // Redirect to userDashboard and reload
+    window.location.href = "/userProfile";
   };
 
   return (
@@ -68,8 +68,8 @@ function UserHeader() {
           }`}
         >
           <div className="flex items-center justify-between h-full">
-            <div className="">
-              <img
+            <div  className="">
+              <img onClick={() => navigate("/userProfile")}
                 className={`duration-300 ${
                   isScrolled ? "h-10" : "h-12"
                 } cursor-pointer`}
@@ -202,12 +202,12 @@ function UserHeader() {
         <div className="fixed inset-0 z-50">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/50 transition-opacity duration-300"
+            className="absolute inset-0 bg-black/50 transition-opacity duration-300 opacity-100"
             onClick={() => setShowSidebar(false)}
           />
 
           {/* Sidebar */}
-          <div className="absolute right-0 top-0 h-full w-80 bg-[#043428] shadow-2xl transform transition-transform duration-300 ease-in-out">
+          <div className="absolute right-0 top-0 h-full w-80 bg-[#043428] shadow-2xl transform transition-all duration-500 ease-out translate-x-0">
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/10">

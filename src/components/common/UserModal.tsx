@@ -44,7 +44,7 @@ export default function UserModal({ open, onClose }: UserModalProps) {
     if (token && user) {
       onClose();
       if (user.roleName.toLowerCase() === "user") {
-        // navigate("/userDashboard/dashboard");
+        // navigate("/userDashboard/profile");
       } else if (user.roleName.toLowerCase() === "partner") {
         // navigate("/partnerDashboard");
       } else {

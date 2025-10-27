@@ -33,7 +33,7 @@ export default function LoginPage() {
     const redirectTo = user.roleName.toLowerCase() === 'admin' 
       ? '/admin' 
       : user.roleName.toLowerCase() === 'user'
-        ? '/userDashboard/dashboard'
+        ? '/userProfile/profile'
         : user.roleName.toLowerCase() === 'partner'
           ? '/partnerDashboard'
           : '/';
