@@ -14,8 +14,13 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { FaFileExport, FaKey, FaPlus } from "react-icons/fa";
-import { IconTrash, IconPencil } from "../../../components/common/Icons/Index";
+import { FaKey } from "react-icons/fa";
+import {
+  IconPencil,
+  IconTrash,
+  IconPlus,
+  IconUpload,
+} from "../../../components/common/Icons/Index";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { User } from "../../../types/user";
 import { exportToExcel } from "../../../utils/export.utils";
@@ -76,8 +81,8 @@ export default function UsersListPage() {
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
-  // Fetch all users without filtering
-  const { data: paginatedResponse, isLoading } = useQuery({
+  // Fetch users with server-side pagination and search only
+  const { data: paginatedData, isLoading } = useQuery({
     queryKey: ["users", currentPage, pageSize, debouncedSearchTerm],
     queryFn: () =>
       userService.getPaginated({
@@ -245,7 +250,7 @@ export default function UsersListPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: userService.remove,
+    mutationFn: (id: number) => userService.remove(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"], exact: false });
       toast.success(
@@ -289,7 +294,7 @@ export default function UsersListPage() {
 
   const handleStatusFilterChange = (filter: "all" | "active" | "inactive") => {
     setStatusFilter(filter);
-    setCurrentPage(1);
+    setCurrentPage(1); // Reset to first page when filter changes
   };
 
   const handleDeleteUser = (user: User) => {
@@ -319,7 +324,7 @@ export default function UsersListPage() {
             variant="danger"
             size="sm"
             onClick={() => {
-              deleteMutation.mutate(user.id);
+              deleteMutation.mutate(user.id!);
               toast.dismiss();
             }}
           >
@@ -383,33 +388,22 @@ export default function UsersListPage() {
     }
   };
 
-  // Get all users from API response
-  const allUsers = paginatedResponse?.output?.result || [];
-
-  // Apply client-side filtering based on status filter
-  const filteredUsers = useMemo(() => {
-    let filtered = allUsers;
-
-    // Apply status filter
-    if (statusFilter === "active") {
-      filtered = filtered.filter((user) => user.isActive === true);
-    } else if (statusFilter === "inactive") {
-      filtered = filtered.filter((user) => user.isActive === false);
-    }
-
-    return filtered;
-  }, [allUsers, statusFilter]);
-
-  // For pagination, we need to handle the filtered data
-  const totalItems = filteredUsers.length;
+  // Get data from API response - FIX: Use proper response structure
+  const users = paginatedData?.output?.result || [];
+  const totalItems = paginatedData?.output?.rowCount || 0;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
-  // Get current page items
-  const currentPageItems = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return filteredUsers.slice(startIndex, endIndex);
-  }, [filteredUsers, currentPage, pageSize]);
+  // Apply client-side status filtering only
+  const filteredUsers = useMemo(() => {
+    if (statusFilter === "all") {
+      return users; // Return all users from server
+    } else if (statusFilter === "active") {
+      return users.filter((user) => user.isActive === true);
+    } else if (statusFilter === "inactive") {
+      return users.filter((user) => user.isActive === false);
+    }
+    return users;
+  }, [users, statusFilter]);
 
   const columns: ColumnDef<User>[] = [
     {
@@ -445,7 +439,7 @@ export default function UsersListPage() {
       header: t("common.status") || "Status",
       cell: ({ row }) => (
         <span
-          className="px-2 py-0.5 rounded text-xs text-white font-medium"
+          className="px-2 py-1 rounded-full text-xs text-white font-medium"
           style={{
             backgroundColor: row.original.isActive
               ? "var(--color-secondary)"
@@ -509,9 +503,9 @@ export default function UsersListPage() {
                 setEditingUser(null);
                 setIsModalOpen(true);
               }}
-              icon={FaPlus}
+              icon={IconPlus}
               iconPosition="left"
-              iconSize="w-4 h-4"
+              iconSize="w-5 h-5"
             >
               {t("admin.users.addUser") || "Add User"}
             </Button>
@@ -546,17 +540,17 @@ export default function UsersListPage() {
 
             {/* Export Button */}
             <Button
-              variant="primary"
+              variant="outline"
               size="md"
               onClick={handleExportUsers}
               disabled={isExporting}
-              icon={FaFileExport}
+              icon={IconUpload}
               iconPosition="left"
-              iconSize="w-4 h-4"
+              iconSize="w-5 h-5"
             >
               {isExporting
                 ? t("common.exporting") || "Exporting..."
-                : t("common.export") || "Export"}
+                : t("common.export") || "Export CSV"}
             </Button>
           </div>
         </div>
@@ -574,9 +568,9 @@ export default function UsersListPage() {
           </p>
         </div>
       ) : (
-        /* Data Table */
+        /* Data Table - Use filteredUsers for display */
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <DataTable data={currentPageItems} columns={columns} />
+          <DataTable data={filteredUsers} columns={columns} />
           <div className="px-4 pb-4">
             <Pagination
               currentPage={currentPage}

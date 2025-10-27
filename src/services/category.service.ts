@@ -29,6 +29,7 @@ export type PaginatedQuery = {
   isPrivateCourse?: boolean;
   isPublish?: boolean;
   statusId?: number;
+  
 };
 
 export const categoryService = {

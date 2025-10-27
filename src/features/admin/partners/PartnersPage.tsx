@@ -12,6 +12,7 @@ import TextArea from "../../../components/common/TextArea";
 import ImageUpload from "../../../components/common/ImageUpload";
 import VideoUpload from "../../../components/common/VideoUpload";
 import VideoPreviewModal from "../../../components/common/VideoPreviewModal";
+import DocumentPreviewModal from "../../../components/common/DocumentPreviewModal";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -29,11 +30,16 @@ import type { SubCategory } from "../../../types/subcategory";
 import type { Category } from "../../../types/category";
 import SearchableSelectController from "../../../components/common/SearchableSelectController";
 import DocumentUpload from "../../../components/common/DocumentUpload";
-import { FaFileExport, FaKey, FaPlus } from "react-icons/fa";
+import { FaKey } from "react-icons/fa";
 import Modal from "../../../components/common/Modal";
 import { userService } from "../../../services/user.service";
 import { exportToExcel } from "../../../utils/export.utils";
-import { IconPencil, IconTrash } from "../../../components/common/Icons/Index";
+import {
+  IconPencil,
+  IconTrash,
+  IconPlus,
+  IconUpload,
+} from "../../../components/common/Icons/Index";
 import Select from "../../../components/common/Select";
 
 // Image Preview Modal Component
@@ -94,7 +100,7 @@ function ImagePreviewModal({
   );
 }
 
-// Logo Upload Component with 512x512 or smaller Validation
+// Logo Upload Component with exact 512x512 Validation
 function LogoUploadWithValidation({
   value,
   onChange,
@@ -116,15 +122,13 @@ function LogoUploadWithValidation({
           onPreview={onPreview}
           folder="partners/logos"
           error={error}
-          maxWidth={512}
-          maxHeight={512}
+          exactDimensions={{ width: 512, height: 512 }}
           showDimensionValidation={true}
         />
       </div>
     </div>
   );
 }
-
 // Schemas
 const partnerSubCategorySchema = z.object({
   id: z.number().optional(),
@@ -226,16 +230,12 @@ type ValidFieldNames =
   | `parDoclst.${number}.${keyof PartnerDocument}`
   | `parSubCatlst.${number}.${keyof PartnerSubCategory}`;
 
-const handleDocumentPreview = (url: string) => {
-  window.open(url, "_blank");
-};
-
 export default function PartnersPage() {
   const { t } = useTranslation();
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
   const [resettingPartner, setResettingPartner] = useState<Partner | null>(
     null
-  ); // Added password reset state
+  );
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
@@ -259,6 +259,15 @@ export default function PartnersPage() {
     isOpen: boolean;
   }>({
     url: "",
+    isOpen: false,
+  });
+  const [previewDocument, setPreviewDocument] = useState<{
+    url: string;
+    name: string;
+    isOpen: boolean;
+  }>({
+    url: "",
+    name: "",
     isOpen: false,
   });
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
@@ -310,6 +319,14 @@ export default function PartnersPage() {
     control,
     name: "parSubCatlst",
   });
+
+  const handleDocumentPreview = (url: string, name?: string) => {
+    setPreviewDocument({
+      url,
+      name: name || url.split("/").pop() || "Document",
+      isOpen: true,
+    });
+  };
 
   const {
     fields: documentFields,
@@ -410,6 +427,7 @@ export default function PartnersPage() {
     }
   }, [currentStep]);
 
+  // Fetch partners with server-side pagination and search only
   const { data: paginatedData, isLoading } = useQuery({
     queryKey: ["partners", currentPage, pageSize, debouncedSearchTerm],
     queryFn: () =>
@@ -586,7 +604,7 @@ export default function PartnersPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: partnerService.delete,
+    mutationFn: (id: number) => partnerService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["partners"], exact: false });
       toast.success(
@@ -855,7 +873,7 @@ export default function PartnersPage() {
 
   const handleStatusFilterChange = (filter: "all" | "active" | "inactive") => {
     setStatusFilter(filter);
-    setCurrentPage(1);
+    setCurrentPage(1); // Reset to first page when filter changes
   };
 
   const handleResetPassword = (partner: Partner) => {
@@ -921,7 +939,7 @@ export default function PartnersPage() {
             variant="danger"
             size="sm"
             onClick={() => {
-              deleteMutation.mutate(partner.id);
+              deleteMutation.mutate(partner.id!);
               toast.dismiss();
             }}
           >
@@ -980,26 +998,22 @@ export default function PartnersPage() {
     }
   };
 
-  const allPartners = paginatedData?.output?.result || [];
-
-  const filteredPartners = useMemo(() => {
-    let filtered = allPartners;
-    if (statusFilter === "active") {
-      filtered = filtered.filter((partner) => partner.isActive === true);
-    } else if (statusFilter === "inactive") {
-      filtered = filtered.filter((partner) => partner.isActive === false);
-    }
-    return filtered;
-  }, [allPartners, statusFilter]);
-
-  const totalItems = filteredPartners.length;
+  // Get data from API response - FIX: Use correct response structure
+  const partners = paginatedData?.output?.result || [];
+  const totalItems = paginatedData?.output?.rowCount || 0;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
-  const currentPageItems = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return filteredPartners.slice(startIndex, endIndex);
-  }, [filteredPartners, currentPage, pageSize]);
+  // Apply client-side status filtering only
+  const filteredPartners = useMemo(() => {
+    if (statusFilter === "all") {
+      return partners; // Return all partners from server
+    } else if (statusFilter === "active") {
+      return partners.filter((partner) => partner.isActive === true);
+    } else if (statusFilter === "inactive") {
+      return partners.filter((partner) => partner.isActive === false);
+    }
+    return partners;
+  }, [partners, statusFilter]);
 
   const columns: ColumnDef<Partner>[] = [
     { accessorKey: "id", header: "ID" },
@@ -1017,7 +1031,7 @@ export default function PartnersPage() {
       header: "Status",
       cell: ({ row }) => (
         <span
-          className="px-2 py-0.5 rounded text-xs text-white font-medium"
+          className="px-2 py-1 rounded text-xs text-white font-medium"
           style={{
             backgroundColor: row.original.isActive
               ? "var(--color-secondary)"
@@ -1258,7 +1272,12 @@ export default function PartnersPage() {
                       onChange={(url) =>
                         setValue(`parDoclst.${index}.documentUrl`, url)
                       }
-                      onPreview={handleDocumentPreview}
+                      onPreview={(url) =>
+                        handleDocumentPreview(
+                          url,
+                          watch(`parDoclst.${index}.documentName`)
+                        )
+                      }
                       folder="partners/documents"
                       error={errors.parDoclst?.[index]?.documentUrl?.message}
                       required
@@ -1291,65 +1310,6 @@ export default function PartnersPage() {
                 </p>
               )}
             </div>
-            {documentFields.some((_, index) =>
-              watch(`parDoclst.${index}.documentUrl` as const)
-            ) && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-medium text-blue-800 mb-3">
-                  Uploaded Documents
-                </h4>
-                <div className="space-y-2">
-                  {documentFields.map((field, index) => {
-                    const docUrl = watch(`parDoclst.${index}.documentUrl`);
-                    const docName = watch(`parDoclst.${index}.documentName`);
-                    if (!docUrl) return null;
-                    const getFileIcon = (url: string) => {
-                      if (url.includes(".pdf")) return "📄 PDF";
-                      if (url.includes(".doc")) return "📝 Word";
-                      if (url.includes(".xls")) return "📊 Excel";
-                      if (url.includes(".ppt")) return "📽️ PowerPoint";
-                      if (url.includes(".txt")) return "📃 Text";
-                      return "📎 File";
-                    };
-                    return (
-                      <div
-                        key={field.id}
-                        className="flex items-center justify-between p-3 bg-white rounded-lg border"
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="text-lg">
-                            {getFileIcon(docUrl).split(" ")[0]}
-                          </span>
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">
-                              {docName || `Document ${index + 1}`}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {getFileIcon(docUrl)}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => window.open(docUrl, "_blank")}
-                            className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                          >
-                            View
-                          </button>
-                          <a
-                            href={docUrl}
-                            download
-                            className="px-3 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
-                          >
-                            Download
-                          </a>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
           </div>
         );
 
@@ -1582,9 +1542,9 @@ export default function PartnersPage() {
                 size="md"
                 onClick={handleAddPartner}
                 disabled={showForm}
-                icon={FaPlus}
+                icon={IconPlus}
                 iconPosition="left"
-                iconSize="w-4 h-4"
+                iconSize="w-5 h-5"
               >
                 {t("admin.partners.addPartner")}
               </Button>
@@ -1620,9 +1580,9 @@ export default function PartnersPage() {
                 size="md"
                 onClick={handleExportPartners}
                 disabled={isExporting}
-                icon={FaFileExport}
+                icon={IconUpload}
                 iconPosition="left"
-                iconSize="w-4 h-4"
+                iconSize="w-5 h-5"
               >
                 {isExporting
                   ? t("common.exporting") || "Exporting..."
@@ -1718,8 +1678,9 @@ export default function PartnersPage() {
               <p className="mt-4 text-gray-600">{t("common.loading")}</p>
             </div>
           ) : (
+            /* Data Table - Use filteredPartners for display */
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <DataTable data={currentPageItems} columns={columns} />
+              <DataTable data={filteredPartners} columns={columns} />
               <div className="px-4 pb-4">
                 <Pagination
                   currentPage={currentPage}
@@ -1742,6 +1703,12 @@ export default function PartnersPage() {
         videoUrl={previewVideo.url}
         isOpen={previewVideo.isOpen}
         onClose={() => setPreviewVideo({ url: "", isOpen: false })}
+      />
+      <DocumentPreviewModal
+        documentUrl={previewDocument.url}
+        documentName={previewDocument.name}
+        isOpen={previewDocument.isOpen}
+        onClose={() => setPreviewDocument({ url: "", name: "", isOpen: false })}
       />
       {/* Password Reset Modal */}
       <Modal

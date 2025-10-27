@@ -20,33 +20,43 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { Category } from "../../../types/category";
 import TextArea from "../../../components/common/TextArea";
 import Select from "../../../components/common/Select";
-import { IconTrash, IconPencil } from '../../../components/common/Icons/Index';
-import { FaPlus } from "react-icons/fa";
+import { IconTrash, IconPencil,IconPlus } from "../../../components/common/Icons/Index";
 
-// Enhanced validation schema with required imageUrl
+
+// Enhanced validation schema with dimension validation
 const categorySchema = z.object({
-  name: z
-    .string()
-    .min(1, "Category name is required")
-    .max(100, "Category name must be less than 100 characters"),
-  description: z
-    .string()
-    .max(500, "Description must be less than 500 characters")
-    .optional(),
+  name: z.string().min(1, "Category name is required"),
+  description: z.string().optional(),
   imageUrl: z
     .string()
-    .min(1, "Image Upload is required")
-    .url("Please add a valid image"),
+    .min(1, "Image is required")
+    .url("Please provide a valid image URL")
+    .refine(
+      () => {
+        return true;
+      },
+      {
+        message: "Image must be exactly 374 × 540 pixels",
+      }
+    ),
   iconUrl: z
     .string()
-    .min(1, "Icon Upload is required")
-    .url("Please add a valid icon"),
+    .min(1, "Icon is required")
+    .url("Please provide a valid icon URL")
+    .refine(
+      () => {
+        return true;
+      },
+      {
+        message: "Icon must be exactly 512 × 512 pixels",
+      }
+    ),
   isActive: z.boolean(),
 });
 
 type CategoryFormData = z.infer<typeof categorySchema>;
 
-// Image Preview Modal Component
+// Fixed Image Preview Modal Component - removed unused dimensions
 function ImagePreviewModal({
   imageUrl,
   isOpen,
@@ -56,6 +66,22 @@ function ImagePreviewModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isOpen && imageUrl) {
+      setIsLoading(true);
+      const img = new Image();
+      img.onload = function () {
+        setIsLoading(false);
+      };
+      img.onerror = function () {
+        setIsLoading(false);
+      };
+      img.src = imageUrl;
+    }
+  }, [isOpen, imageUrl]);
+
   if (!isOpen) return null;
 
   return (
@@ -83,18 +109,25 @@ function ImagePreviewModal({
           </button>
         </div>
         <div className="p-4 flex justify-center items-center max-h-[70vh] overflow-auto">
-          <img
-            src={imageUrl}
-            alt="Preview"
-            className="max-w-full max-h-full object-contain"
-          />
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <span className="ml-2 text-gray-600">Loading image...</span>
+            </div>
+          ) : (
+            <img
+              src={imageUrl}
+              alt="Preview"
+              className="max-w-full max-h-full object-contain"
+            />
+          )}
         </div>
         <div className="p-4 border-t text-center">
           <a
             href={imageUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 underline"
+            className="text-blue-600 hover:text-blue-800 underline text-sm"
           >
             Open original image in new tab
           </a>
@@ -125,7 +158,7 @@ export default function CategoriesPage() {
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
-  // Fetch all categories without filtering
+  // Fetch categories with server-side pagination and search only
   const { data: paginatedData, isLoading } = useQuery({
     queryKey: ["categories", currentPage, pageSize, debouncedSearchTerm],
     queryFn: () =>
@@ -135,6 +168,23 @@ export default function CategoriesPage() {
         searchTerm: debouncedSearchTerm || undefined,
       }),
   });
+
+  // Get data from API response
+  const categories = paginatedData?.items || [];
+  const totalItems = paginatedData?.total || 0;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+
+  // Apply client-side status filtering only
+  const filteredCategories = useMemo(() => {
+    if (statusFilter === "all") {
+      return categories; // Return all categories from server
+    } else if (statusFilter === "active") {
+      return categories.filter((category) => category.isActive === true);
+    } else if (statusFilter === "inactive") {
+      return categories.filter((category) => category.isActive === false);
+    }
+    return categories;
+  }, [categories, statusFilter]);
 
   const {
     register,
@@ -161,8 +211,26 @@ export default function CategoriesPage() {
   // Watch the form values
   const imageUrlValue = watch("imageUrl");
   const iconUrlValue = watch("iconUrl");
-  const nameValue = watch("name");
-  const descriptionValue = watch("description");
+
+  // Add dimension validation function
+  const validateImageDimensions = async (
+    imageUrl: string,
+    requiredWidth: number,
+    requiredHeight: number
+  ): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = function () {
+        const isValid =
+          img.width === requiredWidth && img.height === requiredHeight;
+        resolve(isValid);
+      };
+      img.onerror = function () {
+        resolve(false);
+      };
+      img.src = imageUrl;
+    });
+  };
 
   useEffect(() => {
     if (editingCategory) {
@@ -260,11 +328,41 @@ export default function CategoriesPage() {
   });
 
   const onSubmit = async (data: CategoryFormData) => {
+    // Final validation check
     const isFormValid = await trigger();
-
     if (!isFormValid) {
       toast.error("Please fix the validation errors before submitting");
       return;
+    }
+
+    // Validate image dimensions before submission
+    if (data.imageUrl) {
+      const isImageValid = await validateImageDimensions(
+        data.imageUrl,
+        374,
+        540
+      );
+      if (!isImageValid) {
+        toast.error("Main image must be exactly 374 × 540 pixels");
+        setError("imageUrl", {
+          type: "manual",
+          message: "Image must be exactly 374 × 540 pixels",
+        });
+        return;
+      }
+    }
+
+    // Validate icon dimensions before submission
+    if (data.iconUrl) {
+      const isIconValid = await validateImageDimensions(data.iconUrl, 512, 512);
+      if (!isIconValid) {
+        toast.error("Icon must be exactly 512 × 512 pixels");
+        setError("iconUrl", {
+          type: "manual",
+          message: "Icon must be exactly 512 × 512 pixels",
+        });
+        return;
+      }
     }
 
     if (editingCategory) {
@@ -285,7 +383,7 @@ export default function CategoriesPage() {
 
   const handleStatusFilterChange = (filter: "all" | "active" | "inactive") => {
     setStatusFilter(filter);
-    setCurrentPage(1);
+    setCurrentPage(1); // Reset to first page when filter changes
   };
 
   const handleDeleteCategory = (category: Category) => {
@@ -334,33 +432,6 @@ export default function CategoriesPage() {
     clearErrors();
   };
 
-  // Get all categories from API response
-  const allCategories = paginatedData?.items || [];
-
-  // Apply client-side filtering based on status filter
-  const filteredCategories = useMemo(() => {
-    let filtered = allCategories;
-
-    if (statusFilter === "active") {
-      filtered = filtered.filter((category) => category.isActive === true);
-    } else if (statusFilter === "inactive") {
-      filtered = filtered.filter((category) => category.isActive === false);
-    }
-
-    return filtered;
-  }, [allCategories, statusFilter]);
-
-  // For pagination, we need to handle the filtered data
-  const totalItems = filteredCategories.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
-
-  // Get current page items
-  const currentPageItems = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return filteredCategories.slice(startIndex, endIndex);
-  }, [filteredCategories, currentPage, pageSize]);
-
   const columns: ColumnDef<Category>[] = [
     {
       accessorKey: "id",
@@ -391,12 +462,14 @@ export default function CategoriesPage() {
         if (!imageUrl) return "-";
 
         return (
-          <button
-            onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
-            className="text-blue-600 hover:text-blue-800 underline text-sm font-medium"
-          >
-            View Image
-          </button>
+          <div className="flex flex-col gap-1">
+            <button
+              onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
+              className="underline text-sm font-medium text-left"
+            >
+               Image
+            </button>
+          </div>
         );
       },
     },
@@ -408,12 +481,14 @@ export default function CategoriesPage() {
         if (!iconUrl) return "-";
 
         return (
-          <button
-            onClick={() => setPreviewImage({ url: iconUrl, isOpen: true })}
-            className="text-blue-600 hover:text-blue-800 underline text-sm font-medium"
-          >
-            View Icon
-          </button>
+          <div className="flex flex-col gap-1">
+            <button
+              onClick={() => setPreviewImage({ url: iconUrl, isOpen: true })}
+              className="underline text-sm font-medium text-left"
+            >
+              Icon
+            </button>
+          </div>
         );
       },
     },
@@ -422,7 +497,7 @@ export default function CategoriesPage() {
       header: t("common.status") || "Status",
       cell: ({ row }) => (
         <span
-          className="px-2 py-0.5 rounded text-xs text-white font-medium"
+          className="px-2 py-1 rounded-full text-xs text-white font-medium"
           style={{
             backgroundColor: row.original.isActive
               ? "var(--color-secondary)"
@@ -449,7 +524,7 @@ export default function CategoriesPage() {
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("common.edit") || "Edit category"}
           >
-           <IconPencil/>
+            <IconPencil />
           </button>
           <button
             type="button"
@@ -457,7 +532,7 @@ export default function CategoriesPage() {
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("common.delete") || "Delete category"}
           >
-           <IconTrash/>
+            <IconTrash />
           </button>
         </div>
       ),
@@ -469,7 +544,6 @@ export default function CategoriesPage() {
       {/* Header Section */}
       <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
-
           <div>
             <Button
               variant="primary"
@@ -478,15 +552,15 @@ export default function CategoriesPage() {
                 setEditingCategory(null);
                 setIsModalOpen(true);
               }}
-              icon={FaPlus}
+              icon={IconPlus}
               iconPosition="left"
-              iconSize= "w-4 h-4"
+              iconSize="w-5 h-5"
             >
               {t("admin.categories.addCategory") || "Add Category"}
             </Button>
           </div>
 
-          {/* Right side: Filters, SearchBar and Add Category button */}
+          {/* Right side: Filters, SearchBar */}
           <div className="flex items-center gap-4">
             {/* Status Filter Dropdown */}
             <div className="w-32">
@@ -527,9 +601,9 @@ export default function CategoriesPage() {
           </p>
         </div>
       ) : (
-        /* Data Table */
+        /* Data Table - Use filteredCategories for display */
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <DataTable data={currentPageItems} columns={columns} />
+          <DataTable data={filteredCategories} columns={columns} />
           <div className="px-4 pb-4">
             <Pagination
               currentPage={currentPage}
@@ -562,27 +636,16 @@ export default function CategoriesPage() {
             placeholder="Enter category name"
           />
 
-          {/* Character count for name */}
-          <div className="text-xs text-gray-500 -mt-2">
-            {nameValue?.length || 0}/100 characters
-          </div>
-
           {/* Description TextArea */}
           <TextArea
             label={t("admin.categories.description") || "Description"}
             error={errors.description?.message}
             {...register("description")}
             maxLength={500}
-            placeholder="Enter category description (optional)"
+            placeholder="Enter category description"
             rows={4}
           />
-
-          {/* Character count for description */}
-          <div className="text-xs text-gray-500 -mt-2">
-            {descriptionValue?.length || 0}/500 characters
-          </div>
-
-          {/* Image Upload for Category Image - Now Required */}
+          {/* Image Upload for Category Image with 1440x710 validation */}
           <ImageUpload
             label={`${t("admin.categories.imageUrl") || "Image Upload"} *`}
             value={imageUrlValue}
@@ -593,9 +656,11 @@ export default function CategoriesPage() {
             onPreview={(url) => setPreviewImage({ url, isOpen: true })}
             folder="categories/images"
             error={errors.imageUrl?.message}
+            exactDimensions={{ width: 374, height: 540 }}
+            showDimensionValidation={true}
           />
 
-          {/* Image Upload for Category Icon - Now Required */}
+          {/* Image Upload for Category Icon with 512x512 validation */}
           <ImageUpload
             label={`${t("admin.categories.iconUrl") || "Icon Upload"} *`}
             value={iconUrlValue}
@@ -606,6 +671,8 @@ export default function CategoriesPage() {
             onPreview={(url) => setPreviewImage({ url, isOpen: true })}
             folder="categories/icons"
             error={errors.iconUrl?.message}
+            exactDimensions={{ width: 512, height: 512 }}
+            showDimensionValidation={true}
           />
 
           <div className="flex items-center gap-2">
