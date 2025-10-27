@@ -1,10 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { loginThunk } from "./authSlice";
-import Input from "../../components/common/Input";
 import { Navigate, useLocation } from "react-router-dom";
 import login_cover from "../../../public/login_cover.png";
 import Lag_1 from "../../../public/Lag_1.png";
@@ -16,7 +14,6 @@ const schema = z.object({
 });
 
 export default function LoginPage() {
-  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const status = useAppSelector((s) => s.auth.status);
   const token = useAppSelector((s) => s.auth.accessToken);
