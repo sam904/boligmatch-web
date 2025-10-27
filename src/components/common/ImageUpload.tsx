@@ -11,6 +11,10 @@ interface ImageUploadProps {
   folder?: string;
   error?: string;
   onPreview?: (url: string) => void;
+  maxWidth?: number;
+  maxHeight?: number;
+  showDimensionValidation?: boolean;
+  exactDimensions?: { width: number; height: number }; // For exact dimension requirements
 }
 
 export default function ImageUpload({ 
@@ -19,10 +23,57 @@ export default function ImageUpload({
   onChange, 
   folder = 'images', 
   error, 
-  onPreview 
+  onPreview,
+  maxWidth = 512,
+  maxHeight = 512,
+  showDimensionValidation = false,
+  exactDimensions // Optional: for exact dimension requirements
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
+  const [validating, setValidating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Function to validate image dimensions
+  const validateImageDimensions = (file: File): Promise<{isValid: boolean; width: number; height: number}> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      
+      img.onload = () => {
+        let isValid = true;
+        
+        if (exactDimensions) {
+          // Check for exact dimensions
+          isValid = img.width === exactDimensions.width && img.height === exactDimensions.height;
+        } else {
+          // Check for maximum dimensions
+          isValid = img.width <= maxWidth && img.height <= maxHeight;
+        }
+        
+        resolve({
+          isValid,
+          width: img.width,
+          height: img.height
+        });
+        URL.revokeObjectURL(objectUrl);
+      };
+      
+      img.onerror = () => {
+        resolve({ isValid: false, width: 0, height: 0 });
+        URL.revokeObjectURL(objectUrl);
+      };
+      
+      img.src = objectUrl;
+    });
+  };
+
+  const getDimensionMessage = () => {
+    if (exactDimensions) {
+      return `exactly ${exactDimensions.width}x${exactDimensions.height} pixels`;
+    } else {
+      return `${maxWidth}x${maxHeight} pixels or smaller`;
+    }
+  };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -34,10 +85,49 @@ export default function ImageUpload({
     }
 
     const maxSize = 2 * 1024 * 1024; // 2 MB in bytes
-if (file.size > maxSize) {
-  toast.error('Image size should be less than 2MB');
-  return;
-}
+    if (file.size > maxSize) {
+      toast.error('Image size should be less than 2MB');
+      return;
+    }
+
+    // Validate dimensions if required
+    if (showDimensionValidation) {
+      setValidating(true);
+      try {
+        const { isValid, width, height } = await validateImageDimensions(file);
+        
+        if (!isValid) {
+          if (exactDimensions) {
+            toast.error(`Image dimensions must be exactly ${exactDimensions.width}x${exactDimensions.height} pixels. Current dimensions: ${width}x${height}`);
+          } else {
+            toast.error(`Image dimensions must be ${maxWidth}x${maxHeight} pixels or smaller. Current dimensions: ${width}x${height}`);
+          }
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+          return;
+        }
+        
+        // Show dimension success message
+        if (exactDimensions) {
+          toast.success(`Perfect! Image is exactly ${width}x${height} pixels`);
+        } else {
+          if (width === maxWidth && height === maxHeight) {
+            toast.success(`Perfect! Image is ${maxWidth}x${maxHeight} pixels`);
+          } else {
+            toast.success(`Image dimensions are acceptable (${width}x${height})`);
+          }
+        }
+      } catch (error) {
+        toast.error('Failed to validate image dimensions');
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        return;
+      } finally {
+        setValidating(false);
+      }
+    }
 
     setUploading(true);
     try {
@@ -65,9 +155,18 @@ if (file.size > maxSize) {
     }
   };
 
+  const isUploading = uploading || validating;
+
   return (
     <div className="w-full">
-      <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        {label}
+        {showDimensionValidation && (
+          <span className="text-xs text-gray-500 ml-1">
+            ({getDimensionMessage()})
+          </span>
+        )}
+      </label>
       
       <div className="flex flex-col sm:flex-row gap-3">
         {/* Input Field - Full width on mobile, flexible on desktop */}
@@ -110,16 +209,16 @@ if (file.size > maxSize) {
             type="button"
             variant="secondary"
             onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
+            disabled={isUploading}
             className="w-full sm:w-auto min-w-[120px] h-full"
           >
-            {uploading ? (
+            {isUploading ? (
               <span className="flex items-center gap-2">
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Uploading...
+                {validating ? 'Validating...' : 'Uploading...'}
               </span>
             ) : (
               <span className="flex items-center gap-2">
@@ -168,28 +267,7 @@ if (file.size > maxSize) {
             <div className="flex-1 min-w-0">
               <p className="text-sm text-gray-600 break-all">{value}</p>
               <div className="flex gap-2 mt-2">
-                {/* {onPreview && (
-                  <button
-                    type="button"
-                    onClick={handlePreview}
-                    className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3-3H7" />
-                    </svg>
-                    Preview Image
-                  </button>
-                )} */}
-                {/* <button
-                  type="button"
-                  onClick={handleRemove}
-                  className="text-red-600 hover:text-red-800 text-sm font-medium flex items-center gap-1"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                  Remove
-                </button> */}
+                {/* Preview and Remove buttons commented out as per original */}
               </div>
             </div>
           </div>
@@ -204,14 +282,3 @@ if (file.size > maxSize) {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-

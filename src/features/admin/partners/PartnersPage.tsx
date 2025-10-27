@@ -1,5 +1,4 @@
-// src/features/admin/partners/PartnersPage.tsx
-import { useState, useEffect, useMemo } from "react"; // Added useMemo
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { partnerService } from "../../../services/partner.service";
 import { subCategoryService } from "../../../services/subCategory.service";
@@ -30,8 +29,12 @@ import type { SubCategory } from "../../../types/subcategory";
 import type { Category } from "../../../types/category";
 import SearchableSelectController from "../../../components/common/SearchableSelectController";
 import DocumentUpload from "../../../components/common/DocumentUpload";
-import { FaEdit, FaTrash, FaFileExport } from "react-icons/fa"; // Added FaFileExport
-import { exportToExcel } from "../../../utils/export.utils"; // Added export utility
+import { FaFileExport, FaKey, FaPlus } from "react-icons/fa";
+import Modal from "../../../components/common/Modal";
+import { userService } from "../../../services/user.service";
+import { exportToExcel } from "../../../utils/export.utils";
+import { IconPencil, IconTrash } from "../../../components/common/Icons/Index";
+import Select from "../../../components/common/Select";
 
 // Image Preview Modal Component
 function ImagePreviewModal({
@@ -91,6 +94,37 @@ function ImagePreviewModal({
   );
 }
 
+// Logo Upload Component with 512x512 or smaller Validation
+function LogoUploadWithValidation({
+  value,
+  onChange,
+  onPreview,
+  error,
+}: {
+  value: string;
+  onChange: (url: string) => void;
+  onPreview: (url: string) => void;
+  error?: string;
+}) {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 mb-2">
+        <ImageUpload
+          label="Company Logo"
+          value={value}
+          onChange={onChange}
+          onPreview={onPreview}
+          folder="partners/logos"
+          error={error}
+          maxWidth={512}
+          maxHeight={512}
+          showDimensionValidation={true}
+        />
+      </div>
+    </div>
+  );
+}
+
 // Schemas
 const partnerSubCategorySchema = z.object({
   id: z.number().optional(),
@@ -107,14 +141,35 @@ const partnerDocumentSchema = z.object({
   isActive: z.boolean(),
 });
 
+// Password reset schema
+const passwordResetSchema = z
+  .object({
+    newPassword: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(1, "Please confirm password"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+type PasswordResetData = z.infer<typeof passwordResetSchema>;
+
 const partnerSchema = z.object({
   userId: z.number().optional(),
   categoryId: z.number().min(1, "Category is required"),
   address: z.string().min(1, "Address is required"),
-  businessUnit: z.number().min(1, "Business Unit is required"),
   businessName: z.string().min(1, "Business Name is required"),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
-  mobileNo: z.number().optional(),
+  mobileNo: z
+    .string()
+    .min(10, "Mobile number must be at least 10 digits")
+    .max(15, "Mobile number cannot exceed 15 digits")
+    .regex(
+      /^[0-9+-\s()]+$/,
+      "Mobile number can only contain numbers, +, -, (, ) and spaces"
+    )
+    .optional()
+    .or(z.literal("")),
   videoUrl: z.string().optional(),
   logoUrl: z.string().optional(),
   cvr: z.number().min(0, "CVR is required"),
@@ -144,7 +199,7 @@ type PartnerFormData = {
   address: string;
   businessName: string;
   email?: string;
-  mobileNo?: number;
+  mobileNo?: string;
   businessUnit: number;
   videoUrl?: string;
   logoUrl?: string;
@@ -165,19 +220,33 @@ type PartnerFormData = {
   parDoclst: PartnerDocument[];
 };
 
+type FieldPath<T> = keyof T | string;
+type ValidFieldNames =
+  | FieldPath<PartnerFormData>
+  | `parDoclst.${number}.${keyof PartnerDocument}`
+  | `parSubCatlst.${number}.${keyof PartnerSubCategory}`;
+
+const handleDocumentPreview = (url: string) => {
+  window.open(url, "_blank");
+};
+
 export default function PartnersPage() {
   const { t } = useTranslation();
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
+  const [resettingPartner, setResettingPartner] = useState<Partner | null>(
+    null
+  ); // Added password reset state
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
-  >("active"); // Added status filter
+  >("active");
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [isExporting, setIsExporting] = useState(false); // Added export state
+  const [isExporting, setIsExporting] = useState(false);
   const [previewImage, setPreviewImage] = useState<{
     url: string;
     isOpen: boolean;
@@ -193,20 +262,20 @@ export default function PartnersPage() {
     isOpen: false,
   });
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
-  // UPDATED: Steps reordered - Documents is now step 5, Categories & Sub Categories is step 6
   const steps = [
     "Basic Information",
     "Media & Description",
     "Text Fields",
     "Images & Status",
-    "Documents", // MOVED TO STEP 5
-    "Categories & Sub Categories", // MOVED TO STEP 6
+    "Documents",
+    "Categories & Sub Categories",
   ];
 
-  // Initialize react-hook-form FIRST
   const {
     register,
     handleSubmit,
@@ -221,19 +290,18 @@ export default function PartnersPage() {
     defaultValues: {
       isActive: true,
       cvr: 0,
-      businessUnit: 0,
+      businessUnit: 1,
       categoryId: 0,
-      userId: 0,
+      userId: 2,
       businessName: "",
       email: "",
-      mobileNo: 0,
+      mobileNo: "",
       address: "",
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
       parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
     },
   });
 
-  // Initialize field arrays AFTER control is defined
   const {
     fields: subCategoryFields,
     append: appendSubCategory,
@@ -252,7 +320,6 @@ export default function PartnersPage() {
     name: "parDoclst",
   });
 
-  // Watch values AFTER form initialization
   const logoUrlValue = watch("logoUrl");
   const videoUrlValue = watch("videoUrl");
   const imageUrl1Value = watch("imageUrl1");
@@ -262,7 +329,87 @@ export default function PartnersPage() {
   const imageUrl5Value = watch("imageUrl5");
   const categoryIdValue = watch("categoryId");
 
-  // Fetch all partners without client-side filtering
+  // Check if a step is completed
+  const isStepCompleted = async (step: number): Promise<boolean> => {
+    const stepFields: Record<number, ValidFieldNames[]> = {
+      1: [
+        "businessName",
+        "email",
+        "mobileNo",
+        "businessUnit",
+        "cvr",
+        "address",
+      ],
+      2: ["videoUrl", "logoUrl", "descriptionShort"],
+      3: ["textField1", "textField2", "textField3", "textField4", "textField5"],
+      4: [
+        "imageUrl1",
+        "imageUrl2",
+        "imageUrl3",
+        "imageUrl4",
+        "imageUrl5",
+        "isActive",
+      ],
+      5: [],
+      6: ["categoryId"],
+    };
+
+    // For steps 5 and 6, we need to check array fields
+    if (step === 5) {
+      const documentValidations = documentFields.map((_, index) =>
+        trigger([
+          `parDoclst.${index}.documentName`,
+          `parDoclst.${index}.documentUrl`,
+          `parDoclst.${index}.isActive`,
+        ] as any)
+      );
+      const documentResults = await Promise.all(documentValidations);
+      return documentResults.every((result) => result);
+    }
+
+    if (step === 6) {
+      const categoryValid = await trigger("categoryId", { shouldFocus: false });
+      const subCategoryValidations = subCategoryFields.map((_, index) =>
+        trigger([
+          `parSubCatlst.${index}.subCategoryId`,
+          `parSubCatlst.${index}.isActive`,
+        ] as any)
+      );
+      const subCategoryResults = await Promise.all(subCategoryValidations);
+      return categoryValid && subCategoryResults.every((result) => result);
+    }
+
+    // For regular steps
+    if (stepFields[step].length > 0) {
+      return await trigger(stepFields[step] as any, { shouldFocus: false });
+    }
+
+    return true;
+  };
+
+  // Update completed steps when current step changes
+  useEffect(() => {
+    const updateCompletedSteps = async () => {
+      const newCompletedSteps = [...completedSteps];
+
+      // Check all previous steps
+      for (let step = 1; step < currentStep; step++) {
+        if (!newCompletedSteps.includes(step)) {
+          const isValid = await isStepCompleted(step);
+          if (isValid && !newCompletedSteps.includes(step)) {
+            newCompletedSteps.push(step);
+          }
+        }
+      }
+
+      setCompletedSteps(newCompletedSteps);
+    };
+
+    if (currentStep > 1) {
+      updateCompletedSteps();
+    }
+  }, [currentStep]);
+
   const { data: paginatedData, isLoading } = useQuery({
     queryKey: ["partners", currentPage, pageSize, debouncedSearchTerm],
     queryFn: () =>
@@ -297,13 +444,11 @@ export default function PartnersPage() {
       },
     });
 
-  // Function to get category name by ID
   const getCategoryName = (categoryId: number) => {
     const category = categories.find((cat) => cat.id === categoryId);
     return category ? category.name : `Category ${categoryId}`;
   };
 
-  // Update selected category when categoryId changes in form
   useEffect(() => {
     if (categoryIdValue && categoryIdValue > 0) {
       setSelectedCategoryId(categoryIdValue);
@@ -311,14 +456,18 @@ export default function PartnersPage() {
   }, [categoryIdValue]);
 
   useEffect(() => {
+    console.log("useEffect for editing partner triggered:", {
+      editingPartner,
+      showForm,
+    });
     if (editingPartner && showForm) {
       const formData: PartnerFormData = {
-        userId: editingPartner.userId,
+        userId: editingPartner.userId || 2,
         categoryId: editingPartner.categoryId,
         address: editingPartner.address,
         businessName: editingPartner.businessName,
-        email: editingPartner.email,
-        mobileNo: editingPartner.mobileNo,
+        email: editingPartner.email || "",
+        mobileNo: editingPartner.mobileNo || "",
         businessUnit: editingPartner.businessUnit,
         videoUrl: editingPartner.videoUrl || "",
         logoUrl: editingPartner.logoUrl || "",
@@ -341,7 +490,7 @@ export default function PartnersPage() {
                 id: subCat.id,
                 partnerId: subCat.partnerId,
                 subCategoryId: subCat.subCategoryId,
-                isActive: subCat.isActive,
+                isActive: subCat.isActive ?? true,
               }))
             : [{ subCategoryId: 0, isActive: true }],
         parDoclst:
@@ -351,12 +500,15 @@ export default function PartnersPage() {
                 partnerId: doc.partnerId,
                 documentName: doc.documentName,
                 documentUrl: doc.documentUrl,
-                isActive: doc.isActive,
+                isActive: doc.isActive ?? true,
               }))
             : [{ documentName: "", documentUrl: "", isActive: true }],
       };
       reset(formData);
       setSelectedCategoryId(editingPartner.categoryId);
+
+      // Mark all steps as completed for editing mode
+      setCompletedSteps([1, 2, 3, 4, 5, 6]);
     } else if (!showForm) {
       resetForm();
     }
@@ -364,13 +516,13 @@ export default function PartnersPage() {
 
   const resetForm = () => {
     const defaultValues: PartnerFormData = {
-      userId: 0,
+      userId: 2,
       categoryId: 0,
       address: "",
-      businessUnit: 0,
+      businessUnit: 1,
       businessName: "",
       email: "",
-      mobileNo: 0,
+      mobileNo: "",
       videoUrl: "",
       logoUrl: "",
       cvr: 0,
@@ -393,6 +545,7 @@ export default function PartnersPage() {
     setCurrentStep(1);
     setEditingPartner(null);
     setSelectedCategoryId(0);
+    setCompletedSteps([]);
   };
 
   const createMutation = useMutation({
@@ -415,6 +568,7 @@ export default function PartnersPage() {
   const updateMutation = useMutation({
     mutationFn: partnerService.update,
     onSuccess: (variables) => {
+      console.log("Update mutation called with variables:", variables);
       queryClient.invalidateQueries({ queryKey: ["partners"] });
       queryClient.invalidateQueries({ queryKey: ["partner", variables.id] });
       toast.success(
@@ -445,27 +599,73 @@ export default function PartnersPage() {
       ),
   });
 
-  // Export functionality
+  // Password reset form
+  const {
+    register: registerPassword,
+    handleSubmit: handleSubmitPassword,
+    formState: { errors: passwordErrors, isValid: isPasswordValid },
+    reset: resetPassword,
+    watch: watchPassword,
+  } = useForm<PasswordResetData>({
+    resolver: zodResolver(passwordResetSchema),
+    mode: "onChange",
+    defaultValues: {
+      newPassword: "",
+      confirmPassword: "",
+    },
+  });
+
+  const watchNewPassword = watchPassword("newPassword");
+
+  // Password reset mutation
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (data: { partner: Partner; newPassword: string }) => {
+      const response = await userService.resetUserPassword({
+        email: data.partner.email,
+        newPassword: data.newPassword,
+      });
+
+      if (response === true) {
+        return response;
+      } else {
+        throw new Error("Password reset failed");
+      }
+    },
+    onSuccess: (response, variables) => {
+      console.log("Password reset response:", response);
+      toast.success(
+        `Password reset successfully for ${variables.partner.businessName}`
+      );
+      setIsPasswordModalOpen(false);
+      resetPassword();
+      setResettingPartner(null);
+    },
+    onError: (error: any, variables) => {
+      console.error("Reset password error:", error);
+      if (error?.response?.data !== undefined) {
+        toast.error(
+          `Password reset failed for ${variables.partner.businessName}`
+        );
+      } else {
+        toast.error(
+          `Failed to reset password for ${variables.partner.businessName}: ${error.message}`
+        );
+      }
+    },
+  });
+
   const handleExportPartners = async () => {
     try {
       setIsExporting(true);
-
-      // Prepare export parameters according to API spec
       const exportParams: Record<string, any> = {
         includeIsActive: true,
       };
-
-      // Add search term if present
       if (debouncedSearchTerm) {
         exportParams.searchTerm = debouncedSearchTerm;
       }
-
       console.log("Exporting partners with params:", exportParams);
-
-      // Use the export utility with ReportType = 'Partner'
       await exportToExcel("Partner", exportParams);
     } catch (error) {
-      // Error is already handled in exportToExcel utility
       console.error("Export failed:", error);
     } finally {
       setIsExporting(false);
@@ -474,6 +674,15 @@ export default function PartnersPage() {
 
   const onSubmit = async (data: PartnerFormData) => {
     if (isSubmitting) return;
+
+    console.log("onSubmit called with data:", data);
+
+    const isValid = await trigger();
+    if (!isValid) {
+      console.log("Form validation failed:", errors);
+      toast.error("Please fix form errors before submitting");
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -519,46 +728,72 @@ export default function PartnersPage() {
   const handleNext = async () => {
     if (isSubmitting) return;
 
-    let isValid = false;
+    let isValid = true;
 
-    if (currentStep === 1) {
-      isValid = await trigger([
-        "address",
-        "businessUnit",
+    const stepFields: Record<number, ValidFieldNames[]> = {
+      1: [
         "businessName",
+        "email",
+        "mobileNo",
+        "businessUnit",
         "cvr",
-      ]);
-    } else if (currentStep === 2) {
-      isValid = await trigger(["videoUrl", "logoUrl", "descriptionShort"]);
-    } else if (currentStep === 3) {
-      isValid = await trigger([
-        "textField1",
-        "textField2",
-        "textField3",
-        "textField4",
-        "textField5",
-      ]);
-    } else if (currentStep === 4) {
-      isValid = await trigger([
+        "address",
+      ],
+      2: ["videoUrl", "logoUrl", "descriptionShort"],
+      3: ["textField1", "textField2", "textField3", "textField4", "textField5"],
+      4: [
         "imageUrl1",
         "imageUrl2",
         "imageUrl3",
         "imageUrl4",
         "imageUrl5",
         "isActive",
-      ]);
-    } else if (currentStep === 5) {
-      // UPDATED: Now validating documents in step 5
-      isValid = await trigger(["parDoclst"]);
-    } else if (currentStep === 6) {
-      // UPDATED: Now validating categories in step 6
-      isValid = await trigger(["categoryId", "parSubCatlst"]);
-    } else {
-      isValid = true;
+      ],
+      5: [],
+      6: ["categoryId"],
+    };
+
+    if (stepFields[currentStep].length > 0) {
+      isValid = await trigger(stepFields[currentStep] as any, {
+        shouldFocus: true,
+      });
+    }
+
+    if (currentStep === 5) {
+      const documentValidations = documentFields.map((_, index) =>
+        trigger([
+          `parDoclst.${index}.documentName`,
+          `parDoclst.${index}.documentUrl`,
+          `parDoclst.${index}.isActive`,
+        ] as any)
+      );
+      const documentResults = await Promise.all(documentValidations);
+      isValid = isValid && documentResults.every((result) => result);
+    }
+
+    if (currentStep === 6) {
+      const categoryValid = await trigger("categoryId", { shouldFocus: true });
+      isValid = isValid && categoryValid;
+
+      const subCategoryValidations = subCategoryFields.map((_, index) =>
+        trigger([
+          `parSubCatlst.${index}.subCategoryId`,
+          `parSubCatlst.${index}.isActive`,
+        ] as any)
+      );
+      const subCategoryResults = await Promise.all(subCategoryValidations);
+      isValid = isValid && subCategoryResults.every((result) => result);
     }
 
     if (isValid && currentStep < steps.length) {
       setCurrentStep((prev) => prev + 1);
+      // Add current step to completed steps
+      if (!completedSteps.includes(currentStep)) {
+        setCompletedSteps([...completedSteps, currentStep]);
+      }
+    } else {
+      console.log("Validation errors:", errors);
+      toast.error("Please fix all form errors in this step before proceeding");
     }
   };
 
@@ -567,13 +802,50 @@ export default function PartnersPage() {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+  // New function to handle step click
+  const handleStepClick = async (step: number) => {
+    if (isSubmitting) return;
+
+    // Allow navigation to completed steps or previous steps
+    if (step < currentStep || completedSteps.includes(step)) {
+      setCurrentStep(step);
+    }
+    // For steps ahead, validate current step first
+    else if (step === currentStep + 1) {
+      await handleNext();
+    }
+    // For steps further ahead, validate all intermediate steps
+    else if (step > currentStep) {
+      let canNavigate = true;
+
+      // Validate all steps from current to target step
+      for (let i = currentStep; i < step; i++) {
+        const isValid = await isStepCompleted(i);
+        if (!isValid) {
+          canNavigate = false;
+          toast.error(
+            `Please complete step ${i} before proceeding to step ${step}`
+          );
+          break;
+        }
+      }
+
+      if (canNavigate) {
+        setCurrentStep(step);
+        // Mark all intermediate steps as completed
+        const newCompletedSteps = [...completedSteps];
+        for (let i = currentStep; i < step; i++) {
+          if (!newCompletedSteps.includes(i)) {
+            newCompletedSteps.push(i);
+          }
+        }
+        setCompletedSteps(newCompletedSteps);
+      }
+    }
   };
 
-  const handlePageSizeChange = (size: number) => {
-    setPageSize(size);
-    setCurrentPage(1);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const handleSearchChange = (term: string) => {
@@ -581,10 +853,29 @@ export default function PartnersPage() {
     setCurrentPage(1);
   };
 
-  // Add status filter handler
   const handleStatusFilterChange = (filter: "all" | "active" | "inactive") => {
     setStatusFilter(filter);
-    setCurrentPage(1); // Reset to first page when filter changes
+    setCurrentPage(1);
+  };
+
+  const handleResetPassword = (partner: Partner) => {
+    setResettingPartner(partner);
+    setIsPasswordModalOpen(true);
+  };
+
+  const handlePasswordModalClose = () => {
+    setIsPasswordModalOpen(false);
+    setResettingPartner(null);
+    resetPassword();
+  };
+
+  const onSubmitPasswordReset = async (data: PasswordResetData) => {
+    if (!resettingPartner) return;
+
+    resetPasswordMutation.mutate({
+      partner: resettingPartner,
+      newPassword: data.newPassword,
+    });
   };
 
   const handleFormClose = () => {
@@ -612,7 +903,6 @@ export default function PartnersPage() {
       t("admin.partners.deleteConfirm") ||
       "Are you sure you want to delete this partner?";
 
-    // Use Sonner toast for confirmation instead of window.confirm
     toast(
       <div className="w-full">
         <div className="font-semibold text-gray-900 mb-2">Confirm Deletion</div>
@@ -640,7 +930,7 @@ export default function PartnersPage() {
         </div>
       </div>,
       {
-        duration: 10000, // 10 seconds
+        duration: 10000,
         position: "top-center",
         closeButton: true,
       }
@@ -675,44 +965,36 @@ export default function PartnersPage() {
     setPreviewVideo({ url, isOpen: true });
   };
 
-  // Handle category change - reset subcategories when category changes
   const handleCategoryChange = (categoryId: number | string) => {
+    console.log("Category changed to:", categoryId);
     const categoryIdNum =
       typeof categoryId === "string" ? parseInt(categoryId, 10) : categoryId;
 
     setSelectedCategoryId(categoryIdNum);
 
-    // Reset all subcategory fields when category changes
     if (subCategoryFields.length > 0) {
       subCategoryFields.forEach((_, index) => {
         setValue(`parSubCatlst.${index}.subCategoryId`, 0);
+        setValue(`parSubCatlst.${index}.isActive`, true);
       });
     }
   };
 
-  // Map the API response based on your structure
   const allPartners = paginatedData?.output?.result || [];
 
-  // Apply client-side filtering based on status filter
   const filteredPartners = useMemo(() => {
     let filtered = allPartners;
-
-    // Apply status filter
     if (statusFilter === "active") {
       filtered = filtered.filter((partner) => partner.isActive === true);
     } else if (statusFilter === "inactive") {
       filtered = filtered.filter((partner) => partner.isActive === false);
     }
-    // If statusFilter is 'all', no filtering needed
-
     return filtered;
   }, [allPartners, statusFilter]);
 
-  // For pagination, we need to handle the filtered data
   const totalItems = filteredPartners.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
-  // Get current page items
   const currentPageItems = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
@@ -728,8 +1010,8 @@ export default function PartnersPage() {
       cell: ({ row }) => getCategoryName(row.original.categoryId),
     },
     { accessorKey: "address", header: "Address" },
-    { accessorKey: "businessUnit", header: "Business Unit" },
     { accessorKey: "cvr", header: "CVR" },
+    { accessorKey: "mobileNo", header: "Mobile Number" },
     {
       accessorKey: "isActive",
       header: "Status",
@@ -754,18 +1036,26 @@ export default function PartnersPage() {
           <button
             onClick={() => handleEditPartner(row.original)}
             disabled={showForm}
-            className="p-2 text-gray-600 transition-colors hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title="Edit partner"
           >
-            <FaEdit className="w-4 h-4" />
+            <IconPencil />
+          </button>
+          <button
+            onClick={() => handleResetPassword(row.original)}
+            disabled={showForm || resetPasswordMutation.isPending}
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+            title="Reset Password"
+          >
+            <FaKey className="w-4 h-4" />
           </button>
           <button
             onClick={() => handleDeletePartner(row.original)}
             disabled={showForm}
-            className="p-2 text-red-600 transition-colors hover:text-red-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title="Delete partner"
           >
-            <FaTrash className="w-4 h-4" />
+            <IconTrash />
           </button>
         </div>
       ),
@@ -780,7 +1070,6 @@ export default function PartnersPage() {
             <h3 className="text-lg font-medium text-gray-900">
               Basic Information
             </h3>
-
             <div className="grid grid-cols-2 gap-4">
               <Input
                 label="Business Name"
@@ -796,13 +1085,8 @@ export default function PartnersPage() {
               <Input
                 label="Mobile Number"
                 error={errors.mobileNo?.message}
-                {...register("mobileNo", { valueAsNumber: true })}
-              />
-              <Input
-                label="Business Unit"
-                type="number"
-                error={errors.businessUnit?.message}
-                {...register("businessUnit", { valueAsNumber: true })}
+                {...register("mobileNo")}
+                placeholder="Enter mobile number"
               />
               <Input
                 label="CVR"
@@ -811,7 +1095,6 @@ export default function PartnersPage() {
                 {...register("cvr", { valueAsNumber: true })}
               />
             </div>
-
             <TextArea
               label="Address"
               error={errors.address?.message}
@@ -828,24 +1111,19 @@ export default function PartnersPage() {
             <h3 className="text-lg font-medium text-gray-900">
               Media & Description
             </h3>
-
-            {/* Video Upload with VideoUpload component */}
             <VideoUpload
               label="Video Upload"
-              value={videoUrlValue}
+              value={videoUrlValue || ""}
               onChange={(url) => setValue("videoUrl", url)}
               onPreview={handleVideoPreview}
               folder="partners/videos"
               error={errors.videoUrl?.message}
             />
 
-            {/* Logo Upload with ImageUpload */}
-            <ImageUpload
-              label="Logo Upload"
-              value={logoUrlValue}
+            <LogoUploadWithValidation
+              value={logoUrlValue || ""}
               onChange={(url) => setValue("logoUrl", url)}
               onPreview={handleImagePreview}
-              folder="partners/logos"
               error={errors.logoUrl?.message}
             />
 
@@ -896,7 +1174,6 @@ export default function PartnersPage() {
             <h3 className="text-lg font-medium text-gray-900">
               Images & Status
             </h3>
-
             <div className="space-y-3">
               <h4 className="font-medium text-gray-700">Image URLs</h4>
 
@@ -907,6 +1184,8 @@ export default function PartnersPage() {
                 onPreview={handleImagePreview}
                 folder="partners/images"
                 error={errors.imageUrl1?.message}
+                exactDimensions={{ width: 1440, height: 710 }}
+                showDimensionValidation={true}
               />
 
               <ImageUpload
@@ -916,6 +1195,8 @@ export default function PartnersPage() {
                 onPreview={handleImagePreview}
                 folder="partners/images"
                 error={errors.imageUrl2?.message}
+                exactDimensions={{ width: 439, height: 468 }}
+                showDimensionValidation={true}
               />
 
               <ImageUpload
@@ -926,7 +1207,6 @@ export default function PartnersPage() {
                 folder="partners/images"
                 error={errors.imageUrl3?.message}
               />
-
               <ImageUpload
                 label="Image Upload 4"
                 value={imageUrl4Value}
@@ -935,7 +1215,6 @@ export default function PartnersPage() {
                 folder="partners/images"
                 error={errors.imageUrl4?.message}
               />
-
               <ImageUpload
                 label="Image Upload 5"
                 value={imageUrl5Value}
@@ -945,30 +1224,13 @@ export default function PartnersPage() {
                 error={errors.imageUrl5?.message}
               />
             </div>
-
-            <div className="flex items-center gap-2 pt-4">
-              <input
-                type="checkbox"
-                id="isActive"
-                {...register("isActive")}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-              />
-              <label
-                htmlFor="isActive"
-                className="text-sm font-medium text-gray-700"
-              >
-                {t("common.active")}
-              </label>
-            </div>
           </div>
         );
 
-      // UPDATED: Case 5 is now Documents
       case 5:
         return (
           <div className="space-y-6">
             <h3 className="text-lg font-medium text-gray-900">Documents</h3>
-
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-medium text-gray-700 mb-3">
                 Partner Documents
@@ -977,7 +1239,6 @@ export default function PartnersPage() {
                 Add one or more documents for this partner (business licenses,
                 contracts, certificates, etc.)
               </p>
-
               {documentFields.map((field, index) => (
                 <div
                   key={field.id}
@@ -991,40 +1252,19 @@ export default function PartnersPage() {
                       placeholder="Enter document name (e.g., Business License, Contract, Certificate)"
                       required
                     />
-
-                    {/* Using the new DocumentUpload component */}
                     <DocumentUpload
                       label={`Document File ${index + 1}`}
                       value={watch(`parDoclst.${index}.documentUrl`)}
                       onChange={(url) =>
                         setValue(`parDoclst.${index}.documentUrl`, url)
                       }
-                      onPreview={(url) => {
-                        // Open document in new tab for preview
-                        window.open(url, "_blank");
-                      }}
+                      onPreview={handleDocumentPreview}
                       folder="partners/documents"
                       error={errors.parDoclst?.[index]?.documentUrl?.message}
                       required
                     />
                   </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id={`doc-isActive-${index}`}
-                        {...register(`parDoclst.${index}.isActive` as const)}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                      />
-                      <label
-                        htmlFor={`doc-isActive-${index}`}
-                        className="text-sm font-medium text-gray-700"
-                      >
-                        Active
-                      </label>
-                    </div>
-
+                  <div className="flex items-center justify-end">
                     {documentFields.length > 1 && (
                       <Button
                         type="button"
@@ -1038,7 +1278,6 @@ export default function PartnersPage() {
                   </div>
                 </div>
               ))}
-
               <Button
                 type="button"
                 variant="secondary"
@@ -1046,19 +1285,15 @@ export default function PartnersPage() {
               >
                 + Add Another Document
               </Button>
-
               {errors.parDoclst && !errors.parDoclst.root && (
                 <p className="text-red-500 text-sm mt-2">
                   {errors.parDoclst.message}
                 </p>
               )}
             </div>
-
-            {/* Uploaded Documents Summary */}
-            {documentFields.some((_, index) => {
-              const docUrl = watch(`parDoclst.${index}.documentUrl` as const);
-              return !!docUrl;
-            }) && (
+            {documentFields.some((_, index) =>
+              watch(`parDoclst.${index}.documentUrl` as const)
+            ) && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <h4 className="font-medium text-blue-800 mb-3">
                   Uploaded Documents
@@ -1067,9 +1302,7 @@ export default function PartnersPage() {
                   {documentFields.map((field, index) => {
                     const docUrl = watch(`parDoclst.${index}.documentUrl`);
                     const docName = watch(`parDoclst.${index}.documentName`);
-
                     if (!docUrl) return null;
-
                     const getFileIcon = (url: string) => {
                       if (url.includes(".pdf")) return "📄 PDF";
                       if (url.includes(".doc")) return "📝 Word";
@@ -1078,7 +1311,6 @@ export default function PartnersPage() {
                       if (url.includes(".txt")) return "📃 Text";
                       return "📎 File";
                     };
-
                     return (
                       <div
                         key={field.id}
@@ -1121,20 +1353,16 @@ export default function PartnersPage() {
           </div>
         );
 
-      // UPDATED: Case 6 is now Categories & Sub Categories
       case 6:
         return (
           <div className="space-y-6">
             <h3 className="text-lg font-medium text-gray-900">
               Categories & Sub Categories
             </h3>
-
-            {/* Category Selection */}
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-medium text-gray-700 mb-3">
                 Select Category
               </h4>
-
               {isLoadingCategories ? (
                 <div className="text-center py-2">
                   <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
@@ -1169,7 +1397,6 @@ export default function PartnersPage() {
                   onChange={handleCategoryChange}
                 />
               )}
-
               {!isLoadingCategories &&
                 categories.filter((cat) => cat.isActive).length === 0 && (
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
@@ -1198,8 +1425,6 @@ export default function PartnersPage() {
                   </div>
                 )}
             </div>
-
-            {/* Sub Categories Section */}
             {selectedCategoryId > 0 && (
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h4 className="font-medium text-gray-700 mb-3">
@@ -1209,7 +1434,6 @@ export default function PartnersPage() {
                   Add one or more sub categories for this partner under the
                   selected category
                 </p>
-
                 {isLoadingSubCategories ? (
                   <div className="text-center py-4">
                     <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
@@ -1256,22 +1480,6 @@ export default function PartnersPage() {
                             required={true}
                           />
                         </div>
-
-                        <div className="flex items-center gap-2 mb-1">
-                          <input
-                            type="checkbox"
-                            id={`isActive-${index}`}
-                            {...register(`parSubCatlst.${index}.isActive`)}
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                          />
-                          <label
-                            htmlFor={`isActive-${index}`}
-                            className="text-sm font-medium text-gray-700"
-                          >
-                            Active
-                          </label>
-                        </div>
-
                         {subCategoryFields.length > 1 && (
                           <Button
                             type="button"
@@ -1284,7 +1492,6 @@ export default function PartnersPage() {
                         )}
                       </div>
                     ))}
-
                     <Button
                       type="button"
                       variant="secondary"
@@ -1296,7 +1503,6 @@ export default function PartnersPage() {
                     >
                       Add Another Sub Category
                     </Button>
-
                     {!isLoadingSubCategories &&
                       subCategories.filter((subCat) => subCat.isActive)
                         .length === 0 && (
@@ -1327,7 +1533,6 @@ export default function PartnersPage() {
                       )}
                   </>
                 )}
-
                 {errors.parSubCatlst && !errors.parSubCatlst.root && (
                   <p className="text-red-500 text-sm mt-2">
                     {errors.parSubCatlst.message}
@@ -1335,7 +1540,6 @@ export default function PartnersPage() {
                 )}
               </div>
             )}
-
             {selectedCategoryId === 0 && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
                 <div className="flex items-center justify-center gap-2 text-blue-800">
@@ -1369,34 +1573,38 @@ export default function PartnersPage() {
 
   return (
     <div className="p-3">
-      {/* Header Section - Only show when form is NOT open */}
       {!showForm && (
-        <div className="bg-white rounded-lg shadow-lg p-2 mb-2">
+        <div className="p-2 mb-2">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-bold text-gray-900">
-                {t("admin.partners.title") || "Partners"}
-              </h1>
-              <p className="text-gray-600 text-sm mt-1">
-                {t("admin.partners.subtitle") || "Manage your partners"}
-              </p>
+              <Button
+                variant="primary"
+                size="md"
+                onClick={handleAddPartner}
+                disabled={showForm}
+                icon={FaPlus}
+                iconPosition="left"
+                iconSize="w-4 h-4"
+              >
+                {t("admin.partners.addPartner")}
+              </Button>
             </div>
             <div className="flex items-center gap-4">
               {/* Status Filter Dropdown */}
               <div className="w-32">
-                <select
+                <Select
                   value={statusFilter}
-                  onChange={(e) =>
+                  onChange={(e: any) =>
                     handleStatusFilterChange(
                       e.target.value as "all" | "active" | "inactive"
                     )
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#91C73D] focus:ring-2 focus:ring-[#91C73D]/20 focus:outline-none transition-colors duration-200"
                 >
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                   <option value="all">All</option>
-                </select>
+                </Select>
               </div>
 
               <div className="w-64">
@@ -1408,44 +1616,22 @@ export default function PartnersPage() {
 
               {/* Export Button */}
               <Button
-                variant="secondary"
+                variant="primary"
                 size="md"
                 onClick={handleExportPartners}
                 disabled={isExporting}
-                className="flex items-center gap-2 whitespace-nowrap"
+                icon={FaFileExport}
+                iconPosition="left"
+                iconSize="w-4 h-4"
               >
-                <FaFileExport className="w-4 h-4" />
                 {isExporting
                   ? t("common.exporting") || "Exporting..."
                   : t("common.export") || "Export"}
               </Button>
-
-              <button
-                onClick={handleAddPartner}
-                disabled={showForm}
-                className="flex items-center gap-2 px-4 py-2 text-sm text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:opacity-90 bg-brand-gradient disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                {t("admin.partners.addPartner")}
-              </button>
             </div>
           </div>
         </div>
       )}
-
-      {/* Form Section - Only show when form is open */}
       {showForm && (
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
@@ -1462,12 +1648,20 @@ export default function PartnersPage() {
               {t("common.cancel")}
             </Button>
           </div>
-
-          <Stepper currentStep={currentStep} steps={steps} className="mb-8" />
-
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <Stepper
+            currentStep={currentStep}
+            steps={steps}
+            className="mb-8"
+            onStepClick={handleStepClick}
+            completedSteps={completedSteps}
+          />
+          <form
+            onSubmit={handleSubmit((data) => {
+              console.log("Form submission triggered with data:", data);
+              onSubmit(data);
+            })}
+          >
             <div className="px-1 mb-6">{renderStepContent()}</div>
-
             <div className="flex justify-between pt-6 mt-4 border-t border-gray-200">
               <div>
                 {currentStep > 1 && (
@@ -1481,10 +1675,10 @@ export default function PartnersPage() {
                   </Button>
                 )}
               </div>
-
               <div className="flex gap-2">
                 {currentStep < steps.length ? (
                   <Button
+                    key="next"
                     type="button"
                     onClick={handleNext}
                     disabled={isSubmitting}
@@ -1493,6 +1687,7 @@ export default function PartnersPage() {
                   </Button>
                 ) : (
                   <Button
+                    key="submit"
                     type="submit"
                     disabled={
                       isSubmitting ||
@@ -1512,8 +1707,6 @@ export default function PartnersPage() {
           </form>
         </div>
       )}
-
-      {/* Data Table Section - Only show when form is NOT open */}
       {!showForm && (
         <>
           {isLoading ? (
@@ -1534,27 +1727,96 @@ export default function PartnersPage() {
                   totalItems={totalItems}
                   pageSize={pageSize}
                   onPageChange={handlePageChange}
-                  onPageSizeChange={handlePageSizeChange}
                 />
               </div>
             </div>
           )}
         </>
       )}
-
-      {/* Image Preview Modal */}
       <ImagePreviewModal
         imageUrl={previewImage.url}
         isOpen={previewImage.isOpen}
         onClose={() => setPreviewImage({ url: "", isOpen: false })}
       />
-
-      {/* Video Preview Modal */}
       <VideoPreviewModal
         videoUrl={previewVideo.url}
         isOpen={previewVideo.isOpen}
         onClose={() => setPreviewVideo({ url: "", isOpen: false })}
       />
+      {/* Password Reset Modal */}
+      <Modal
+        open={isPasswordModalOpen}
+        title={t("admin.partners.resetPassword") || "Reset Password"}
+        onClose={handlePasswordModalClose}
+      >
+        {resettingPartner && (
+          <form
+            onSubmit={handleSubmitPassword(onSubmitPasswordReset)}
+            className="space-y-4"
+          >
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-sm text-blue-800">
+                Resetting password for:{" "}
+                <strong>{resettingPartner.businessName}</strong>
+              </p>
+              <p className="text-xs text-blue-600 mt-1">
+                {resettingPartner.email}
+              </p>
+            </div>
+
+            <Input
+              label="New Password"
+              type="password"
+              error={passwordErrors.newPassword?.message}
+              {...registerPassword("newPassword")}
+              required
+              placeholder="Enter new password"
+            />
+
+            <Input
+              label="Confirm Password"
+              type="password"
+              error={passwordErrors.confirmPassword?.message}
+              {...registerPassword("confirmPassword")}
+              required
+              placeholder="Confirm new password"
+            />
+
+            {watchNewPassword && (
+              <div
+                className={`text-xs p-2 rounded ${
+                  watchNewPassword.length >= 6
+                    ? "bg-green-50 text-green-700"
+                    : "bg-yellow-50 text-yellow-700"
+                }`}
+              >
+                Password strength:{" "}
+                {watchNewPassword.length >= 6 ? "Strong" : "Weak"}
+                (min. 6 characters)
+              </div>
+            )}
+
+            <div className="flex gap-2 justify-end">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handlePasswordModalClose}
+                disabled={resetPasswordMutation.isPending}
+              >
+                {t("common.cancel") || "Cancel"}
+              </Button>
+              <Button
+                type="submit"
+                disabled={!isPasswordValid || resetPasswordMutation.isPending}
+              >
+                {resetPasswordMutation.isPending
+                  ? "Resetting..."
+                  : "Reset Password"}
+              </Button>
+            </div>
+          </form>
+        )}
+      </Modal>
     </div>
   );
 }
