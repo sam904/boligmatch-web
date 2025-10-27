@@ -1,6 +1,6 @@
 // src/services/dashboard.service.ts
 import { http } from './http.service';
-import type { ReportQueryRequest, ReportQueryResponse } from '../types/dashboard';
+import type { ReportQueryRequest, ReportQueryResponse } from "../types/dashboard";
 
 export const dashboardService = {
 
