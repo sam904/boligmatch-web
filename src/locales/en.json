@@ -16,6 +16,7 @@
     "status": "Status",
     "active": "Active",
     "inactive": "Inactive",
+    "all": "All",
     "yes": "Yes",
     "no": "No",
     "confirm": "Confirm",
@@ -67,6 +68,10 @@
   },
   "admin": {
     "title": "BoligMatch Admin",
+    "dashboard": {
+      "title": "Dashboard",
+      "subtitle": "Manage all categories"
+    },
     "categories": {
       "title": "Categories",
       "subtitle": "Manage all categories",
@@ -132,6 +137,7 @@
       "title": "Users",
       "subtitle": "View all users",
       "name": "Name",
+      "addUser": "Add User",
       "editUser": "Edit User",
       "firstName": "First Name",
       "lastName": "Last Name",

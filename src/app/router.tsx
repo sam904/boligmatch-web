@@ -74,7 +74,7 @@ const router = createBrowserRouter([
       </AuthGuard>
     ),
     children: [
-      { index: true, element: <CategoriesPage /> },
+      { index: true, element: <DashboardPage /> },
       { path: "dashboard", element: <DashboardPage /> },
       { path: "categories", element: <CategoriesPage /> },
       { path: "subcategories", element: <SubCategoriesPage /> },
