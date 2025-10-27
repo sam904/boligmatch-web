@@ -2,6 +2,59 @@ interface IconProps {
   className?: string;
 }
 
+export const IconUpload = ({ className = "w-5 h-5" }: IconProps) => (
+  <svg 
+    width="20" 
+    height="20" 
+    viewBox="0 0 20 20" 
+    fill="none" 
+    className={className}
+  >
+    <path 
+      d="M7.76562 5.41654L9.89896 3.2832L12.0323 5.41654" 
+      stroke="currentColor" 
+      strokeWidth="1.5" 
+      strokeMiterlimit="10" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+    <path 
+      d="M9.89844 11.8168V3.3418" 
+      stroke="currentColor" 
+      strokeWidth="1.5" 
+      strokeMiterlimit="10" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+    <path 
+      d="M3.33203 10C3.33203 13.6833 5.83203 16.6667 9.9987 16.6667C14.1654 16.6667 16.6654 13.6833 16.6654 10" 
+      stroke="currentColor" 
+      strokeWidth="1.5" 
+      strokeMiterlimit="10" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const IconPlus = ({ className = "w-5 h-5" }: IconProps) => (
+  <svg 
+    width="20" 
+    height="20" 
+    viewBox="0 0 20 20" 
+    fill="none" 
+    className={className}
+  >
+    <path 
+      d="M10.0013 4.16602V15.8327M4.16797 9.99935H15.8346" 
+      stroke="currentColor" 
+      strokeWidth="1.67" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export const IconTrash = ({ className = "w-4 h-4" }: IconProps) => (
   <svg 
     width="17" 
@@ -42,23 +95,5 @@ export const IconPencil = ({ className = "w-4 h-4" }: IconProps) => (
         <rect width="20" height="20" fill="white" />
       </clipPath>
     </defs>
-  </svg>
-);
-
-export const IconPlus = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg 
-    width="14" 
-    height="14" 
-    viewBox="0 0 14 14" 
-    fill="none" 
-    className={className}
-  >
-    <path 
-      d="M6.66927 0.835938V12.5026M0.835938 6.66927H12.5026" 
-      stroke="currentColor" 
-      strokeWidth="1.67" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
   </svg>
 );

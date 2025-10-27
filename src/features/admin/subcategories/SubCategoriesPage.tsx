@@ -21,8 +21,7 @@ import { useDebounce } from '../../../hooks/useDebounce';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { SubCategory } from '../../../types/subcategory';
 import Select from '../../../components/common/Select';
-import { IconTrash, IconPencil } from '../../../components/common/Icons/Index';
-import { FaPlus } from 'react-icons/fa';
+import { IconTrash, IconPencil, IconPlus } from '../../../components/common/Icons/Index';
 
 // Enhanced validation schema
 const subCategorySchema = z.object({
@@ -394,9 +393,9 @@ export default function SubCategoriesPage() {
         return (
           <button
             onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
-            className="text-blue-600 hover:text-blue-800 underline text-sm font-medium"
+            className="underline text-sm font-medium"
           >
-            View Image
+            Image
           </button>
         );
       },
@@ -411,9 +410,9 @@ export default function SubCategoriesPage() {
         return (
           <button
             onClick={() => setPreviewImage({ url: iconUrl, isOpen: true })}
-            className="text-blue-600 hover:text-blue-800 underline text-sm font-medium"
+            className="underline text-sm font-medium"
           >
-            View Icon
+            Icon
           </button>
         );
       },
@@ -423,7 +422,7 @@ export default function SubCategoriesPage() {
       header: t('common.status') || 'Status',
       cell: ({ row }) => (
         <span 
-          className="px-2 py-0.5 rounded text-xs text-white font-medium"
+          className="px-2 py-1 rounded-full text-xs text-white font-medium"
           style={{ 
             backgroundColor: row.original.isActive ? 'var(--color-secondary)' : 'var(--color-neutral)'
           }}
@@ -472,9 +471,9 @@ export default function SubCategoriesPage() {
               size="md"
               onClick={handleModalOpen}
               disabled={categoriesLoading || activeCategories.length === 0}
-              icon={FaPlus}
+              icon={IconPlus}
               iconPosition="left"
-              iconSize= "w-4 h-4"
+              iconSize="w-5 h-5"
             >
               {t('admin.subcategories.addSubCategory') || 'Add Subcategory'}
             </Button>
