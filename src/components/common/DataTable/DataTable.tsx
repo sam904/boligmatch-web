@@ -11,11 +11,11 @@ export default function DataTable<T>({ data, columns }: Props<T>) {
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
       <table className="w-full">
-        <thead className="bg-gradient-to-r from-[#043428] to-[#043428]/90">
+        <thead className="bg-[#EAECF0]">
           {table.getHeaderGroups().map(hg => (
             <tr key={hg.id}>
               {hg.headers.map(h => (
-                <th key={h.id} className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                <th key={h.id} className="px-6 py-3 text-left text-xs font-semibold text-[#8A92A6] uppercase tracking-wider">
                   {flexRender(h.column.columnDef.header, h.getContext())}
                 </th>
               ))}

@@ -37,6 +37,7 @@ export interface DashboardStats {
   TotalPartners: number;
   TotalRecommendations: number;
   TotalCategorys: number;
+  TotalSubCategories: number;
   TotalPartnerPageVisits: number;
   TotalFavourites: number;
   TodaysPartners: number;

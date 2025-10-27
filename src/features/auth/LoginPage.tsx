@@ -50,9 +50,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex bg-white">
       {/* Left Side - Login Form */}
-      <div className="flex flex-col justify-center w-full lg:w-1/2 px-8 sm:px-12 md:px-20">
+      <div className="flex flex-col justify-center w-full lg:w-1/2 px-10 sm:px-14 md:px-24">
         {/* Centered Logo */}
-        <div className="flex justify-center mb-12">
+        <div className="flex justify-center mb-9">
           <img
             src={Lag_1}
             alt="boligmatch logo"
@@ -100,9 +100,14 @@ export default function LoginPage() {
           </div>
 
           <div>
+            <div className="flex justify-between items-center mb-2">
             <label className="block text-gray-700 font-medium mb-2 text-sm">
               Password
             </label>
+            <a href="#" className="text-[#0C2A92] hover:underline font-medium text-sm">
+              Forgot password?
+            </a>
+            </div>
             <input
               type="password"
               {...register("password")}
@@ -124,29 +129,26 @@ export default function LoginPage() {
               <input type="checkbox" className="mr-2 rounded" />
               Remember for 30 days
             </label>
-            <a href="#" className="text-[#004E34] hover:underline font-medium">
-              Forgot password?
-            </a>
           </div>
 
           {/* Login Button */}
           <button
             type="submit"
             disabled={status === "loading"}
-            className="w-full bg-[#004E34] text-white py-3 rounded-lg font-semibold hover:bg-[#003b27] transition-all duration-200 shadow-md"
+            className="w-full bg-[#004E34] text-white py-3 rounded-lg font-bold hover:bg-[#003b27] transition-all duration-200 shadow-md"
           >
             {status === "loading" ? "Signing In..." : "Login"}
           </button>
 
           {/* OR Divider */}
-          <div className="flex items-center my-6">
+          <div className="flex items-center my-5">
             <div className="flex-grow border-t border-gray-300"></div>
             <span className="mx-4 text-gray-500 text-sm">or</span>
             <div className="flex-grow border-t border-gray-300"></div>
           </div>
 
           {/* Social Login Buttons */}
-          <div className="space-y-4">
+          <div className="flex justify-center gap-4">
             <button
               type="button"
               className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition-all duration-200 font-medium"
@@ -174,7 +176,7 @@ export default function LoginPage() {
         <img
           src={login_cover}
           alt="Login cover"
-          className="w-full h-screen object-cover"
+          className="w-full rounded-l-4xl h-screen object-cover"
         />
       </div>
     </div>
