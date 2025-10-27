@@ -21,6 +21,7 @@ import type { Category } from "../../../types/category";
 import TextArea from "../../../components/common/TextArea";
 import Select from "../../../components/common/Select";
 import { IconTrash, IconPencil } from '../../../components/common/Icons/Index';
+import { FaPlus } from "react-icons/fa";
 
 // Enhanced validation schema with required imageUrl
 const categorySchema = z.object({
@@ -468,14 +469,21 @@ export default function CategoriesPage() {
       {/* Header Section */}
       <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
-          {/* Left side: Title */}
+
           <div>
-            <h1 className="text-xl font-bold text-gray-900">
-              {t("admin.categories.title") || "Categories"}
-            </h1>
-            <p className="text-gray-600 text-sm mt-1">
-              {t("admin.categories.subtitle") || "Manage all categories"}
-            </p>
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => {
+                setEditingCategory(null);
+                setIsModalOpen(true);
+              }}
+              icon={FaPlus}
+              iconPosition="left"
+              iconSize= "w-4 h-4"
+            >
+              {t("admin.categories.addCategory") || "Add Category"}
+            </Button>
           </div>
 
           {/* Right side: Filters, SearchBar and Add Category button */}
@@ -503,16 +511,6 @@ export default function CategoriesPage() {
                 onSearchChange={handleSearchChange}
               />
             </div>
-            <Button
-              variant="primary"
-              size="md"
-              onClick={() => {
-                setEditingCategory(null);
-                setIsModalOpen(true);
-              }}
-            >
-              {t("admin.categories.addCategory") || "Add Category"}
-            </Button>
           </div>
         </div>
       </div>

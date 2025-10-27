@@ -17,7 +17,7 @@ export default function HomePage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           </div>
-          <h1 className="text-6xl font-extrabold text-gray-900 mb-6 bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <h1 className="text-6xl font-extrabold text-gray-900 mb-6 bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             {t('home.welcomeTo')}
           </h1>
           <p className="text-2xl text-gray-600 mb-12 max-w-2xl mx-auto">

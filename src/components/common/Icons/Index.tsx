@@ -44,3 +44,21 @@ export const IconPencil = ({ className = "w-4 h-4" }: IconProps) => (
     </defs>
   </svg>
 );
+
+export const IconPlus = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg 
+    width="14" 
+    height="14" 
+    viewBox="0 0 14 14" 
+    fill="none" 
+    className={className}
+  >
+    <path 
+      d="M6.66927 0.835938V12.5026M0.835938 6.66927H12.5026" 
+      stroke="currentColor" 
+      strokeWidth="1.67" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+);

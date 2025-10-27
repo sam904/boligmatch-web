@@ -22,6 +22,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import type { SubCategory } from '../../../types/subcategory';
 import Select from '../../../components/common/Select';
 import { IconTrash, IconPencil } from '../../../components/common/Icons/Index';
+import { FaPlus } from 'react-icons/fa';
 
 // Enhanced validation schema
 const subCategorySchema = z.object({
@@ -465,12 +466,19 @@ export default function SubCategoriesPage() {
       {/* Header Section */}
       <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
-          {/* Left side: Title */}
           <div>
-            <h1 className="text-xl font-bold text-gray-900">{t('admin.subcategories.title') || 'Subcategories'}</h1>
-            <p className="text-gray-600 text-sm mt-1">{t('admin.subcategories.subtitle') || 'Manage subcategories linked to categories'}</p>
+            <Button
+              variant="primary"
+              size="md"
+              onClick={handleModalOpen}
+              disabled={categoriesLoading || activeCategories.length === 0}
+              icon={FaPlus}
+              iconPosition="left"
+              iconSize= "w-4 h-4"
+            >
+              {t('admin.subcategories.addSubCategory') || 'Add Subcategory'}
+            </Button>
           </div>
-
           {/* Right side: Filters, SearchBar and Add Subcategory button */}
           <div className="flex items-center gap-4">
             {/* Status Filter Dropdown */}
@@ -493,14 +501,6 @@ export default function SubCategoriesPage() {
                 //placeholder={t('admin.subcategories.searchPlaceholder') || 'Search subcategories...'}
               />
             </div>
-            <Button
-              variant="primary"
-              size="md"
-              onClick={handleModalOpen}
-              disabled={categoriesLoading || activeCategories.length === 0}
-            >
-              {t('admin.subcategories.addSubCategory') || 'Add Subcategory'}
-            </Button>
           </div>
         </div>
       </div>

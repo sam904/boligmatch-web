@@ -14,8 +14,8 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { FaFileExport, FaKey } from "react-icons/fa";
-import { IconTrash, IconPencil } from '../../../components/common/Icons/Index';
+import { FaFileExport, FaKey, FaPlus } from "react-icons/fa";
+import { IconTrash, IconPencil } from "../../../components/common/Icons/Index";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { User } from "../../../types/user";
 import { exportToExcel } from "../../../utils/export.utils";
@@ -191,6 +191,7 @@ export default function UsersListPage() {
       );
       setIsModalOpen(false);
       reset();
+      setEditingUser(null);
     },
     onError: (error: any) => {
       toast.error(
@@ -256,10 +257,15 @@ export default function UsersListPage() {
   });
 
   const onSubmit = async (data: UserFormData) => {
-    if (editingUser) {
-      updateMutation.mutate({ ...data, id: editingUser.id });
-    } else {
-      createMutation.mutate(data);
+    try {
+      if (editingUser) {
+        await updateMutation.mutateAsync({ ...data, id: editingUser.id });
+      } else {
+        await createMutation.mutateAsync(data);
+      }
+    } catch (error) {
+      // Error handling is already done in the mutation onError
+      console.error("Form submission error:", error);
     }
   };
 
@@ -337,6 +343,7 @@ export default function UsersListPage() {
   const handleModalClose = () => {
     setIsModalOpen(false);
     setEditingUser(null);
+    reset();
     clearErrors();
   };
 
@@ -465,7 +472,7 @@ export default function UsersListPage() {
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("common.edit") || "Edit user"}
           >
-           <IconPencil/>
+            <IconPencil />
           </button>
           <button
             type="button"
@@ -482,7 +489,7 @@ export default function UsersListPage() {
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("common.delete") || "Delete user"}
           >
-            <IconTrash/>
+            <IconTrash />
           </button>
         </div>
       ),
@@ -494,16 +501,21 @@ export default function UsersListPage() {
       {/* Header Section */}
       <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
-          {/* Left side: Title */}
           <div>
-            <h1 className="text-xl font-bold text-gray-900">
-              {t("admin.users.title") || "Users"}
-            </h1>
-            <p className="text-gray-600 text-sm mt-1">
-              {t("admin.users.subtitle") || "View all users"}
-            </p>
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => {
+                setEditingUser(null);
+                setIsModalOpen(true);
+              }}
+              icon={FaPlus}
+              iconPosition="left"
+              iconSize="w-4 h-4"
+            >
+              {t("admin.users.addUser") || "Add User"}
+            </Button>
           </div>
-
           {/* Right side: Filters, SearchBar and Add User button */}
           <div className="flex items-center gap-4">
             {/* Status Filter Dropdown */}
@@ -534,13 +546,13 @@ export default function UsersListPage() {
 
             {/* Export Button */}
             <Button
-              variant="secondary"
+              variant="primary"
               size="md"
               onClick={handleExportUsers}
               disabled={isExporting}
-              className="flex items-center justify-center gap-3 whitespace-nowrap min-w-[140px] px-6 py-2.5"
               icon={FaFileExport}
               iconPosition="left"
+              iconSize="w-4 h-4"
             >
               {isExporting
                 ? t("common.exporting") || "Exporting..."
@@ -674,7 +686,9 @@ export default function UsersListPage() {
                 !isValid || createMutation.isPending || updateMutation.isPending
               }
             >
-              {editingUser
+              {createMutation.isPending || updateMutation.isPending
+                ? "Submitting..."
+                : editingUser
                 ? t("common.update") || "Update"
                 : t("common.create") || "Create"}
             </Button>
