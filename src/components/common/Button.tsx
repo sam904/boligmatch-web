@@ -3,11 +3,11 @@ import clsx from 'clsx';
 import { type IconType } from 'react-icons';
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   icon?: IconType;
   iconPosition?: 'left' | 'right';
-  iconSize?: string; // Add this new prop
+  iconSize?: string;
 };
 
 export default function Button({
@@ -16,7 +16,7 @@ export default function Button({
   className,
   icon: Icon,
   iconPosition = 'left',
-  iconSize, // Add this
+  iconSize,
   children,
   ...props
 }: Props) {
@@ -29,10 +29,11 @@ export default function Button({
   };
 
   const variants = {
-    primary: 'bg-gradient-to-r from-[#1a3c34] to-[#4a7043] text-white hover:from-[#1a3c34]/95 hover:to-[#4a7043]/95 focus:ring-[#4a7043]/50 shadow-md hover:shadow-lg',
-    secondary: 'bg-gradient-to-r from-[#4a7043] to-[#1a3c34] text-white hover:from-[#4a7043]/95 hover:to-[#1a3c34]/95 focus:ring-[#1a3c34]/50 shadow-md hover:shadow-lg',
+    primary: 'bg-[#043428] text-white shadow-md hover:bg-[#052c1f]',
+    secondary: 'bg-[#165933] text-white shadow-md hover:bg-[#134c29]',
     danger: 'bg-gradient-to-r from-rose-600 to-rose-700 text-white hover:from-rose-700 hover:to-rose-800 focus:ring-rose-600/50 shadow-md hover:shadow-lg',
     ghost: 'text-gray-800 bg-white/80 backdrop-blur-sm hover:bg-gray-100/90 focus:ring-gray-400/50 border border-gray-200 shadow-sm hover:shadow-md',
+    outline: 'border border-[#165933] text-[#165933] bg-transparent hover:bg-[#165933] hover:text-white shadow-sm', // New variant for export buttons
   };
 
   // Default icon sizes based on button size
@@ -62,7 +63,7 @@ export default function Button({
       )}
 
       {/* Content with subtle animation */}
-      <span className="relative transition-transform duration-300 group-hover:scale-102">
+      <span className="relative transition-transform duration-300">
         {children}
       </span>
 
