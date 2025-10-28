@@ -11,6 +11,7 @@ import UserHeader from "../features/users/UserPages/UserHeader";
 import { categoryService, type Category } from "../services/category.service";
 import { subCategoriesService } from "../services/subCategories.service";
 import { useTranslation } from "react-i18next";
+import { useAppSelector } from "../app/hooks";
 import commentImg from "/src/assets/userImages/comment.svg";
 import searchImg from "/src/assets/userImages/search-normal.svg";
 import favoriteImg from "/src/assets/userImages/favouriteIcon.svg";
@@ -41,33 +42,23 @@ interface ConversationItem {
 }
 
 export default function UserDashboardPage() {
-  const [userData, setUserData] = useState<any>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState<
     "default" | "favorites" | "messages"
   >("default");
   const [favorites, setFavorites] = useState<FavouriteItem[]>([]);
+  console.log('favorites', favorites)
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [conversationsLoading, setConversationsLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  useEffect(() => {
-    // Get user data from localStorage
-    const getUserData = () => {
-      try {
-        const userStr = localStorage.getItem("bm_user");
-        if (userStr) {
-          const user = JSON.parse(userStr);
-          setUserData(user);
-        }
-      } catch (error) {
-        console.error("Error parsing user data from localStorage:", error);
-      }
-    };
+  // Get user data from Redux store instead of localStorage
+  const userData = useAppSelector((state) => state.auth.user);
 
+  useEffect(() => {
     // Fetch categories from API
     const fetchCategories = async () => {
       try {
@@ -83,7 +74,6 @@ export default function UserDashboardPage() {
       }
     };
 
-    getUserData();
     fetchCategories();
   }, []);
 
@@ -139,10 +129,10 @@ export default function UserDashboardPage() {
 
       console.log("Fetching favorites with payload:", payload);
       const response = await favouritesService.getPaginated(payload);
-      console.log("Favorites API response:", response);
+      console.log("Favorites API response:", response?.output);
 
       // Extract favorites from response
-      const favoritesData = response?.items || [];
+      const favoritesData = response?.output?.result || [];
       setFavorites(favoritesData);
     } catch (error) {
       console.error("Error fetching favorites:", error);
@@ -176,7 +166,7 @@ export default function UserDashboardPage() {
       console.log("Conversations API response:", response);
 
       // Extract conversations from response
-      const conversationsData = response?.items || [];
+      const conversationsData = response?.output?.result || [];
       setConversations(conversationsData);
     } catch (error) {
       console.error("Error fetching conversations:", error);
@@ -266,7 +256,7 @@ export default function UserDashboardPage() {
         </div>
       </div>
       <div className="bg-[#06351e] py-16">
-        <div className="max-w-6xl mx-auto px-12">
+        <div className="max-w-7xl mx-auto px-6">
           {loading && activeView === "default" ? (
             <div className="flex justify-center items-center h-64">
               <div className="text-white text-lg">Loading...</div>
@@ -275,54 +265,53 @@ export default function UserDashboardPage() {
             <>
               {/* Default View - Categories */}
               {activeView === "default" && (
-                <div className="grid grid-cols-3 gap-8">
+                <div className="grid grid-cols-3 gap-4 px-8">
                   {categories.map((category, index) => {
                     const assets = getCategoryAssets(index);
                     return (
                       <div
                         key={category.id}
                         onClick={() => handleCategoryClick(category.id)}
-                        className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+                        className="w-[374px] h-[540px] bg-white rounded-[10px] transition-all duration-300 cursor-pointer overflow-hidden opacity-100 mx-auto"
                       >
-                        {/* Background Image */}
-                        <div className="relative h-56">
+                        {/* Image Section */}
+                        <div className="relative w-[374] h-[340px]">
                           <img
                             src={category.imageUrl || assets.image}
                             alt={category.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              // Fallback to default image if category image fails to load
                               e.currentTarget.src = assets.image;
                             }}
                           />
-                          {/* White gradient overlay */}
                           <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent"></div>
                         </div>
 
                         {/* Content Section */}
-                        <div className="p-6 text-center">
-                          {/* Category Icon */}
-                          <div className="relative -mt-8 mb-4">
-                            <div className="w-16 h-16 bg-white rounded-lg mx-auto flex items-center justify-center">
-                              <img
-                                src={category.iconUrl || assets.icon}
-                                alt={category.name}
-                                className="w-8 h-8"
-                                onError={(e) => {
-                                  // Fallback to default icon if category icon fails to load
-                                  e.currentTarget.src = assets.icon;
-                                }}
-                              />
-                            </div>
+                        <div className="p-6 text-center flex flex-col items-center gap-[8px]">
+                          {/* Icon */}
+                          <div className="w-[79px] h-[48px] flex items-center justify-center -mt-6 mb-0">
+                            <img
+                              src={category.iconUrl || assets.icon}
+                              alt={category.name}
+                              className="w-8 h-8 object-contain text-[#165933]"
+                              style={{
+                                filter:
+                                  "invert(31%) sepia(89%) saturate(339%) hue-rotate(93deg) brightness(94%) contrast(90%)",
+                              }}
+                              onError={(e) => {
+                                e.currentTarget.src = assets.icon;
+                              }}
+                            />
                           </div>
 
-                          {/* Category Title */}
-                          <h3 className="text-xl font-bold text-gray-800 mb-3">
+                          {/* Title */}
+                          <h3 className="text-[24px] font-[800] text-[#052011] mb-1">
                             {category.name}
                           </h3>
 
-                          {/* Category Description */}
-                          <p className="text-sm text-gray-600 leading-relaxed">
+                          {/* Description */}
+                          <p className="text-sm text-[#052011] leading-relaxed px- text-[16px] font-[400]">
                             {category.description ||
                               "Professional services and solutions"}
                           </p>
@@ -341,7 +330,9 @@ export default function UserDashboardPage() {
                   </h2>
                   {favoritesLoading ? (
                     <div className="flex justify-center items-center h-64">
-                      <div className="text-white text-lg">Loading favorites...</div>
+                      <div className="text-white text-lg">
+                        Loading favorites...
+                      </div>
                     </div>
                   ) : favorites.length > 0 ? (
                     <div className="space-y-3">
@@ -390,7 +381,9 @@ export default function UserDashboardPage() {
                   </h2>
                   {conversationsLoading ? (
                     <div className="flex justify-center items-center h-64">
-                      <div className="text-white text-lg">Loading conversations...</div>
+                      <div className="text-white text-lg">
+                        Loading conversations...
+                      </div>
                     </div>
                   ) : conversations.length > 0 ? (
                     <div className="space-y-3">

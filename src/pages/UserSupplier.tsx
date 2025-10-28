@@ -16,6 +16,8 @@ import VVS from "../assets/userSupplier/VVS.png";
 import JimmysELservice from "../assets/userSupplier/Jimmys EL-service.png";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import { useNavigate } from "react-router-dom";
+import { subCategoryService } from "../services/subCategory.service";
+import { toast } from "react-toastify";
 
 interface Category {
   name: string;
@@ -29,6 +31,7 @@ interface Service {
 }
 
 interface SubCategoryData {
+  id: number;
   category: string;
   categoryDescription: string;
   subCategory: string;
@@ -36,28 +39,38 @@ interface SubCategoryData {
 }
 
 // --- Card component ---
-type ServiceCardProps = Service & { onMoreInfo: () => void };
+type ServiceCardProps = Service & {
+  onMoreInfo: () => void;
+  subCategoryId?: number;
+  isLoading?: boolean;
+};
 const ServiceCard: React.FC<ServiceCardProps> = ({
   icon,
   title,
   description,
   onMoreInfo,
+  isLoading = false,
 }) => (
   <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-[413px] h-[453px] flex flex-col items-center justify-between p-8 text-center">
     <div className="mt-[48.46px]">
-      <img src={icon} alt={title} className="w-16 h-16" />
+      <img src={icon} alt={title} className="w-[99px] h-[77px]" />
     </div>
 
     <div className="flex-1 flex flex-col justify-center">
-      <h3 className="text-2xl font-bold text-gray-900 mb-3">{title}</h3>
-      <p className="text-gray-600 leading-relaxed">{description}</p>
+      <h3 className="text-[30px] font-[700] text-[#000000] mb-3">{title}</h3>
+      <p className="text-[#000000] leading-relaxed font-[400] text-16px">
+        {description}
+      </p>
     </div>
 
     <button
       onClick={onMoreInfo}
-      className="font-bold text-black mt-6 mb-4 hover:underline cursor-pointer"
+      disabled={isLoading}
+      className={`font-bold mt-6 mb-4 hover:underline cursor-pointer railways ${
+        isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
+      }`}
     >
-      More info
+      {isLoading ? "Loading..." : "More info"}
     </button>
   </div>
 );
@@ -69,6 +82,9 @@ const UserSupplier = () => {
   const [active, setActive] = useState("Elektriker");
   const [subCategories, setSubCategories] = useState<SubCategoryData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingSubCategory, setLoadingSubCategory] = useState<number | null>(
+    null
+  );
 
   const categories: Category[] = [
     { name: "Tømrer", icon: Tomrer },
@@ -105,8 +121,25 @@ const UserSupplier = () => {
 
     loadSubCategories();
   }, []);
+  const handleMoreInfo = async (subCategoryId: number) => {
+    try {
+      setLoadingSubCategory(subCategoryId);
+      const subCategoryDetails = await subCategoryService.getById(
+        subCategoryId
+      );
+      localStorage.setItem(
+        "bm_currentSubCategory",
+        JSON.stringify(subCategoryDetails)
+      );
+      navigate("/userProfile/supplier-profile");
+    } catch (error) {
+      console.error("Error fetching subcategory details:", error);
+      toast.error("Failed to load subcategory details. Please try again.");
+    } finally {
+      setLoadingSubCategory(null);
+    }
+  };
 
-  // Sticky navbar effect
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
@@ -129,7 +162,7 @@ const UserSupplier = () => {
           <button
             key={cat.name}
             onClick={() => setActive(cat.name)}
-            className={`flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-300 text-white
+            className={`flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-300 text-white cursor-pointer
               ${
                 active === cat.name
                   ? "bg-[#b6e924] text-black shadow-lg scale-105"
@@ -150,21 +183,21 @@ const UserSupplier = () => {
             </div>
           ) : subCategories.length > 0 ? (
             <>
-              {console.log("Rendering subcategories:", subCategories)}
-              {subCategories.map((subCategory, idx) => {
-                console.log(`Rendering subcategory ${idx}:`, subCategory);
-                return (
+              {subCategories.map((subCategory, idx) => (
+                <div
+                  key={idx}
+                  className="w-[413px] h-[453px] rounded-[10px] flex justify-center items-center"
+                >
                   <ServiceCard
-                    key={idx}
-                    icon={JimmysELservice} 
+                    icon={JimmysELservice}
                     title={subCategory.subCategory}
                     description={subCategory.subCategoryDescription}
-                    onMoreInfo={() =>
-                      navigate("/userProfile/supplier-profile")
-                    }
+                    subCategoryId={subCategory.id}
+                    isLoading={loadingSubCategory === subCategory.id}
+                    onMoreInfo={() => handleMoreInfo(subCategory.id)}
                   />
-                );
-              })}
+                </div>
+              ))}
             </>
           ) : (
             <div className="col-span-3 flex justify-center items-center h-64">

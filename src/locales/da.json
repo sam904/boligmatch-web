@@ -229,7 +229,62 @@
   "privacyPolicy": "Privatlivspolitik",
   "termsOfService": "Vilkår for brug",
   "signOut": "Log ud"
+},
+"services": {
+  "moving": {
+    "title": "Flytning og opbevaring",
+    "description": "Professionelle flytningstjenester og opbevaring for dit hjem"
+  },
+  "construction": {
+    "title": "Byg og anlæg",
+    "description": "Eksperter i byggeri og anlægsarbejde til dine byggebehov"
+  },
+  "craftsmen": {
+    "title": "Håndværkere",
+    "description": "Tømrer, murer, elektriker, VVS, maler, glarmester, handyman, fugemand"
+  },
+  "interior": {
+    "title": "Indretning",
+    "description": "Smukke indretningsløsninger og design services til dit hjem"
+  },
+  "consulting": {
+    "title": "Rådgivning",
+    "description": "Ekspertrådgivning og professionelle konsulenttjenester"
+  }
+},
+"stepper": {
+  "physical": {
+    "label": "Fysisk vurdering og dokumentation",
+    "description": "Vores team foretager en grundig evaluering af din ejendom og dokumenterer alle detaljer til forberedelse af salget."
+  },
+  "photography": {
+    "label": "Fotografering og beskrivelse",
+    "description": "Professionelle billeder og detaljerede beskrivelser præsenterer din ejendom fra den bedste side."
+  },
+  "viewing": {
+    "label": "Til salg, åbent hus og fremvisninger",
+    "description": "Vi organiserer og administrerer ejendomsfremvisninger og åbent hus arrangementer for at tiltrække potentielle købere."
+  },
+  "negotiation": {
+    "label": "Bud og forhandling",
+    "description": "Eksperthåndtering af bud og forhandlinger for at sikre den bedst mulige aftale for dig."
+  },
+  "signing": {
+    "label": "Underskrift af køber og sælger",
+    "description": "Gennemførelse af aftalen med alle parter underskriver de nødvendige dokumenter."
+  },
+  "approval": {
+    "label": "Godkendelse af bank og rådgiver",
+    "description": "Sikring af nødvendige godkendelser fra finansielle institutioner og juridiske rådgivere."
+  },
+  "final": {
+    "label": "Endelig handel og tinglysning",
+    "description": "Gennemførelse af den juridiske transaktion og registrering af ejendomsoverdragelsen."
+  },
+  "transfer": {
+    "label": "Overdragelse og opfølgning",
+    "description": "Overdragelse af ejendommen til den nye ejer og sikring af, at alle detaljer er afsluttet."
+  }
 }
 
 }
-  

@@ -33,13 +33,13 @@ export default function LoginChoiceModal({ open, onClose, onSelect }: Props) {
                 "brightness(0) saturate(100%) invert(8%) sepia(100%) saturate(1000%) hue-rotate(120deg) brightness(0.3) contrast(1.2)",
             }}
           />
-          <button
+          {/* <button
             onClick={onClose}
             className="absolute right-6 text-black hover:text-gray-600 transition-colors text-xl font-bold cursor-pointer"
             aria-label="Close"
           >
             ✕
-          </button>
+          </button> */}
         </div>
 
         <div className="px-6 pb-2">

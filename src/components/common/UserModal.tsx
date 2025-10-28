@@ -43,6 +43,10 @@ export default function UserModal({ open, onClose }: UserModalProps) {
   React.useEffect(() => {
     if (token && user) {
       onClose();
+      // Update localStorage to sync with Redux state
+      localStorage.setItem("bm_user", JSON.stringify(user));
+      localStorage.setItem("bm_access", token);
+      
       if (user.roleName.toLowerCase() === "user") {
         // navigate("/userDashboard/profile");
       } else if (user.roleName.toLowerCase() === "partner") {
@@ -59,7 +63,7 @@ export default function UserModal({ open, onClose }: UserModalProps) {
 
   return (
     <Modal open={open} onClose={onClose} maxWidth="max-w-md">
-      <div className="bg-[#EFEFEF] rounded-lg shadow-lg w-full mx-auto">
+      <div className="bg-[#EFEFEF] rounded-md shadow-lg w-full mx-auto">
         <div className="flex justify-center items-center p-6 pb-4 relative">
           <div className="flex items-center justify-center">
             <div className="text-2xl font-bold">
@@ -74,12 +78,12 @@ export default function UserModal({ open, onClose }: UserModalProps) {
               />
             </div>
           </div>
-          <button
+          {/* <button
             onClick={onClose}
             className="absolute right-6 text-black hover:text-gray-600 transition-colors text-xl font-bold cursor-pointer"
           >
             ✕
-          </button>
+          </button> */}
         </div>
 
         <div className="px-6 pb-6">

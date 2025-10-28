@@ -1,29 +1,38 @@
 import { useEffect, useState } from "react";
-// import userLogo from "/src/assets/userImages/userLogo.png";
 import supplierProfile from "../assets/supplierProfile/suppliier-profile-hero.png";
-// import userHeader from "/src/assets/userImages/userHeader.png";
-// import userHeaderHamburger from "/src/assets/userImages/userHeaderHamburger.png";
 import heartIcon from "/src/assets/userImages/Lag_1.svg";
 import share from "../assets/supplierProfile/share.png";
 import chat from "../assets/supplierProfile/chat.png";
 import { Star } from "lucide-react";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import { useTranslation } from "react-i18next";
+import { useAppSelector } from "../app/hooks";
+import type { RootState } from "../app/store";
 import shareModel from "/src/assets/userImages/shareModelImg.png";
 import chatModel from "/src/assets/userImages/chatModelImg.svg";
 import { favouritesService } from "../services/favourites.service";
+import { conversationService } from "../services/conversation.service";
+import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
 import { toast } from "react-toastify";
+import { FaPlayCircle } from "react-icons/fa";
 
 const SupplierProfile = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   console.log("isScrolled-->", isScrolled);
   const { t } = useTranslation();
+  const userData = useAppSelector((state: RootState) => state.auth.user);
   const [activeModal, setActiveModal] = useState<
     null | "recommend" | "contact"
   >(null);
   const [isAddingToFavorites, setIsAddingToFavorites] = useState(false);
-  console.log('isAddingToFavorites', isAddingToFavorites)
+  console.log("isAddingToFavorites", isAddingToFavorites);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [subCategoryData, setSubCategoryData] = useState<any>(null);
+  const [contactSubject, setContactSubject] = useState("");
+  const [contactBody, setContactBody] = useState("");
+  const [recommendEmail, setRecommendEmail] = useState("");
+  const [recommendComment, setRecommendComment] = useState("");
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -31,20 +40,43 @@ const SupplierProfile = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Load subcategory data from localStorage when component mounts
+  useEffect(() => {
+    const loadSubCategoryData = () => {
+      try {
+        const subCategoryStr = localStorage.getItem("bm_currentSubCategory");
+        if (subCategoryStr) {
+          const raw = JSON.parse(subCategoryStr);
+          const normalized = raw?.output ?? raw; // support enveloped and raw shapes
+          setSubCategoryData(normalized);
+        }
+      } catch (error) {
+        console.error("Error loading subcategory data:", error);
+      }
+    };
+
+    loadSubCategoryData();
+  }, []);
+
   const handleAddToFavorites = async () => {
     try {
       setIsAddingToFavorites(true);
 
-      // Get user data from localStorage
+      // Source userId from localStorage per requirement
       const userStr = localStorage.getItem("bm_user");
-      if (!userStr) {
-        alert("User not found. Please log in again.");
+      const parsedUser = userStr ? JSON.parse(userStr) : null;
+      const userId = parsedUser?.userId ?? userData?.userId;
+      if (!userId) {
+        toast.error("User not found. Please log in again.");
         return;
       }
 
-      const user = JSON.parse(userStr);
-      const userId = user.userId;
-      const partnerId = 2; // Static partnerId as requested
+      // partnerId is subCategoryId
+      const partnerId = subCategoryData?.id;
+      if (!partnerId) {
+        toast.error("Subcategory not loaded.");
+        return;
+      }
 
       const payload = {
         userId: userId,
@@ -52,30 +84,124 @@ const SupplierProfile = () => {
         isActive: true,
       };
 
-      console.log("Adding to favorites with payload:", payload);
       await favouritesService.add(payload);
-      toast.success("Added to favorites");
+      toast.success("Added to favourites");
     } catch (error) {
       console.error("Error adding to favorites:", error);
-      alert("Failed to add to favorites. Please try again.");
+      toast.error("Failed to add to favourites. Please try again.");
     } finally {
       setIsAddingToFavorites(false);
+    }
+  };
+
+  const handleSendConversation = async () => {
+    try {
+      if (!subCategoryData?.id) {
+        toast.error("Subcategory not loaded.");
+        return;
+      }
+      const userStr = localStorage.getItem("bm_user");
+      const parsedUser = userStr ? JSON.parse(userStr) : null;
+      const senderId = parsedUser?.userId ?? userData?.userId;
+      if (!senderId) {
+        toast.error("User not found. Please log in again.");
+        return;
+      }
+
+      const payload = {
+        messageSubject: contactSubject || "",
+        messageContent: contactBody || "",
+        senderId,
+        receiverId: subCategoryData.id,
+        type: "subcategory",
+        isActive: true,
+      };
+
+      await conversationService.add(payload);
+      toast.success("Message sent successfully");
+      setActiveModal(null);
+      setContactSubject("");
+      setContactBody("");
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("Failed to send message. Please try again.");
+    }
+  };
+
+  const handleSendRecommendation = async () => {
+    try {
+      if (!subCategoryData?.id) {
+        toast.error("Subcategory not loaded.");
+        return;
+      }
+      if (!recommendEmail) {
+        toast.error("Please enter recipient email.");
+        return;
+      }
+
+      const payload = {
+        patnerId: subCategoryData.id,
+        email: recommendEmail,
+        description: recommendComment || "",
+        isActive: true,
+      };
+
+      await recommendationService.add(payload);
+      toast.success("Recommendation sent successfully");
+      setActiveModal(null);
+      setRecommendEmail("");
+      setRecommendComment("");
+    } catch (error) {
+      console.error("Error sending recommendation:", error);
+      toast.error("Failed to send recommendation. Please try again.");
     }
   };
 
   return (
     <div
       className="h-[100vh]"
-      style={{
-        backgroundImage: `url(${supplierProfile})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
+      // style={{
+      //   backgroundImage: `url(${supplierProfile})`,
+      //   backgroundSize: "cover",
+      //   backgroundPosition: "center",
+      //   backgroundRepeat: "no-repeat",
+      // }}
     >
+      {!isVideoPlaying ? (
+        <>
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${subCategoryData?.imageUrl || supplierProfile})` }}
+          ></div>
+        </>
+      ) : (
+        <>
+          <video
+            className="absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            controls
+            onEnded={() => setIsVideoPlaying(false)}
+          >
+            <source
+              src="https://www.youtube.com/watch?v=BhJ_V3Qsos4"
+              type="video/mp4"
+            />
+            How to Plan your Network Cabling like a PRO
+          </video>
+        </>
+      )}
+
       <UserHeader />
       <div className="bg-[#043428] pt-12">
         <div className=" w-full mx-auto px-12 flex justify-center">
+          {isVideoPlaying ? null : (
+            <div className="absolute top-[50%] justify-center items-center text-white">
+              <FaPlayCircle
+                onClick={() => setIsVideoPlaying(true)}
+                className="h-14 w-14 cursor-pointer"
+              />
+            </div>
+          )}
           <div className="flex gap-10 justify-center absolute bottom-10">
             <button
               className="bg-[#91C73D] text-white px-6 py-3 rounded-lg flex items-center gap-2 cursor-pointer"
@@ -118,21 +244,12 @@ const SupplierProfile = () => {
       </div>
       <div className="bg-[#043428] pt-20">
         <h1 className="font-extrabold text-6xl text-center text-white py-20">
-          Kabel-specialisten
+          {subCategoryData?.name || "Kabel-specialisten"}
         </h1>
         <p className="px-22 text-white text-center">
-          Arumet latem. Cus, omnim dolorio nsequiasit dolestibusa nimperum
-          laboria autem hilique peria quamus, in cum quuntia nectibea
-          corestiost, consed ex et eum idio que consequia dolupiet fuga. Eperfer
-          feristrum, suntis mod enihic tectotate voluptist mi, ipsus quatum idi
-          autatusam quat fugit, conseque qui rerfere henihil laborum, quis
-          maximil latempori dus eaquaspidis entio optate que es eum harum, tet,
-          sapicia se velendaesed magnisci optatust remqui aut faccatibea venis
-          dolo berum niscius Icatis atum asi voluptatem acit verum vellor mi,
-          quam, occae in comnimi, quae et quam, te nemolupta eium venimpeles
-          esenetus re mosam, quodis eos as am a comnis eario. Cia voluptas
-          doluptatem raectior aut que con nullitasinum vent, as aut hit et, quid
-          quatemquae consend icatus.
+          {subCategoryData?.description || 
+            "Arumet latem. Cus, omnim dolorio nsequiasit dolestibusa nimperum laboria autem hilique peria quamus, in cum quuntia nectibea corestiost, consed ex et eum idio que consequia dolupiet fuga. Eperfer feristrum, suntis mod enihic tectotate voluptist mi, ipsus quatum idi autatusam quat fugit, conseque qui rerfere henihil laborum, quis maximil latempori dus eaquaspidis entio optate que es eum harum, tet, sapicia se velendaesed magnisci optatust remqui aut faccatibea venis dolo berum niscius Icatis atum asi voluptatem acit verum vellor mi, quam, occae in comnimi, quae et quam, te nemolupta eium venimpeles esenetus re mosam, quodis eos as am a comnis eario. Cia voluptas doluptatem raectior aut que con nullitasinum vent, as aut hit et, quid quatemquae consend icatus."
+          }
         </p>
       </div>
       <div className="bg-[#012F2B] min-h-screen flex justify-center items-center p-8">
@@ -287,12 +404,12 @@ const SupplierProfile = () => {
             <div className="bg-[#FFFFFF] rounded-2xl p-20 justify-center flex items-center">
               <div>
                 <img
-                  src={kabelLogoImg}
+                  src={subCategoryData?.iconUrl || kabelLogoImg}
                   alt=""
                   className="w-[177px] h-[164px]"
                 />
                 <h2 className="p-6 text-[#000000] font-[800] txt-[30px]">
-                  Kabel-specialisten
+                  {subCategoryData?.name || "Kabel-specialisten"}
                 </h2>
               </div>
             </div>
@@ -378,6 +495,8 @@ const SupplierProfile = () => {
                   type="email"
                   placeholder=""
                   className="mb-3 w-full rounded-[10px] bg-white h-9 px-3 outline-none"
+                  value={recommendEmail}
+                  onChange={(e) => setRecommendEmail(e.target.value)}
                 />
 
                 <label className="text-sm font-semibold mb-1">
@@ -386,10 +505,15 @@ const SupplierProfile = () => {
                 <textarea
                   placeholder=""
                   className="w-full rounded-[10px] bg-white h-28 px-3 py-2 outline-none resize-none"
+                  value={recommendComment}
+                  onChange={(e) => setRecommendComment(e.target.value)}
                 />
 
                 <div className="flex justify-center mt-4">
-                  <button className="min-w-[120px] h-10 bg-[#91C73D] text-white font-semibold rounded-lg">
+                  <button 
+                    onClick={handleSendRecommendation}
+                    className="min-w-[120px] h-10 bg-[#91C73D] text-white font-semibold rounded-lg"
+                  >
                     {t("supplierProfile.recommendModal.send")}
                   </button>
                 </div>
@@ -418,15 +542,24 @@ const SupplierProfile = () => {
                 <input
                   type="text"
                   className="mb-3 w-full rounded-[10px] bg-white h-9 px-3 outline-none"
+                  value={contactSubject}
+                  onChange={(e) => setContactSubject(e.target.value)}
                 />
 
                 <label className="text-sm font-semibold mb-1">
                   {t("supplierProfile.contactModal.body")}
                 </label>
-                <textarea className="w-full rounded-[10px] bg-white h-28 px-3 py-2 outline-none resize-none" />
+                <textarea 
+                  className="w-full rounded-[10px] bg-white h-28 px-3 py-2 outline-none resize-none"
+                  value={contactBody}
+                  onChange={(e) => setContactBody(e.target.value)}
+                />
 
                 <div className="flex justify-center mt-4 mb-6">
-                  <button className="min-w-[120px] h-10 bg-[#91C73D] text-white font-semibold rounded-lg">
+                  <button 
+                    onClick={handleSendConversation}
+                    className="min-w-[120px] h-10 bg-[#91C73D] text-white font-semibold rounded-lg"
+                  >
                     {t("supplierProfile.contactModal.send")}
                   </button>
                 </div>

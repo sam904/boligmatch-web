@@ -53,17 +53,6 @@ const router = createBrowserRouter([
       { path: "search-partner", element: <SearchForPartner /> },
     ],
   },
-  // {
-  //   path: '/partner',
-  //   element: (
-  //     <RoleGuard roles={['partner']}>
-  //       <PartnerLayout />
-  //     </RoleGuard>
-  //   ),
-  //   children: [
-  //     { index: true, element: <PartnerDashboard /> },
-  //   ],
-  // },
   {
     path: "/admin",
     element: (
@@ -80,7 +69,6 @@ const router = createBrowserRouter([
       { path: "subcategories", element: <SubCategoriesPage /> },
       { path: "partners", element: <PartnersPage /> },
       { path: "users", element: <UsersListPage /> },
-      // { path: "partner-subcategories", element: <PartnerSubCategoriesPage /> },
     ],
   },
 ]);

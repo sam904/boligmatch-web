@@ -10,8 +10,11 @@ export const subCategoryService = {
     return response.output || [];
   },
   
-  getById: (id: number) => 
-    http.get<SubCategory>(`/SubCategories/getSubCategoriesById/${id}`),
+  getById: async (id: number) => {
+    const response = await http.get<any>(`/SubCategories/getSubCategoriesById/${id}`);
+    // Unwrap common API envelope shape if present
+    return response?.output ?? response;
+  },
   
   getByCategoryId: async (categoryId: number, includeInActive = false) => {
     const response = await http.get<{ output: { result: SubCategory[] } }>(`/SubCategories/getSubCategorysByCategoryId/${categoryId}?includeInActive=${includeInActive}`);

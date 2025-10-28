@@ -89,6 +89,20 @@ body,
   font-weight: 100 900;
   font-style: italic;
 }
+
+@font-face {
+  font-family: "Raileway";
+  src: url("/src/assets/fonts/Raleway-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+}
+
+
 body {
   font-family: "Plus Jakarta Sans", sans-serif;
+  overflow-x: hidden;
+}
+
+.railways{
+  font-family: "Raileway", sans-serif;
 }

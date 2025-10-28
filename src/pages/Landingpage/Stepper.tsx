@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import icon1 from "../../assets/userImages/01.png";
 import icon2 from "../../assets/userImages/02.png";
 import icon3 from "../../assets/userImages/03.png";
@@ -17,21 +18,58 @@ interface StepperProps {
 }
 
 const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
+  const { t } = useTranslation();
   const [hoveredStep, setHoveredStep] = useState<number | null>(null);
 
   const steps = [
-    { number: "01", icon: icon1, label: "Fysisk vurdering og dokumentation" },
-    { number: "02", icon: icon2, label: "Fotografering og beskrivelse" },
+    { 
+      number: "01", 
+      icon: icon1, 
+      label: t("stepper.physical.label"),
+      description: t("stepper.physical.description")
+    },
+    { 
+      number: "02", 
+      icon: icon2, 
+      label: t("stepper.photography.label"),
+      description: t("stepper.photography.description")
+    },
     {
       number: "03",
       icon: icon3,
-      label: "Til salg, åbent hus og fremvisninger",
+      label: t("stepper.viewing.label"),
+      description: t("stepper.viewing.description")
     },
-    { number: "04", icon: icon4, label: "Bud og forhandling" },
-    { number: "05", icon: icon5, label: "Underskrift af køber og sælger" },
-    { number: "06", icon: icon6, label: "Godkendelse af bank og rådgiver" },
-    { number: "07", icon: icon7, label: "Endelig handel og tinglysning" },
-    { number: "08", icon: icon8, label: "Overdragelse og opfølgning" },
+    { 
+      number: "04", 
+      icon: icon4, 
+      label: t("stepper.negotiation.label"),
+      description: t("stepper.negotiation.description")
+    },
+    { 
+      number: "05", 
+      icon: icon5, 
+      label: t("stepper.signing.label"),
+      description: t("stepper.signing.description")
+    },
+    { 
+      number: "06", 
+      icon: icon6, 
+      label: t("stepper.approval.label"),
+      description: t("stepper.approval.description")
+    },
+    { 
+      number: "07", 
+      icon: icon7, 
+      label: t("stepper.final.label"),
+      description: t("stepper.final.description")
+    },
+    { 
+      number: "08", 
+      icon: icon8, 
+      label: t("stepper.transfer.label"),
+      description: t("stepper.transfer.description")
+    },
   ];
 
   return (
@@ -123,9 +161,7 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
                     <h3 className="text-3xl font-bold">{step.number}</h3>
                     <h4 className="text-lg font-semibold mt-1">{step.label}</h4>
                     <p className="text-sm mt-3 text-gray-200">
-                      Atia quaspeiles aut eos eici maximi molles quae
-                      venesistatis mo tenimet, autemet expliaturr restibero et
-                      volore rem velit.
+                      {step.description}
                     </p>
                   </div>
                 </div>
