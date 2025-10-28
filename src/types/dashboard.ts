@@ -38,6 +38,7 @@ export interface DashboardStats {
   TotalRecommendations: number;
   TotalCategorys: number;
   TotalSubCategories: number;
+  TotalFalseSubCategories: number;
   TotalPartnerPageVisits: number;
   TotalFavourites: number;
   TodaysPartners: number;
@@ -48,6 +49,7 @@ export interface DashboardStats {
   totalPartners?: number;
   totalRecommendations?: number;
   totalCategorys?: number;
+  TotalFalseCategorys?: number;
   totalPartnerPageVisits?: number;
   totalFavourites?: number;
   todaysPartners?: number;
