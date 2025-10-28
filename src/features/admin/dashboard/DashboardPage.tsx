@@ -473,7 +473,7 @@ const DashboardPage = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-semibold text-gray-900">
-              Partners vs Users
+              Partners & Users
             </h3>
             <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
               Total Distribution
