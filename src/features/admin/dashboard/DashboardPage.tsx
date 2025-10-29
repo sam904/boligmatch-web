@@ -1,754 +1,5 @@
-// import { useState, useEffect } from "react";
-// import { Doughnut, Bar, Line } from "react-chartjs-2";
-// import {
-//   Chart as ChartJS,
-//   ArcElement,
-//   Tooltip,
-//   Legend,
-//   CategoryScale,
-//   LinearScale,
-//   BarElement,
-//   PointElement,
-//   LineElement,
-//   Title,
-// } from "chart.js";
-// import { dashboardService } from "../../../services/dashboard.service";
-// import type {
-//   ReportQueryRequest,
-//   DashboardStats,
-//   CategoryUser,
-// } from "../../../types/dashboard";
-
-// ChartJS.register(
-//   ArcElement,
-//   Tooltip,
-//   Legend,
-//   CategoryScale,
-//   LinearScale,
-//   BarElement,
-//   PointElement,
-//   LineElement,
-//   Title
-// );
-
-// const DashboardPage = () => {
-//   const [stats, setStats] = useState<DashboardStats | null>(null);
-//   const [categories, setCategories] = useState<CategoryUser[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-
-//   const fetchDashboardData = async () => {
-//     try {
-//       setLoading(true);
-//       setError(null);
-
-//       // Fetch total counts
-//       const statsPayload: ReportQueryRequest = {
-//         reportType: "GetTotalCountDashBoardReport",
-//         mode: "string",
-//         pagination: {
-//           page: 0,
-//           pageSize: 0,
-//           searchTerm: "string",
-//           sortDirection: "string",
-//           sortField: "string",
-//           userId: 0,
-//           pageNumber: 0,
-//           rowsPerPage: 0,
-//         },
-//         fromDate: new Date().toISOString().split("T")[0],
-//         toDate: new Date().toISOString().split("T")[0],
-//         allRecordsRequired: true,
-//         isExportToExcel: false,
-//         id: 0,
-//         userId: "string",
-//         statusId: "string",
-//         month: "string",
-//         courseId: "string",
-//         testId: "string",
-//       };
-
-//       const categoriesPayload: ReportQueryRequest = {
-//         reportType: "GetCategoryWiseUserNameDashBoardReport",
-//         mode: "string",
-//         pagination: {
-//           page: 0,
-//           pageSize: 0,
-//           searchTerm: "string",
-//           sortDirection: "string",
-//           sortField: "string",
-//           userId: 0,
-//           pageNumber: 0,
-//           rowsPerPage: 0,
-//         },
-//         fromDate: new Date().toISOString().split("T")[0],
-//         toDate: new Date().toISOString().split("T")[0],
-//         allRecordsRequired: true,
-//         isExportToExcel: false,
-//         id: 0,
-//         userId: "string",
-//         statusId: "string",
-//         month: "string",
-//         courseId: "string",
-//         testId: "string",
-//       };
-
-//       const [statsResponse, categoriesResponse] = await Promise.all([
-//         dashboardService.getAllReportsQuery(statsPayload),
-//         dashboardService.getAllReportsQuery(categoriesPayload),
-//       ]);
-
-//       // Set actual API data from the response structure
-//       if (
-//         statsResponse &&
-//         statsResponse.reportData &&
-//         statsResponse.reportData.length > 0
-//       ) {
-//         const statsData = statsResponse.reportData[0];
-//         setStats({
-//           TotalUsers: statsData.totalUsers || statsData.TotalUsers || 0,
-//           TotalPartners:
-//             statsData.totalPartners || statsData.TotalPartners || 0,
-//           TotalRecommendations:
-//             statsData.totalRecommendations ||
-//             statsData.TotalRecommendations ||
-//             0,
-//           TotalCategorys:
-//             statsData.totalCategorys || statsData.TotalCategorys || 0,
-//           TotalPartnerPageVisits:
-//             statsData.totalPartnerPageVisits ||
-//             statsData.TotalPartnerPageVisits ||
-//             0,
-//           TotalFavourites:
-//             statsData.totalFavourites || statsData.TotalFavourites || 0,
-//           TodaysPartners:
-//             statsData.todaysPartners || statsData.TodaysPartners || 0,
-//           TodaysRecommendations:
-//             statsData.todaysRecommendations ||
-//             statsData.TodaysRecommendations ||
-//             0,
-//           TodaysPartnerPageVisits:
-//             statsData.todaysPartnerPageVisits ||
-//             statsData.TodaysPartnerPageVisits ||
-//             0,
-//           TodaysFavourites:
-//             statsData.todaysFavourites || statsData.TodaysFavourites || 0,
-//         });
-//       } else {
-//         setStats({
-//           TotalUsers: 0,
-//           TotalPartners: 0,
-//           TotalRecommendations: 0,
-//           TotalCategorys: 0,
-//           TotalPartnerPageVisits: 0,
-//           TotalFavourites: 0,
-//           TodaysPartners: 0,
-//           TodaysRecommendations: 0,
-//           TodaysPartnerPageVisits: 0,
-//           TodaysFavourites: 0,
-//         });
-//       }
-
-//       if (categoriesResponse && categoriesResponse.reportData) {
-//         const formattedCategories = categoriesResponse.reportData.map(
-//           (item: any) => ({
-//             CategoryName:
-//               item.categoryName || item.CategoryName || "Uncategorized",
-//             FullName: item.fullName || item.FullName || "N/A",
-//             BusinessName: item.businessName || item.BusinessName || "N/A",
-//             BusinessUnit: (
-//               item.businessUnit ||
-//               item.BusinessUnit ||
-//               "0"
-//             ).toString(),
-//           })
-//         );
-//         setCategories(formattedCategories);
-//       } else {
-//         setCategories([]);
-//       }
-//     } catch (error) {
-//       console.error("Error fetching dashboard data:", error);
-//       setError("Failed to load dashboard data. Please try again.");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchDashboardData();
-//   }, []);
-
-//   // Format number to K format
-//   const formatK = (num: number | null) => {
-//     if (num === null || num === undefined) return "0";
-//     if (num >= 1000) {
-//       return (num / 1000).toFixed(0) + "K";
-//     }
-//     return num.toString();
-//   };
-
-//   // Get category counts from actual API data
-//   const getCategoryCount = (categoryName: string) => {
-//     return categories.filter(
-//       (cat) =>
-//         cat.CategoryName?.toLowerCase() === categoryName.toLowerCase() ||
-//         cat.categoryName?.toLowerCase() === categoryName.toLowerCase()
-//     ).length;
-//   };
-
-//   // Get total sub categories count
-//   const getTotalSubCategories = () => {
-//     return stats?.TodaysRecommendations || 0;
-//   };
-
-//   // Circular Progress Component
-//   const CircularProgress = ({
-//     percentage,
-//     color,
-//     size = 80,
-//   }: {
-//     percentage: number;
-//     color: string;
-//     size?: number;
-//   }) => {
-//     const strokeWidth = 8;
-//     const radius = (size - strokeWidth) / 2;
-//     const circumference = radius * 2 * Math.PI;
-//     const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
-//     return (
-//       <div className="relative" style={{ width: size, height: size }}>
-//         <svg width={size} height={size} className="transform -rotate-90">
-//           <circle
-//             cx={size / 2}
-//             cy={size / 2}
-//             r={radius}
-//             stroke="#e5e7eb"
-//             strokeWidth={strokeWidth}
-//             fill="none"
-//           />
-//           <circle
-//             cx={size / 2}
-//             cy={size / 2}
-//             r={radius}
-//             stroke={color}
-//             strokeWidth={strokeWidth}
-//             fill="none"
-//             strokeLinecap="round"
-//             strokeDasharray={circumference}
-//             strokeDashoffset={strokeDashoffset}
-//             className="transition-all duration-300 ease-in-out"
-//           />
-//         </svg>
-//         <div className="absolute inset-0 flex items-center justify-center">
-//           <span className="text-lg font-bold text-gray-800">{percentage}%</span>
-//         </div>
-//       </div>
-//     );
-//   };
-
-//   if (loading) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-//         <div className="text-xl">Loading dashboard...</div>
-//       </div>
-//     );
-//   }
-
-//   if (error) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-//         <div className="text-xl text-red-600">{error}</div>
-//       </div>
-//     );
-//   }
-
-//   // Chart Data using actual API data
-//   const donutData = {
-//     labels: ["Categories", "Sub Categories"],
-//     datasets: [
-//       {
-//         data: [stats?.TotalCategorys || 0, getTotalSubCategories()],
-//         backgroundColor: ["#1E8449", "#7DCEA0"],
-//         borderWidth: 0,
-//         borderRadius: 8,
-//       },
-//     ],
-//   };
-
-//   // Calculate percentage for doughnut chart center
-//   const totalCategories =
-//     (stats?.TotalCategorys || 0) + getTotalSubCategories();
-//   const categoriesPercentage =
-//     totalCategories > 0
-//       ? Math.round(((stats?.TotalCategorys || 0) / totalCategories) * 100)
-//       : 0;
-
-//   // Bar chart data - weekly data
-//   const barData = {
-//     labels: ["S", "M", "T", "W", "T", "F", "S"],
-//     datasets: [
-//       {
-//         label: "Partners",
-//         data: [
-//           stats?.TodaysPartners || 0,
-//           (stats?.TodaysPartners || 0) * 2,
-//           (stats?.TodaysPartners || 0) * 1.5,
-//           (stats?.TodaysPartners || 0) * 1.7,
-//           (stats?.TodaysPartners || 0) * 3,
-//           (stats?.TodaysPartners || 0) * 2.5,
-//           (stats?.TodaysPartners || 0) * 1.5,
-//         ],
-//         backgroundColor: "#14532d",
-//         borderRadius: 4,
-//         barPercentage: 0.6,
-//       },
-//       {
-//         label: "Users",
-//         data: [
-//           stats?.TodaysFavourites || 0,
-//           (stats?.TodaysFavourites || 0) * 2,
-//           (stats?.TodaysFavourites || 0) * 1.8,
-//           (stats?.TodaysFavourites || 0) * 2.2,
-//           (stats?.TodaysFavourites || 0) * 3.5,
-//           (stats?.TodaysFavourites || 0) * 3,
-//           (stats?.TodaysFavourites || 0) * 2,
-//         ],
-//         backgroundColor: "#65a30d",
-//         borderRadius: 4,
-//         barPercentage: 0.6,
-//       },
-//     ],
-//   };
-
-//   // Line chart data - monthly trend
-//   const lineData = {
-//     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
-//     datasets: [
-//       {
-//         label: "This Year",
-//         data: [
-//           (stats?.TotalUsers || 0) / 100000,
-//           (stats?.TotalUsers || 0) / 80000,
-//           (stats?.TotalUsers || 0) / 60000,
-//           (stats?.TotalUsers || 0) / 40000,
-//           (stats?.TotalUsers || 0) / 50000,
-//           (stats?.TotalUsers || 0) / 70000,
-//           (stats?.TotalUsers || 0) / 45000,
-//         ],
-//         borderColor: "#14532d",
-//         backgroundColor: "rgba(20, 83, 45, 0.1)",
-//         fill: true,
-//         tension: 0.4,
-//         borderWidth: 2,
-//       },
-//       {
-//         label: "Last Year",
-//         data: [
-//           (stats?.TotalUsers || 0) / 120000,
-//           (stats?.TotalUsers || 0) / 100000,
-//           (stats?.TotalUsers || 0) / 80000,
-//           (stats?.TotalUsers || 0) / 60000,
-//           (stats?.TotalUsers || 0) / 70000,
-//           (stats?.TotalUsers || 0) / 50000,
-//           (stats?.TotalUsers || 0) / 40000,
-//         ],
-//         borderColor: "#a3e635",
-//         borderDash: [5, 5],
-//         fill: false,
-//         tension: 0.4,
-//         borderWidth: 2,
-//       },
-//     ],
-//   };
-
-//   // Deactivate categories data using actual category counts
-//   const deactivateCategories = [
-//     {
-//       name: "Digital",
-//       value: formatK(getCategoryCount("Digital")),
-//       percentage: Math.min(getCategoryCount("Digital") * 10, 100),
-//       color: "#14532d",
-//     },
-//     {
-//       name: "Phone",
-//       value: formatK(getCategoryCount("Phone")),
-//       percentage: Math.min(getCategoryCount("Phone") * 15, 100),
-//       color: "#65a30d",
-//     },
-//     {
-//       name: "Accessories",
-//       value: formatK(getCategoryCount("Accessories")),
-//       percentage: Math.min(getCategoryCount("Accessories") * 12, 100),
-//       color: "#a3e635",
-//     },
-//   ];
-
-//   // Chart options
-//   const donutOptions = {
-//     responsive: true,
-//     maintainAspectRatio: true,
-//     cutout: "65%",
-//     plugins: {
-//       legend: {
-//         display: false,
-//       },
-//       tooltip: {
-//         enabled: true,
-//       },
-//     },
-//   };
-
-//   const barOptions = {
-//     responsive: true,
-//     maintainAspectRatio: false,
-//     plugins: {
-//       legend: {
-//         position: "bottom" as const,
-//         labels: {
-//           usePointStyle: true,
-//           padding: 20,
-//         },
-//       },
-//     },
-//     scales: {
-//       x: {
-//         grid: {
-//           display: false,
-//         },
-//         ticks: {
-//           font: {
-//             size: 12,
-//           },
-//         },
-//       },
-//       y: {
-//         beginAtZero: true,
-//         grid: {
-//           color: "#f3f4f6",
-//         },
-//         ticks: {
-//           font: {
-//             size: 11,
-//           },
-//         },
-//       },
-//     },
-//   };
-
-//   const lineOptions = {
-//     responsive: true,
-//     maintainAspectRatio: false,
-//     plugins: {
-//       legend: {
-//         position: "bottom" as const,
-//         labels: {
-//           usePointStyle: true,
-//           padding: 20,
-//         },
-//       },
-//     },
-//     scales: {
-//       x: {
-//         grid: {
-//           display: false,
-//         },
-//         ticks: {
-//           font: {
-//             size: 12,
-//           },
-//         },
-//       },
-//       y: {
-//         grid: {
-//           color: "#f3f4f6",
-//         },
-//         ticks: {
-//           font: {
-//             size: 11,
-//           },
-//         },
-//       },
-//     },
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-
-//       <div className="p-6">
-//         {/* Main Stats Grid */}
-//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-//           {/* Total User */}
-//           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-//             <div className="flex items-center justify-between mb-4">
-//               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-//                 <svg
-//                   className="w-6 h-6 text-blue-600"
-//                   fill="none"
-//                   stroke="currentColor"
-//                   viewBox="0 0 24 24"
-//                 >
-//                   <path
-//                     strokeLinecap="round"
-//                     strokeLinejoin="round"
-//                     strokeWidth={2}
-//                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-//                   />
-//                 </svg>
-//               </div>
-//             </div>
-//             <div className="text-3xl font-bold text-gray-900 mb-2">
-//               {formatK(stats?.TotalUsers || 0)}
-//             </div>
-//             <div className="text-gray-600 font-medium">Total User</div>
-//           </div>
-
-//           {/* Partner Listing */}
-//           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-//             <div className="flex items-center justify-between mb-4">
-//               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-//                 <svg
-//                   className="w-6 h-6 text-green-600"
-//                   fill="none"
-//                   stroke="currentColor"
-//                   viewBox="0 0 24 24"
-//                 >
-//                   <path
-//                     strokeLinecap="round"
-//                     strokeLinejoin="round"
-//                     strokeWidth={2}
-//                     d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-//                   />
-//                 </svg>
-//               </div>
-//             </div>
-//             <div className="text-3xl font-bold text-gray-900 mb-2">
-//               {formatK(stats?.TotalPartners || 0)}
-//             </div>
-//             <div className="text-gray-600 font-medium">Partner Listing</div>
-//           </div>
-
-//           {/* Total Earned */}
-//           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-//             <div className="flex items-center justify-between mb-4">
-//               <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-//                 <svg
-//                   className="w-6 h-6 text-purple-600"
-//                   fill="none"
-//                   stroke="currentColor"
-//                   viewBox="0 0 24 24"
-//                 >
-//                   <path
-//                     strokeLinecap="round"
-//                     strokeLinejoin="round"
-//                     strokeWidth={2}
-//                     d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-//                   />
-//                 </svg>
-//               </div>
-//             </div>
-//             <div className="text-3xl font-bold text-gray-900 mb-2">
-//               ${formatK(stats?.TotalFavourites || 0)}
-//             </div>
-//             <div className="text-gray-600 font-medium">Total Earned</div>
-//           </div>
-
-//           {/* Distributions */}
-//           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-//             <div className="flex items-center justify-between mb-4">
-//               <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-//                 <svg
-//                   className="w-6 h-6 text-orange-600"
-//                   fill="none"
-//                   stroke="currentColor"
-//                   viewBox="0 0 24 24"
-//                 >
-//                   <path
-//                     strokeLinecap="round"
-//                     strokeLinejoin="round"
-//                     strokeWidth={2}
-//                     d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-//                   />
-//                 </svg>
-//               </div>
-//             </div>
-//             <div className="text-3xl font-bold text-gray-900 mb-2">
-//               {formatK(stats?.TodaysPartners || 0)}
-//             </div>
-//             <div className="text-gray-600 font-medium">Distributions</div>
-//           </div>
-//         </div>
-
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-//           {/* Left Column */}
-//           <div className="space-y-6">
-//             {/* Categories Section */}
-//             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-//               <div className="flex justify-between items-center mb-6">
-//                 <h3 className="text-lg font-semibold text-gray-900">
-//                   Categories
-//                 </h3>
-//                 <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-//                   This Week
-//                 </span>
-//               </div>
-
-//               <div className="flex items-center justify-between">
-//                 <div className="flex-1">
-//                   <div className="space-y-4">
-//                     <div className="flex justify-between items-center py-3 border-b border-gray-100">
-//                       <div className="flex items-center">
-//                         <div className="w-3 h-3 bg-green-600 rounded-full mr-3"></div>
-//                         <span className="text-gray-700 font-medium">
-//                           Categories
-//                         </span>
-//                       </div>
-//                       <span className="font-semibold text-gray-900 text-lg">
-//                         {formatK(stats?.TotalCategorys || 0)}
-//                       </span>
-//                     </div>
-//                     <div className="flex justify-between items-center py-3">
-//                       <div className="flex items-center">
-//                         <div className="w-3 h-3 bg-green-400 rounded-full mr-3"></div>
-//                         <span className="text-gray-700 font-medium">
-//                           Sub Categories
-//                         </span>
-//                       </div>
-//                       <span className="font-semibold text-gray-900 text-lg">
-//                         {formatK(getTotalSubCategories())}
-//                       </span>
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 <div className="ml-6">
-//                   <div className="relative" style={{ width: 120, height: 120 }}>
-//                     <Doughnut data={donutData} options={donutOptions} />
-//                     <div className="absolute inset-0 flex items-center justify-center">
-//                       <div className="text-center">
-//                         <div className="text-lg font-bold text-gray-800">
-//                           {categoriesPercentage}%
-//                         </div>
-//                         <div className="text-xs text-gray-500">Completed</div>
-//                       </div>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-
-//             {/* Total Users Section */}
-//             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-//               <div className="flex justify-between items-center mb-6">
-//                 <h3 className="text-lg font-semibold text-gray-900">
-//                   Total Users
-//                 </h3>
-//                 <div className="flex items-center space-x-4">
-//                   <div className="flex items-center">
-//                     <div className="w-3 h-3 bg-green-600 rounded-full mr-2"></div>
-//                     <span className="text-sm text-gray-600">This Year</span>
-//                   </div>
-//                   <div className="flex items-center">
-//                     <div className="w-3 h-3 bg-green-300 rounded-full mr-2"></div>
-//                     <span className="text-sm text-gray-600">Last Year</span>
-//                   </div>
-//                 </div>
-//               </div>
-
-//               <div className="mb-6">
-//                 <div className="text-2xl font-bold text-gray-900 mb-1">
-//                   {formatK(stats?.TotalPartners || 0)}
-//                 </div>
-//                 <div className="text-sm text-gray-600">Total Partner</div>
-//               </div>
-
-//               <div className="h-64">
-//                 <Line data={lineData} options={lineOptions} />
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* Right Column */}
-//           <div className="space-y-6">
-//             {/* Total Partners & User Section */}
-//             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-//               <div className="flex justify-between items-center mb-6">
-//                 <h3 className="text-lg font-semibold text-gray-900">
-//                   Total Partners & User
-//                 </h3>
-//                 <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-//                   This Week
-//                 </span>
-//               </div>
-
-//               <div className="grid grid-cols-2 gap-4 mb-6">
-//                 <div className="text-center p-4 bg-gray-50 rounded-lg">
-//                   <div className="text-2xl font-bold text-gray-900 mb-1">
-//                     {formatK(stats?.TotalPartners || 0)}
-//                   </div>
-//                   <div className="text-sm text-gray-600">Total Partners</div>
-//                 </div>
-//                 <div className="text-center p-4 bg-gray-50 rounded-lg">
-//                   <div className="text-2xl font-bold text-gray-900 mb-1">
-//                     {formatK(stats?.TotalUsers || 0)}
-//                   </div>
-//                   <div className="text-sm text-gray-600">Total Users</div>
-//                 </div>
-//               </div>
-
-//               <div className="h-64">
-//                 <Bar data={barData} options={barOptions} />
-//               </div>
-//             </div>
-
-//             {/* Deactivate Categories Section */}
-//             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-//               <div className="flex justify-between items-center mb-6">
-//                 <h3 className="text-lg font-semibold text-gray-900">
-//                   Deactivate Categories
-//                 </h3>
-//                 <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-//                   This Week
-//                 </span>
-//               </div>
-
-//               <div className="grid grid-cols-3 gap-4">
-//                 {deactivateCategories.map((category, index) => (
-//                   <div key={index} className="text-center">
-//                     <div className="flex justify-center mb-3">
-//                       <CircularProgress
-//                         percentage={category.percentage}
-//                         color={category.color}
-//                         size={70}
-//                       />
-//                     </div>
-//                     <div className="text-lg font-bold text-gray-900 mb-1">
-//                       {category.value}
-//                     </div>
-//                     <div className="text-sm text-gray-600">{category.name}</div>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default DashboardPage;
-
-
-
-
-
-
-
-
 import { useState, useEffect } from "react";
-import { Doughnut, Bar } from "react-chartjs-2";
+import { Doughnut, Bar, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -758,12 +9,14 @@ import {
   LinearScale,
   BarElement,
   Title,
+  LineElement,
+  PointElement,
+  Filler,
 } from "chart.js";
 import { dashboardService } from "../../../services/dashboard.service";
 import type {
   ReportQueryRequest,
   DashboardStats,
-  CategoryUser,
 } from "../../../types/dashboard";
 
 ChartJS.register(
@@ -773,12 +26,14 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
-  Title
+  Title,
+  LineElement,
+  PointElement,
+  Filler
 );
 
 const DashboardPage = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [categories, setCategories] = useState<CategoryUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -812,37 +67,15 @@ const DashboardPage = () => {
         testId: "string",
       };
 
-      const categoriesPayload: ReportQueryRequest = {
-        reportType: "GetCategoryWiseUserNameDashBoardReport",
-        mode: "string",
-        pagination: {
-          page: 0,
-          pageSize: 0,
-          searchTerm: "string",
-          sortDirection: "string",
-          sortField: "string",
-          userId: 0,
-          pageNumber: 0,
-          rowsPerPage: 0,
-        },
-        fromDate: new Date().toISOString().split("T")[0],
-        toDate: new Date().toISOString().split("T")[0],
-        allRecordsRequired: true,
-        isExportToExcel: false,
-        id: 0,
-        userId: "string",
-        statusId: "string",
-        month: "string",
-        courseId: "string",
-        testId: "string",
-      };
+      const statsResponse = await dashboardService.getAllReportsQuery(
+        statsPayload
+      );
 
-      const [statsResponse, categoriesResponse] = await Promise.all([
-        dashboardService.getAllReportsQuery(statsPayload),
-        dashboardService.getAllReportsQuery(categoriesPayload),
-      ]);
-
-      if (statsResponse && statsResponse.reportData && statsResponse.reportData.length > 0) {
+      if (
+        statsResponse &&
+        statsResponse.reportData &&
+        statsResponse.reportData.length > 0
+      ) {
         const statsData = statsResponse.reportData[0];
         setStats({
           TotalUsers: statsData.totalUsers || 0,
@@ -856,6 +89,8 @@ const DashboardPage = () => {
           TodaysRecommendations: statsData.todaysRecommendations || 0,
           TodaysPartnerPageVisits: statsData.todaysPartnerPageVisits || 0,
           TodaysFavourites: statsData.todaysFavourites || 0,
+          TotalFalseSubCategories: statsData.TotalFalseSubCategories || 0,
+          TotalFalseCategorys: statsData.TotalFalseCategorys || 0,
         });
       } else {
         setStats({
@@ -870,21 +105,9 @@ const DashboardPage = () => {
           TodaysRecommendations: 0,
           TodaysPartnerPageVisits: 0,
           TodaysFavourites: 0,
+          TotalFalseSubCategories: 0,
+          TotalFalseCategorys: 0,
         });
-      }
-
-      if (categoriesResponse && categoriesResponse.reportData) {
-        const formattedCategories = categoriesResponse.reportData.map(
-          (item: any) => ({
-            CategoryName: item.categoryName || item.CategoryName || "Uncategorized",
-            FullName: item.fullName || item.FullName || "N/A",
-            BusinessName: item.businessName || item.BusinessName || "N/A",
-            BusinessUnit: (item.businessUnit || item.BusinessUnit || "0").toString(),
-          })
-        );
-        setCategories(formattedCategories);
-      } else {
-        setCategories([]);
       }
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
@@ -906,87 +129,38 @@ const DashboardPage = () => {
     return num.toString();
   };
 
-  // Get category counts from the API data
-  const getCategoryCounts = () => {
-    const categoryMap = new Map();
-    
-    categories.forEach((item) => {
-      const categoryName = item.CategoryName || "Uncategorized";
-      categoryMap.set(categoryName, (categoryMap.get(categoryName) || 0) + 1);
-    });
+  // Prepare dynamic data for dual-layer pie chart using API counts
+  const getPieChartData = () => {
+    const totalCategories = stats?.TotalCategorys || 0;
+    const totalSubCategories = stats?.TotalSubCategories || 0;
 
-    return Array.from(categoryMap, ([name, count]) => ({ name, count }));
-  };
-
-  // Get subcategory counts per category
-  const getSubCategoryCounts = () => {
-    const categorySubMap = new Map();
-    
-    categories.forEach((item) => {
-      const categoryName = item.CategoryName || "Uncategorized";
-      const businessUnit = item.BusinessUnit;
-      
-      if (!categorySubMap.has(categoryName)) {
-        categorySubMap.set(categoryName, new Set());
-      }
-      
-      if (businessUnit && businessUnit !== "0") {
-        categorySubMap.get(categoryName).add(businessUnit);
-      }
-    });
-
-    const result = [];
-    for (const [categoryName, subSet] of categorySubMap) {
-      result.push({
-        category: categoryName,
-        subCount: subSet.size
-      });
-    }
-    
-    return result;
-  };
-
-  // Prepare data for concentric donut chart
-  const getConcentricDonutData = () => {
-    const categoryCounts = getCategoryCounts();
-    const subCategoryCounts = getSubCategoryCounts();
-    
-    const outerLabels = categoryCounts.map(item => item.name);
-    const outerData = categoryCounts.map(item => item.count);
-    
-    const innerData = categoryCounts.map(category => {
-      const subData = subCategoryCounts.find(sub => sub.category === category.name);
-      return subData ? subData.subCount : 0;
-    });
+    // Calculate ratios (so chart fills proportionally)
+    const total = totalCategories + totalSubCategories;
+    const categoryPercentage = total > 0 ? (totalCategories / total) * 100 : 0;
+    const subCategoryPercentage =
+      total > 0 ? (totalSubCategories / total) * 100 : 0;
 
     return {
-      labels: outerLabels,
       datasets: [
         {
-          data: outerData,
-          backgroundColor: [
-            '#165933', '#1a6b3e', '#1e7d49', '#238f54', '#27a15f',
-            '#2cb36a', '#30c575', '#35d780', '#3ae98b', '#3ffb96'
-          ],
-          borderWidth: 2,
-          borderColor: '#fff',
-          borderRadius: 0,
-          spacing: 1,
-          weight: 0.5
+          // Outer Ring - Categories
+          data: [categoryPercentage, 100 - categoryPercentage],
+          backgroundColor: ["#104A2F", "#E9ECEF"],
+          borderWidth: 0,
+          cutout: "85%",
+          radius: "90%",
+          borderRadius: 100,
         },
         {
-          data: innerData,
-          backgroundColor: [
-            '#95C11F', '#9fc735', '#a9cd4b', '#b3d361', '#bdd977',
-            '#c7df8d', '#d1e5a3', '#dbebb9', '#e5f1cf', '#eff7e5'
-          ],
-          borderWidth: 2,
-          borderColor: '#fff',
-          borderRadius: 0,
-          spacing: 1,
-          weight: 0.5
-        }
-      ]
+          // Inner Ring - Subcategories
+          data: [subCategoryPercentage, 100 - subCategoryPercentage],
+          backgroundColor: ["#95C11F", "#E9ECEF"],
+          borderWidth: 0,
+          cutout: "80%",
+          radius: "70%",
+          borderRadius: 80,
+        },
+      ],
     };
   };
 
@@ -994,7 +168,7 @@ const DashboardPage = () => {
   const getBarChartData = () => {
     const totalPartners = stats?.TotalPartners || 0;
     const totalUsers = stats?.TotalUsers || 0;
-    
+
     // Calculate percentages for visual comparison
     const total = totalPartners + totalUsers;
     const partnersPercentage = total > 0 ? (totalPartners / total) * 100 : 0;
@@ -1008,7 +182,7 @@ const DashboardPage = () => {
           data: [partnersPercentage],
           backgroundColor: "#165933",
           borderRadius: 8,
-          barPercentage: 0.3,
+          barPercentage: 0.4,
           categoryPercentage: 0.5,
         },
         {
@@ -1016,38 +190,33 @@ const DashboardPage = () => {
           data: [usersPercentage],
           backgroundColor: "#95C11F",
           borderRadius: 8,
-          barPercentage: 0.3,
+          barPercentage: 0.4,
           categoryPercentage: 0.5,
         },
       ],
     };
   };
 
-  // Chart options for concentric donut
-  const concentricDonutOptions = {
+  // Chart options for pie chart (not donut) - Exactly like second image
+  const pieChartOptions: import("chart.js").ChartOptions<"doughnut"> = {
     responsive: true,
     maintainAspectRatio: true,
-    cutout: "60%",
     plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        callbacks: {
-          label: function(context: any) {
-            const label = context.datasetIndex === 0 ? 'Categories' : 'Subcategories';
-            return `${label}: ${context.parsed}`;
-          }
-        }
-      },
+      legend: { display: false },
+      tooltip: { enabled: false },
     },
+    animation: {
+      animateRotate: true,
+      duration: 1500,
+      easing: "easeInOutQuart",
+    },
+    cutout: "70%",
   };
 
   // Single line bar chart options
   const barChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    indexAxis: 'y' as const, // Horizontal bar chart
     plugins: {
       legend: {
         position: "bottom" as const,
@@ -1059,37 +228,126 @@ const DashboardPage = () => {
       },
       tooltip: {
         callbacks: {
-          label: function(context: any) {
-            const value = context.parsed.x;
+          label: function (context: any) {
+            const value = context.parsed.y;
             return `${context.dataset.label}: ${value.toFixed(1)}%`;
-          }
-        }
+          },
+        },
       },
     },
     scales: {
-      x: {
+      y: {
         beginAtZero: true,
         max: 100,
-        grid: {
-          display: false,
-        },
         ticks: {
-          font: {
-            size: 11,
-          },
-          callback: function(value: any) {
-            return value + '%';
-          }
+          font: { size: 11 },
+          callback: (value: any) => value + "%",
+        },
+        grid: { color: "#F3F4F6" },
+      },
+      x: {
+        grid: { display: false },
+      },
+    },
+  };
+
+  // Line Chart (User Ratio Analytics)
+  const getUserAnalyticsData = () => {
+    return {
+      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+      datasets: [
+        {
+          label: "This year",
+          data: [8000, 12000, 15000, 20000, 22000, 18000, 21000],
+          borderColor: "#165933",
+          backgroundColor: "rgba(22, 89, 51, 0.1)",
+          tension: 0.4,
+          fill: true,
+          pointRadius: 0,
+          borderWidth: 2,
+        },
+        {
+          label: "Last year",
+          data: [7000, 10000, 9000, 17000, 15000, 20000, 25000],
+          borderColor: "#95C11F",
+          backgroundColor: "rgba(149, 193, 31, 0.1)",
+          tension: 0.4,
+          fill: true,
+          pointRadius: 0,
+          borderDash: [5, 5],
+          borderWidth: 2,
+        },
+      ],
+    };
+  };
+
+  const lineChartOptions: import("chart.js").ChartOptions<"line"> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top",
+        align: "start",
+        labels: {
+          boxWidth: 8,
+          usePointStyle: true,
+          color: "#374151",
+          font: { size: 12 },
+          padding: 20,
         },
       },
+    },
+    scales: {
       y: {
-        grid: {
-          display: false,
-        },
+        beginAtZero: true,
         ticks: {
-          display: false, // Hide y-axis labels for single bar
+          callback: function (tickValue: string | number) {
+            if (typeof tickValue === "number") {
+              return `${tickValue / 1000}K`;
+            }
+            return tickValue;
+          },
+          color: "#6B7280",
         },
+        grid: { color: "#F3F4F6" },
       },
+      x: {
+        grid: { display: false },
+        ticks: { color: "#6B7280" },
+      },
+    },
+  };
+
+  // Dual-layer pie data for "Deactivate Categories"
+  const getDeactivatedPieChartData = () => {
+    return {
+      datasets: [
+        {
+          // Outer Ring
+          data: [70, 30],
+          backgroundColor: ["#104A2F", "#E9ECEF"],
+          borderWidth: 0,
+          cutout: "80%",
+          radius: "90%",
+        },
+        {
+          // Inner Ring
+          data: [50, 50],
+          backgroundColor: ["#95C11F", "#E9ECEF"],
+          borderWidth: 0,
+          cutout: "75%",
+          radius: "70%",
+        },
+      ],
+    };
+  };
+
+  const deactivatePieOptions: import("chart.js").ChartOptions<"doughnut"> = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: false },
     },
   };
 
@@ -1111,18 +369,24 @@ const DashboardPage = () => {
 
   const statsData = [
     { title: "Total Users", value: formatK(stats?.TotalUsers || 0) },
-    { title: "Total Sub Categories", value: formatK(stats?.TotalSubCategories || 0) },
+    {
+      title: "Total Sub Categories",
+      value: formatK(stats?.TotalSubCategories || 0),
+    },
     { title: "Categories", value: formatK(stats?.TotalCategorys || 0) },
     { title: "Favourites", value: formatK(stats?.TotalFavourites || 0) },
-    { title: "Page Visits", value: formatK(stats?.TotalPartnerPageVisits || 0) },
+    {
+      title: "Page Visits",
+      value: formatK(stats?.TotalPartnerPageVisits || 0),
+    },
     { title: "Today's Partners", value: formatK(stats?.TodaysPartners || 0) },
-    { title: "Recommendations", value: formatK(stats?.TotalRecommendations || 0) },
+    {
+      title: "Recommendations",
+      value: formatK(stats?.TotalRecommendations || 0),
+    },
   ];
 
-  const concentricData = getConcentricDonutData();
   const barData = getBarChartData();
-  const categoryCounts = getCategoryCounts();
-  const totalSubCategories = getSubCategoryCounts().reduce((sum, item) => sum + item.subCount, 0);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -1139,7 +403,7 @@ const DashboardPage = () => {
                   {stat.title}
                 </div>
               </div>
-              
+
               {index < statsData.length - 1 && (
                 <div className="h-8 w-px bg-gray-300 mx-1"></div>
               )}
@@ -1150,54 +414,54 @@ const DashboardPage = () => {
 
       {/* Two Column Layout for Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Column - Concentric Donut Chart */}
+        {/* Left Column - Categories & Subcategories Card */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex justify-between items-center mb-6">
+          <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-900">
               Categories & Subcategories
             </h3>
-            <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-              Total: {categoryCounts.length + totalSubCategories}
-            </span>
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 rounded-full mr-3" style={{ backgroundColor: "#165933" }}></div>
-                    <span className="text-gray-700 font-medium">
-                      Categories
-                    </span>
-                  </div>
-                  <span className="font-semibold text-gray-900 text-lg">
-                    {categoryCounts.length}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-3">
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 rounded-full mr-3" style={{ backgroundColor: "#95C11F" }}></div>
-                    <span className="text-gray-700 font-medium">
-                      Sub Categories
-                    </span>
-                  </div>
-                  <span className="font-semibold text-gray-900 text-lg">
-                    {totalSubCategories}
-                  </span>
-                </div>
+            {/* Pie Chart - Left side - Exactly like second image */}
+            <div className="flex-shrink-0">
+              <div className="relative" style={{ width: 220, height: 220 }}>
+                <Doughnut data={getPieChartData()} options={pieChartOptions} />
               </div>
             </div>
 
-            <div className="ml-6">
-              <div className="relative" style={{ width: 200, height: 200 }}>
-                <Doughnut data={concentricData} options={concentricDonutOptions} />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-base font-bold text-gray-800">
-                      {categoryCounts.length}
-                    </div>
-                    <div className="text-xs text-gray-500">Categories</div>
+            {/* Stats Section - Right side */}
+            <div className="flex-1 ml-6">
+              <div className="space-y-6">
+                {/* Categories Row */}
+                <div className="text-center">
+                  <div className="flex items-center justify-center mb-2">
+                    <div className="w-4 h-4 rounded-full mr-2 bg-[#165933]"></div>
+                    <span className="text-gray-700 font-medium text-sm">
+                      Categories
+                    </span>
+                  </div>
+                  <div className="text-2xl font-bold text-gray-900">
+                    {formatK(stats?.TotalCategorys || 0)}
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    Total Categories
+                  </div>
+                </div>
+
+                {/* Sub Categories Row */}
+                <div className="text-center">
+                  <div className="flex items-center justify-center mb-2">
+                    <div className="w-4 h-4 rounded-full mr-2 bg-[#95C11F]"></div>
+                    <span className="text-gray-700 font-medium text-sm">
+                      Sub Categories
+                    </span>
+                  </div>
+                  <div className="text-2xl font-bold text-gray-900">
+                    {formatK(stats?.TotalSubCategories || 0)}
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    Total Subcategories
                   </div>
                 </div>
               </div>
@@ -1209,7 +473,7 @@ const DashboardPage = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-semibold text-gray-900">
-              Partners vs Users
+              Partners & Users
             </h3>
             <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
               Total Distribution
@@ -1231,6 +495,79 @@ const DashboardPage = () => {
                 {formatK(stats?.TotalUsers || 0)}
               </div>
               <div className="text-sm text-[#8A92A6]">Total Users</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Two Column Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        {/* Left Column - User Ratio Analytics */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center space-x-6">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Total User
+              </h3>
+              <div className="flex space-x-4 text-sm text-gray-500">
+                <span className="text-[#165933] font-medium">● This year</span>
+                <span className="text-[#95C11F] font-medium">● Last year</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="h-64">
+            <Line data={getUserAnalyticsData()} options={lineChartOptions} />
+          </div>
+        </div>
+
+        {/* Right Column - Deactivate Categories */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex justify-between items-start mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Deactivate Categories
+            </h3>
+            <span className="text-sm text-gray-500">This Week ▾</span>
+          </div>
+
+          <div className="flex items-center justify-between">
+            {/* Left Pie Chart */}
+            <div className="relative" style={{ width: 160, height: 160 }}>
+              <Doughnut
+                data={getDeactivatedPieChartData()}
+                options={deactivatePieOptions}
+              />
+            </div>
+
+            {/* Right Stats */}
+            <div className="ml-6 space-y-4">
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded-full bg-[#104A2F] mr-2"></div>
+                <span className="text-sm text-gray-700 font-medium mr-2">
+                  English
+                </span>
+                <span className="text-sm text-gray-500 font-semibold">
+                  251K
+                </span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded-full bg-[#95C11F] mr-2"></div>
+                <span className="text-sm text-gray-700 font-medium mr-2">
+                  French
+                </span>
+                <span className="text-sm text-gray-500 font-semibold">
+                  176K
+                </span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded-full bg-[#B3D76D] mr-2"></div>
+                <span className="text-sm text-gray-700 font-medium mr-2">
+                  Accessories
+                </span>
+                <span className="text-sm text-gray-500 font-semibold">
+                  176K
+                </span>
+              </div>
             </div>
           </div>
         </div>
