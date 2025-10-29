@@ -11,38 +11,54 @@ import UserHeader from "../features/users/UserPages/UserHeader";
 import { categoryService, type Category } from "../services/category.service";
 import { subCategoriesService } from "../services/subCategories.service";
 import { useTranslation } from "react-i18next";
+import { useAppSelector } from "../app/hooks";
 import commentImg from "/src/assets/userImages/comment.svg";
 import searchImg from "/src/assets/userImages/search-normal.svg";
 import favoriteImg from "/src/assets/userImages/favouriteIcon.svg";
 import chatModelImg from "/src/assets/userImages/chatModelImg.svg";
 import { favouritesService } from "../services/favourites.service";
+import { conversationService } from "../services/conversation.service";
+import { toast } from "sonner";
+
+interface FavouriteItem {
+  id?: number;
+  userId?: number;
+  partnerId?: number;
+  isActive?: boolean;
+  [key: string]: any;
+}
+
+interface ConversationItem {
+  id?: number;
+  messageSubject?: string;
+  messageContent?: string;
+  senderId?: number;
+  receiverId?: number;
+  type?: string;
+  partner?: string;
+  topic?: string;
+  timestamp?: string;
+  [key: string]: any;
+}
 
 export default function UserDashboardPage() {
-  const [userData, setUserData] = useState<any>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState<
     "default" | "favorites" | "messages"
   >("default");
+  const [favorites, setFavorites] = useState<FavouriteItem[]>([]);
+  console.log("favorites", favorites);
+  const [conversations, setConversations] = useState<ConversationItem[]>([]);
+  const [favoritesLoading, setFavoritesLoading] = useState(false);
+  const [conversationsLoading, setConversationsLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  // const [fav, setFav] = useState();
-  // console.log("fav", fav);
+
+  // Get user data from Redux store instead of localStorage
+  const userData = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
-    // Get user data from localStorage
-    const getUserData = () => {
-      try {
-        const userStr = localStorage.getItem("bm_user");
-        if (userStr) {
-          const user = JSON.parse(userStr);
-          setUserData(user);
-        }
-      } catch (error) {
-        console.error("Error parsing user data from localStorage:", error);
-      }
-    };
-
     // Fetch categories from API
     const fetchCategories = async () => {
       try {
@@ -58,31 +74,7 @@ export default function UserDashboardPage() {
       }
     };
 
-    getUserData();
     fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    const getUserDataAndFav = async () => {
-      try {
-        const userStr = localStorage.getItem("bm_user");
-        if (userStr) {
-          const user = JSON.parse(userStr);
-          setUserData(user);
-
-          setLoading(true);
-          const favData = await favouritesService.getById(user.userId);
-          console.log("Favourite data:", favData);
-          // setFav(favData?.output)
-        }
-      } catch (error) {
-        console.error("Error fetching user or favourite data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getUserDataAndFav();
   }, []);
 
   // Helper function to get images and icons for categories
@@ -95,67 +87,6 @@ export default function UserDashboardPage() {
     };
   };
 
-  // Mock data for favorites (service providers)
-  const favoriteProviders = [
-    {
-      id: 1,
-      name: "Kabel - specialisten",
-      profession: "Elektriker",
-      category: "Håndværkere",
-      logo: "/src/assets/userSupplier/Kabel-specialisten.png",
-    },
-    {
-      id: 2,
-      name: "Gudrun Maler",
-      profession: "Maler",
-      category: "Håndværkere",
-      logo: "/src/assets/userSupplier/Gudrun Maler.png",
-    },
-    {
-      id: 3,
-      name: "Tommy Tømrer",
-      profession: "Tømrer",
-      category: "Håndværkere",
-      logo: "/src/assets/userSupplier/Tommy Tømrer.png",
-    },
-    {
-      id: 4,
-      name: "Timmos VVS",
-      profession: "VVS",
-      category: "Håndværkere",
-      logo: "/src/assets/userSupplier/Timmos VVS.png",
-    },
-    {
-      id: 5,
-      name: "Gudrun Maler",
-      profession: "Murer",
-      category: "Håndværkere",
-      logo: "/src/assets/userSupplier/Gudrun Maler.png",
-    },
-  ];
-
-  // Mock data for messages (conversations)
-  const conversations = [
-    {
-      id: 1,
-      partner: "Kabel-specialisten",
-      topic: "Ny EL-tavle samt skift af LED-pærer i baderum",
-      timestamp: "2 timer siden",
-    },
-    {
-      id: 2,
-      partner: "Timmos VVS",
-      topic: "Skift af armatur i køkken",
-      timestamp: "4 timer siden",
-    },
-    {
-      id: 3,
-      partner: "Murer Pete",
-      topic: "Opmuring af sokkel på garage",
-      timestamp: "1 dag siden",
-    },
-  ];
-
   // Handle category click - fetch subcategories and navigate to UserSupplier page
   const handleCategoryClick = async (categoryId: number) => {
     try {
@@ -165,26 +96,95 @@ export default function UserDashboardPage() {
         categoryId
       );
       console.log("API response for subcategories:", subCategories);
-      // Store subcategories in localStorage to pass to UserSupplier page
       localStorage.setItem("bm_subcategories", JSON.stringify(subCategories));
       console.log("Stored subcategories in localStorage:", subCategories);
-      navigate("/userDashboard/user-supplier");
+      // navigate("/userProfile/user-supplier");
+      navigate("/user-supplier");
     } catch (error) {
       console.error("Error fetching subcategories:", error);
-      // Still navigate even if API fails
-      navigate("/userDashboard/user-supplier");
+      navigate("/user-supplier");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fetch favorites from API
+  const fetchFavorites = async () => {
+    try {
+      setFavoritesLoading(true);
+      if (!userData?.userId) {
+        toast.error("User not found");
+        return;
+      }
+
+      const payload = {
+        page: 1,
+        pageSize: 10,
+        searchTerm: "",
+        sortDirection: "asc",
+        sortField: "id",
+        userId: userData.userId,
+      };
+
+      console.log("Fetching favorites with payload:", payload);
+      const response = await favouritesService.getPaginated(payload);
+      // console.log("Favorites API response:", response?.output);
+
+      // Extract favorites from response
+      const favoritesData = response?.items || [];
+      setFavorites(favoritesData);
+    } catch (error) {
+      console.error("Error fetching favorites:", error);
+      toast.error("Failed to load favorites");
+      setFavorites([]);
+    } finally {
+      setFavoritesLoading(false);
+    }
+  };
+
+  // Fetch conversations from API
+  const fetchConversations = async () => {
+    try {
+      setConversationsLoading(true);
+      if (!userData?.userId) {
+        toast.error("User not found");
+        return;
+      }
+
+      const payload = {
+        page: 1,
+        pageSize: 10,
+        searchTerm: "",
+        sortDirection: "asc",
+        sortField: "id",
+        userId: userData.userId,
+      };
+
+      console.log("Fetching conversations with payload:", payload);
+      const response = await conversationService.getPaginated(payload);
+      console.log("Conversations API response:", response);
+
+      // Extract conversations from response
+      const conversationsData = response?.items || [];
+      setConversations(conversationsData);
+    } catch (error) {
+      console.error("Error fetching conversations:", error);
+      toast.error("Failed to load conversations");
+      setConversations([]);
+    } finally {
+      setConversationsLoading(false);
     }
   };
 
   // Handle button clicks
   const handleFavoritesClick = () => {
     setActiveView("favorites");
+    fetchFavorites();
   };
 
   const handleMessagesClick = () => {
     setActiveView("messages");
+    fetchConversations();
   };
 
   const handlePartnersClick = () => {
@@ -209,9 +209,6 @@ export default function UserDashboardPage() {
             <h2 className="text-[64px] font-[500] ">
               {userData.firstName} {userData.lastName}
             </h2>
-            {/* <p className="text-lg opacity-90 mt-1">
-              {userData.roleName}
-            </p> */}
           </div>
         </div>
       )}
@@ -223,7 +220,7 @@ export default function UserDashboardPage() {
           {/* Partnere - dark button with search icon */}
           <button
             onClick={handlePartnersClick}
-            className="flex items-center gap-3 bg-[#0b3b35] text-white rounded-2xl px-7 py-4 shadow-md hover:opacity-90 transition"
+            className="flex items-center gap-3 bg-[#0b3b35] text-white rounded-2xl px-7 py-4 shadow-md hover:opacity-90 transition cursor-pointer"
             type="button"
           >
             <img src={searchImg} alt="" className="h-6 w-6" />
@@ -235,7 +232,7 @@ export default function UserDashboardPage() {
           {/* Saved as favorite - light green with heart icon */}
           <button
             onClick={handleFavoritesClick}
-            className="flex items-center gap-3 bg-[#91C73D] text-white rounded-2xl px-7 py-4 shadow-md hover:opacity-90 transition"
+            className="flex items-center gap-3 bg-[#91C73D] text-white rounded-2xl px-7 py-4 shadow-md hover:opacity-90 transition cursor-pointer"
             type="button"
           >
             <img src={favoriteImg} alt="" className="h-6 w-6" />
@@ -247,7 +244,7 @@ export default function UserDashboardPage() {
           {/* Samtaler - light green button */}
           <button
             onClick={handleMessagesClick}
-            className="flex items-center gap-3 bg-[#91C73D] text-white rounded-2xl px-7 py-4 shadow-md hover:opacity-90 transition font-medium"
+            className="flex items-center gap-3 bg-[#91C73D] text-white rounded-2xl px-7 py-4 shadow-md hover:opacity-90 transition font-medium cursor-pointer"
             type="button"
           >
             <img src={commentImg} alt="" className="h-6 w-6" />
@@ -258,8 +255,8 @@ export default function UserDashboardPage() {
         </div>
       </div>
       <div className="bg-[#06351e] py-16">
-        <div className="max-w-6xl mx-auto px-12">
-          {loading ? (
+        <div className="max-w-7xl mx-auto px-6">
+          {loading && activeView === "default" ? (
             <div className="flex justify-center items-center h-64">
               <div className="text-white text-lg">Loading...</div>
             </div>
@@ -267,54 +264,53 @@ export default function UserDashboardPage() {
             <>
               {/* Default View - Categories */}
               {activeView === "default" && (
-                <div className="grid grid-cols-3 gap-8">
+                <div className="grid grid-cols-3 gap-4 px-8">
                   {categories.map((category, index) => {
                     const assets = getCategoryAssets(index);
                     return (
                       <div
                         key={category.id}
                         onClick={() => handleCategoryClick(category.id)}
-                        className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+                        className="w-[374px] h-[540px] bg-white rounded-[10px] transition-all duration-300 cursor-pointer overflow-hidden opacity-100 mx-auto"
                       >
-                        {/* Background Image */}
-                        <div className="relative h-48">
+                        {/* Image Section */}
+                        <div className="relative w-[374] h-[340px]">
                           <img
                             src={category.imageUrl || assets.image}
                             alt={category.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              // Fallback to default image if category image fails to load
                               e.currentTarget.src = assets.image;
                             }}
                           />
-                          {/* White gradient overlay */}
                           <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent"></div>
                         </div>
 
                         {/* Content Section */}
-                        <div className="p-6 text-center">
-                          {/* Category Icon */}
-                          <div className="relative -mt-8 mb-4">
-                            <div className="w-16 h-16 bg-white rounded-lg mx-auto flex items-center justify-center">
-                              <img
-                                src={category.iconUrl || assets.icon}
-                                alt={category.name}
-                                className="w-8 h-8"
-                                onError={(e) => {
-                                  // Fallback to default icon if category icon fails to load
-                                  e.currentTarget.src = assets.icon;
-                                }}
-                              />
-                            </div>
+                        <div className="p-6 text-center flex flex-col items-center gap-[8px]">
+                          {/* Icon */}
+                          <div className="w-[79px] h-[48px] flex items-center justify-center -mt-6 mb-0">
+                            <img
+                              src={category.iconUrl || assets.icon}
+                              alt={category.name}
+                              className="w-8 h-8 object-contain text-[#165933]"
+                              style={{
+                                filter:
+                                  "invert(31%) sepia(89%) saturate(339%) hue-rotate(93deg) brightness(94%) contrast(90%)",
+                              }}
+                              onError={(e) => {
+                                e.currentTarget.src = assets.icon;
+                              }}
+                            />
                           </div>
 
-                          {/* Category Title */}
-                          <h3 className="text-xl font-bold text-gray-800 mb-3">
+                          {/* Title */}
+                          <h3 className="text-[24px] font-[800] text-[#052011] mb-1">
                             {category.name}
                           </h3>
 
-                          {/* Category Description */}
-                          <p className="text-sm text-gray-600 leading-relaxed">
+                          {/* Description */}
+                          <p className="text-sm text-[#052011] leading-relaxed px- text-[16px] font-[400]">
                             {category.description ||
                               "Professional services and solutions"}
                           </p>
@@ -331,41 +327,48 @@ export default function UserDashboardPage() {
                   <h2 className="text-white text-2xl font-bold mb-6">
                     Mine Favoritter
                   </h2>
-                  <div className="space-y-3">
-                    {favoriteProviders.map((provider) => (
-                      <div
-                        key={provider.id}
-                        className="bg-white rounded-lg p-4 flex items-center gap-4 hover:shadow-lg transition-shadow cursor-pointer"
-                      >
-                        {/* Provider Logo */}
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <img
-                            src={provider.logo}
-                            alt={provider.name}
-                            className="w-8 h-8 object-contain"
-                            onError={(e) => {
-                              e.currentTarget.style.display = "none";
-                            }}
-                          />
-                        </div>
-
-                        {/* Provider Info */}
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium text-gray-500">
-                              {provider.category}
-                            </span>
-                          </div>
-                          <h3 className="text-lg font-semibold text-gray-800">
-                            {provider.name}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            {provider.profession}
-                          </p>
-                        </div>
+                  {favoritesLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                      <div className="text-white text-lg">
+                        Loading favorites...
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ) : favorites.length > 0 ? (
+                    <div className="space-y-3">
+                      {favorites.map((favorite) => (
+                        <div
+                          key={favorite.id}
+                          className="bg-white rounded-lg p-4 flex items-center gap-4 hover:shadow-lg transition-shadow cursor-pointer"
+                        >
+                          {/* Provider Logo */}
+                          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <div className="text-sm font-semibold text-gray-600">
+                              #{favorite.partnerId}
+                            </div>
+                          </div>
+
+                          {/* Provider Info */}
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-gray-500">
+                                Partner ID: {favorite.partnerId}
+                              </span>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-800">
+                              Favorite #{favorite.id}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {favorite.isActive ? "Active" : "Inactive"}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-white text-lg text-center py-8">
+                      No favorites found
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -375,45 +378,57 @@ export default function UserDashboardPage() {
                   <h2 className="text-white text-2xl font-bold mb-6">
                     Mine Samtaler
                   </h2>
-                  <div className="space-y-3">
-                    {conversations.map((conversation) => (
-                      <div
-                        key={conversation.id}
-                        className="bg-white rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-sm font-medium text-gray-500">
-                                Partner
-                              </span>
-                              <span className="text-sm text-gray-700">
-                                {conversation.partner}
-                              </span>
+                  {conversationsLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                      <div className="text-white text-lg">
+                        Loading conversations...
+                      </div>
+                    </div>
+                  ) : conversations.length > 0 ? (
+                    <div className="space-y-3">
+                      {conversations.map((conversation) => (
+                        <div
+                          key={conversation.id}
+                          className="bg-white rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="text-sm font-medium text-gray-500">
+                                  Subject
+                                </span>
+                                <span className="text-sm text-gray-700">
+                                  {conversation.messageSubject || "N/A"}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium text-gray-500">
+                                  Content
+                                </span>
+                                <span className="text-sm text-gray-700 truncate">
+                                  {conversation.messageContent || "N/A"}
+                                </span>
+                              </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium text-gray-500">
-                                Emne
+                              <span className="text-sm text-gray-500">
+                                Read more
                               </span>
-                              <span className="text-sm text-gray-700">
-                                {conversation.topic}
-                              </span>
+                              <img
+                                src={chatModelImg}
+                                alt="Chat"
+                                className="w-4 h-4"
+                              />
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-500">
-                              Læs mere
-                            </span>
-                            <img
-                              src={chatModelImg}
-                              alt="Chat"
-                              className="w-4 h-4"
-                            />
-                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-white text-lg text-center py-8">
+                      No conversations found
+                    </div>
+                  )}
                 </div>
               )}
             </>

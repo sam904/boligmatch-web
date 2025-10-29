@@ -34,17 +34,14 @@ export default function LoginPage() {
   });
 
   if (token && user) {
-    const redirectTo =
-      user.roleName.toLowerCase() === "admin"
-        ? "/admin"
-        : user.roleName.toLowerCase() === "user"
-        ? "/userDashboard/dashboard"
-        : user.roleName.toLowerCase() === "partner"
-        ? "/partnerDashboard"
-        : "/";
-    return (
-      <Navigate to={(loc.state as any)?.from?.pathname ?? redirectTo} replace />
-    );
+    const redirectTo = user.roleName.toLowerCase() === 'admin' 
+      ? '/admin' 
+      : user.roleName.toLowerCase() === 'user'
+        ? '/userProfile/profile'
+        : user.roleName.toLowerCase() === 'partner'
+          ? '/partnerDashboard'
+          : '/';
+    return <Navigate to={(loc.state as any)?.from?.pathname ?? redirectTo} replace />;
   }
 
   return (
