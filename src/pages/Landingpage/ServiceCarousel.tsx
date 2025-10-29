@@ -1,10 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import swaperImg1 from "/src/assets/userImages/swapperImg.png";
-import swaperImg2 from "/src/assets/userImages/swaperImg2.png";
-import swaperImg3 from "/src/assets/userImages/swaperImg3.png";
-import swaperImg4 from "/src/assets/userImages/swaperImg4.png";
-import swaperImg5 from "/src/assets/userImages/swaperImg5.png";
+import swaperImg1 from "/src/assets/userImages/swiper5.png";
+import swaperImg2 from "/src/assets/userImages/swiper4.png";
+import swaperImg3 from "/src/assets/userImages/swiper1.png";
+import swaperImg4 from "/src/assets/userImages/swiper2.png";
+import swaperImg5 from "/src/assets/userImages/swiper3.png";
 import swaperIcons1 from "/src/assets/userImages/swaperIcon1.svg";
 import swaperIcons2 from "/src/assets/userImages/swaperIcon2.svg";
 import swaperIcons3 from "/src/assets/userImages/swaperIcon3.svg";
