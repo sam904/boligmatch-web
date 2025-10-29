@@ -57,7 +57,6 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
         password: data.password,
         mobileNo: data.mobileNumber,
         isActive: true,
-        roleId: 3, // Static roleId as required
       };
 
       await userService.add(registrationData);

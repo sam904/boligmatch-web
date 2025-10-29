@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "../components/layout/AppLayout";
 import AdminLayout from "../components/layout/AdminLayout";
-import LandingLayout from "../components/layout/LandingLayout";
 import PartnerLayout from "../components/layout/PartnerLayout";
 import HomePage from "../pages/HomePage";
 import LandingPage from "../pages/LandingPage";
@@ -24,35 +23,42 @@ import SupplierProfile from "../pages/SupplierProfile";
 import DashboardPage from "../features/admin/dashboard/DashboardPage";
 
 const router = createBrowserRouter([
+  // 🔹 User Routes (Main Site)
   {
     path: "/",
     element: <AppLayout />,
     children: [
-      { index: true, element: <HomePage /> },
-      { path: "login", element: <LoginPage /> },
-      { path: "*", element: <NotFound /> },
-    ],
-  },
-  {
-    path: "/userProfile",
-    element: <LandingLayout />,
-    children: [
+      // { index: true, element: <HomePage /> },
+      { path: "home-page", element: <HomePage /> },
       { index: true, element: <LandingPage /> },
       { path: "profile", element: <UserDashboardPage /> },
       { path: "user-supplier", element: <UserSupplier /> },
       { path: "supplier-profile", element: <SupplierProfile /> },
+      { path: "login", element: <LoginPage /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
+
+  // 🔹 Partner Routes
   {
-    path: "/partnerDashboard",
-    element: <PartnerLayout />,
+    path: "/partner",
+    element: (
+      <AuthGuard>
+        <RoleGuard roles={["partner"]}>
+          <PartnerLayout />
+        </RoleGuard>
+      </AuthGuard>
+    ),
     children: [
       { index: true, element: <PartnerDashboard /> },
+      { path: "dashboard", element: <PartnerDashboard /> },
       { path: "statistics", element: <ParentStatistics /> },
       { path: "profile-shortcut", element: <PartnerProfileShortcut /> },
-      { path: "search-partner", element: <SearchForPartner /> },
+      { path: "search", element: <SearchForPartner /> },
     ],
   },
+
+  // 🔹 Admin Routes
   {
     path: "/admin",
     element: (

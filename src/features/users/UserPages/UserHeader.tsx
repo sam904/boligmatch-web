@@ -6,20 +6,21 @@ import userHeaderHamburger from "/src/assets/userImages/userHeaderHamburger.png"
 import UserModal from "../../../components/common/UserModal";
 import LoginChoiceModal from "../../../components/common/LoginChoiceModal";
 import { useTranslation } from "react-i18next";
-import { useAppSelector, useAppDispatch } from "../../../app/hooks";
-import { logout } from "../../../features/auth/authSlice";
+import { useAppSelector } from "../../../app/hooks";
+import { tokenStorage } from "../../../lib/storage";
+// import { logout } from "../../../features/auth/authSlice";
 
 function UserHeader() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChoiceModalOpen, setIsChoiceModalOpen] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  // const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const { i18n, t } = useTranslation();
-  
+
   // Get user data from Redux store instead of localStorage
   const userData = useAppSelector((state) => state.auth.user);
 
@@ -34,16 +35,16 @@ function UserHeader() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    // Dispatch logout action to clear Redux state
-    dispatch(logout());
+  // const handleLogout = () => {
+  //   // Dispatch logout action to clear Redux state
+  //   dispatch(logout());
 
-    // Close dropdown
-    setShowUserDropdown(false);
+  //   // Close dropdown
+  //   setShowUserDropdown(false);
 
-    // Redirect to userDashboard and reload
-    window.location.href = "/userProfile";
-  };
+  //   // Redirect to userDashboard and reload
+  //   window.location.href = "/";
+  // };
 
   return (
     <>
@@ -112,23 +113,23 @@ function UserHeader() {
               {userData ? (
                 <div
                   className="relative"
-                  onMouseEnter={() => setShowUserDropdown(true)}
-                  onMouseLeave={() => setShowUserDropdown(false)}
+                  // onMouseEnter={() => setShowUserDropdown(true)}
+                  // onMouseLeave={() => setShowUserDropdown(false)}
                 >
                   <div className="flex items-center gap-3 cursor-pointer">
-                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    {/* <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                       <span className="text-white font-semibold text-lg">
                         {userData.firstName?.charAt(0)}
                         {userData.lastName?.charAt(0)}
                       </span>
-                    </div>
+                    </div> */}
                     <span className="text-white text-sm font-medium">
                       {userData.firstName} {userData.lastName}
                     </span>
                   </div>
 
                   {/* User Dropdown */}
-                  {showUserDropdown && (
+                  {/* {showUserDropdown && (
                     <div className="absolute top-full right-0 mt-0 w-32 bg-white rounded-lg shadow-xl overflow-hidden z-50">
                       <button
                         onClick={handleLogout}
@@ -150,7 +151,7 @@ function UserHeader() {
                         Logout
                       </button>
                     </div>
-                  )}
+                  )} */}
                 </div>
               ) : (
                 <button
@@ -248,12 +249,12 @@ function UserHeader() {
                   {/* User Profile in Sidebar */}
                   {userData ? (
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                      {/* <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                         <span className="text-white font-semibold text-sm">
                           {userData.firstName?.charAt(0)}
                           {userData.lastName?.charAt(0)}
                         </span>
-                      </div>
+                      </div> */}
                       <span className="text-white text-sm font-medium">
                         {userData.firstName} {userData.lastName}
                       </span>
@@ -303,7 +304,7 @@ function UserHeader() {
                   <button
                     onClick={() => {
                       setShowSidebar(false);
-                      navigate("/userProfile");
+                      navigate("/");
                     }}
                     className="w-full text-left px-4 py-3 text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-3"
                   >
@@ -352,54 +353,55 @@ function UserHeader() {
                   )}
 
                   {/* Documents - Visible only for Partners */}
-                  {userData && userData.roleName?.toLowerCase() === "partner" && (
-                    <>
-                      <button
-                        onClick={() => {
-                          setShowSidebar(false);
-                          navigate("/documents");
-                        }}
-                        className="w-full text-left px-4 py-3 text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-3"
-                      >
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
+                  {userData &&
+                    userData.roleName?.toLowerCase() === "partner" && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setShowSidebar(false);
+                            navigate("/documents");
+                          }}
+                          className="w-full text-left px-4 py-3 text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-3"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                          />
-                        </svg>
-                        <span className="font-medium">
-                          {t("sidebar.favourites")}
-                        </span>
-                      </button>
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                            />
+                          </svg>
+                          <span className="font-medium">
+                            {t("sidebar.favourites")}
+                          </span>
+                        </button>
 
-                      {/* Partners */}
-                      <button className="w-full text-left px-4 py-3 text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-3">
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
-                        <span className="font-medium">
-                          {t("sidebar.partners")}
-                        </span>
-                      </button>
-                    </>
-                  )}
+                        {/* Partners */}
+                        <button className="w-full text-left px-4 py-3 text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-3">
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                          <span className="font-medium">
+                            {t("sidebar.partners")}
+                          </span>
+                        </button>
+                      </>
+                    )}
 
                   {/* Messages */}
                   <button className="w-full text-left px-4 py-3 text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-3">
@@ -492,10 +494,16 @@ function UserHeader() {
                   </button>
 
                   {/* Sign Out */}
-                  <button 
+                  <button
                     onClick={() => {
                       setShowSidebar(false);
-                      handleLogout();
+                      // Clear auth and related cached data
+                      tokenStorage.clearAll();
+                      localStorage.removeItem("bm_currentPartner");
+                      localStorage.removeItem("bm_subcategories");
+                      localStorage.removeItem("bm_currentSubCategory");
+                      // Hard redirect to ensure Redux state resets from storage
+                      window.location.href = "/";
                     }}
                     className="w-full text-left px-4 py-3 text-white hover:bg-red-500/20 rounded-lg transition-colors flex items-center gap-3"
                   >
@@ -537,7 +545,9 @@ function UserHeader() {
       />
 
       {/* User Modal */}
-      <UserModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      {isModalOpen && (
+        <UserModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      )}
     </>
   );
 }

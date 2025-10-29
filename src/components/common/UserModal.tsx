@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { loginThunk } from "../../features/auth/authSlice";
 import Modal from "./Modal";
@@ -22,6 +22,7 @@ interface UserModalProps {
 export default function UserModal({ open, onClose }: UserModalProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const status = useAppSelector((s) => s.auth.status);
   const token = useAppSelector((s) => s.auth.accessToken);
   const user = useAppSelector((s) => s.auth.user);
@@ -40,20 +41,17 @@ export default function UserModal({ open, onClose }: UserModalProps) {
     },
   });
 
+  const hasHandledLoginRef = React.useRef(false);
   React.useEffect(() => {
+    if (hasHandledLoginRef.current) return;
     if (token && user) {
+      hasHandledLoginRef.current = true;
       onClose();
-      // Update localStorage to sync with Redux state
       localStorage.setItem("bm_user", JSON.stringify(user));
       localStorage.setItem("bm_access", token);
-      
-      if (user.roleName.toLowerCase() === "user") {
-        // navigate("/userDashboard/profile");
-      } else if (user.roleName.toLowerCase() === "partner") {
-        // navigate("/partnerDashboard");
-      } else {
-        navigate("/");
-      }
+
+      const from = (location.state as any)?.from?.pathname;
+      navigate(from ?? "/profile", { replace: true });
     }
   }, [token, user, onClose, navigate]);
 

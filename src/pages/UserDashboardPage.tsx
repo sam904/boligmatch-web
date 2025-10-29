@@ -48,7 +48,7 @@ export default function UserDashboardPage() {
     "default" | "favorites" | "messages"
   >("default");
   const [favorites, setFavorites] = useState<FavouriteItem[]>([]);
-  console.log('favorites', favorites)
+  console.log("favorites", favorites);
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [conversationsLoading, setConversationsLoading] = useState(false);
@@ -96,14 +96,13 @@ export default function UserDashboardPage() {
         categoryId
       );
       console.log("API response for subcategories:", subCategories);
-      // Store subcategories in localStorage to pass to UserSupplier page
       localStorage.setItem("bm_subcategories", JSON.stringify(subCategories));
       console.log("Stored subcategories in localStorage:", subCategories);
-      navigate("/userProfile/user-supplier");
+      // navigate("/userProfile/user-supplier");
+      navigate("/user-supplier");
     } catch (error) {
       console.error("Error fetching subcategories:", error);
-      // Still navigate even if API fails
-      navigate("/userProfile/user-supplier");
+      navigate("/user-supplier");
     } finally {
       setLoading(false);
     }
@@ -129,10 +128,10 @@ export default function UserDashboardPage() {
 
       console.log("Fetching favorites with payload:", payload);
       const response = await favouritesService.getPaginated(payload);
-      console.log("Favorites API response:", response?.output);
+      // console.log("Favorites API response:", response?.output);
 
       // Extract favorites from response
-      const favoritesData = response?.output?.result || [];
+      const favoritesData = response?.items || [];
       setFavorites(favoritesData);
     } catch (error) {
       console.error("Error fetching favorites:", error);
@@ -166,7 +165,7 @@ export default function UserDashboardPage() {
       console.log("Conversations API response:", response);
 
       // Extract conversations from response
-      const conversationsData = response?.output?.result || [];
+      const conversationsData = response?.items || [];
       setConversations(conversationsData);
     } catch (error) {
       console.error("Error fetching conversations:", error);
