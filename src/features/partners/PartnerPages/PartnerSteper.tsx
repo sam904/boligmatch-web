@@ -1,9 +1,11 @@
 import { useState } from "react";
 import partnerModelImg from "/src/assets/userImages/partnerModelImg.svg";
 import crossIcon from "/src/assets/userImages/close_icon.svg";
+import { useTranslation } from "react-i18next";
 
 function PartnerSteper() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { t } = useTranslation();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -16,60 +18,52 @@ function PartnerSteper() {
             onClick={openModal}
             className="mb-6 sm:mb-8 px-6 sm:px-8 py-3 bg-[#91C73D] text-white rounded-xl font-[600] transition-colors text-[16px] sm:text-[18px] md:text-[20px]  hover:bg-[#7FB333]"
           >
-            Bliv Boligmatch+ partner
+            {t("partnerStepper.cta")}
           </button>
 
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-[800] text-white max-w-4xl  tracking-tight leading-tight sm:leading-14 px-2">
-            Vil du være en del af et innovativt koncept, hvor vi har hinandens
-            ryg?
+            {t("partnerStepper.heroTitle")}
           </h1>
         </div>
 
         {isModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-[999] p-4">
-            <div className="bg-gray-100 rounded-2xl sm:rounded-4xl relative w-full max-w-[620px] max-h-[90vh] overflow-y-auto">
+            <div className="bg-[#ECECEC] rounded-[22px] sm:rounded-[26px] relative w-full max-w-[620px] max-h-[90vh] overflow-y-auto shadow-xl border border-gray-200">
               <button
                 onClick={closeModal}
-                className="absolute top-3 right-3 sm:top-4 sm:right-4 text-black text-2xl font-bold hover:text-gray-600 transition-colors cursor-pointer z-10"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-700 text-2xl font-bold hover:text-gray-500 transition-colors cursor-pointer z-10"
               >
-                <img className="h-[32px] w-[32px] sm:h-[42px] sm:w-[42px]" src={crossIcon} alt="" />
+                <img className="h-[42px] w-[42px]" src={crossIcon} alt="" />
               </button>
 
-              <div className="text-center p-4 sm:p-6 md:p-8 pt-12 sm:pt-16">
-                <h2 className="text-[24px] sm:text-[28px] md:text-[32px] text-[#000000] mb-4 sm:mb-6  font-[700]">
-                  Forespørg om partnerskab
+              <div className="text-center p-4 sm:p-6 md:p-8 pt-12 sm:pt-14">
+                <h2 className="text-[24px] sm:text-[28px] md:text-[30px] text-[#111111] mb-4 sm:mb-6 font-[700] figtree">
+                  {t("partnerStepper.modalTitle")}
                 </h2>
 
-                <div className="text-left space-y-3 sm:space-y-4 mb-4 sm:mb-6 px-2 sm:px-4 md:px-6">
-                  <p className="text-[#000000] leading-tight  text-[16px] sm:text-[17px] md:text-[18px]">
-                    Vi har brug for stærke og dygtige partnere. Vi har allerede
-                    indgået partnerskab med en række forskellige virksomheder,
-                    og inviterer jer til at tage del i denne spændende rejse og
-                    blive en del af et visionært fællesskab.
+                <div className="text-left space-y-3 sm:space-y-4 mb-4 sm:mb-6 px-4 sm:px-6 md:px-8">
+                  <p className="text-gray-700 leading-relaxed text-[15px] sm:text-[16px] md:text-[17px]">
+                    {t("partnerStepper.p1")}
                   </p>
 
-                  <p className="text-[#000000] text-[16px] sm:text-[17px] md:text-[18px] leading-tight ">
-                    Er du interesseret i at høre mere om mulighederne, så tøv
-                    ikke med at kontakte vores partneransvarlige Klaus Rasmussen
-                    på tlf. <a href="tel:20297113" className="text-[#91C73D] hover:underline">20 297113</a>.
+                  <p className="text-gray-700 text-[15px] sm:text-[16px] md:text-[17px] leading-relaxed ">
+                    {t("partnerStepper.p2_before", { name: "Klaus Rasmussen" })}{" "}
+                    <a href="tel:20297113" className="text-[#91C73D] hover:underline">20 297113</a>
+                    {t("partnerStepper.p2_after")}
                   </p>
 
-                  <p className="text-[#000000] text-[16px] sm:text-[17px] md:text-[18px] leading-tight ">
-                    Vi glæder os til at høre fra dig!
+                  <p className="text-gray-700 text-[15px] sm:text-[16px] md:text-[17px] leading-relaxed ">
+                    {t("partnerStepper.p3")}
                   </p>
                 </div>
 
                 {/* Contact person image and info */}
-                <div className="flex items-center justify-center">
-                  <div className="bg-gray-300 rounded-full flex items-center justify-center w-[120px] h-[150px] sm:w-[150px] sm:h-[180px] md:w-[177px] md:h-[220px]">
-                    <div className="flex items-center justify-center">
-                      <img
-                        src={partnerModelImg}
-                        alt="Klaus Rasmussen"
-                        className="w-[120px] h-[150px] sm:w-[150px] sm:h-[180px] md:w-[177px] md:h-[220px] object-cover rounded-full"
-                      />
-                    </div>
-                  </div>
+                <div className="flex items-center justify-center pb-8">
+                  <img
+                    src={partnerModelImg}
+                    alt={t("partnerStepper.contactName", { defaultValue: "Klaus Rasmussen" })}
+                    className="w-[120px] h-[150px] sm:w-[150px] sm:h-[180px] object-cover rounded-md"
+                  />
                 </div>
               </div>
             </div>

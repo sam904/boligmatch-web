@@ -285,6 +285,46 @@
     "label": "Overdragelse og opfølgning",
     "description": "Overdragelse af ejendommen til den nye ejer og sikring af, at alle detaljer er afsluttet."
   }
+},
+"partnerStepper": {
+  "cta": "Bliv Boligmatch+ partner",
+  "heroTitle": "Vil du være en del af et innovativt koncept, hvor vi har hinandens ryg?",
+  "modalTitle": "Forespørg om partnerskab",
+  "p1": "Vi har brug for stærke og dygtige partnere. Vi har allerede indgået partnerskab med en række forskellige virksomheder, og inviterer jer til at tage del i denne spændende rejse og blive en del af et visionært fællesskab.",
+  "p2_before": "Er du interesseret i at høre mere om mulighederne, så tøv ikke med at kontakte vores partneransvarlige {{name}} på tlf.",
+  "p2_after": ".",
+  "p3": "Vi glæder os til at høre fra dig!",
+  "contactName": "Klaus Rasmussen"
+},
+"partnerSteperPara": {
+  "intro1": "Velkommen til Boligmatch+ partnerskaber. Vi er godt i gang med at skabe et netværk af dygtige og troværdige leverandører til hjemmet, så boliginteresserede nemt og trygt kan søge efter produkter og services ét samlet sted. Platformen kalder vi Boligmatch+, og det bliver i fremtiden også stedet, hvor vores boligkunder kan følge deres købs- eller salgsproces. Ved at samle disse aktiviteter under samme tag gør vi det nemt for de besøgende at opfylde deres behov, og øger samtidig chancen for at de vælger én eller flere af vores partnere fremfor konkurrerende virksomheder.",
+  "intro2": "Vi tror på, at et stærkt samarbejde skal gå begge veje, hvor vi fungerer som hinandens ambassadører og støtter hinanden i at skabe værdi. Som partner hos Boligmatch får I adgang til en række eksklusive fordele, der styrker jeres forretning og åbner nye muligheder. Vi inviterer jer til at tage del i denne spændende rejse og blive en del af et visionært fællesskab.",
+  "heading": "Hvilke fordele får du som Boligmatch+ partner?",
+  "benefits": {
+    "1": {
+      "title": "Adgang til vores platform",
+      "description": "Boligmatch+ giver dig eksklusiv adgang til en platform fyldt med købsparate kunder med et behov for produkter og services relateret til bolig og fritid."
+    },
+    "2": {
+      "title": "Synlighed og markedsføring",
+      "description": "På Boligmatch+ får jeres virksomhed synlighed døgnet rundt, hele året. I får egen mini-hjemmeside med en professionelt produceret profilfilm, en beskrivelse af virksomheden og dens kompetencer samt visning af Trustpilot-anmeldelser. Aktiviteterne kan følges på jeres eget dashboard."
+    },
+    "3": {
+      "title": "Fokus ved fremvisninger",
+      "description": "Vi bringer partnerne i spil ved åbne huse og fremvisninger ved at fokusere på udviklingsmulighederne i den enkelte bolig, og fremhæve hvilke partnere der kan hjælpe køberne. Dette giver jer et væsentlig forspring ifht. konkurrenterne."
+    },
+    "4": {
+      "title": "Gratis deltagelse i vores netværksgruppe",
+      "description": "Som partner bliver du også en del af vores B2B-netværk. Her kan du bygge stærke relationer, dele viden og skabe nye forretningsmuligheder i et dynamisk og inspirerende miljø, og få adgang til spændende fordele og events."
+    },
+    "5": {
+      "title": "Rabat hos Boligmatch til jeres ansatte",
+      "description": "Alle de af jeres ansatte, som melder sig ind i Boligmatch+ får 20% i rabat hos Boligmatch."
+    },
+    "6": {
+      "title": "Kick-back ved henvisning af kunder",
+      "description": "Skaffer du en ny boligkunde til Boligmatch kvitterer vi med 10% af salæret, som overføres til din konto i Boligmatch+ fordelsprogrammet."
+    }
+  }
 }
-
 }
