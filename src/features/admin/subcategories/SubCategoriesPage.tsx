@@ -20,8 +20,12 @@ import { useDbTranslation } from "../../../hooks/useDbTranslation";
 import { useDebounce } from "../../../hooks/useDebounce";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { SubCategory } from "../../../types/subcategory";
-import Select from "../../../components/common/Select";
-import { IconTrash, IconPencil, IconPlus } from "../../../components/common/Icons/Index";
+import {
+  IconTrash,
+  IconPencil,
+  IconPlus,
+} from "../../../components/common/Icons/Index";
+import { FilterDropdown } from "../../../components/common/FilterDropdown";
 
 // Fixed validation schema - remove unused url parameters
 const subCategorySchema = z.object({
@@ -533,6 +537,7 @@ export default function SubCategoriesPage() {
     {
       accessorKey: "imageUrl",
       header: t("admin.subcategories.image") || "Image",
+      enableSorting: false,
       cell: ({ row }) => {
         const imageUrl = row.original.imageUrl;
         if (!imageUrl) return "-";
@@ -542,7 +547,7 @@ export default function SubCategoriesPage() {
             onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
             className="underline text-sm font-medium"
           >
-             Image
+            Image
           </button>
         );
       },
@@ -550,6 +555,7 @@ export default function SubCategoriesPage() {
     {
       accessorKey: "iconUrl",
       header: t("admin.subcategories.icon") || "Icon",
+      enableSorting: false,
       cell: ({ row }) => {
         const iconUrl = row.original.iconUrl;
         if (!iconUrl) return "-";
@@ -559,7 +565,7 @@ export default function SubCategoriesPage() {
             onClick={() => setPreviewImage({ url: iconUrl, isOpen: true })}
             className="underline text-sm font-medium"
           >
-             Icon
+            Icon
           </button>
         );
       },
@@ -567,6 +573,7 @@ export default function SubCategoriesPage() {
     {
       accessorKey: "isActive",
       header: t("common.status") || "Status",
+      enableSorting: false,
       cell: ({ row }) => (
         <span
           className="px-2 py-1 rounded-full text-xs text-white font-medium"
@@ -630,25 +637,12 @@ export default function SubCategoriesPage() {
             </Button>
           </div>
           {/* Right side: Filters, SearchBar and Add Subcategory button */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {/* Status Filter Dropdown */}
-            <div className="w-32">
-              <Select
-                value={statusFilter}
-                onChange={(e) =>
-                  handleStatusFilterChange(
-                    e.target.value as "all" | "active" | "inactive"
-                  )
-                }
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#91C73D] focus:ring-2 focus:ring-[#91C73D]/20 focus:outline-none transition-colors duration-200"
-              >
-                <option value="active">{t("common.active") || "Active"}</option>
-                <option value="inactive">
-                  {t("common.inactive") || "Inactive"}
-                </option>
-                <option value="all">{t("common.all") || "All"}</option>
-              </Select>
-            </div>
+            <FilterDropdown
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
+            />
 
             <div className="w-64">
               <SearchBar

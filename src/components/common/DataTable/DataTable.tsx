@@ -1,5 +1,14 @@
-// src/components/common/DataTable/DataTable.tsx
-import { useReactTable, getCoreRowModel, flexRender, type ColumnDef } from '@tanstack/react-table';
+// Alternative version with rotating single arrow
+import { 
+  useReactTable, 
+  getCoreRowModel, 
+  flexRender, 
+  type ColumnDef,
+  type SortingState,
+  getSortedRowModel 
+} from '@tanstack/react-table';
+import { useState } from 'react';
+import { IconSortDown } from '../Icons/Index'; // Import just the down arrow
 
 type Props<T> = {
   data: T[];
@@ -7,7 +16,32 @@ type Props<T> = {
 };
 
 export default function DataTable<T>({ data, columns }: Props<T>) {
-  const table = useReactTable({ data, columns, getCoreRowModel: getCoreRowModel() });
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const table = useReactTable({ 
+    data, 
+    columns, 
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
+
+  // Single rotating arrow using IconSortDown
+  const SortArrow = ({ isSorted }: { isSorted: false | 'asc' | 'desc' }) => {
+    return (
+      <IconSortDown 
+        className={`w-3 h-3 transition-transform duration-200 ${
+          isSorted === 'asc' ? 'rotate-180' : ''
+        } ${
+          isSorted ? 'text-gray-800' : 'text-gray-400 group-hover:text-gray-600'
+        }`}
+      />
+    );
+  };
+
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
       <table className="w-full">
@@ -15,8 +49,24 @@ export default function DataTable<T>({ data, columns }: Props<T>) {
           {table.getHeaderGroups().map(hg => (
             <tr key={hg.id}>
               {hg.headers.map(h => (
-                <th key={h.id} className="px-6 py-3 text-left text-xs font-semibold text-[#8A92A6] uppercase tracking-wider">
-                  {flexRender(h.column.columnDef.header, h.getContext())}
+                <th 
+                  key={h.id} 
+                  className="px-6 py-3 text-left text-xs font-semibold text-[#8A92A6] uppercase tracking-wider"
+                >
+                  {h.column.getCanSort() ? (
+                    <button
+                      type="button"
+                      onClick={h.column.getToggleSortingHandler()}
+                      className="flex items-center gap-1 hover:text-gray-700 transition-colors focus:outline-none group w-full text-left"
+                    >
+                      <span className="flex-1">
+                        {flexRender(h.column.columnDef.header, h.getContext())}
+                      </span>
+                      <SortArrow isSorted={h.column.getIsSorted()} />
+                    </button>
+                  ) : (
+                    flexRender(h.column.columnDef.header, h.getContext())
+                  )}
                 </th>
               ))}
             </tr>
