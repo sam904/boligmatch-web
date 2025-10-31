@@ -63,7 +63,7 @@ const ServiceCarousel: React.FC = () => {
         {services.map((service, index) => (
           <div
             key={service.id}
-            className={`relative overflow-hidden flex-shrink-0 w-[359px] h-[515px] rounded-[25px] transition-all duration-[400ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]
+            className={`relative overflow-hidden flex-shrink-0 w-[385px] h-[515px] rounded-[25px] transition-all duration-[400ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]
               ${index === 2 
                 ? 'scale-105 z-20 shadow-[0_20px_50px_rgba(0,0,0,0.15),0_0_0_1px_rgba(255,255,255)]' 
                 : ''

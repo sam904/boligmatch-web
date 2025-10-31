@@ -285,7 +285,47 @@
     "label": "Transfer and follow-up",
     "description": "Handing over the property to the new owner and ensuring all details are finalized."
   }
+},
+"partnerStepper": {
+  "cta": "Become a Boligmatch+ partner",
+  "heroTitle": "Do you want to be part of an innovative concept where we have each other's back?",
+  "modalTitle": "Request partnership",
+  "p1": "We need strong and skilled partners. We have already partnered with a range of different companies and invite you to take part in this exciting journey and become part of a visionary community.",
+  "p2_before": "If you're interested in hearing more about the possibilities, don't hesitate to contact our partner manager {{name}} at",
+  "p2_after": ".",
+  "p3": "We look forward to hearing from you!",
+  "contactName": "Klaus Rasmussen"
+},
+"partnerSteperPara": {
+  "intro1": "Welcome to Boligmatch+ partnerships. We are in the process of building a network of skilled and trustworthy suppliers for the home, so home-interested users can easily and safely search for products and services in one place. We call the platform Boligmatch+, and in the future it will also be the place where our housing customers can follow their buying or selling process. By bringing these activities together under one roof, we make it easy for visitors to meet their needs, while increasing the chance that they will choose one or more of our partners over competitors.",
+  "intro2": "We believe that a strong collaboration should go both ways, where we act as ambassadors for each other and support each other in creating value. As a partner at Boligmatch, you gain access to a number of exclusive benefits that strengthen your business and open new opportunities. We invite you to take part in this exciting journey and become part of a visionary community.",
+  "heading": "What benefits do you get as a Boligmatch+ partner?",
+  "benefits": {
+    "1": {
+      "title": "Access to our platform",
+      "description": "Boligmatch+ gives you exclusive access to a platform filled with ready-to-buy customers with needs for products and services related to home and leisure."
+    },
+    "2": {
+      "title": "Visibility and marketing",
+      "description": "On Boligmatch+, your company gains visibility around the clock, all year round. You get your own mini-website with a professionally produced profile video, a description of the company and its competencies, as well as the display of Trustpilot reviews. Activities can be followed on your own dashboard."
+    },
+    "3": {
+      "title": "Focus during viewings",
+      "description": "We bring partners into play at open houses and viewings by focusing on the development opportunities in the individual home, and highlighting which partners can help buyers. This gives you a significant head start compared to competitors."
+    },
+    "4": {
+      "title": "Free participation in our network group",
+      "description": "As a partner, you also become part of our B2B network. Here you can build strong relationships, share knowledge and create new business opportunities in a dynamic and inspiring environment, and gain access to exciting benefits and events."
+    },
+    "5": {
+      "title": "Discount at Boligmatch for your employees",
+      "description": "All of your employees who join Boligmatch+ receive a 20% discount at Boligmatch."
+    },
+    "6": {
+      "title": "Kick-back for referring customers",
+      "description": "If you bring a new housing customer to Boligmatch, we reward you with 10% of the fee, which is transferred to your account in the Boligmatch+ benefits program."
+    }
+  }
 }
 
 }
-  

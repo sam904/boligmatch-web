@@ -7,19 +7,19 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { loginThunk } from "../../features/auth/authSlice";
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
-import loginModelLogo from "/src/assets/userImages/loginModelLogo.png"
+import loginModelLogo from "/src/assets/userImages/loginModelLogo.png";
 
 const schema = z.object({
   userName: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
 });
 
-interface UserModalProps {
+interface PartnerModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-export default function UserModal({ open, onClose }: UserModalProps) {
+export default function PartnerModal({ open, onClose }: PartnerModalProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -47,15 +47,17 @@ export default function UserModal({ open, onClose }: UserModalProps) {
     if (token && user) {
       hasHandledLoginRef.current = true;
       onClose();
-      localStorage.setItem("bm_user", JSON.stringify(user));
-      localStorage.setItem("bm_access", token);
+      try {
+        localStorage.setItem("bm_user", JSON.stringify(user));
+        localStorage.setItem("bm_access", token);
+      } catch {}
 
       const from = (location.state as any)?.from?.pathname;
-      navigate(from ?? "/profile", { replace: true });
+      // Prefer partner routes; fallback to '/partner'
+      navigate(from ?? "/partner", { replace: true });
     }
   }, [token, user, onClose, navigate]);
 
-  // Lock body scroll when the modal is open
   React.useEffect(() => {
     if (!open) return;
     const original = document.body.style.overflow;
@@ -101,7 +103,7 @@ export default function UserModal({ open, onClose }: UserModalProps) {
 
             <div className="px-6 pb-6">
               <h2 className="text-[20px] font-[800] text-[#000000] text-center">
-                {t("auth.login")}
+                {t("auth.login")} (Partner)
               </h2>
             </div>
 
