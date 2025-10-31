@@ -19,9 +19,12 @@ import { useDebounce } from "../../../hooks/useDebounce";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { Category } from "../../../types/category";
 import TextArea from "../../../components/common/TextArea";
-import Select from "../../../components/common/Select";
-import { IconTrash, IconPencil,IconPlus } from "../../../components/common/Icons/Index";
-
+import {
+  IconTrash,
+  IconPencil,
+  IconPlus,
+} from "../../../components/common/Icons/Index";
+import { FilterDropdown } from "../../../components/common/FilterDropdown";
 
 // Enhanced validation schema with dimension validation
 const categorySchema = z.object({
@@ -457,6 +460,7 @@ export default function CategoriesPage() {
     {
       accessorKey: "imageUrl",
       header: t("admin.categories.image") || "Image",
+      enableSorting: false,
       cell: ({ row }) => {
         const imageUrl = row.original.imageUrl;
         if (!imageUrl) return "-";
@@ -467,7 +471,7 @@ export default function CategoriesPage() {
               onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
               className="underline text-sm font-medium text-left"
             >
-               Image
+              Image
             </button>
           </div>
         );
@@ -476,6 +480,7 @@ export default function CategoriesPage() {
     {
       accessorKey: "iconUrl",
       header: t("admin.categories.icon") || "Icon",
+      enableSorting: false,
       cell: ({ row }) => {
         const iconUrl = row.original.iconUrl;
         if (!iconUrl) return "-";
@@ -495,6 +500,7 @@ export default function CategoriesPage() {
     {
       accessorKey: "isActive",
       header: t("common.status") || "Status",
+      enableSorting: false,
       cell: ({ row }) => (
         <span
           className="px-2 py-1 rounded-full text-xs text-white font-medium"
@@ -563,21 +569,10 @@ export default function CategoriesPage() {
           {/* Right side: Filters, SearchBar */}
           <div className="flex items-center gap-4">
             {/* Status Filter Dropdown */}
-            <div className="w-32">
-              <Select
-                value={statusFilter}
-                onChange={(e) =>
-                  handleStatusFilterChange(
-                    e.target.value as "all" | "active" | "inactive"
-                  )
-                }
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#91C73D] focus:ring-2 focus:ring-[#91C73D]/20 focus:outline-none transition-colors duration-200"
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="all">All</option>
-              </Select>
-            </div>
+            <FilterDropdown
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
+            />
 
             <div className="w-64">
               <SearchBar
