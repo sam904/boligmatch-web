@@ -271,10 +271,9 @@ export default function UserDashboardPage() {
                       <div
                         key={category.id}
                         onClick={() => handleCategoryClick(category.id)}
-                        className="w-[374px] h-[540px] bg-white rounded-[10px] transition-all duration-300 cursor-pointer overflow-hidden opacity-100 mx-auto"
+                        className="w-[374px] h-[540px] rounded-[10px] transition-all duration-300 cursor-pointer overflow-hidden opacity-100 mx-auto"
                       >
-                        {/* Image Section */}
-                        <div className="relative w-[374] h-[340px]">
+                        <div className="relative">
                           <img
                             src={category.imageUrl || assets.image}
                             alt={category.name}

@@ -1,5 +1,5 @@
-import Modal from "./Modal";
-import logo from "/src/assets/userImages/footerLogo.svg";
+import React from "react";
+import loginModelLogo from "/src/assets/userImages/loginModelLogo.png";
 import chooseUserImg from "/src/assets/userImages/choose_userImg.svg";
 import choosePartnerImg from "/src/assets/userImages/choose_partnerImg.svg";
 import { useTranslation } from "react-i18next";
@@ -20,31 +20,41 @@ export default function LoginChoiceModal({ open, onClose, onSelect }: Props) {
     if (onSelect) onSelect(role);
   };
 
+  if (!open) return null;
+
   return (
-    <Modal open={open} onClose={onClose} maxWidth="max-w-sm">
-      <div className="bg-white rounded-2xl shadow-lg w-full mx-auto">
-        <div className="flex justify-center items-center p-6 pb-4 relative">
-          <img
-            src={logo}
-            alt="Boligmatch"
-            className="h-7 w-auto"
-            style={{
-              filter:
-                "brightness(0) saturate(100%) invert(8%) sepia(100%) saturate(1000%) hue-rotate(120deg) brightness(0.3) contrast(1.2)",
-            }}
-          />
-          {/* <button
-            onClick={onClose}
-            className="absolute right-6 text-black hover:text-gray-600 transition-colors text-xl font-bold cursor-pointer"
-            aria-label="Close"
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="relative bg-[#E6E7E9] rounded-[23px] shadow-lg w-[370px] h-[444px] mx-4">
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute right-[18px] top-[18px] h-[31px] w-[31px] p-0 flex items-center justify-center rounded-full text-black hover:bg-black/5 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="h-[31px] w-[31px]"
           >
-            ✕
-          </button> */}
+            <path
+              fillRule="evenodd"
+              d="M6.225 4.811a1 1 0 0 1 1.414 0L12 9.172l4.361-4.361a1 1 0 1 1 1.414 1.414L13.414 10.586l4.361 4.361a1 1 0 0 1-1.414 1.414L12 12l-4.361 4.361a1 1 0 1 1-1.414-1.414l4.361-4.361-4.361-4.361a1 1 0 0 1 0-1.414Z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+
+        <div className="flex justify-center items-center px-6 pt-[62px] pb-4">
+          <img
+            src={loginModelLogo}
+            alt="Boligmatch"
+            className="h-[36px] w-auto"
+          />
         </div>
 
-        <div className="px-6 pb-2">
+        <div className="px-6 pb-14 pt-[20px]">
           <h2 className="text-[20px] font-[800] text-[#000000] text-center">
-            {/* Log ind */}
             {t("auth.signIn")}
           </h2>
         </div>
@@ -75,6 +85,6 @@ export default function LoginChoiceModal({ open, onClose, onSelect }: Props) {
           </button>
         </div>
       </div>
-    </Modal>
+    </div>
   );
 }

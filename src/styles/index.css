@@ -75,7 +75,6 @@ body,
 }
 
 
-/* ----- Roasting Script ------------ */
 @font-face {
   font-family: "Plus Jakarta Sans";
   src: url("/src/assets/fonts/PlusJakartaSans-VariableFont_wght.ttf") format("truetype");
@@ -105,4 +104,15 @@ body {
 
 .railways{
   font-family: "Raileway", sans-serif;
+}
+
+@font-face {
+  font-family: "Figtree";
+  src: url("/src/assets/fonts/Figtree-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+}
+
+.figtree {
+  font-family: "Figtree", sans-serif;
 }

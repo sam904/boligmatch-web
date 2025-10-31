@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
 // import userLogo from "/src/assets/userImages/userLogo.png";
 import userDashboard from "/src/assets/userImages/user-supplier.png";
-// import userHeader from "/src/assets/userImages/userHeader.png";
-// import userHeaderHamburger from "/src/assets/userImages/userHeaderHamburger.png";
-
-// Category images
 import JimmysELservice from "../assets/userSupplier/Jimmys EL-service.png";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { http } from "../services/http.service";
+import { subCategoriesService } from "../services/subCategories.service";
 import { partnerService } from "../services/partner.service";
 
 interface SubCategoryData {
@@ -38,7 +34,6 @@ interface PartnerItem {
   subCategoryId?: number;
 }
 
-
 type PartnerCardProps = {
   logoUrl?: string;
   name?: string;
@@ -55,10 +50,6 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
   logoUrl,
   name,
   fullName,
-  email,
-  mobileNo,
-  category,
-  subCategory,
   description,
   onMoreInfo,
   isLoading = false,
@@ -77,27 +68,6 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
     <h3 className="text-[20px] font-[800] text-[#000000] truncate max-w-full">
       {name || fullName || "Partner"}
     </h3>
-    {fullName && name && (
-      <p className="text-sm text-[#111827] -mt-1">{fullName}</p>
-    )}
-    <div className="text-[13px] text-[#111827] space-y-1">
-      {email && <p className="truncate">{email}</p>}
-      {mobileNo && <p>{mobileNo}</p>}
-    </div>
-    {(category || subCategory) && (
-      <div className="flex flex-wrap justify-center gap-2 mt-1">
-        {category && (
-          <span className="px-2 py-1 bg-[#E5F4EA] text-[#0B3B35] text-[12px] rounded-md">
-            {category}
-          </span>
-        )}
-        {subCategory && (
-          <span className="px-2 py-1 bg-[#F1F5F9] text-[#0B3B35] text-[12px] rounded-md">
-            {subCategory}
-          </span>
-        )}
-      </div>
-    )}
     {description && (
       <p className="text-[#000000] leading-relaxed font-[400] text-[13px] line-clamp-3 mt-1">
         {description}
@@ -106,9 +76,8 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
     <button
       onClick={onMoreInfo}
       disabled={isLoading}
-      className={`font-bold mt-3 hover:underline cursor-pointer railways ${
-        isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
-      }`}
+      className={`font-bold mt-3 hover:underline cursor-pointer railways ${isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
+        }`}
     >
       {isLoading ? "Loading..." : "More info"}
     </button>
@@ -176,12 +145,8 @@ const UserSupplier = () => {
       }
       try {
         setPartnersLoading(true);
-        const res: any = await http.get(
-          "/SubCategories/getPartnerBySubCategoryId",
-          { subCategoryId: active }
-        );
-        const list = (res?.output?.result ?? res?.output ?? res) || [];
-        setPartners(Array.isArray(list) ? list : []);
+        const list = await subCategoriesService.getPartnersBySubCategoryId(active);
+        setPartners(list);
       } catch (error) {
         console.error("Error fetching partners:", error);
         setPartners([]);
@@ -210,7 +175,7 @@ const UserSupplier = () => {
       }}
     >
       <UserHeader />
-      <section className="bg-[#043428] py-12 px-8 flex flex-wrap justify-center gap-6">
+      <section className="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 flex flex-wrap justify-center gap-6">
         {loading ? (
           <div className="text-white">Loading subcategories...</div>
         ) : subCategories.length > 0 ? (
@@ -219,11 +184,10 @@ const UserSupplier = () => {
               key={sub.id}
               onClick={() => setActive(sub.id)}
               className={`flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-300 text-white cursor-pointer
-              ${
-                active === sub.id
+              ${active === sub.id
                   ? "bg-[#b6e924] text-black shadow-lg scale-105"
                   : "hover:text-[#b6e924] hover:bg-white/10"
-              }`}
+                }`}
             >
               {sub.subCategoryIconUrl && (
                 <img
@@ -253,7 +217,10 @@ const UserSupplier = () => {
           ) : partners.length > 0 ? (
             <>
               {partners.map((p) => (
-                <div key={p.partnerSubCategoryId ?? p.partnerId} className="flex justify-center">
+                <div
+                  key={p.partnerSubCategoryId ?? p.partnerId}
+                  className="flex justify-center"
+                >
                   <PartnerCard
                     logoUrl={p.logoUrl}
                     name={p.businessName}
@@ -262,7 +229,7 @@ const UserSupplier = () => {
                     mobileNo={p.mobileNo}
                     category={p.category}
                     subCategory={p.subCategory}
-                    description={p.descriptionShort}
+                    description={p.descriptionShort?.trim() || "NA"}
                     onMoreInfo={() => handlePartnerMoreInfo(p)}
                     isLoading={loadingPartnerId === p.partnerId}
                   />

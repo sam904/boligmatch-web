@@ -28,28 +28,28 @@ export default function LandingPage() {
     >
       <UserHeader />
       <SignUpModal open={showSignUpModal} onClose={() => setShowSignUpModal(false)} />
-      <div className="absolute top-22 left-36 flex max-w-6xl mx-auto px-12 justify-between mt-0 h-[calc(100vh-100vh)]">
+      <div className="absolute top-44 left-78 flex max-w-6xl mx-auto px-12 justify-between mt-0 h-[calc(100vh-100vh)]">
         <div>
           <div className="w-[150px] flex justify-end">
-            <img src={landingPageIcons} alt="" className="w-24 h-auto" />
+            <img src={landingPageIcons} alt="" className="w-26 h-auto" />
           </div>
           <div className="">
-            <img src={landingPageIcons2} alt="" className="w-24 h-auto" />
+            <img src={landingPageIcons2} alt="" className="w-26 h-auto" />
           </div>
           <div className="">
-            <img src={landingPageIcons3} alt="" className="w-24 h-auto" />
+            <img src={landingPageIcons3} alt="" className="w-26 h-auto" />
           </div>
           <div className="w-[150px] flex justify-end">
-            <img src={landingPageIcons4} alt="" className="w-24 h-auto" />
+            <img src={landingPageIcons4} alt="" className="w-26 h-auto" />
           </div>
         </div>
       </div>
 
       <div className="bg-[#043428] h-auto">
-        <div className="flex justify-center">
+        <div className="flex justify-center absolute bottom-0 left-[46%]">
           <button 
             onClick={() => setShowSignUpModal(true)}
-            className="bg-[#91C73D] rounded-lg cursor-pointer px-4 font-semibold py-2 text-white hover:bg-[#7fb32d] transition-colors"
+            className="bg-[#91C73D] rounded-lg text-[18px] cursor-pointer px-4 font-semibold py-2 text-white hover:bg-[#7fb32d] transition-colors figtree"
           >
             {t('landing.signUpButton')}
           </button>
@@ -57,7 +57,7 @@ export default function LandingPage() {
         <h1 className=" text-[76px] text-white leading-[66px] text-center rosting-script font-[400]">
           {t('landing.mainTitle')}
         </h1>
-        <h2 className="text-white text-[60px] leading-[66px] tracking-[0%] text-center max-w-4xl mx-auto py-4 px-4 font-[800] plus-jakarta-sans">
+        <h2 className="text-white text-[60px] leading-[66px] tracking-[0%] text-center max-w-4xl mx-auto py-1 px-4 font-[800] plus-jakarta-sans">
           {t('landing.subtitle')}
         </h2>
         <p className="text-white text-center text-[18px] mx-auto max-w-7xl py-8 px-4 plus-jakarta-sans">
@@ -66,7 +66,7 @@ export default function LandingPage() {
       </div>
       <ServiceCarousel />
       <div className="bg-[#043428] h-auto">
-        <h1 className=" text-[52px] text-white leading-[66px]  text-center">
+        <h1 className="text-[64px] leading-[66px] text-white text-center max-w-[845px] mx-auto font-[800] plus-jakarta-sans">
           {t('landing.transparentJourney')}
         </h1>
         <p className="text-white text-center text-[18px] mx-auto max-w-8xl py-8 px-4">
