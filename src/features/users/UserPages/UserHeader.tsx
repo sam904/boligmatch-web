@@ -5,6 +5,7 @@ import userHeader from "/src/assets/userImages/userHeader.png";
 import userHeaderHamburger from "/src/assets/userImages/userHeaderHamburger.png";
 import UserModal from "../../../components/common/UserModal";
 import LoginChoiceModal from "../../../components/common/LoginChoiceModal";
+import PartnerModal from "../../../components/common/PartnerModal";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../app/hooks";
 import { tokenStorage } from "../../../lib/storage";
@@ -15,6 +16,7 @@ function UserHeader() {
   // const dispatch = useAppDispatch();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
   const [isChoiceModalOpen, setIsChoiceModalOpen] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   // const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -538,15 +540,23 @@ function UserHeader() {
       <LoginChoiceModal
         open={isChoiceModalOpen}
         onClose={() => setIsChoiceModalOpen(false)}
-        onSelect={() => {
+        onSelect={(role) => {
           setIsChoiceModalOpen(false);
-          setIsModalOpen(true);
+          if (role === "user") {
+            setIsModalOpen(true);
+          } else {
+            setIsPartnerModalOpen(true);
+          }
         }}
       />
 
       {/* User Modal */}
       {isModalOpen && (
         <UserModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      )}
+      {/* Partner Modal */}
+      {isPartnerModalOpen && (
+        <PartnerModal open={isPartnerModalOpen} onClose={() => setIsPartnerModalOpen(false)} />
       )}
     </>
   );

@@ -10,4 +10,9 @@ export const subCategoriesService = {
   update: (body: SubCategory) => http.put<SubCategory>(`/SubCategories/updateSubCategories`, body),
   remove: (id: number) => http.delete<void>(`/SubCategories/DeleteSubCategories/${id}`),
   getPaginated: (query: any) => http.post<{ items: SubCategory[]; total: number }>(`/SubCategories/getPaginatedSubCategoriess`, query),
+  getPartnersBySubCategoryId: async (subCategoryId: number) => {
+    const res: any = await http.get(`/SubCategories/getPartnerBySubCategoryId`, { subCategoryId });
+    const list = (res?.output?.result ?? res?.output ?? res) || [];
+    return Array.isArray(list) ? list : [];
+  },
 };
