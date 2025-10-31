@@ -40,7 +40,7 @@ import {
   IconPlus,
   IconUpload,
 } from "../../../components/common/Icons/Index";
-import Select from "../../../components/common/Select";
+import { FilterDropdown } from "../../../components/common/FilterDropdown";
 
 // Image Preview Modal Component
 function ImagePreviewModal({
@@ -188,6 +188,7 @@ const partnerSchema = z.object({
   imageUrl3: z.string().optional(),
   imageUrl4: z.string().optional(),
   imageUrl5: z.string().optional(),
+  thumbnail: z.string().optional(),
   isActive: z.boolean(),
   parSubCatlst: z
     .array(partnerSubCategorySchema)
@@ -219,6 +220,7 @@ type PartnerFormData = {
   imageUrl3?: string;
   imageUrl4?: string;
   imageUrl5?: string;
+  thumbnail?: string;
   isActive: boolean;
   parSubCatlst: PartnerSubCategory[];
   parDoclst: PartnerDocument[];
@@ -344,6 +346,7 @@ export default function PartnersPage() {
   const imageUrl3Value = watch("imageUrl3");
   const imageUrl4Value = watch("imageUrl4");
   const imageUrl5Value = watch("imageUrl5");
+  const thumbnailValue = watch("thumbnail");
   const categoryIdValue = watch("categoryId");
 
   // Check if a step is completed
@@ -501,6 +504,7 @@ export default function PartnersPage() {
         imageUrl3: editingPartner.imageUrl3 || "",
         imageUrl4: editingPartner.imageUrl4 || "",
         imageUrl5: editingPartner.imageUrl5 || "",
+        thumbnail: editingPartner.thumbnail || "",
         isActive: editingPartner.isActive,
         parSubCatlst:
           editingPartner.parSubCatlst && editingPartner.parSubCatlst.length > 0
@@ -555,6 +559,7 @@ export default function PartnersPage() {
       imageUrl3: "",
       imageUrl4: "",
       imageUrl5: "",
+      thumbnail: "",
       isActive: true,
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
       parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
@@ -1023,15 +1028,53 @@ export default function PartnersPage() {
       header: "Category",
       cell: ({ row }) => getCategoryName(row.original.categoryId),
     },
+    {
+      accessorKey: "subCategories",
+      header: "Sub Categories",
+      cell: ({ row }) => {
+        const subCategories = row.original.parSubCatlst;
+
+        if (!subCategories || subCategories.length === 0) {
+          return <span className="text-gray-400">No subcategories</span>;
+        }
+
+        // Get unique subcategory names
+        const uniqueSubCategories = Array.from(
+          new Set(
+            subCategories
+              .filter((subCat) => subCat.subCategories)
+              .map((subCat) => subCat.subCategories)
+          )
+        );
+
+        if (uniqueSubCategories.length === 0) {
+          return <span className="text-gray-400">No subcategories</span>;
+        }
+
+        return (
+          <div className="max-w-xs">
+            {uniqueSubCategories.map((subCatName, index) => (
+              <span
+                key={index}
+                className="inline-block text-black text-xs px-2 py-1  mr-1 mb-1"
+              >
+                {subCatName}
+              </span>
+            ))}
+          </div>
+        );
+      },
+    },
     { accessorKey: "address", header: "Address" },
     { accessorKey: "cvr", header: "CVR" },
     { accessorKey: "mobileNo", header: "Mobile Number" },
     {
       accessorKey: "isActive",
       header: "Status",
+      enableSorting: false,
       cell: ({ row }) => (
         <span
-          className="px-2 py-1 rounded text-xs text-white font-medium"
+          className="px-2 py-1 rounded-full text-xs text-white font-medium"
           style={{
             backgroundColor: row.original.isActive
               ? "var(--color-secondary)"
@@ -1125,6 +1168,20 @@ export default function PartnersPage() {
             <h3 className="text-lg font-medium text-gray-900">
               Media & Description
             </h3>
+
+            <div className="space-y-3">
+              <ImageUpload
+                label="Thumbnail Upload"
+                value={thumbnailValue}
+                onChange={(url) => setValue("thumbnail", url)}
+                onPreview={handleImagePreview}
+                folder="partners/thumbnails"
+                error={errors.thumbnail?.message}
+                exactDimensions={{ width: 1440, height: 710 }} // CHANGED: Updated to 1440x710
+                showDimensionValidation={true}
+              />
+            </div>
+
             <VideoUpload
               label="Video Upload"
               value={videoUrlValue || ""}
@@ -1551,21 +1608,10 @@ export default function PartnersPage() {
             </div>
             <div className="flex items-center gap-4">
               {/* Status Filter Dropdown */}
-              <div className="w-32">
-                <Select
-                  value={statusFilter}
-                  onChange={(e: any) =>
-                    handleStatusFilterChange(
-                      e.target.value as "all" | "active" | "inactive"
-                    )
-                  }
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#91C73D] focus:ring-2 focus:ring-[#91C73D]/20 focus:outline-none transition-colors duration-200"
-                >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                  <option value="all">All</option>
-                </Select>
-              </div>
+              <FilterDropdown
+                value={statusFilter}
+                onChange={handleStatusFilterChange}
+              />
 
               <div className="w-64">
                 <SearchBar

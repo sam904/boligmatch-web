@@ -24,7 +24,7 @@ import {
 import type { ColumnDef } from "@tanstack/react-table";
 import type { User } from "../../../types/user";
 import { exportToExcel } from "../../../utils/export.utils";
-import Select from "../../../components/common/Select";
+import { FilterDropdown } from "../../../components/common/FilterDropdown";
 
 const userSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -437,6 +437,7 @@ export default function UsersListPage() {
     {
       accessorKey: "isActive",
       header: t("common.status") || "Status",
+      enableSorting: false,
       cell: ({ row }) => (
         <span
           className="px-2 py-1 rounded-full text-xs text-white font-medium"
@@ -510,27 +511,16 @@ export default function UsersListPage() {
               {t("admin.users.addUser") || "Add User"}
             </Button>
           </div>
-          {/* Right side: Filters, SearchBar and Add User button */}
-          <div className="flex items-center gap-4">
-            {/* Status Filter Dropdown */}
-            <div className="w-32">
-              <Select
-                value={statusFilter}
-                onChange={(e) =>
-                  handleStatusFilterChange(
-                    e.target.value as "all" | "active" | "inactive"
-                  )
-                }
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#91C73D] focus:ring-2 focus:ring-[#91C73D]/20 focus:outline-none transition-colors duration-200"
-              >
-                <option value="active">{t("common.active") || "Active"}</option>
-                <option value="inactive">
-                  {t("common.inactive") || "Inactive"}
-                </option>
-                <option value="all">{t("common.all") || "All"}</option>
-              </Select>
-            </div>
 
+          {/* Right side: Filters, SearchBar and Export button */}
+          <div className="flex items-center gap-3">
+            {/* Status Filter Dropdown - Now shows only icon by default */}
+            <FilterDropdown
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
+            />
+
+            {/* Search Bar */}
             <div className="w-64">
               <SearchBar
                 searchTerm={searchTerm}

@@ -149,7 +149,7 @@ export default function VideoUpload({
 
       {/* File size info */}
       <div className="mt-1 text-xs text-gray-500">
-        Supported formats: MP4, MPEG, MOV, AVI, WEBM | Maximum size: 200MB
+         Maximum size: 200MB
       </div>
 
       {/* Preview */}
