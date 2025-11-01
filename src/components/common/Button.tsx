@@ -73,7 +73,7 @@ const base = 'inline-flex items-center justify-center font-semibold rounded-md t
       )}
 
       {/* Subtle overlay effect on hover */}
-      <span className="absolute inset-0 bg-white/0 group-hover:bg-white/10 rounded-xl transition-all duration-300" />
+      <span className="absolute transition-all duration-300" />
     </button>
   );
 }
