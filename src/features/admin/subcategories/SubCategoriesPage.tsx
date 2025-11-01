@@ -26,6 +26,7 @@ import {
   IconPlus,
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
+import ToggleSwitch from "../../../components/common/ToggleSwitch";
 
 // Fixed validation schema - remove unused url parameters
 const subCategorySchema = z.object({
@@ -157,7 +158,7 @@ export default function SubCategoriesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
-  >("active");
+  >("all");
   const [previewImage, setPreviewImage] = useState<{
     url: string;
     isOpen: boolean;
@@ -217,6 +218,7 @@ export default function SubCategoriesPage() {
   const nameValue = watch("name");
   const imageUrlValue = watch("imageUrl");
   const iconUrlValue = watch("iconUrl");
+  const isActiveValue = watch("isActive");
 
   // Filter categories to show only active ones
   const activeCategories = categories.filter(
@@ -690,6 +692,7 @@ export default function SubCategoriesPage() {
             : t("admin.subcategories.addSubCategory") || "Add Subcategory"
         }
         onClose={handleModalClose}
+        maxWidth="max-w-3xl"
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Category Dropdown - only active categories */}
@@ -782,22 +785,12 @@ export default function SubCategoriesPage() {
             exactDimensions={{ width: 512, height: 512 }}
             showDimensionValidation={true}
           />
-          {/* Active Status */}
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="isActive"
-              {...register("isActive")}
-              className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-              disabled={activeCategories.length === 0}
-            />
-            <label
-              htmlFor="isActive"
-              className="text-sm font-medium text-gray-700"
-            >
-              {t("common.active") || "Active"}
-            </label>
-          </div>
+          {/* Toggle Switch for Active Status */}
+          <ToggleSwitch
+            label={t("common.active") || "Active"}
+            checked={isActiveValue}
+            onChange={(checked) => setValue("isActive", checked)}
+          />
 
           {/* Validation Summary */}
           {Object.keys(errors).length > 0 && (
@@ -828,17 +821,19 @@ export default function SubCategoriesPage() {
           )}
 
           {/* Form Actions */}
-          <div className="flex gap-2 justify-end">
+          <div className="flex gap-3">
             <Button
               type="button"
-              variant="secondary"
+              variant="outline"
               onClick={handleModalClose}
               disabled={createMutation.isPending || updateMutation.isPending}
+              className="flex-1"
             >
               {t("common.cancel") || "Cancel"}
             </Button>
             <Button
               type="submit"
+              variant="secondary"
               disabled={
                 !isValid ||
                 createMutation.isPending ||
@@ -846,6 +841,7 @@ export default function SubCategoriesPage() {
                 categoriesLoading ||
                 activeCategories.length === 0
               }
+              className="flex-1"
             >
               {editingSubCategory
                 ? t("common.update") || "Update"
