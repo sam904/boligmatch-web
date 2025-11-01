@@ -39,6 +39,7 @@ import {
   IconTrash,
   IconPlus,
   IconUpload,
+  IconArrowLeft
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
 
@@ -129,6 +130,7 @@ function LogoUploadWithValidation({
     </div>
   );
 }
+
 // Schemas
 const partnerSubCategorySchema = z.object({
   id: z.number().optional(),
@@ -244,7 +246,7 @@ export default function PartnersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
-  >("active");
+  >("all");
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -284,7 +286,7 @@ export default function PartnersPage() {
     "Text Fields",
     "Images & Status",
     "Documents",
-    "Categories & Sub Categories",
+    "Categories & Sub-Categories",
   ];
 
   const {
@@ -597,7 +599,10 @@ export default function PartnersPage() {
       toast.success(
         t("admin.partners.updateSuccess") || "Partner updated successfully"
       );
-      handleFormClose();
+      // Don't close form on step updates, only close on final update
+      if (currentStep === steps.length) {
+        handleFormClose();
+      }
     },
     onError: (error) => {
       console.error("Update mutation error:", error);
@@ -695,10 +700,11 @@ export default function PartnersPage() {
     }
   };
 
+  // Modified onSubmit to handle both create and update
   const onSubmit = async (data: PartnerFormData) => {
     if (isSubmitting) return;
 
-    console.log("onSubmit called with data:", data);
+    console.log("Form submission triggered with data:", data);
 
     const isValid = await trigger();
     if (!isValid) {
@@ -748,40 +754,29 @@ export default function PartnersPage() {
     }
   };
 
+  // Unified handleNext function for both create and update modes
   const handleNext = async () => {
     if (isSubmitting) return;
 
     let isValid = true;
 
     const stepFields: Record<number, ValidFieldNames[]> = {
-      1: [
-        "businessName",
-        "email",
-        "mobileNo",
-        "businessUnit",
-        "cvr",
-        "address",
-      ],
+      1: ["businessName", "email", "mobileNo", "businessUnit", "cvr", "address"],
       2: ["videoUrl", "logoUrl", "descriptionShort"],
       3: ["textField1", "textField2", "textField3", "textField4", "textField5"],
-      4: [
-        "imageUrl1",
-        "imageUrl2",
-        "imageUrl3",
-        "imageUrl4",
-        "imageUrl5",
-        "isActive",
-      ],
+      4: ["imageUrl1", "imageUrl2", "imageUrl3", "imageUrl4", "imageUrl5", "isActive"],
       5: [],
       6: ["categoryId"],
     };
 
+    // Validate current step fields
     if (stepFields[currentStep].length > 0) {
       isValid = await trigger(stepFields[currentStep] as any, {
         shouldFocus: true,
       });
     }
 
+    // Additional validation for array fields in steps 5 and 6
     if (currentStep === 5) {
       const documentValidations = documentFields.map((_, index) =>
         trigger([
@@ -808,15 +803,58 @@ export default function PartnersPage() {
       isValid = isValid && subCategoryResults.every((result) => result);
     }
 
-    if (isValid && currentStep < steps.length) {
+    if (!isValid) {
+      console.log("Validation errors:", errors);
+      toast.error("Please fix all form errors in this step before proceeding");
+      return;
+    }
+
+    // In update mode, submit the current step before moving to next
+    if (editingPartner && currentStep < steps.length) {
+      setIsSubmitting(true);
+      try {
+        const data = watch();
+        const subCategoriesPayload = data.parSubCatlst.map((subCat) => ({
+          id: subCat.id,
+          partnerId: editingPartner?.id || 0,
+          subCategoryId: subCat.subCategoryId,
+          isActive: subCat.isActive,
+        }));
+
+        const documentsPayload = data.parDoclst.map((doc) => ({
+          id: doc.id,
+          partnerId: editingPartner?.id || 0,
+          documentName: doc.documentName,
+          documentUrl: doc.documentUrl,
+          isActive: doc.isActive,
+        }));
+
+        const payload = {
+          ...data,
+          id: editingPartner?.id,
+          parSubCatlst: subCategoriesPayload,
+          parDoclst: documentsPayload,
+          email: data.email || undefined,
+          mobileNo: data.mobileNo || undefined,
+        };
+
+        await updateMutation.mutateAsync(payload as any);
+        toast.success(`Step ${currentStep} updated successfully`);
+        
+        // Move to next step after successful update
+        setCurrentStep((prev) => prev + 1);
+        
+      } catch (error) {
+        console.error("Step update error:", error);
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else if (currentStep < steps.length) {
+      // In create mode, just move to next step
       setCurrentStep((prev) => prev + 1);
-      // Add current step to completed steps
       if (!completedSteps.includes(currentStep)) {
         setCompletedSteps([...completedSteps, currentStep]);
       }
-    } else {
-      console.log("Validation errors:", errors);
-      toast.error("Please fix all form errors in this step before proceeding");
     }
   };
 
@@ -829,19 +867,22 @@ export default function PartnersPage() {
   const handleStepClick = async (step: number) => {
     if (isSubmitting) return;
 
-    // Allow navigation to completed steps or previous steps
+    // In update mode, allow free navigation between steps
+    if (editingPartner) {
+      setCurrentStep(step);
+      return;
+    }
+
+    // For create mode, use original logic
     if (step < currentStep || completedSteps.includes(step)) {
       setCurrentStep(step);
     }
-    // For steps ahead, validate current step first
     else if (step === currentStep + 1) {
       await handleNext();
     }
-    // For steps further ahead, validate all intermediate steps
     else if (step > currentStep) {
       let canNavigate = true;
 
-      // Validate all steps from current to target step
       for (let i = currentStep; i < step; i++) {
         const isValid = await isStepCompleted(i);
         if (!isValid) {
@@ -855,7 +896,6 @@ export default function PartnersPage() {
 
       if (canNavigate) {
         setCurrentStep(step);
-        // Mark all intermediate steps as completed
         const newCompletedSteps = [...completedSteps];
         for (let i = currentStep; i < step; i++) {
           if (!newCompletedSteps.includes(i)) {
@@ -878,7 +918,7 @@ export default function PartnersPage() {
 
   const handleStatusFilterChange = (filter: "all" | "active" | "inactive") => {
     setStatusFilter(filter);
-    setCurrentPage(1); // Reset to first page when filter changes
+    setCurrentPage(1);
   };
 
   const handleResetPassword = (partner: Partner) => {
@@ -1003,7 +1043,7 @@ export default function PartnersPage() {
     }
   };
 
-  // Get data from API response - FIX: Use correct response structure
+  // Get data from API response
   const partners = paginatedData?.output?.result || [];
   const totalItems = paginatedData?.output?.rowCount || 0;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
@@ -1011,7 +1051,7 @@ export default function PartnersPage() {
   // Apply client-side status filtering only
   const filteredPartners = useMemo(() => {
     if (statusFilter === "all") {
-      return partners; // Return all partners from server
+      return partners;
     } else if (statusFilter === "active") {
       return partners.filter((partner) => partner.isActive === true);
     } else if (statusFilter === "inactive") {
@@ -1065,7 +1105,16 @@ export default function PartnersPage() {
         );
       },
     },
-    { accessorKey: "address", header: "Address" },
+    { accessorKey: "address", header: "Address" ,
+      cell: ({ row }) => {
+        const address = row.original.address;
+        if (!address) return "-";
+
+        return address.length > 50
+          ? `${address.substring(0, 50)}...`
+          : address;
+      },
+    },
     { accessorKey: "cvr", header: "CVR" },
     { accessorKey: "mobileNo", header: "Mobile Number" },
     {
@@ -1165,7 +1214,7 @@ export default function PartnersPage() {
       case 2:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-bold text-gray-900">
               Media & Description
             </h3>
 
@@ -1177,26 +1226,28 @@ export default function PartnersPage() {
                 onPreview={handleImagePreview}
                 folder="partners/thumbnails"
                 error={errors.thumbnail?.message}
-                exactDimensions={{ width: 1440, height: 710 }} // CHANGED: Updated to 1440x710
+                exactDimensions={{ width: 1440, height: 710 }}
                 showDimensionValidation={true}
               />
             </div>
 
-            <VideoUpload
-              label="Video Upload"
-              value={videoUrlValue || ""}
-              onChange={(url) => setValue("videoUrl", url)}
-              onPreview={handleVideoPreview}
-              folder="partners/videos"
-              error={errors.videoUrl?.message}
-            />
+            <div className="grid grid-cols-2 gap-4">
+  <VideoUpload
+    label="Video Upload"
+    value={videoUrlValue || ""}
+    onChange={(url) => setValue("videoUrl", url)}
+    onPreview={handleVideoPreview}
+    folder="partners/videos"
+    error={errors.videoUrl?.message}
+  />
 
-            <LogoUploadWithValidation
-              value={logoUrlValue || ""}
-              onChange={(url) => setValue("logoUrl", url)}
-              onPreview={handleImagePreview}
-              error={errors.logoUrl?.message}
-            />
+  <LogoUploadWithValidation
+    value={logoUrlValue || ""}
+    onChange={(url) => setValue("logoUrl", url)}
+    onPreview={handleImagePreview}
+    error={errors.logoUrl?.message}
+  />
+</div>
 
             <TextArea
               label="Short Description"
@@ -1242,12 +1293,10 @@ export default function PartnersPage() {
       case 4:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-bold text-gray-900">
               Images & Status
             </h3>
-            <div className="space-y-3">
-              <h4 className="font-medium text-gray-700">Image URLs</h4>
-
+            <div className="grid grid-cols-2 gap-4">
               <ImageUpload
                 label="Image Upload 1"
                 value={imageUrl1Value}
@@ -1269,6 +1318,10 @@ export default function PartnersPage() {
                 exactDimensions={{ width: 439, height: 468 }}
                 showDimensionValidation={true}
               />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+
+
 
               <ImageUpload
                 label="Image Upload 3"
@@ -1286,6 +1339,8 @@ export default function PartnersPage() {
                 folder="partners/images"
                 error={errors.imageUrl4?.message}
               />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
               <ImageUpload
                 label="Image Upload 5"
                 value={imageUrl5Value}
@@ -1588,8 +1643,53 @@ export default function PartnersPage() {
     }
   };
 
+  const renderFormFooter = () => (
+    <div className="flex justify-between pt-6 mt-4 border-t border-gray-200">
+      <div>
+        {currentStep > 1 && (
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            onClick={handleBack}
+            disabled={isSubmitting}
+          >
+          Previous
+          </Button>
+        )}
+      </div>
+      <div className="flex gap-2">
+        {currentStep < steps.length ? (
+          <Button
+            key="next"
+            type="button"
+            variant="secondary"
+            size="lg"
+            onClick={handleNext}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Updating..." : "Next"}
+          </Button>
+        ) : (
+          <Button
+            key="submit"
+            size="lg"
+            type="submit"
+            disabled={isSubmitting || createMutation.isPending || updateMutation.isPending}
+          >
+            {isSubmitting
+              ? "Submitting..."
+              : editingPartner
+              ? t("common.update")
+              : t("common.create")}
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="p-3">
+        <div className="p-3">
       {!showForm && (
         <div className="p-2 mb-2">
           <div className="flex justify-between items-center">
@@ -1622,7 +1722,7 @@ export default function PartnersPage() {
 
               {/* Export Button */}
               <Button
-                variant="primary"
+                variant="outline"
                 size="md"
                 onClick={handleExportPartners}
                 disabled={isExporting}
@@ -1640,76 +1740,38 @@ export default function PartnersPage() {
       )}
       {showForm && (
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-900">
-              {editingPartner
-                ? t("admin.partners.editPartner")
-                : t("admin.partners.addPartner")}
-            </h2>
-            <Button
-              variant="secondary"
+          {/* Updated header with back arrow */}
+          <div className="flex items-center gap-4 mb-6">
+            <button
               onClick={handleFormClose}
               disabled={isSubmitting}
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-[#165933] text-white"
+              title="Go back"
             >
-              {t("common.cancel")}
-            </Button>
+              <IconArrowLeft className="w-4 h-4" />
+            </button>
+            <div className="flex-1">
+              <h2 className="text-xl font-bold text-gray-900">
+                {editingPartner
+                  ? t("admin.partners.editPartner")
+                  : t("admin.partners.addPartner")}
+              </h2>
+            </div>
           </div>
-          <Stepper
-            currentStep={currentStep}
-            steps={steps}
-            className="mb-8"
-            onStepClick={handleStepClick}
-            completedSteps={completedSteps}
-          />
+<Stepper
+  currentStep={currentStep}
+  steps={steps}
+  onStepClick={handleStepClick}
+  completedSteps={completedSteps}
+/>
           <form
             onSubmit={handleSubmit((data) => {
               console.log("Form submission triggered with data:", data);
-              onSubmit(data);
+              onSubmit(data); // Final submission without step parameter
             })}
           >
             <div className="px-1 mb-6">{renderStepContent()}</div>
-            <div className="flex justify-between pt-6 mt-4 border-t border-gray-200">
-              <div>
-                {currentStep > 1 && (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={handleBack}
-                    disabled={isSubmitting}
-                  >
-                    Back
-                  </Button>
-                )}
-              </div>
-              <div className="flex gap-2">
-                {currentStep < steps.length ? (
-                  <Button
-                    key="next"
-                    type="button"
-                    onClick={handleNext}
-                    disabled={isSubmitting}
-                  >
-                    Next
-                  </Button>
-                ) : (
-                  <Button
-                    key="submit"
-                    type="submit"
-                    disabled={
-                      isSubmitting ||
-                      createMutation.isPending ||
-                      updateMutation.isPending
-                    }
-                  >
-                    {isSubmitting
-                      ? "Submitting..."
-                      : editingPartner
-                      ? t("common.update")
-                      : t("common.create")}
-                  </Button>
-                )}
-              </div>
-            </div>
+            {renderFormFooter()}
           </form>
         </div>
       )}
@@ -1724,7 +1786,6 @@ export default function PartnersPage() {
               <p className="mt-4 text-gray-600">{t("common.loading")}</p>
             </div>
           ) : (
-            /* Data Table - Use filteredPartners for display */
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               <DataTable data={filteredPartners} columns={columns} />
               <div className="px-4 pb-4">
