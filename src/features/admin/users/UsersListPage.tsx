@@ -25,6 +25,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { User } from "../../../types/user";
 import { exportToExcel } from "../../../utils/export.utils";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
+import ToggleSwitch from "../../../components/common/ToggleSwitch";
 
 const userSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -76,7 +77,7 @@ export default function UsersListPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
-  >("active");
+  >("all");
   const [isExporting, setIsExporting] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
@@ -95,8 +96,10 @@ export default function UsersListPage() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
     reset,
+    watch: watchUser, // Renamed to avoid conflict
     setError,
     clearErrors,
   } = useForm<UserFormData>({
@@ -111,12 +114,14 @@ export default function UsersListPage() {
     },
   });
 
+  const isActiveValue = watchUser("isActive"); // Use the renamed watch
+
   const {
     register: registerPassword,
     handleSubmit: handleSubmitPassword,
     formState: { errors: passwordErrors, isValid: isPasswordValid },
     reset: resetPassword,
-    watch,
+    watch: watchPasswordForm, // Renamed to avoid conflict
   } = useForm<PasswordResetData>({
     resolver: zodResolver(passwordResetSchema),
     mode: "onChange",
@@ -126,7 +131,7 @@ export default function UsersListPage() {
     },
   });
 
-  const watchPassword = watch("newPassword");
+  const watchPassword = watchPasswordForm("newPassword"); // Use the renamed watch
 
   useEffect(() => {
     if (editingUser) {
@@ -582,6 +587,7 @@ export default function UsersListPage() {
             : t("admin.users.addUser") || "Add User"
         }
         onClose={handleModalClose}
+        maxWidth="max-w-3xl"
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
@@ -613,20 +619,13 @@ export default function UsersListPage() {
             required
             placeholder="Enter mobile number"
           />
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="isActive"
-              {...register("isActive")}
-              className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-            />
-            <label
-              htmlFor="isActive"
-              className="text-sm font-medium text-gray-700"
-            >
-              {t("common.active") || "Active"}
-            </label>
-          </div>
+          
+          {/* Toggle Switch for Active Status */}
+          <ToggleSwitch
+            label={t("common.active") || "Active"}
+            checked={isActiveValue}
+            onChange={(checked) => setValue("isActive", checked)}
+          />
 
           {/* Form validation summary */}
           {Object.keys(errors).length > 0 && (
@@ -656,19 +655,22 @@ export default function UsersListPage() {
             </div>
           )}
 
-          <div className="flex gap-2 justify-end">
+          <div className="flex gap-3">
             <Button
               type="button"
-              variant="secondary"
+              variant="outline"
               onClick={handleModalClose}
+              className="flex-1"
             >
               {t("common.cancel") || "Cancel"}
             </Button>
             <Button
               type="submit"
+              variant="secondary"
               disabled={
                 !isValid || createMutation.isPending || updateMutation.isPending
               }
+              className="flex-1"
             >
               {createMutation.isPending || updateMutation.isPending
                 ? "Submitting..."

@@ -25,6 +25,7 @@ import {
   IconPlus,
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
+import ToggleSwitch from "../../../components/common/ToggleSwitch"; // Add this import
 
 // Enhanced validation schema with dimension validation
 const categorySchema = z.object({
@@ -150,7 +151,7 @@ export default function CategoriesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
-  >("active");
+  >("all");
   const [previewImage, setPreviewImage] = useState<{
     url: string;
     isOpen: boolean;
@@ -214,6 +215,7 @@ export default function CategoriesPage() {
   // Watch the form values
   const imageUrlValue = watch("imageUrl");
   const iconUrlValue = watch("iconUrl");
+  const isActiveValue = watch("isActive");
 
   // Add dimension validation function
   const validateImageDimensions = async (
@@ -620,6 +622,7 @@ export default function CategoriesPage() {
             : t("admin.categories.addCategory") || "Add Category"
         }
         onClose={handleModalClose}
+        maxWidth="max-w-3xl"
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
@@ -640,6 +643,7 @@ export default function CategoriesPage() {
             placeholder="Enter category description"
             rows={4}
           />
+
           {/* Image Upload for Category Image with 1440x710 validation */}
           <ImageUpload
             label={`${t("admin.categories.imageUrl") || "Image Upload"} *`}
@@ -670,20 +674,12 @@ export default function CategoriesPage() {
             showDimensionValidation={true}
           />
 
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="isActive"
-              {...register("isActive")}
-              className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-            />
-            <label
-              htmlFor="isActive"
-              className="text-sm font-medium text-gray-700"
-            >
-              {t("common.active") || "Active"}
-            </label>
-          </div>
+          {/* Toggle Switch for Active Status */}
+          <ToggleSwitch
+            label={t("common.active") || "Active"}
+            checked={isActiveValue}
+            onChange={(checked) => setValue("isActive", checked)}
+          />
 
           {/* Form validation summary */}
           {Object.keys(errors).length > 0 && (
@@ -713,19 +709,22 @@ export default function CategoriesPage() {
             </div>
           )}
 
-          <div className="flex gap-2 justify-end">
+          <div className="flex gap-3">
             <Button
               type="button"
-              variant="secondary"
+              variant="outline"
               onClick={handleModalClose}
+              className="flex-1"
             >
               {t("common.cancel") || "Cancel"}
             </Button>
             <Button
               type="submit"
+              variant="secondary"
               disabled={
                 !isValid || createMutation.isPending || updateMutation.isPending
               }
+              className="flex-1"
             >
               {editingCategory
                 ? t("common.update") || "Update"
