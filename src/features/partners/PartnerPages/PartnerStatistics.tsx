@@ -1,11 +1,18 @@
 import PartnerHeader from "./PartnerHeader";
 import parentStatisticsImg from "/src/assets/userImages/parentStasts.png";
 import Statistik from "/src/assets/userImages/Statistik.svg";
-// import MinProfil from "/src/assets/userImages/MinProfil.svg";
+import MinProfil from "/src/assets/userImages/MinProfil.svg";
 import Partnere from "/src/assets/userImages/Search.svg";
 import PartnerStatDetails from "./PartnerStatDetails";
+import PartnerProfileShortcut from "./PartnerProfileShortcut";
+import SearchForPartner from "./SearchForPartner";
+import { useState } from "react";
 
 function ParentStatistics() {
+  const [activeTab, setActiveTab] = useState<"statistik" | "profil" | "partnere">(
+    "statistik"
+  );
+
   return (
     <>
       <div
@@ -29,7 +36,12 @@ function ParentStatistics() {
           </div>
           <div className="px-4 md:px-12 mt-3 md:mt-0 py-3 md:py-6 md:absolute md:bottom-0 md:left-0 md:right-0">
             <div className="flex flex-row flex-nowrap items-center justify-center md:justify-center gap-2 md:gap-0 md:space-x-8">
-              <button className="whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 bg-[#07583A] text-white rounded-lg transition-colors">
+              <button
+                onClick={() => setActiveTab("statistik")}
+                className={`whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 text-white rounded-lg transition-colors ${
+                  activeTab === "statistik" ? "bg-[#07583A]" : "bg-[#91C73D] hover:bg-[#7FB333]"
+                }`}
+              >
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
                   <img src={Statistik} alt="" />
                 </div>
@@ -38,16 +50,26 @@ function ParentStatistics() {
                 </span>
               </button>
 
-              <button className="whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
+              <button
+                onClick={() => setActiveTab("profil")}
+                className={`whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 text-white rounded-lg transition-colors ${
+                  activeTab === "profil" ? "bg-[#07583A]" : "bg-[#91C73D] hover:bg-[#7FB333]"
+                }`}
+              >
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
-                  {/* <img src={MinProfil} alt="" /> */}
+                  <img src={MinProfil} alt="" />
                 </div>
                 <span className="text-[13px] md:text-[20px] font-medium">
                   Min profil
                 </span>
               </button>
 
-              <button className="whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 bg-[#91C73D] text-white rounded-lg transition-colors">
+              <button
+                onClick={() => setActiveTab("partnere")}
+                className={`whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 text-white rounded-lg transition-colors ${
+                  activeTab === "partnere" ? "bg-[#07583A]" : "bg-[#91C73D] hover:bg-[#7FB333]"
+                }`}
+              >
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
                   <img src={Partnere} alt="" />
                 </div>
@@ -59,7 +81,9 @@ function ParentStatistics() {
           </div>
         </div>
       </div>
-      <PartnerStatDetails />
+      {activeTab === "statistik" && <PartnerStatDetails />}
+      {activeTab === "profil" && <PartnerProfileShortcut />}
+      {activeTab === "partnere" && <SearchForPartner />}
     </>
   );
 }
