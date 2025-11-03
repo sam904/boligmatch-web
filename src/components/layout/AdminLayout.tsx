@@ -4,6 +4,7 @@ import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { logout } from "../../features/auth/authSlice";
+import { IconLogout } from "../common/Icons/Index";
 
 // Enhanced route mapping with titles and subtitles
 interface RouteInfo {
@@ -41,6 +42,7 @@ export default function AdminLayout() {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
 
   // Get current page info based on route
   const getCurrentPageInfo = (): RouteInfo => {
@@ -82,6 +84,11 @@ export default function AdminLayout() {
     return "U";
   };
 
+  const handleLogout = () => {
+    dispatch(logout());
+    setShowUserDropdown(false);
+  };
+
   const currentPageInfo = getCurrentPageInfo();
   const currentPageTitle = t(currentPageInfo.title);
   const currentPageSubtitle = currentPageInfo.subtitle
@@ -98,7 +105,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
-      {/* Sidebar - unchanged */}
+      {/* Sidebar - removed logout button from bottom */}
       <aside
         className={`flex-shrink-0 bg-[#043428] text-white shadow-xl transition-all duration-300 ${
           isCollapsed ? "w-16" : "w-64"
@@ -106,7 +113,7 @@ export default function AdminLayout() {
       >
         <div className="p-4 flex items-center">
           {!isCollapsed && (
-            <img src="/Lag_2.svg" alt="BoligMatch" className="h-10 ml-5" />
+            <img src="/logo.svg" alt="BoligMatch" className="h-10 ml-4" />
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -138,7 +145,7 @@ export default function AdminLayout() {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto">
-          {/* Navigation links - unchanged */}
+          {/* Navigation links */}
           <NavLink
             to="/admin/dashboard"
             className={navLinkClass}
@@ -178,7 +185,9 @@ export default function AdminLayout() {
                 d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
               />
             </svg>
-            {!isCollapsed && <span className="ml-2">{t("nav.categories")}</span>}
+            {!isCollapsed && (
+              <span className="ml-2">{t("nav.categories")}</span>
+            )}
           </NavLink>
 
           <NavLink
@@ -199,7 +208,9 @@ export default function AdminLayout() {
                 d="M19 9l-7 7-7-7m14 6l-7 7-7-7"
               />
             </svg>
-            {!isCollapsed && <span className="ml-2">{t("nav.subcategories")}</span>}
+            {!isCollapsed && (
+              <span className="ml-2">{t("nav.subcategories")}</span>
+            )}
           </NavLink>
 
           <NavLink
@@ -244,42 +255,19 @@ export default function AdminLayout() {
             {!isCollapsed && <span className="ml-2">{t("nav.users")}</span>}
           </NavLink>
         </nav>
-
-        <div className="p-3 border-t border-gray-700">
-          <button
-            onClick={() => dispatch(logout())}
-            className={`w-full flex items-center gap-2 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm ${
-              isCollapsed ? "justify-center" : "justify-center"
-            }`}
-            title={isCollapsed ? t("auth.logout") : ""}
-          >
-            <svg
-              className="w-5 h-5 flex-shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-            {!isCollapsed && <span>{t("auth.logout")}</span>}
-          </button>
-        </div>
       </aside>
 
       {/* Right Side: Header + Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header - Updated with dynamic title AND subtitle + faint bottom shadow */}
+        {/* Header */}
         <header className="flex-shrink-0 bg-white text-[#043428] shadow-sm border-b border-gray-300">
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-3">
               {/* Dynamic page title and subtitle */}
               <div>
-                <h1 className="text-xl font-bold text-black">{currentPageTitle}</h1>
+                <h1 className="text-xl font-bold text-black">
+                  {currentPageTitle}
+                </h1>
                 {currentPageSubtitle && (
                   <p className="text-gray-500 text-sm mt-1">
                     {currentPageSubtitle}
@@ -288,7 +276,7 @@ export default function AdminLayout() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              {/* Language Dropdown - unchanged */}
+              {/* Language Dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setShowLangDropdown(!showLangDropdown)}
@@ -323,36 +311,46 @@ export default function AdminLayout() {
                   </svg>
                 </button>
                 {showLangDropdown && (
-                  <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-200">
-                    <button
-                      onClick={() => {
-                        i18n.changeLanguage("en");
-                        setShowLangDropdown(false);
-                      }}
-                      className="w-full px-4 py-2 text-left text-sm text-[#043428] hover:bg-gray-100 transition-colors"
-                    >
-                      English (EN)
-                    </button>
-                    <button
-                      onClick={() => {
-                        i18n.changeLanguage("da");
-                        setShowLangDropdown(false);
-                      }}
-                      className="w-full px-4 py-2 text-left text-sm text-[#043428] hover:bg-gray-100 transition-colors"
-                    >
-                      Dansk (DA)
-                    </button>
-                  </div>
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setShowLangDropdown(false)}
+                    />
+                    <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-200">
+                      <button
+                        onClick={() => {
+                          i18n.changeLanguage("en");
+                          setShowLangDropdown(false);
+                        }}
+                        className="w-full px-4 py-2 text-left text-sm text-[#043428] hover:bg-gray-100 transition-colors"
+                      >
+                        English (EN)
+                      </button>
+                      <button
+                        onClick={() => {
+                          i18n.changeLanguage("da");
+                          setShowLangDropdown(false);
+                        }}
+                        className="w-full px-4 py-2 text-left text-sm text-[#043428] hover:bg-gray-100 transition-colors"
+                      >
+                        Dansk (DA)
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
 
-              {/* User Info - unchanged */}
-              <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg">
-                {/* Profile Circle with Initials */}
-                <div className="w-10 h-10 bg-[#064c3a] text-white rounded-full flex items-center justify-center text-sm font-bold">
-                  {getUserInitials()}
-                </div>
-
+              {/* User Info with Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowUserDropdown(!showUserDropdown)}
+                  className="flex items-center gap-3 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  {/* Profile Circle with Initials */}
+                  <div className="w-10 h-10 bg-[#064c3a] text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    {getUserInitials()}
+                  </div>
+                </button>
                 <div className="text-left">
                   <p className="text-md font-bold text-[#165933]">
                     {user?.firstName &&

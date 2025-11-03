@@ -24,6 +24,7 @@ export interface Partner {
   imageUrl3?: string;
   imageUrl4?: string;
   imageUrl5?: string;
+  thumbnail?: string;
   isActive: boolean;
   createdBy: number;
   createdDate: string;

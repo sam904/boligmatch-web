@@ -5,8 +5,10 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { loginThunk } from "./authSlice";
 import { Navigate, useLocation } from "react-router-dom";
 import login_cover from "../../../public/login_cover.png";
-import Lag_1 from "../../../public/Lag_1.png";
-import Vector from "../../../public/Vector.png";
+import logo_2 from "../../../public/logo_2.svg";
+import { CustomCheckbox } from "../../components/common/CheckBox";
+import { useState } from "react";
+// import Vector from "../../../public/Vector.png";
 
 const schema = z.object({
   userName: z.string().min(1, "Username/Email is required"),
@@ -15,6 +17,7 @@ const schema = z.object({
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
+  const [rememberMe, setRememberMe] = useState(false);
   const status = useAppSelector((s) => s.auth.status);
   const token = useAppSelector((s) => s.auth.accessToken);
   const user = useAppSelector((s) => s.auth.user);
@@ -34,14 +37,17 @@ export default function LoginPage() {
   });
 
   if (token && user) {
-    const redirectTo = user.roleName.toLowerCase() === 'admin' 
-      ? '/admin' 
-      : user.roleName.toLowerCase() === 'user'
-        ? '/userProfile/profile'
-        : user.roleName.toLowerCase() === 'partner'
-          ? '/partnerDashboard'
-          : '/';
-    return <Navigate to={(loc.state as any)?.from?.pathname ?? redirectTo} replace />;
+    const redirectTo =
+      user.roleName.toLowerCase() === "admin"
+        ? "/admin"
+        : user.roleName.toLowerCase() === "user"
+        ? "/userProfile/profile"
+        : user.roleName.toLowerCase() === "partner"
+        ? "/partnerDashboard"
+        : "/";
+    return (
+      <Navigate to={(loc.state as any)?.from?.pathname ?? redirectTo} replace />
+    );
   }
 
   return (
@@ -51,7 +57,7 @@ export default function LoginPage() {
         {/* Centered Logo */}
         <div className="flex justify-center mb-9">
           <img
-            src={Lag_1}
+            src={logo_2}
             alt="boligmatch logo"
             className="h-16 object-contain"
           />
@@ -98,12 +104,15 @@ export default function LoginPage() {
 
           <div>
             <div className="flex justify-between items-center mb-2">
-            <label className="block text-gray-700 font-medium mb-2 text-sm">
-              Password
-            </label>
-            <a href="#" className="text-[#0C2A92] hover:underline font-medium text-sm">
-              Forgot password?
-            </a>
+              <label className="block text-gray-700 font-medium mb-2 text-sm">
+                Password
+              </label>
+              <a
+                href="#"
+                className="text-[#0C2A92] hover:underline font-medium text-sm"
+              >
+                Forgot password?
+              </a>
             </div>
             <input
               type="password"
@@ -123,8 +132,11 @@ export default function LoginPage() {
           {/* Remember + Forgot */}
           <div className="flex justify-between items-center text-sm text-gray-600">
             <label className="flex items-center">
-              <input type="checkbox" className="mr-2 rounded" />
-              Remember for 30 days
+              <CustomCheckbox
+                checked={rememberMe}
+                onChange={setRememberMe}
+                label="Remember for 30 days"
+              />
             </label>
           </div>
 
@@ -138,14 +150,14 @@ export default function LoginPage() {
           </button>
 
           {/* OR Divider */}
-          <div className="flex items-center my-5">
+          {/* <div className="flex items-center my-5">
             <div className="flex-grow border-t border-gray-300"></div>
             <span className="mx-4 text-gray-500 text-sm">or</span>
             <div className="flex-grow border-t border-gray-300"></div>
-          </div>
+          </div> */}
 
           {/* Social Login Buttons */}
-          <div className="flex justify-center gap-4">
+          {/* <div className="flex justify-center gap-4">
             <button
               type="button"
               className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition-all duration-200 font-medium"
@@ -164,7 +176,7 @@ export default function LoginPage() {
               <img src={Vector} alt="Apple" className="w-5 h-5" />
               Sign in with Apple
             </button>
-          </div>
+          </div> */}
         </form>
       </div>
 

@@ -1,8 +1,8 @@
-import parentStatisticsImg from "/src/assets/userImages/parentStasts.png";
-import PartnerHeader from "./PartnerHeader";
-import Statistik from "/src/assets/userImages/Statistik.svg";
+// import parentStatisticsImg from "/src/assets/userImages/parentStasts.png";
+// import PartnerHeader from "./PartnerHeader";
+// import Statistik from "/src/assets/userImages/Statistik.svg";
 // import MinProfil from "/src/assets/userImages/Minprofil.svg";
-import Partnere from "/src/assets/userImages/Search.svg";
+// import Partnere from "/src/assets/userImages/Search.svg";
 import profileShortcut from "/src/assets/userImages/partnerShortcutImg2.png";
 import heartIconsImg from "/src/assets/userImages/Lag_1.svg";
 import commentImg from "/src/assets/userImages/comment.svg";
@@ -11,109 +11,69 @@ import shareIconsImg from "/src/assets/userImages/share.svg";
 function PartnerProfileShortcut() {
   return (
     <>
-      <div
-        className="h-[100vh]"
-        style={{
-          backgroundImage: `url(${parentStatisticsImg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <PartnerHeader />
-
-        <div className="flex flex-col">
-          <div className="flex-1 flex items-center px-60 py-6">
-            <div className="text-white">
-              <h1 className="text-5xl md:text-5xl font-[800]  tracking-tight leading-tight mb-4">
-                Partner Dashboard
-              </h1>
-              <h2 className="text-3xl md:text-4xl font-[500] tracking-tight">
-                Kabel-specialisten
-              </h2>
-            </div>
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 px-12 py-6">
-            <div className="flex justify-center space-x-8">
-              <button className="flex items-center space-x-3 px-12 py-4 bg-[#07583A] text-white rounded-lg transition-colors">
-                <div className="w-6 h-6 flex items-center justify-center">
-                  <img src={Statistik} alt="" />
-                </div>
-                <span className="text-sm font-medium ">
-                  Statistik
-                </span>
-              </button>
-
-              <button className="flex items-center space-x-3 px-12 py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
-                <div className="w-6 h-6 flex items-center justify-center">
-                  {/* <img src={MinProfil} alt="" /> */}
-                </div>
-                <span className="text-sm font-medium ">
-                  Min profil
-                </span>
-              </button>
-
-              <button className="flex items-center space-x-3 px-12 py-4 bg-[#91C73D] text-white rounded-lg transition-colors">
-                <div className="w-6 h-6 flex items-center justify-center">
-                  <img src={Partnere} alt="" />
-                </div>
-                <span className="text-sm font-medium ">
-                  Partnere
-                </span>
-              </button>
-            </div>
-          </div>
+      <div className="w-full mx-auto -mt-8 md:-mt-10">
+        <div className="w-full h-[52vh] md:h-[70vh] lg:h-[80vh] overflow-hidden shadow-lg">
+          <img
+            src={profileShortcut}
+            alt="Partner Profile"
+            className="w-full h-full object-cover"
+          />
         </div>
-      </div>
-      <div className="w-full h-screen">
-        <img
-          src={profileShortcut}
-          alt="Partner Profile"
-          className="w-full h-full object-cover"
-        />
       </div>
 
       {/* Action Buttons and Company Name */}
-      <div className="bg-[#043428] p-8">
+      <div className="bg-[#043428] p-4 md:p-8">
         {/* Three Action Buttons */}
-        <div className="flex justify-center space-x-6 mb-8">
+        <div className="w-full flex flex-row justify-center gap-3 md:gap-6 mb-6 md:mb-8 px-4 md:px-0">
           {/* Gem som favorit Button */}
-          <button className="flex items-center space-x-3 px-6 py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
-            <div className="w-6 h-6 flex items-center justify-center">
-              <img src={heartIconsImg} alt="" />
+          <button className="flex items-center space-x-2 md:space-x-3 px-2 md:px-6 py-2.5 md:py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
+            <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center">
+              <img
+                src={heartIconsImg}
+                alt=""
+                className="text-[13px] md:text-[20px] "
+              />
             </div>
-            <span className="text-sm font-medium ">
+            <span className="text-[13px] md:text-[20px]  font-medium ">
               Gem som favorit
             </span>
           </button>
 
           {/* Anbefal os til andre Button */}
-          <button className="flex items-center space-x-3 px-6 py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
-            <div className="w-6 h-6 flex items-center justify-center">
-              <img src={shareIconsImg} alt="" />
+          <button className="flex items-center space-x-2 md:space-x-3 px-4 md:px-6 py-2.5 md:py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
+            <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center">
+              <img
+                src={shareIconsImg}
+                alt=""
+                className="text-[13px] md:text-[20px] "
+              />
             </div>
-            <span className="text-sm font-medium ">
+            <span className="text-[13px] md:text-[20px]  font-medium ">
               Anbefal os til andre
             </span>
           </button>
 
           {/* Kontakt os Button */}
-          <button className="flex items-center space-x-3 px-6 py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
-            <div className="w-6 h-6 flex items-center justify-center">
-              <img src={commentImg} alt="" />
+          <button className="flex items-center space-x-2 md:space-x-3 px-4 md:px-6 py-2.5 md:py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
+            <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center">
+              <img
+                src={commentImg}
+                alt=""
+                className="text-[13px] md:text-[20px]"
+              />
             </div>
-            <span className="text-sm font-medium ">
+            <span className="text-[13px] md:text-[20px]  font-medium ">
               Kontakt os
             </span>
           </button>
-        </div>ṣ
+        </div>
 
         {/* Company Name */}
         <div className="text-center">
-          <h2 className="text-[64px] font-[800] text-white ">
+          <h2 className="text-[32px] md:text-4xl lg:text-[64px] font-[800] text-white ">
             Kabel-specialisten
           </h2>
-          <p className="text-white  font-[400] text-[18px] max-w-7xl mx-auto leading-normal">
+          <p className="text-white font-[400] text-sm md:text-base lg:text-[18px] max-w-7xl mx-auto leading-normal px-4 md:px-0">
             Arumet latem. Cus, omnim dolorio nsequiasit dolestibusa nimperum
             laboria autem hilique peria quamus, in cum quuntia nectibea cores
           </p>

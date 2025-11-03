@@ -20,8 +20,13 @@ import { useDbTranslation } from "../../../hooks/useDbTranslation";
 import { useDebounce } from "../../../hooks/useDebounce";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { SubCategory } from "../../../types/subcategory";
-import Select from "../../../components/common/Select";
-import { IconTrash, IconPencil, IconPlus } from "../../../components/common/Icons/Index";
+import {
+  IconTrash,
+  IconPencil,
+  IconPlus,
+} from "../../../components/common/Icons/Index";
+import { FilterDropdown } from "../../../components/common/FilterDropdown";
+import ToggleSwitch from "../../../components/common/ToggleSwitch";
 
 // Fixed validation schema - remove unused url parameters
 const subCategorySchema = z.object({
@@ -153,7 +158,7 @@ export default function SubCategoriesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
-  >("active");
+  >("all");
   const [previewImage, setPreviewImage] = useState<{
     url: string;
     isOpen: boolean;
@@ -213,6 +218,7 @@ export default function SubCategoriesPage() {
   const nameValue = watch("name");
   const imageUrlValue = watch("imageUrl");
   const iconUrlValue = watch("iconUrl");
+  const isActiveValue = watch("isActive");
 
   // Filter categories to show only active ones
   const activeCategories = categories.filter(
@@ -533,6 +539,7 @@ export default function SubCategoriesPage() {
     {
       accessorKey: "imageUrl",
       header: t("admin.subcategories.image") || "Image",
+      enableSorting: false,
       cell: ({ row }) => {
         const imageUrl = row.original.imageUrl;
         if (!imageUrl) return "-";
@@ -542,7 +549,7 @@ export default function SubCategoriesPage() {
             onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
             className="underline text-sm font-medium"
           >
-             Image
+            Image
           </button>
         );
       },
@@ -550,6 +557,7 @@ export default function SubCategoriesPage() {
     {
       accessorKey: "iconUrl",
       header: t("admin.subcategories.icon") || "Icon",
+      enableSorting: false,
       cell: ({ row }) => {
         const iconUrl = row.original.iconUrl;
         if (!iconUrl) return "-";
@@ -559,7 +567,7 @@ export default function SubCategoriesPage() {
             onClick={() => setPreviewImage({ url: iconUrl, isOpen: true })}
             className="underline text-sm font-medium"
           >
-             Icon
+            Icon
           </button>
         );
       },
@@ -567,6 +575,7 @@ export default function SubCategoriesPage() {
     {
       accessorKey: "isActive",
       header: t("common.status") || "Status",
+      enableSorting: false,
       cell: ({ row }) => (
         <span
           className="px-2 py-1 rounded-full text-xs text-white font-medium"
@@ -630,25 +639,12 @@ export default function SubCategoriesPage() {
             </Button>
           </div>
           {/* Right side: Filters, SearchBar and Add Subcategory button */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {/* Status Filter Dropdown */}
-            <div className="w-32">
-              <Select
-                value={statusFilter}
-                onChange={(e) =>
-                  handleStatusFilterChange(
-                    e.target.value as "all" | "active" | "inactive"
-                  )
-                }
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#91C73D] focus:ring-2 focus:ring-[#91C73D]/20 focus:outline-none transition-colors duration-200"
-              >
-                <option value="active">{t("common.active") || "Active"}</option>
-                <option value="inactive">
-                  {t("common.inactive") || "Inactive"}
-                </option>
-                <option value="all">{t("common.all") || "All"}</option>
-              </Select>
-            </div>
+            <FilterDropdown
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
+            />
 
             <div className="w-64">
               <SearchBar
@@ -696,6 +692,7 @@ export default function SubCategoriesPage() {
             : t("admin.subcategories.addSubCategory") || "Add Subcategory"
         }
         onClose={handleModalClose}
+        maxWidth="max-w-3xl"
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Category Dropdown - only active categories */}
@@ -788,22 +785,12 @@ export default function SubCategoriesPage() {
             exactDimensions={{ width: 512, height: 512 }}
             showDimensionValidation={true}
           />
-          {/* Active Status */}
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="isActive"
-              {...register("isActive")}
-              className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-              disabled={activeCategories.length === 0}
-            />
-            <label
-              htmlFor="isActive"
-              className="text-sm font-medium text-gray-700"
-            >
-              {t("common.active") || "Active"}
-            </label>
-          </div>
+          {/* Toggle Switch for Active Status */}
+          <ToggleSwitch
+            label={t("common.active") || "Active"}
+            checked={isActiveValue}
+            onChange={(checked) => setValue("isActive", checked)}
+          />
 
           {/* Validation Summary */}
           {Object.keys(errors).length > 0 && (
@@ -834,17 +821,19 @@ export default function SubCategoriesPage() {
           )}
 
           {/* Form Actions */}
-          <div className="flex gap-2 justify-end">
+          <div className="flex gap-3">
             <Button
               type="button"
-              variant="secondary"
+              variant="outline"
               onClick={handleModalClose}
               disabled={createMutation.isPending || updateMutation.isPending}
+              className="flex-1"
             >
               {t("common.cancel") || "Cancel"}
             </Button>
             <Button
               type="submit"
+              variant="secondary"
               disabled={
                 !isValid ||
                 createMutation.isPending ||
@@ -852,6 +841,7 @@ export default function SubCategoriesPage() {
                 categoriesLoading ||
                 activeCategories.length === 0
               }
+              className="flex-1"
             >
               {editingSubCategory
                 ? t("common.update") || "Update"

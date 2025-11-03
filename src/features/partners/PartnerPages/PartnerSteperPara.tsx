@@ -83,13 +83,29 @@ function ParentSteperPara() {
       <div className="bg-[#043428] flex flex-col justify-center items-center py-8 sm:py-12 md:py-16 lg:py-22 space-y-2 px-4">
         <div className="text-center">
           <div className="mb-3 sm:mb-4">
-            <img src={sampleImg} alt="Boligmatch Logo" className="h-auto w-auto max-w-[120px] sm:max-w-[150px] md:max-w-none" />
+            <img
+              src={sampleImg}
+              alt="Boligmatch Logo"
+              className="h-auto w-auto max-w-[120px] sm:max-w-[150px] md:max-w-none"
+            />
           </div>
         </div>
         <p className="text-white text-xs sm:text-sm text-center leading-relaxed">
-          Teningve 7 2610 Rødovre<br className="sm:hidden" />
-          <span className="hidden sm:inline"> </span>Tlf <a href="tel:70228288" className="text-[#91C73D] hover:underline">70228288</a><br className="sm:hidden" />
-          <span className="hidden sm:inline"> </span><a href="mailto:info@boligmatch.dk" className="text-[#91C73D] hover:underline">info@boligmatch.dk</a><br className="sm:hidden" />
+          Teningve 7 2610 Rødovre
+          <br className="sm:hidden" />
+          <span className="hidden sm:inline"> </span>Tlf{" "}
+          <a href="tel:70228288" className="text-[#91C73D] hover:underline">
+            70228288
+          </a>
+          <br className="sm:hidden" />
+          <span className="hidden sm:inline"> </span>
+          <a
+            href="mailto:info@boligmatch.dk"
+            className="text-[#91C73D] hover:underline"
+          >
+            info@boligmatch.dk
+          </a>
+          <br className="sm:hidden" />
           <span className="hidden sm:inline"> </span>CVR 33160437
         </p>
       </div>
