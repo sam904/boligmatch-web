@@ -52,6 +52,7 @@ export default function UserDashboardPage() {
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [conversationsLoading, setConversationsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  console.log("isMobile", isMobile);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -201,7 +202,6 @@ export default function UserDashboardPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      
       <div
         className="relative h-[100vh]"
         style={{
@@ -235,7 +235,11 @@ export default function UserDashboardPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 max-w-4xl mx-auto">
               <button
                 onClick={handlePartnersClick}
-                className={`${activeView === "default" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"} w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
+                className={`${
+                  activeView === "default"
+                    ? "bg-[#145939] text-white"
+                    : "bg-[#95c11f] text-white"
+                } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
                 type="button"
               >
                 <img src={searchImg} alt="" className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -244,10 +248,13 @@ export default function UserDashboardPage() {
                 </span>
               </button>
 
-
               <button
                 onClick={handleFavoritesClick}
-                className={`${activeView === "favorites" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"} w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
+                className={`${
+                  activeView === "favorites"
+                    ? "bg-[#145939] text-white"
+                    : "bg-[#95c11f] text-white"
+                } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
                 type="button"
               >
                 <img
@@ -260,10 +267,13 @@ export default function UserDashboardPage() {
                 </span>
               </button>
 
-
               <button
                 onClick={handleMessagesClick}
-                className={`${activeView === "messages" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"} w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition font-medium cursor-pointer`}
+                className={`${
+                  activeView === "messages"
+                    ? "bg-[#145939] text-white"
+                    : "bg-[#95c11f] text-white"
+                } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition font-medium cursor-pointer`}
                 type="button"
               >
                 <img

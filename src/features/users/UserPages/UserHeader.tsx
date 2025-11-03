@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userLogo from "/src/assets/userImages/boligmatchLogo.png";
 import userHeader from "/src/assets/userImages/userHeader.png";
-import userHeaderHamburger from "/src/assets/userImages/userHeaderHamburger.png";
+// import userHeaderHamburger from "/src/assets/userImages/userHeaderHamburger.png";
 import UserModal from "../../../components/common/UserModal";
 import LoginChoiceModal from "../../../components/common/LoginChoiceModal";
 import PartnerModal from "../../../components/common/PartnerModal";
@@ -294,7 +294,7 @@ function UserHeader() {
                   <button
                     onClick={() => {
                       setShowSidebar(false);
-                      navigate("/supplier-profile");
+                      // navigate("");
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
@@ -334,7 +334,7 @@ function UserHeader() {
                   <button
                     onClick={() => {
                       setShowSidebar(false);
-                      navigate("/privacy");
+                      // navigate("");
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >

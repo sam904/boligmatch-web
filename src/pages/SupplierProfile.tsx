@@ -16,10 +16,11 @@ import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
 import { toast } from "react-toastify";
 import { FaPlayCircle } from "react-icons/fa";
-import gradient from "/src/assets/userImages/gradient.svg";
+// import gradient from "/src/assets/userImages/gradient.svg";
 
 const SupplierProfile = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  console.log('isScrolled', isScrolled)
   const { t } = useTranslation();
   const userData = useAppSelector((state: RootState) => state.auth.user);
   const [activeModal, setActiveModal] = useState<

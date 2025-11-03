@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { logout } from "../../features/auth/authSlice";
-import { IconLogout } from "../common/Icons/Index";
+// import { logout } from "../../features/auth/authSlice";
+// import { IconLogout } from "../common/Icons/Index";
 
 // Enhanced route mapping with titles and subtitles
 interface RouteInfo {
@@ -38,6 +38,7 @@ const routeMap: Record<string, RouteInfo> = {
 export default function AdminLayout() {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
+  console.log('dispatch', dispatch)
   const user = useAppSelector((s) => s.auth.user);
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -84,10 +85,10 @@ export default function AdminLayout() {
     return "U";
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-    setShowUserDropdown(false);
-  };
+  // const handleLogout = () => {
+  //   dispatch(logout());
+  //   setShowUserDropdown(false);
+  // };
 
   const currentPageInfo = getCurrentPageInfo();
   const currentPageTitle = t(currentPageInfo.title);
