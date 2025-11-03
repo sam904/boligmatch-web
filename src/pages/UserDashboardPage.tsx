@@ -19,6 +19,7 @@ import chatModelImg from "/src/assets/userImages/chatModelImg.svg";
 import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { toast } from "sonner";
+import footerLogo from "/src/assets/userImages/footerLogo.svg"
 
 interface FavouriteItem {
   id?: number;
@@ -472,7 +473,7 @@ export default function UserDashboardPage() {
           <div className="mb-6 sm:mb-8">
             <div className="w-40 sm:w-48 md:w-52 h-10 sm:h-11 mx-auto">
               <img
-                src="/src/assets/userImages/footerLogo.svg"
+                src={footerLogo}
                 alt="Boligmatch Logo"
                 className="w-full h-full object-contain"
               />
