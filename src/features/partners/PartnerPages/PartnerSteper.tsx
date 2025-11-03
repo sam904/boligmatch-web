@@ -21,7 +21,7 @@ function PartnerSteper() {
             {t("partnerStepper.cta")}
           </button>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-[800] text-white max-w-4xl  tracking-tight leading-tight sm:leading-14 px-2">
+          <h1 className="text-[32px] sm:text-3xl md:text-[64px] lg:text-[64px] xl:text-6xl font-[800] text-white max-w-4xl  tracking-tight leading-tight sm:leading-14 px-2">
             {t("partnerStepper.heroTitle")}
           </h1>
         </div>
@@ -48,7 +48,12 @@ function PartnerSteper() {
 
                   <p className="text-gray-700 text-[15px] sm:text-[16px] md:text-[17px] leading-relaxed ">
                     {t("partnerStepper.p2_before", { name: "Klaus Rasmussen" })}{" "}
-                    <a href="tel:20297113" className="text-[#91C73D] hover:underline">20 297113</a>
+                    <a
+                      href="tel:20297113"
+                      className="text-[#91C73D] hover:underline"
+                    >
+                      20 297113
+                    </a>
                     {t("partnerStepper.p2_after")}
                   </p>
 
@@ -61,7 +66,9 @@ function PartnerSteper() {
                 <div className="flex items-center justify-center pb-8">
                   <img
                     src={partnerModelImg}
-                    alt={t("partnerStepper.contactName", { defaultValue: "Klaus Rasmussen" })}
+                    alt={t("partnerStepper.contactName", {
+                      defaultValue: "Klaus Rasmussen",
+                    })}
                     className="w-[120px] h-[150px] sm:w-[150px] sm:h-[180px] object-cover rounded-md"
                   />
                 </div>

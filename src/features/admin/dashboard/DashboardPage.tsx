@@ -562,6 +562,7 @@ const DashboardPage = () => {
 
   const statsData = [
     { title: "Total Users", value: formatK(stats?.TotalUsers || 0) },
+    { title: "Total Parners", value: formatK(stats?.totalPartners || 0) },
     {
       title: "Total Sub Categories",
       value: formatK(stats?.TotalSubCategories || 0),

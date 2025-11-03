@@ -228,7 +228,12 @@
   "profileSettings": "Profilindstillinger",
   "privacyPolicy": "Privatlivspolitik",
   "termsOfService": "Vilkår for brug",
-  "signOut": "Log ud"
+  "signOut": "Log ud",
+    "mitBoligmatch": "Mit Boligmatch+",
+    "manageProfile": "Administrér profil",
+    "becomePartner": "Bliv partner",
+    "about": "Om Boligmatch",
+    "terms": "Vilkår og betingelser"
 },
 "services": {
   "moving": {

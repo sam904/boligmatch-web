@@ -228,7 +228,12 @@
   "profileSettings": "Profile Settings",
   "privacyPolicy": "Privacy Policy",
   "termsOfService": "Terms of Service",
-  "signOut": "Sign Out"
+  "signOut": "Sign Out",
+  "mitBoligmatch": "My Boligmatch+",
+  "manageProfile": "Manage Profile",
+  "becomePartner": "Become a Partner",
+  "about": "About Boligmatch",
+  "terms": "Terms and Conditions"
 },
 "services": {
   "moving": {

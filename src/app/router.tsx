@@ -16,11 +16,13 @@ import UsersListPage from "../features/admin/users/UsersListPage";
 import UserDashboardPage from "../pages/UserDashboardPage";
 import PartnerDashboard from "../features/partners/PartnerDashboard";
 import ParentStatistics from "../features/partners/PartnerPages/PartnerStatistics";
-import PartnerProfileShortcut from "../features/partners/PartnerPages/PartnerProfileShortcut";
-import SearchForPartner from "../features/partners/PartnerPages/SearchForPartner";
+// import PartnerProfileShortcut from "../features/partners/PartnerPages/PartnerProfileShortcut";
+// import SearchForPartner from "../features/partners/PartnerPages/SearchForPartner";
 import UserSupplier from "../pages/UserSupplier";
 import SupplierProfile from "../pages/SupplierProfile";
 import DashboardPage from "../features/admin/dashboard/DashboardPage";
+import AboutBoligmatch from "../pages/AboutBoligmatch";
+import TermsAndConditions from "../pages/TermsAndConditions";
 
 const router = createBrowserRouter([
   // 🔹 User Routes (Main Site)
@@ -31,6 +33,8 @@ const router = createBrowserRouter([
       // { index: true, element: <HomePage /> },
       { path: "home-page", element: <HomePage /> },
       { index: true, element: <LandingPage /> },
+      { path: "about", element: <AboutBoligmatch /> },
+      { path: "terms", element: <TermsAndConditions /> },
       { path: "profile", element: <UserDashboardPage /> },
       { path: "user-supplier", element: <UserSupplier /> },
       { path: "supplier-profile", element: <SupplierProfile /> },
@@ -44,15 +48,15 @@ const router = createBrowserRouter([
     path: "/partner",
     element: (
       // <RoleGuard roles={["partner"]}>
-        <PartnerLayout />
+      <PartnerLayout />
       // </RoleGuard>
     ),
     children: [
       { index: true, element: <PartnerDashboard /> },
       { path: "dashboard", element: <PartnerDashboard /> },
       { path: "statistics", element: <ParentStatistics /> },
-      { path: "profile-shortcut", element: <PartnerProfileShortcut /> },
-      { path: "search", element: <SearchForPartner /> },
+      // { path: "profile-shortcut", element: <PartnerProfileShortcut /> },
+      // { path: "search", element: <SearchForPartner /> },
     ],
   },
 
