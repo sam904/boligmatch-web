@@ -7,6 +7,30 @@ import type {
   PaginatedUsersResponse
 } from '../types/user';
 
+// Update OTPResponse to match the actual API response structure
+export interface OTPResponse {
+  message: {
+    errorMessage: string | null;
+    fileContent: string | null;
+    fileName: string | null;
+    contentType: string | null;
+    failureReason: string | null;
+    isSuccess: boolean;
+    output: string;
+  };
+}
+
+// Update OTP verification response - it's a direct object, not nested in message
+export interface OTPVerificationResponse {
+  errorMessage: string | null;
+  fileContent: string | null;
+  fileName: string | null;
+  contentType: string | null;
+  failureReason: string | null;
+  isSuccess: boolean;
+  output: boolean; // This is boolean, not string
+}
+
 export const userService = {
   getById: (id: number) => http.get<User>(`/User/getUserById/${id}`),
   
@@ -35,4 +59,15 @@ export const userService = {
     salt: "",
     otp: 0,
   }),
+
+  // Use GET request with email as path parameter
+  generateAndSendOTPToEmail: (email: string) => 
+    http.get<OTPResponse>(`/Password/generateAndSendOTPToEmail/${encodeURIComponent(email)}`),
+
+  // FIXED: Send as query parameters instead of request body
+  verifyOTP: (data: { email: string; otp: string }) =>
+    http.post<OTPVerificationResponse>(
+      `/User/emailOTPVerification?email=${encodeURIComponent(data.email)}&otp=${data.otp}`,
+      {} // Empty body since parameters are in query string
+    ),
 };

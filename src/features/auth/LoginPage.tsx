@@ -1,4 +1,6 @@
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import ForgotPasswordModal from "../auth/ForgotPasswordModal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -7,7 +9,6 @@ import { Navigate, useLocation } from "react-router-dom";
 import login_cover from "../../../public/login_cover.png";
 import logo_2 from "../../../public/logo_2.svg";
 import { CustomCheckbox } from "../../components/common/CheckBox";
-import { useState } from "react";
 // import Vector from "../../../public/Vector.png";
 
 const schema = z.object({
@@ -17,6 +18,7 @@ const schema = z.object({
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const status = useAppSelector((s) => s.auth.status);
   const token = useAppSelector((s) => s.auth.accessToken);
@@ -107,12 +109,13 @@ export default function LoginPage() {
               <label className="block text-gray-700 font-medium mb-2 text-sm">
                 Password
               </label>
-              <a
-                href="#"
-                className="text-[#0C2A92] hover:underline font-medium text-sm"
-              >
-                Forgot password?
-              </a>
+              <button
+            type="button"
+            onClick={() => setIsForgotPasswordOpen(true)}
+            className="text-[#0C2A92] hover:underline font-medium text-sm"
+          >
+            Forgot password?
+          </button>
             </div>
             <input
               type="password"
@@ -187,6 +190,15 @@ export default function LoginPage() {
           alt="Login cover"
           className="w-full rounded-l-4xl h-screen object-cover"
         />
+
+         <ForgotPasswordModal
+        isOpen={isForgotPasswordOpen}
+        onClose={() => setIsForgotPasswordOpen(false)}
+        onSuccess={() => {
+          // Optional: Show success message or redirect
+          console.log("Password reset successful");
+        }}
+      />
       </div>
     </div>
   );
