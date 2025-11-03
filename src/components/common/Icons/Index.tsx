@@ -215,3 +215,30 @@ export const IconLogout = ({ className = "w-4 h-4" }: IconProps) => (
     />
   </svg>
 );
+
+export const IconArrowLeft = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg
+    width="19"
+    height="19"
+    viewBox="0 0 19 19"
+    fill="none"
+    className={className}
+  >
+    <path
+      d="M7.57495 4.69434L2.76953 9.49975L7.57495 14.3052"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M16.23 9.5H2.90625"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);

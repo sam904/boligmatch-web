@@ -9,19 +9,19 @@ interface FilterDropdownProps {
   className?: string;
 }
 
-export const FilterDropdown = ({ 
-  value, 
-  onChange, 
-  className = "" 
+export const FilterDropdown = ({
+  value,
+  onChange,
+  className = "",
 }: FilterDropdownProps) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   const options = [
+    { value: "all", label: t("common.all") || "All" },
     { value: "active", label: t("common.active") || "Active" },
     { value: "inactive", label: t("common.inactive") || "Inactive" },
-    { value: "all", label: t("common.all") || "All" }
-  ]
+  ];
 
   return (
     <div className={`relative ${className}`}>
@@ -41,11 +41,11 @@ export const FilterDropdown = ({
       {isOpen && (
         <>
           {/* Backdrop */}
-          <div 
-            className="fixed inset-0 z-10" 
+          <div
+            className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          
+
           {/* Dropdown Options */}
           <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
             {options.map((option) => (
@@ -57,16 +57,24 @@ export const FilterDropdown = ({
                   setIsOpen(false);
                 }}
                 className={`w-full px-4 py-2.5 text-sm text-left hover:bg-gray-50 transition-colors ${
-                  value === option.value 
-                    ? "bg-[#91C73D]/10 text-[#91C73D] font-medium" 
+                  value === option.value
+                    ? "bg-[#91C73D]/10 text-[#91C73D] font-medium"
                     : "text-gray-700"
                 } last:rounded-b-lg`}
               >
                 <div className="flex items-center justify-between">
                   <span>{option.label}</span>
                   {value === option.value && (
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   )}
                 </div>

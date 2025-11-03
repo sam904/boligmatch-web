@@ -1,4 +1,3 @@
-import React from "react";
 import loginModelLogo from "/src/assets/userImages/loginModelLogo.png";
 import chooseUserImg from "/src/assets/userImages/choose_userImg.svg";
 import choosePartnerImg from "/src/assets/userImages/choose_partnerImg.svg";
