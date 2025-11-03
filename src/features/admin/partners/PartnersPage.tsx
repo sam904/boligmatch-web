@@ -60,23 +60,11 @@ function ImagePreviewModal({
       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
         <div className="flex justify-between items-center p-4 border-b">
           <h3 className="text-lg font-semibold">Image Preview</h3>
-          <button
+         <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            ✕
           </button>
         </div>
         <div className="p-4 flex justify-center items-center max-h-[70vh] overflow-auto">
@@ -86,14 +74,14 @@ function ImagePreviewModal({
             className="max-w-full max-h-full object-contain"
           />
         </div>
-        <div className="p-4 border-t text-center">
+        <div className="p-4 border-t text-left">
           <a
             href={imageUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 underline"
+            className="text-blue-600 hover:text-blue-800 underline "
           >
-            Open original image in new tab
+            Open in new tab
           </a>
         </div>
       </div>
@@ -143,6 +131,7 @@ const partnerDocumentSchema = z.object({
   id: z.number().optional(),
   partnerId: z.number().optional(),
   documentName: z.string().min(1, "Document name is required"),
+  documentType: z.string().min(1, "Document type is required"),
   documentUrl: z.string().min(1, "Document URL is required"),
   isActive: z.boolean(),
 });
@@ -251,6 +240,7 @@ export default function PartnersPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  
   const [previewImage, setPreviewImage] = useState<{
     url: string;
     isOpen: boolean;
@@ -289,6 +279,18 @@ export default function PartnersPage() {
     "Categories & Sub-Categories",
   ];
 
+  // Document types options
+  const DOCUMENT_TYPES = [
+    { value: "pdf", label: "PDF Document (.pdf)" },
+    { value: "doc", label: "Word Document (.doc)" },
+    { value: "docx", label: "Word Document (.docx)" },
+    { value: "xls", label: "Excel Spreadsheet (.xls)" },
+    { value: "xlsx", label: "Excel Spreadsheet (.xlsx)" },
+    { value: "ppt", label: "PowerPoint Presentation (.ppt)" },
+    { value: "pptx", label: "PowerPoint Presentation (.pptx)" },
+    { value: "txt", label: "Text File (.txt)" },
+  ];
+
   const {
     register,
     handleSubmit,
@@ -311,7 +313,7 @@ export default function PartnersPage() {
       mobileNo: "",
       address: "",
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
-      parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
+      parDoclst: [{ documentName: "", documentUrl: "", documentType: "", isActive: true }],
     },
   });
 
@@ -381,6 +383,7 @@ export default function PartnersPage() {
       const documentValidations = documentFields.map((_, index) =>
         trigger([
           `parDoclst.${index}.documentName`,
+          `parDoclst.${index}.documentType`,
           `parDoclst.${index}.documentUrl`,
           `parDoclst.${index}.isActive`,
         ] as any)
@@ -523,10 +526,11 @@ export default function PartnersPage() {
                 id: doc.id,
                 partnerId: doc.partnerId,
                 documentName: doc.documentName,
+                documentType: doc.documentType || "",
                 documentUrl: doc.documentUrl,
                 isActive: doc.isActive ?? true,
               }))
-            : [{ documentName: "", documentUrl: "", isActive: true }],
+            : [{ documentName: "", documentUrl: "", documentType: "", isActive: true }],
       };
       reset(formData);
       setSelectedCategoryId(editingPartner.categoryId);
@@ -564,7 +568,7 @@ export default function PartnersPage() {
       thumbnail: "",
       isActive: true,
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
-      parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
+      parDoclst: [{ documentName: "", documentUrl: "",  documentType: "", isActive: true }],
     };
     reset(defaultValues);
     setCurrentStep(1);
@@ -699,60 +703,61 @@ export default function PartnersPage() {
       setIsExporting(false);
     }
   };
-
   // Modified onSubmit to handle both create and update
-  const onSubmit = async (data: PartnerFormData) => {
-    if (isSubmitting) return;
+const onSubmit = async (data: PartnerFormData) => {
+  if (isSubmitting) return;
 
-    console.log("Form submission triggered with data:", data);
+  console.log("Form submission triggered with data:", data);
 
-    const isValid = await trigger();
-    if (!isValid) {
-      console.log("Form validation failed:", errors);
-      toast.error("Please fix form errors before submitting");
-      return;
-    }
+  const isValid = await trigger();
+  if (!isValid) {
+    console.log("Form validation failed:", errors);
+    toast.error("Please fix form errors before submitting");
+    return;
+  }
 
-    setIsSubmitting(true);
+  setIsSubmitting(true);
 
-    try {
-      const subCategoriesPayload = data.parSubCatlst.map((subCat) => ({
-        id: subCat.id,
+  try {
+    const subCategoriesPayload = data.parSubCatlst.map((subCat) => ({
+      id: subCat.id,
+      partnerId: editingPartner?.id || 0,
+      subCategoryId: subCat.subCategoryId,
+      isActive: subCat.isActive,
+    }));
+
+    // Remove documentType to match backend expectations (5 columns instead of 6)
+    const documentsPayload = data.parDoclst.map(doc => {
+      const { documentType, ...docWithoutType } = doc;
+      return {
+        ...docWithoutType,
         partnerId: editingPartner?.id || 0,
-        subCategoryId: subCat.subCategoryId,
-        isActive: subCat.isActive,
-      }));
-
-      const documentsPayload = data.parDoclst.map((doc) => ({
-        id: doc.id,
-        partnerId: editingPartner?.id || 0,
-        documentName: doc.documentName,
-        documentUrl: doc.documentUrl,
-        isActive: doc.isActive,
-      }));
-
-      const payload = {
-        ...data,
-        id: editingPartner?.id,
-        parSubCatlst: subCategoriesPayload,
-        parDoclst: documentsPayload,
-        email: data.email || undefined,
-        mobileNo: data.mobileNo || undefined,
       };
+    });
 
-      console.log("Submitting payload:", payload);
+    const payload = {
+      ...data,
+      id: editingPartner?.id,
+      parSubCatlst: subCategoriesPayload,
+      parDoclst: documentsPayload,
+      email: data.email || undefined,
+      mobileNo: data.mobileNo || undefined,
+    };
 
-      if (editingPartner) {
-        await updateMutation.mutateAsync(payload as any);
-      } else {
-        await createMutation.mutateAsync(payload as any);
-      }
-    } catch (error) {
-      console.error("Submission error:", error);
-    } finally {
-      setIsSubmitting(false);
+    console.log("Final payload being sent:", JSON.stringify(payload, null, 2));
+    console.log("Documents payload structure:", documentsPayload.map(doc => Object.keys(doc)));
+
+    if (editingPartner) {
+      await updateMutation.mutateAsync(payload as any);
+    } else {
+      await createMutation.mutateAsync(payload as any);
     }
-  };
+  } catch (error) {
+    console.error("Submission error:", error);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   // Unified handleNext function for both create and update modes
   const handleNext = async () => {
@@ -781,6 +786,7 @@ export default function PartnersPage() {
       const documentValidations = documentFields.map((_, index) =>
         trigger([
           `parDoclst.${index}.documentName`,
+          `parDoclst.${index}.documentType`,
           `parDoclst.${index}.documentUrl`,
           `parDoclst.${index}.isActive`,
         ] as any)
@@ -821,12 +827,14 @@ export default function PartnersPage() {
           isActive: subCat.isActive,
         }));
 
+        // Remove documentType from documents payload to match backend expectations
         const documentsPayload = data.parDoclst.map((doc) => ({
           id: doc.id,
           partnerId: editingPartner?.id || 0,
           documentName: doc.documentName,
           documentUrl: doc.documentUrl,
           isActive: doc.isActive,
+         documentType: doc.documentType
         }));
 
         const payload = {
@@ -1011,7 +1019,7 @@ export default function PartnersPage() {
   };
 
   const addDocumentField = () => {
-    appendDocument({ documentName: "", documentUrl: "", isActive: true });
+    appendDocument({ documentName: "", documentUrl: "", documentType: "", isActive: true });
   };
 
   const removeDocumentField = (index: number) => {
@@ -1353,85 +1361,115 @@ export default function PartnersPage() {
           </div>
         );
 
-      case 5:
-        return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-medium text-gray-900">Documents</h3>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-700 mb-3">
-                Partner Documents
-              </h4>
-              <p className="text-sm text-gray-600 mb-4">
-                Add one or more documents for this partner (business licenses,
-                contracts, certificates, etc.)
-              </p>
-              {documentFields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="border border-gray-200 rounded-lg p-4 mb-4 bg-white"
+    case 5:
+  return (
+    <div className="space-y-6">
+      <h3 className="text-lg font-medium text-gray-900">Documents</h3>
+      <div className="bg-gray-50 p-4 rounded-lg">
+        <h4 className="font-medium text-gray-700 mb-3">
+          Partner Documents
+        </h4>
+        <p className="text-sm text-gray-600 mb-4">
+          Add one or more documents for this partner (business licenses,
+          contracts, certificates, etc.)
+        </p>
+        {documentFields.map((field, index) => (
+          <div
+            key={field.id}
+            className="border border-gray-200 rounded-lg p-4 mb-4 bg-white"
+          >
+            <div className="space-y-4 mb-4">
+              <Input
+                label={`Document Name ${index + 1}`}
+                error={errors.parDoclst?.[index]?.documentName?.message}
+                {...register(`parDoclst.${index}.documentName` as const)}
+                placeholder="Enter document name (e.g., Business License, Contract, Certificate)"
+                required
+              />
+              
+              {/* Add Document Type Dropdown */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Document Type {index + 1} *
+                </label>
+                <select
+                  {...register(`parDoclst.${index}.documentType` as const)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
                 >
-                  <div className="space-y-4 mb-4">
-                    <Input
-                      label={`Document Name ${index + 1}`}
-                      error={errors.parDoclst?.[index]?.documentName?.message}
-                      {...register(`parDoclst.${index}.documentName` as const)}
-                      placeholder="Enter document name (e.g., Business License, Contract, Certificate)"
-                      required
-                    />
-                    <DocumentUpload
-                      label={`Document File ${index + 1}`}
-                      value={watch(`parDoclst.${index}.documentUrl`)}
-                      onChange={(url) =>
-                        setValue(`parDoclst.${index}.documentUrl`, url)
-                      }
-                      onPreview={(url) =>
-                        handleDocumentPreview(
-                          url,
-                          watch(`parDoclst.${index}.documentName`)
-                        )
-                      }
-                      folder="partners/documents"
-                      error={errors.parDoclst?.[index]?.documentUrl?.message}
-                      required
-                    />
-                  </div>
-                  <div className="flex items-center justify-end">
-                    {documentFields.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="danger"
-                        onClick={() => removeDocumentField(index)}
-                        disabled={documentFields.length <= 1}
-                      >
-                        Remove Document
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={addDocumentField}
-              >
-                + Add Another Document
-              </Button>
-              {errors.parDoclst && !errors.parDoclst.root && (
-                <p className="text-red-500 text-sm mt-2">
-                  {errors.parDoclst.message}
-                </p>
+                  <option value="">Select Document Type</option>
+                  {DOCUMENT_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+                {errors.parDoclst?.[index]?.documentType && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.parDoclst[index]?.documentType?.message}
+                  </p>
+                )}
+              </div>
+
+              <DocumentUpload
+                label={`Document File ${index + 1}`}
+                value={watch(`parDoclst.${index}.documentUrl`)}
+                onChange={(url) =>
+                  setValue(`parDoclst.${index}.documentUrl`, url)
+                }
+                onPreview={(url) =>
+                  handleDocumentPreview(
+                    url,
+                    watch(`parDoclst.${index}.documentName`)
+                  )
+                }
+                folder="partners/documents"
+                error={errors.parDoclst?.[index]?.documentUrl?.message}
+                required
+              />
+            </div>
+            <div className="flex items-center justify-end">
+              {documentFields.length > 1 && (
+                <Button
+                  type="button"
+                  variant="danger"
+                  onClick={() => removeDocumentField(index)}
+                  disabled={documentFields.length <= 1}
+                >
+                  Remove Document
+                </Button>
               )}
             </div>
           </div>
-        );
-
+        ))}
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={addDocumentField}
+          style={{
+            backgroundColor: '#95C11F',
+            borderColor: '#95C11F',
+            color: 'white'
+          }}
+          className="hover:bg-[#85B11F] hover:border-[#85B11F]"
+        >
+          Add Document +
+        </Button>
+        {errors.parDoclst && !errors.parDoclst.root && (
+          <p className="text-red-500 text-sm mt-2">
+            {errors.parDoclst.message}
+          </p>
+        )}
+      </div>
+    </div>
+  );
       case 6:
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-bold text-gray-900">
               Categories & Sub Categories
             </h3>
-            <div className="bg-gray-50 p-4 rounded-lg">
+            <div className="bg-[#F0F2EA] p-4 rounded-lg">
               <h4 className="font-medium text-gray-700 mb-3">
                 Select Category
               </h4>
@@ -1498,7 +1536,7 @@ export default function PartnersPage() {
                 )}
             </div>
             {selectedCategoryId > 0 && (
-              <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="bg-[#F0F2EA] p-4 rounded-lg">
                 <h4 className="font-medium text-gray-700 mb-3">
                   Sub Categories
                 </h4>

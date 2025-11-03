@@ -99,23 +99,11 @@ function ImagePreviewModal({
       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
         <div className="flex justify-between items-center p-4 border-b">
           <h3 className="text-lg font-semibold">Image Preview</h3>
-          <button
+           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            ✕
           </button>
         </div>
         <div className="p-4 flex justify-center items-center max-h-[70vh] overflow-auto">
@@ -132,14 +120,14 @@ function ImagePreviewModal({
             />
           )}
         </div>
-        <div className="p-4 border-t text-center">
+        <div className="p-4 border-t text-left">
           <a
             href={imageUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:text-blue-800 underline text-sm"
           >
-            Open original image in new tab
+            Open in new tab
           </a>
         </div>
       </div>
