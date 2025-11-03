@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { subCategoriesService } from "../services/subCategories.service";
 import { partnerService } from "../services/partner.service";
+import footerLogo from "/src/assets/userImages/footerLogo.svg";
 
 interface SubCategoryData {
   id: number;
@@ -277,7 +278,7 @@ const UserSupplier = () => {
             <div className="mb-8">
               <div className="w-[199px] h-[45px] mx-auto">
                 <img
-                  src="/src/assets/userImages/footerLogo.svg"
+                  src={footerLogo}
                   alt="Boligmatch Logo"
                   className="w-full h-full object-contain"
                 />

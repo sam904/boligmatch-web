@@ -9,6 +9,7 @@ import landingPageIcons3 from "/src/assets/userImages/3.svg";
 import landingPageIcons4 from "/src/assets/userImages/4.svg";
 import { useTranslation } from "react-i18next";
 import SignUpModal from "../components/common/SignUpModal";
+import footerLogo from "/src/assets/userImages/footerLogo.svg"
 
 export default function LandingPage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -79,7 +80,7 @@ export default function LandingPage() {
             <div className="mb-8">
               <div className="w-[199px] h-[45px] mx-auto">
                 <img
-                  src="/src/assets/userImages/footerLogo.svg"
+                  src={footerLogo}
                   alt="Boligmatch Logo"
                   className="w-full h-full object-contain"
                 />
