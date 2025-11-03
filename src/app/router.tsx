@@ -21,6 +21,8 @@ import SearchForPartner from "../features/partners/PartnerPages/SearchForPartner
 import UserSupplier from "../pages/UserSupplier";
 import SupplierProfile from "../pages/SupplierProfile";
 import DashboardPage from "../features/admin/dashboard/DashboardPage";
+import AboutBoligmatch from "../pages/AboutBoligmatch";
+import TermsAndConditions from "../pages/TermsAndConditions";
 
 const router = createBrowserRouter([
   // 🔹 User Routes (Main Site)
@@ -31,6 +33,8 @@ const router = createBrowserRouter([
       // { index: true, element: <HomePage /> },
       { path: "home-page", element: <HomePage /> },
       { index: true, element: <LandingPage /> },
+      { path: "about", element: <AboutBoligmatch /> },
+      { path: "terms", element: <TermsAndConditions /> },
       { path: "profile", element: <UserDashboardPage /> },
       { path: "user-supplier", element: <UserSupplier /> },
       { path: "supplier-profile", element: <SupplierProfile /> },

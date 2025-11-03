@@ -1023,6 +1023,17 @@ export default function PartnersPage() {
       header: "Category",
       cell: ({ row }) => getCategoryName(row.original.categoryId),
     },
+    {
+      id: "subCategory",
+      header: "Sub Category",
+      cell: ({ row }) => {
+        const list = row.original.parSubCatlst || [];
+        const names = list
+          .map((s: any) => s?.subCategories)
+          .filter((v: any) => !!v && String(v).trim().length > 0);
+        return names.length ? names.join(", ") : "-";
+      },
+    },
     { accessorKey: "address", header: "Address" },
     { accessorKey: "cvr", header: "CVR" },
     { accessorKey: "mobileNo", header: "Mobile Number" },

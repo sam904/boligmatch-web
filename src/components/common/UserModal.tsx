@@ -7,7 +7,8 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { loginThunk } from "../../features/auth/authSlice";
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
-import loginModelLogo from "/src/assets/userImages/loginModelLogo.png"
+import loginModelLogo from "/src/assets/userImages/boligmatchLogo2.png"
+import ToastBanner from "./ToastBanner";
 
 const schema = z.object({
   userName: z.string().min(1, "Username is required"),
@@ -29,6 +30,19 @@ export default function UserModal({ open, onClose }: UserModalProps) {
   const error = useAppSelector((s) => s.auth.error);
   const { t } = useTranslation();
 
+  // Local toast notification state
+  const [toast, setToast] = React.useState<
+    | { type: "success" | "error" | "info"; message: string; id: number }
+    | null
+  >(null);
+  const hideToast = () => setToast(null);
+  // Auto-dismiss toasts after a short delay
+  React.useEffect(() => {
+    if (!toast) return;
+    const id = setTimeout(() => setToast(null), 3000);
+    return () => clearTimeout(id);
+  }, [toast]);
+
   const {
     register,
     handleSubmit,
@@ -46,14 +60,20 @@ export default function UserModal({ open, onClose }: UserModalProps) {
     if (hasHandledLoginRef.current) return;
     if (token && user) {
       hasHandledLoginRef.current = true;
-      onClose();
+      // Show success toast before closing
+      setToast({ type: "success", message: "Login successfully", id: Date.now() });
+      // Persist user data
       localStorage.setItem("bm_user", JSON.stringify(user));
       localStorage.setItem("bm_access", token);
-
+      // Navigate after a brief delay so the toast is visible
       const from = (location.state as any)?.from?.pathname;
-      navigate(from ?? "/profile", { replace: true });
+      const to = from ?? "/profile";
+      setTimeout(() => {
+        onClose();
+        navigate(to, { replace: true });
+      }, 1000);
     }
-  }, [token, user, onClose, navigate]);
+  }, [token, user, onClose, navigate, location.state, t]);
 
   // Lock body scroll when the modal is open
   React.useEffect(() => {
@@ -68,6 +88,23 @@ export default function UserModal({ open, onClose }: UserModalProps) {
   const onSubmit = (data: { userName: string; password: string }) => {
     dispatch(loginThunk(data));
   };
+
+  // Surface backend auth errors as toast notifications
+  React.useEffect(() => {
+    if (!error) return;
+    // Try to normalize common error shapes
+    let msg: string = "";
+    try {
+      if (typeof error === "string") msg = error;
+      else if (typeof (error as any).failureReason === "string") msg = (error as any).failureReason;
+      else if (typeof (error as any).errorMessage === "string") msg = (error as any).errorMessage;
+      else if (typeof (error as any).message === "string") msg = (error as any).message;
+      else msg = JSON.stringify(error);
+    } catch {
+      msg = "Login failed";
+    }
+    setToast({ type: "error", message: msg, id: Date.now() });
+  }, [error, setToast]);
 
   if (!open) return null;
 
@@ -105,15 +142,15 @@ export default function UserModal({ open, onClose }: UserModalProps) {
               </h2>
             </div>
 
-            {error && (
-              <div className="mx-6 mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-                <div className="flex items-center">
-                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  {error}
-                </div>
-              </div>
+            {/* Toast notifications */}
+            {toast && (
+              <ToastBanner
+                type={toast.type}
+                message={toast.message}
+                onClose={hideToast}
+                autoDismissMs={3000}
+                fixed
+              />
             )}
 
             <div className="px-6 pb-7">

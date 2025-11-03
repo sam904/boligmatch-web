@@ -369,6 +369,7 @@ const DashboardPage = () => {
 
   const statsData = [
     { title: "Total Users", value: formatK(stats?.TotalUsers || 0) },
+    { title: "Total Parners", value: formatK(stats?.totalPartners || 0) },
     {
       title: "Total Sub Categories",
       value: formatK(stats?.TotalSubCategories || 0),
@@ -532,12 +533,12 @@ const DashboardPage = () => {
 
           <div className="flex items-center justify-between">
             {/* Left Pie Chart */}
-            <div className="relative" style={{ width: 160, height: 160 }}>
+            {/* <div className="relative" style={{ width: 160, height: 160 }}>
               <Doughnut
                 data={getDeactivatedPieChartData()}
                 options={deactivatePieOptions}
               />
-            </div>
+            </div> */}
 
             {/* Right Stats */}
             <div className="ml-6 space-y-4">

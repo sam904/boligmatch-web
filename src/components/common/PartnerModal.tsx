@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { loginThunk } from "../../features/auth/authSlice";
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
-import loginModelLogo from "/src/assets/userImages/loginModelLogo.png";
+import loginModelLogo from "/src/assets/userImages/boligmatchLogo2.png";
 
 const schema = z.object({
   userName: z.string().min(1, "Username is required"),
@@ -103,7 +103,7 @@ export default function PartnerModal({ open, onClose }: PartnerModalProps) {
 
             <div className="px-6 pb-6">
               <h2 className="text-[20px] font-[800] text-[#000000] text-center">
-                {t("auth.login")} (Partner)
+                {t("auth.login")}
               </h2>
             </div>
 

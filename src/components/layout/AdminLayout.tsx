@@ -357,7 +357,7 @@ export default function AdminLayout() {
                   <p className="text-md font-bold text-[#165933]">
                     {user?.firstName &&
                       user.firstName.charAt(0).toUpperCase() +
-                        user.firstName.slice(1).toLowerCase()}{" "}
+                        user.firstName.slice(1).toLowerCase()}
                     {user?.lastName &&
                       user.lastName.charAt(0).toUpperCase() +
                         user.lastName.slice(1).toLowerCase()}

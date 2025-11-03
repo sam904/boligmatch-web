@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import userDashboard from "/src/assets/userImages/user-supplier.png";
 import JimmysELservice from "../assets/userSupplier/Jimmys EL-service.png";
 import UserHeader from "../features/users/UserPages/UserHeader";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { subCategoriesService } from "../services/subCategories.service";
 import { partnerService } from "../services/partner.service";
@@ -46,6 +46,7 @@ type PartnerCardProps = {
   onMoreInfo?: () => void;
   isLoading?: boolean;
 };
+
 const PartnerCard: React.FC<PartnerCardProps> = ({
   logoUrl,
   name,
@@ -54,30 +55,33 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
   onMoreInfo,
   isLoading = false,
 }) => (
-  <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-[413px] flex flex-col items-center p-6 text-center gap-2">
-    <div className="mb-2">
+  <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-[413px] h-[453px] flex flex-col items-center px-8 py-10 text-center">
+    <div className="mb-6">
       <img
         src={logoUrl}
         alt={name || fullName || "Partner"}
-        className="w-[99px] h-[77px] object-contain"
+        className="w-[120px] h-[120px] object-contain"
         onError={(e) => {
           (e.currentTarget as HTMLImageElement).src = JimmysELservice;
         }}
       />
     </div>
-    <h3 className="text-[20px] font-[800] text-[#000000] truncate max-w-full">
+    <h3 className="text-[24px] font-bold text-[#000000] mb-4 px-4">
       {name || fullName || "Partner"}
     </h3>
     {description && (
-      <p className="text-[#000000] leading-relaxed font-[400] text-[13px] line-clamp-3 mt-1">
-        {description}
-      </p>
+      <div className="flex-1 flex items-start justify-center w-full mb-6 overflow-hidden">
+        <p className="text-[#000000] leading-[1.6] font-[400] text-[14px] line-clamp-6">
+          {description}
+        </p>
+      </div>
     )}
     <button
       onClick={onMoreInfo}
       disabled={isLoading}
-      className={`font-bold mt-3 hover:underline cursor-pointer railways ${isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
-        }`}
+      className={`font-bold text-[16px] hover:underline cursor-pointer ${
+        isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
+      }`}
     >
       {isLoading ? "Loading..." : "More info"}
     </button>
@@ -85,6 +89,10 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
 );
 
 const UserSupplier = () => {
+  const location = useLocation();
+  const categoryName = (location as any)?.state?.categoryName as
+    | string
+    | undefined;
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   console.log("isScrolled", isScrolled);
@@ -145,7 +153,9 @@ const UserSupplier = () => {
       }
       try {
         setPartnersLoading(true);
-        const list = await subCategoriesService.getPartnersBySubCategoryId(active);
+        const list = await subCategoriesService.getPartnersBySubCategoryId(
+          active
+        );
         setPartners(list);
       } catch (error) {
         console.error("Error fetching partners:", error);
@@ -166,7 +176,7 @@ const UserSupplier = () => {
 
   return (
     <div
-      className="h-[100vh]"
+      className="relative h-[100vh]"
       style={{
         backgroundImage: `url(${userDashboard})`,
         backgroundSize: "cover",
@@ -175,7 +185,15 @@ const UserSupplier = () => {
       }}
     >
       <UserHeader />
-      <section className="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 flex flex-wrap justify-center gap-6">
+      <div className="absolute inset-0 bg-gradient-to-b from-[rgba(22,89,51,0)] to-[#043428] pointer-events-none" />
+      {categoryName && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4">
+          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
+            {categoryName}
+          </h1>
+        </div>
+      )}
+      <section className="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 flex flex-wrap md:flex-nowrap items-center justify-center gap-4 md:gap-6 w-full p-2">
         {loading ? (
           <div className="text-white">Loading subcategories...</div>
         ) : subCategories.length > 0 ? (
@@ -183,24 +201,31 @@ const UserSupplier = () => {
             <button
               key={sub.id}
               onClick={() => setActive(sub.id)}
-              className={`flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-300 text-white cursor-pointer
-              ${active === sub.id
-                  ? "bg-[#b6e924] text-black shadow-lg scale-105"
-                  : "hover:text-[#b6e924] hover:bg-white/10"
-                }`}
+              className={`flex items-center gap-1 md:gap-[8px] px-3 md:px-2 py-2 rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
+              ${
+                active === sub.id
+                  ? "bg-[#95C11F] text-black shadow-md"
+                  : "bg-transparent hover:bg-white/10 hover:text-[#b6e924]"
+              }`}
+              aria-pressed={active === sub.id}
+              title={sub.subCategory}
             >
               {sub.subCategoryIconUrl && (
                 <img
                   src={sub.subCategoryIconUrl}
                   alt={sub.subCategory}
-                  className="w-6 h-6 rounded object-contain bg-white/80"
+                  className={`w-[24px] h-[24px] md:w-[28px] md:h-[28px] relative opacity-100 rounded object-contain ${
+                    active === sub.id ? "" : "brightness-0 invert"
+                  }`}
                   onError={(e) => {
                     (e.currentTarget as HTMLImageElement).style.display =
                       "none";
                   }}
                 />
               )}
-              <span className="text-lg font-semibold">{sub.subCategory}</span>
+              <span className="text-base md:text-lg font-semibold figtree">
+                {sub.subCategory}
+              </span>
             </button>
           ))
         ) : (
@@ -208,7 +233,7 @@ const UserSupplier = () => {
         )}
       </section>
 
-      <section className="bg-[#0b3b35] w-full flex justify-center py-12">
+      <section className="bg-[#043428] w-full flex justify-center py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl px-8 w-full">
           {partnersLoading ? (
             <div className="col-span-3 flex justify-center items-center h-64">
@@ -246,17 +271,20 @@ const UserSupplier = () => {
         </div>
       </section>
 
-      <footer className="bg-[#0b3b35] text-white text-center p-4">
+      <footer className="bg-[#043428] text-white text-center p-4">
         <div className="flex flex-col items-center">
           <div className="text-center">
             <div className="mb-8">
-              <img
-                src="/src/assets/userImages/footerLogo.svg"
-                alt="Boligmatch Logo"
-              />
+              <div className="w-[199px] h-[45px] mx-auto">
+                <img
+                  src="/src/assets/userImages/footerLogo.svg"
+                  alt="Boligmatch Logo"
+                  className="w-full h-full object-contain"
+                />
+              </div>
             </div>
           </div>
-          <p className="text-white text-sm">
+          <p className="text-white text-sm figtree font-[400] text-[18px]">
             Teningve 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
           </p>
         </div>
