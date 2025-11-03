@@ -22,10 +22,10 @@ function PartnerProfileShortcut() {
         <div className="flex flex-col">
           <div className="flex-1 w-full flex items-center justify-center md:justify-start px-4 pt-24 pb-4 md:px-12 md:pt-6 md:pb-6 md:absolute md:top-24 md:left-12">
             <div className="w-full max-w-7xl mx-auto text-white text-center md:text-left">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-[800] tracking-tight leading-tight mb-1 md:mb-3">
+              <h1 className="text-[24px] md:text-[64px] font-[800] tracking-tight leading-tight mb-1 md:mb-3">
                 Partner Dashboard
               </h1>
-              <h2 className="text-lg md:text-2xl lg:text-4xl font-[500] tracking-tight">
+              <h2 className="text-[24px] md:text-[64px] font-[500] tracking-tight">
                 Kabel-specialisten
               </h2>
             </div>
@@ -36,7 +36,7 @@ function PartnerProfileShortcut() {
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
                   <img src={Statistik} alt="" />
                 </div>
-                <span className="text-xs md:text-sm font-medium ">
+                <span className="text-[13px] md:text-[20px] font-medium ">
                   Statistik
                 </span>
               </button>
@@ -45,7 +45,7 @@ function PartnerProfileShortcut() {
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
                   {/* <img src={MinProfil} alt="" /> */}
                 </div>
-                <span className="text-xs md:text-sm font-medium ">
+                <span className="text-[13px] md:text-[20px] font-medium ">
                   Min profil
                 </span>
               </button>
@@ -54,7 +54,7 @@ function PartnerProfileShortcut() {
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
                   <img src={Partnere} alt="" />
                 </div>
-                <span className="text-xs md:text-sm font-medium ">
+                <span className="text-[13px] md:text-[20px] font-medium ">
                   Partnere
                 </span>
               </button>
@@ -63,8 +63,8 @@ function PartnerProfileShortcut() {
         </div>
       </div>
 
-      <div className="w-full md:max-w-7xl mx-auto -mt-8 md:-mt-10 px-4 md:px-6">
-        <div className="w-full h-[52vh] md:h-[70vh] lg:h-[80vh] rounded-2xl overflow-hidden shadow-lg">
+      <div className="w-full mx-auto -mt-8 md:-mt-10">
+        <div className="w-full h-[52vh] md:h-[70vh] lg:h-[80vh] overflow-hidden shadow-lg">
           <img
             src={profileShortcut}
             alt="Partner Profile"
@@ -76,13 +76,17 @@ function PartnerProfileShortcut() {
       {/* Action Buttons and Company Name */}
       <div className="bg-[#043428] p-4 md:p-8">
         {/* Three Action Buttons */}
-        <div className="w-full md:max-w-7xl mx-auto flex flex-row justify-center gap-3 md:gap-6 mb-6 md:mb-8 px-4 md:px-0">
+        <div className="w-full flex flex-row justify-center gap-3 md:gap-6 mb-6 md:mb-8 px-4 md:px-0">
           {/* Gem som favorit Button */}
           <button className="flex items-center space-x-2 md:space-x-3 px-2 md:px-6 py-2.5 md:py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
             <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center">
-              <img src={heartIconsImg} alt="" />
+              <img
+                src={heartIconsImg}
+                alt=""
+                className="text-[13px] md:text-[20px] "
+              />
             </div>
-            <span className="text-xs md:text-sm font-medium ">
+            <span className="text-[13px] md:text-[20px]  font-medium ">
               Gem som favorit
             </span>
           </button>
@@ -90,9 +94,13 @@ function PartnerProfileShortcut() {
           {/* Anbefal os til andre Button */}
           <button className="flex items-center space-x-2 md:space-x-3 px-4 md:px-6 py-2.5 md:py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
             <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center">
-              <img src={shareIconsImg} alt="" />
+              <img
+                src={shareIconsImg}
+                alt=""
+                className="text-[13px] md:text-[20px] "
+              />
             </div>
-            <span className="text-xs md:text-sm font-medium ">
+            <span className="text-[13px] md:text-[20px]  font-medium ">
               Anbefal os til andre
             </span>
           </button>
@@ -100,9 +108,15 @@ function PartnerProfileShortcut() {
           {/* Kontakt os Button */}
           <button className="flex items-center space-x-2 md:space-x-3 px-4 md:px-6 py-2.5 md:py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
             <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center">
-              <img src={commentImg} alt="" />
+              <img
+                src={commentImg}
+                alt=""
+                className="text-[13px] md:text-[20px]"
+              />
             </div>
-            <span className="text-xs md:text-sm font-medium ">Kontakt os</span>
+            <span className="text-[13px] md:text-[20px]  font-medium ">
+              Kontakt os
+            </span>
           </button>
         </div>
 

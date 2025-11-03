@@ -19,10 +19,10 @@ function ParentStatistics() {
         <div className="flex flex-col">
           <div className=" flex items-center justify-center md:justify-start px-4 pt-16 pb-4 md:px-12 md:pt-6 md:pb-6 md:absolute md:top-24 md:left-12">
             <div className=" mx-auto text-white text-center md:text-left">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-[800] tracking-tight leading-tight mb-1 md:mb-3">
+              <h1 className="text-[24px] md:text-[64px] font-[800] tracking-tight leading-tight mb-1 md:mb-3">
                 Partner Dashboard
               </h1>
-              <h2 className="text-lg md:text-2xl lg:text-4xl font-[500] tracking-tight">
+              <h2 className="text-[24px] md:text-[64px] font-[500] tracking-tight">
                 Kabel-specialisten
               </h2>
             </div>
@@ -33,7 +33,7 @@ function ParentStatistics() {
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
                   <img src={Statistik} alt="" />
                 </div>
-                <span className="text-xs md:text-sm font-medium">
+                <span className="text-[13px] md:text-[20px] font-medium">
                   Statistik
                 </span>
               </button>
@@ -42,7 +42,7 @@ function ParentStatistics() {
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
                   {/* <img src={MinProfil} alt="" /> */}
                 </div>
-                <span className="text-xs md:text-sm font-medium">
+                <span className="text-[13px] md:text-[20px] font-medium">
                   Min profil
                 </span>
               </button>
@@ -51,7 +51,9 @@ function ParentStatistics() {
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
                   <img src={Partnere} alt="" />
                 </div>
-                <span className="text-xs md:text-sm font-medium">Partnere</span>
+                <span className="text-[13px] md:text-[20px] font-medium">
+                  Partnere
+                </span>
               </button>
             </div>
           </div>
