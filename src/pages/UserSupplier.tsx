@@ -104,6 +104,13 @@ const UserSupplier = () => {
   const [partnersLoading, setPartnersLoading] = useState(false);
   const [loadingPartnerId, setLoadingPartnerId] = useState<number | null>(null);
 
+  useEffect(() => {
+    const userData = localStorage.getItem("bm_user");
+    if (!userData) {
+      navigate("/");
+    }
+  }, []);
+
   // Load subcategories from localStorage
   useEffect(() => {
     const loadSubCategories = () => {

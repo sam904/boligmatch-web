@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { loginThunk } from "../../features/auth/authSlice";
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
-import loginModelLogo from "/src/assets/userImages/loginModelLogo.png";
+import loginModelLogo from "/src/assets/userImages/boligmatchLogo2.png";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -193,8 +193,8 @@ export default function UserModal({ open, onClose }: UserModalProps) {
     <div className="fixed inset-0 z-[1000]">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-[370px] h-[444px]">
-          <div className="relative rounded-[23px] bg-[#E6E7E9] shadow-2xl w-full h-full">
+        <div className="w-[370px]">
+          <div className="relative rounded-[23px] bg-[#E6E7E9] shadow-2xl w-full">
             <button
               onClick={onClose}
               aria-label="Close"

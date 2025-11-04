@@ -16,11 +16,12 @@ import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
 import { toast } from "react-toastify";
 import { FaPlayCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 // import gradient from "/src/assets/userImages/gradient.svg";
 
 const SupplierProfile = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  console.log('isScrolled', isScrolled)
+  console.log("isScrolled", isScrolled);
   const { t } = useTranslation();
   const userData = useAppSelector((state: RootState) => state.auth.user);
   const [activeModal, setActiveModal] = useState<
@@ -33,6 +34,14 @@ const SupplierProfile = () => {
   const [contactBody, setContactBody] = useState("");
   const [recommendEmail, setRecommendEmail] = useState("");
   const [recommendComment, setRecommendComment] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userData = localStorage.getItem("bm_user");
+    if (!userData) {
+      navigate("/");
+    }
+  }, []);
 
   const getCurrentPartnerId = (): number | null => {
     if (partnerData?.id) return partnerData.id;
@@ -478,9 +487,7 @@ const SupplierProfile = () => {
                     </p>
                   ))
                 ) : (
-                  <p>
-                    {partnerData?.textField4}
-                  </p>
+                  <p>{partnerData?.textField4}</p>
                 )}
               </div>
             </div>

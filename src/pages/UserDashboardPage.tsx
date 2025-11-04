@@ -19,7 +19,7 @@ import chatModelImg from "/src/assets/userImages/chatModelImg.svg";
 import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { toast } from "sonner";
-import footerLogo from "/src/assets/userImages/footerLogo.svg"
+import footerLogo from "/src/assets/userImages/footerLogo.svg";
 
 interface FavouriteItem {
   id?: number;
@@ -74,6 +74,13 @@ export default function UserDashboardPage() {
     };
 
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("bm_user");
+    if (!userData) {
+      navigate("/");
+    }
   }, []);
 
   useEffect(() => {
