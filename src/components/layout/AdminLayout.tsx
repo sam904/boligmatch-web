@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-// import { logout } from "../../features/auth/authSlice";
-// import { IconLogout } from "../common/Icons/Index";
+import { logout } from "../../features/auth/authSlice";
+import { IconLogout } from "../common/Icons/Index";
 
 // Enhanced route mapping with titles and subtitles
 interface RouteInfo {
@@ -38,7 +38,6 @@ const routeMap: Record<string, RouteInfo> = {
 export default function AdminLayout() {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
-  console.log('dispatch', dispatch)
   const user = useAppSelector((s) => s.auth.user);
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -85,10 +84,10 @@ export default function AdminLayout() {
     return "U";
   };
 
-  // const handleLogout = () => {
-  //   dispatch(logout());
-  //   setShowUserDropdown(false);
-  // };
+  const handleLogout = () => {
+    dispatch(logout());
+    setShowUserDropdown(false);
+  };
 
   const currentPageInfo = getCurrentPageInfo();
   const currentPageTitle = t(currentPageInfo.title);
@@ -351,18 +350,56 @@ export default function AdminLayout() {
                   <div className="w-10 h-10 bg-[#064c3a] text-white rounded-full flex items-center justify-center text-sm font-bold">
                     {getUserInitials()}
                   </div>
+
+                  <div className="text-left">
+                    <p className="text-md font-bold text-[#165933]">
+                      {user?.firstName &&
+                        user.firstName.charAt(0).toUpperCase() +
+                          user.firstName.slice(1).toLowerCase()}
+                      {user?.lastName &&
+                        user.lastName.charAt(0).toUpperCase() +
+                          user.lastName.slice(1).toLowerCase()}
+                    </p>
+                    <p className="text-xs text-gray-500">{user?.roleName}</p>
+                  </div>
+
+                  {/* Dropdown arrow */}
+                  <svg
+                    className={`w-4 h-4 text-gray-500 transition-transform ${
+                      showUserDropdown ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
                 </button>
-                <div className="text-left">
-                  <p className="text-md font-bold text-[#165933]">
-                    {user?.firstName &&
-                      user.firstName.charAt(0).toUpperCase() +
-                        user.firstName.slice(1).toLowerCase()}
-                    {user?.lastName &&
-                      user.lastName.charAt(0).toUpperCase() +
-                        user.lastName.slice(1).toLowerCase()}
-                  </p>
-                  <p className="text-xs text-gray-500">{user?.roleName}</p>
-                </div>
+
+                {/* User Dropdown Menu */}
+                {showUserDropdown && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setShowUserDropdown(false)}
+                    />
+                    <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-200">
+                      {/* Logout Button */}
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors"
+                      >
+                        <IconLogout />
+                        <span>{t("auth.logout")}</span>
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
