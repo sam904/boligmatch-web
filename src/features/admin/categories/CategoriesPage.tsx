@@ -40,7 +40,7 @@ const categorySchema = z.object({
         return true;
       },
       {
-        message: "Image must be exactly 374 × 540 pixels",
+        message: "Image must be exactly 374 × 340 pixels",
       }
     ),
   iconUrl: z
@@ -333,13 +333,13 @@ export default function CategoriesPage() {
       const isImageValid = await validateImageDimensions(
         data.imageUrl,
         374,
-        540
+        340
       );
       if (!isImageValid) {
-        toast.error("Main image must be exactly 374 × 540 pixels");
+        toast.error("Main image must be exactly 374 × 340 pixels");
         setError("imageUrl", {
           type: "manual",
-          message: "Image must be exactly 374 × 540 pixels",
+          message: "Image must be exactly 374 × 340 pixels",
         });
         return;
       }
@@ -643,7 +643,7 @@ export default function CategoriesPage() {
             onPreview={(url) => setPreviewImage({ url, isOpen: true })}
             folder="categories/images"
             error={errors.imageUrl?.message}
-            exactDimensions={{ width: 374, height: 540 }}
+            exactDimensions={{ width: 374, height: 340 }}
             showDimensionValidation={true}
           />
 
