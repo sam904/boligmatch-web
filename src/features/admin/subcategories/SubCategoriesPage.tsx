@@ -45,7 +45,7 @@ const subCategorySchema = z.object({
         return true;
       },
       {
-        message: "Image must be exactly 374 × 540 pixels",
+        message: "Image must be exactly 1440 × 710 pixels",
       }
     ),
   iconUrl: z
@@ -393,14 +393,14 @@ export default function SubCategoriesPage() {
     if (data.imageUrl) {
       const isImageValid = await validateImageDimensions(
         data.imageUrl,
-        374,
-        540
+        1440,
+        710
       );
       if (!isImageValid) {
-        toast.error("Main image must be exactly 374 × 540 pixels");
+        toast.error("Main image must be exactly 1440 × 710 pixels");
         setError("imageUrl", {
           type: "manual",
-          message: "Image must be exactly 374 × 540 pixels",
+          message: "Image must be exactly 1440 × 710 pixels",
         });
         return;
       }
@@ -755,7 +755,7 @@ export default function SubCategoriesPage() {
             onPreview={(url) => setPreviewImage({ url, isOpen: true })}
             folder="subcategories/images"
             error={errors.imageUrl?.message}
-            exactDimensions={{ width: 374, height: 540 }}
+            exactDimensions={{ width: 1440, height: 710 }}
             showDimensionValidation={true}
           />
 
