@@ -18,13 +18,16 @@ function UserHeader() {
   const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
   const [isChoiceModalOpen, setIsChoiceModalOpen] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
+  console.log('showLangDropdown', showLangDropdown)
   const [showSidebar, setShowSidebar] = useState(false);
   const { i18n, t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
+  console.log('isMobile', isMobile)
 
   const userData = useAppSelector((state) => state.auth.user);
 
   const currentLang = i18n.language || "en";
+  console.log('currentLang', currentLang)
 
   useEffect(() => {
     const handleScroll = () => {

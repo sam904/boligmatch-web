@@ -58,6 +58,7 @@ export default function UserDashboardPage() {
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [conversationsLoading, setConversationsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  console.log('isMobile', isMobile)
 
   const navigate = useNavigate();
   const { t } = useTranslation();
