@@ -16,11 +16,12 @@ import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
 import { toast } from "react-toastify";
 import { FaPlayCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 // import gradient from "/src/assets/userImages/gradient.svg";
 
 const SupplierProfile = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  console.log('isScrolled', isScrolled)
+  console.log("isScrolled", isScrolled);
   const { t } = useTranslation();
   const userData = useAppSelector((state: RootState) => state.auth.user);
   const [activeModal, setActiveModal] = useState<
@@ -29,10 +30,19 @@ const SupplierProfile = () => {
   const [isAddingToFavorites, setIsAddingToFavorites] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [partnerData, setPartnerData] = useState<any>(null);
+  console.log("partnerData---->", partnerData);
   const [contactSubject, setContactSubject] = useState("");
   const [contactBody, setContactBody] = useState("");
   const [recommendEmail, setRecommendEmail] = useState("");
   const [recommendComment, setRecommendComment] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userData = localStorage.getItem("bm_user");
+    if (!userData) {
+      navigate("/");
+    }
+  }, []);
 
   const getCurrentPartnerId = (): number | null => {
     if (partnerData?.id) return partnerData.id;
@@ -478,9 +488,7 @@ const SupplierProfile = () => {
                     </p>
                   ))
                 ) : (
-                  <p>
-                    {partnerData?.textField4}
-                  </p>
+                  <p>{partnerData?.textField4}</p>
                 )}
               </div>
             </div>
@@ -608,7 +616,7 @@ const SupplierProfile = () => {
             )}
 
             {activeModal === "contact" && (
-              <div className="flex flex-col items-stretch">
+              <div className="flex flex-col items-stretch z-10">
                 <div className="flex justify-center mb-4">
                   <img
                     src={chatModel}
@@ -656,16 +664,16 @@ const SupplierProfile = () => {
                     {t("supplierProfile.contactModal.contactInfo")}
                   </p>
                   <p className="font-extrabold">
-                    {partnerData?.businessName || "Kabel–specialisten"}
+                    {partnerData?.businessName}
                   </p>
                   <p>
-                    {partnerData?.address || "Hejvangnen 214, 6000 Kolding"}
+                    {partnerData?.address}
                   </p>
                   <p>
                     Tlf. {partnerData?.mobileNo || "56 34 12 67"}{" "}
                     {partnerData?.cvr > 0 ? `, CVR ${partnerData.cvr}` : ""}
                   </p>
-                  <p>{partnerData?.email || "info@kabel-specialisten.dk"}</p>
+                  <p>{partnerData?.email}</p>
                 </div>
               </div>
             )}

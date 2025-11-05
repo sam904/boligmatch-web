@@ -54,7 +54,7 @@ export default function PartnerModal({ open, onClose }: PartnerModalProps) {
 
       const from = (location.state as any)?.from?.pathname;
       // Prefer partner routes; fallback to '/partner'
-      navigate(from ?? "/partner", { replace: true });
+      navigate(from ?? "/partner/statistics", { replace: true });
     }
   }, [token, user, onClose, navigate]);
 

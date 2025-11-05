@@ -1,4 +1,3 @@
-// import React from "react";
 import loginModelLogo from "/src/assets/userImages/boligmatchLogo2.png";
 import chooseUserImg from "/src/assets/userImages/choose_userImg.svg";
 import choosePartnerImg from "/src/assets/userImages/choose_partnerImg.svg";
@@ -6,8 +5,7 @@ import { useTranslation } from "react-i18next";
 
 type Props = {
   open: boolean;
-  onClose: () => void;
-  onSelect?: (role: "user" | "partner") => void;
+  onClose: () => void;  onSelect?: (role: "user" | "partner") => void;
 };
 
 export default function LoginChoiceModal({ open, onClose, onSelect }: Props) {
