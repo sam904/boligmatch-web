@@ -76,7 +76,6 @@ export interface PartnerDocument {
   id?: number;
   partnerId?: number;
   documentName: string;
-  documentType: string;
   documentUrl: string;
   isActive: boolean;
 }

@@ -8,18 +8,19 @@ import SearchBar from "../../../components/common/SearchBar";
 import Modal from "../../../components/common/Modal";
 import Button from "../../../components/common/Button";
 import Input from "../../../components/common/Input";
+import AdminToast from "../../../components/common/AdminToast";
+import type { AdminToastType } from "../../../components/common/AdminToast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { FaKey } from "react-icons/fa";
 import {
   IconPencil,
   IconTrash,
   IconPlus,
   IconUpload,
+  IconKey,
 } from "../../../components/common/Icons/Index";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { User } from "../../../types/user";
@@ -66,6 +67,16 @@ const passwordResetSchema = z
 type UserFormData = z.infer<typeof userSchema>;
 type PasswordResetData = z.infer<typeof passwordResetSchema>;
 
+// Toast state interface
+interface ToastState {
+  id: string;
+  type: AdminToastType;
+  message: string;
+  title?: string;
+  subtitle?: string;
+  open: boolean;
+}
+
 export default function UsersListPage() {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -79,8 +90,50 @@ export default function UsersListPage() {
     "all" | "active" | "inactive"
   >("all");
   const [isExporting, setIsExporting] = useState(false);
+  const [toasts, setToasts] = useState<ToastState[]>([]);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
+
+  // Toast management functions - same as CategoriesPage
+  const showToast = (
+    type: AdminToastType,
+    message: string,
+    title?: string,
+    subtitle?: string
+  ) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    const newToast: ToastState = {
+      id,
+      type,
+      message,
+      title,
+      subtitle,
+      open: true,
+    };
+
+    setToasts((prev) => [...prev, newToast]);
+    return id;
+  };
+
+  const hideToast = (id: string) => {
+    setToasts((prev) =>
+      prev.map((toast) => (toast.id === id ? { ...toast, open: false } : toast))
+    );
+
+    // Remove toast from state after animation
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    }, 300);
+  };
+
+  const toast = {
+    success: (message: string, title?: string, subtitle?: string) =>
+      showToast("success", message, title, subtitle),
+    error: (message: string, title?: string, subtitle?: string) =>
+      showToast("error", message, title, subtitle),
+    info: (message: string, title?: string, subtitle?: string) =>
+      showToast("info", message, title, subtitle),
+  };
 
   // Fetch users with server-side pagination and search only
   const { data: paginatedData, isLoading } = useQuery({
@@ -310,39 +363,14 @@ export default function UsersListPage() {
       t("admin.users.deleteConfirm") ||
       "Are you sure you want to delete this user?";
 
-    // Use Sonner toast for confirmation instead of window.confirm
-    toast(
-      <div className="w-full">
-        <div className="font-semibold text-gray-900 mb-2">Confirm Deletion</div>
-        <div className="text-sm text-gray-600 mb-4">
-          {confirmMessage}
-          <br />
-          <strong>User: {userName}</strong>
-          <br />
-          <span className="text-xs">Email: {user.email}</span>
-        </div>
-        <div className="flex gap-2 justify-end">
-          <Button variant="secondary" size="sm" onClick={() => toast.dismiss()}>
-            Cancel
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => {
-              deleteMutation.mutate(user.id!);
-              toast.dismiss();
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      </div>,
-      {
-        duration: 10000, // 10 seconds
-        position: "top-center",
-        closeButton: true,
-      }
-    );
+    // Simple confirmation dialog (same as CategoriesPage)
+    if (
+      window.confirm(
+        `${confirmMessage}\n\nUser: ${userName}\nEmail: ${user.email}`
+      )
+    ) {
+      deleteMutation.mutate(user.id);
+    }
   };
 
   const handleResetPassword = (user: User) => {
@@ -386,8 +414,11 @@ export default function UsersListPage() {
 
       // Use the export utility
       await exportToExcel("User", exportParams);
+
+      toast.success("Users exported successfully");
     } catch (error) {
       console.error("Export failed:", error);
+      toast.error("Failed to export users");
     } finally {
       setIsExporting(false);
     }
@@ -481,7 +512,7 @@ export default function UsersListPage() {
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("admin.users.resetPassword") || "Reset Password"}
           >
-            <FaKey className="w-4 h-4" />
+            <IconKey/>
           </button>
           <button
             type="button"
@@ -498,10 +529,21 @@ export default function UsersListPage() {
 
   return (
     <div className="p-3">
+      {/* Render Toast Banners - same as CategoriesPage */}
+      {toasts.map((toastItem) => (
+        <AdminToast
+          key={toastItem.id}
+          type={toastItem.type}
+          message={toastItem.message}
+          onClose={() => hideToast(toastItem.id)}
+          autoDismissMs={5000}
+        />
+      ))}
+
       {/* Header Section */}
       <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
-          <div>
+          <div className="font-figtree">
             <Button
               variant="primary"
               size="md"
@@ -619,7 +661,7 @@ export default function UsersListPage() {
             required
             placeholder="Enter mobile number"
           />
-          
+
           {/* Toggle Switch for Active Status */}
           <ToggleSwitch
             label={t("common.active") || "Active"}

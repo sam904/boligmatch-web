@@ -11,10 +11,11 @@ import Button from "../../../components/common/Button";
 import Input from "../../../components/common/Input";
 import SearchableSelectController from "../../../components/common/SearchableSelectController";
 import ImageUpload from "../../../components/common/ImageUpload";
+import AdminToast from "../../../components/common/AdminToast";
+import type { AdminToastType } from "../../../components/common/AdminToast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useDbTranslation } from "../../../hooks/useDbTranslation";
 import { useDebounce } from "../../../hooks/useDebounce";
@@ -65,6 +66,16 @@ const subCategorySchema = z.object({
 });
 
 type SubCategoryFormData = z.infer<typeof subCategorySchema>;
+
+// Toast state interface
+interface ToastState {
+  id: string;
+  type: AdminToastType;
+  message: string;
+  title?: string;
+  subtitle?: string;
+  open: boolean;
+}
 
 // Simplified Image Preview Modal Component
 function ImagePreviewModal({
@@ -154,8 +165,45 @@ export default function SubCategoriesPage() {
     url: "",
     isOpen: false,
   });
+  const [toasts, setToasts] = useState<ToastState[]>([]);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
+
+  // Toast management functions - same as CategoriesPage
+  const showToast = (type: AdminToastType, message: string, title?: string, subtitle?: string) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    const newToast: ToastState = {
+      id,
+      type,
+      message,
+      title,
+      subtitle,
+      open: true,
+    };
+    
+    setToasts(prev => [...prev, newToast]);
+    return id;
+  };
+
+  const hideToast = (id: string) => {
+    setToasts(prev => prev.map(toast => 
+      toast.id === id ? { ...toast, open: false } : toast
+    ));
+    
+    // Remove toast from state after animation
+    setTimeout(() => {
+      setToasts(prev => prev.filter(toast => toast.id !== id));
+    }, 300);
+  };
+
+  const toast = {
+    success: (message: string, title?: string, subtitle?: string) => 
+      showToast("success", message, title, subtitle),
+    error: (message: string, title?: string, subtitle?: string) => 
+      showToast("error", message, title, subtitle),
+    info: (message: string, title?: string, subtitle?: string) => 
+      showToast("info", message, title, subtitle),
+  };
 
   // Fetch subcategories with server-side pagination and search only
   const { data: paginatedData, isLoading } = useQuery({
@@ -255,7 +303,7 @@ export default function SubCategoriesPage() {
     }
   }, [editingSubCategory, reset]);
 
-  // Show categories error
+  // Show categories error using custom toast
   useEffect(() => {
     if (categoriesError) {
       toast.error("Failed to load categories");
@@ -448,36 +496,10 @@ export default function SubCategoriesPage() {
       t("admin.subcategories.deleteConfirm") ||
       "Are you sure you want to delete this subcategory?";
 
-    toast(
-      <div className="w-full">
-        <div className="font-semibold text-gray-900 mb-2">Confirm Deletion</div>
-        <div className="text-sm text-gray-600 mb-4">
-          {confirmMessage}
-          <br />
-          <strong>Subcategory: {subCategoryName}</strong>
-        </div>
-        <div className="flex gap-2 justify-end">
-          <Button variant="secondary" size="sm" onClick={() => toast.dismiss()}>
-            Cancel
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => {
-              deleteMutation.mutate(subCategory.id!);
-              toast.dismiss();
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      </div>,
-      {
-        duration: 10000,
-        position: "top-center",
-        closeButton: true,
-      }
-    );
+    // Simple confirmation dialog (same as CategoriesPage)
+    if (window.confirm(`${confirmMessage}\n\nSubcategory: ${subCategoryName}`)) {
+      deleteMutation.mutate(subCategory.id);
+    }
   };
 
   const handleModalClose = () => {
@@ -610,10 +632,21 @@ export default function SubCategoriesPage() {
 
   return (
     <div className="p-3">
+      {/* Render Toast Banners - same as CategoriesPage */}
+      {toasts.map((toastItem) => (
+        <AdminToast
+          key={toastItem.id}
+          type={toastItem.type}
+          message={toastItem.message}
+          onClose={() => hideToast(toastItem.id)}
+          autoDismissMs={5000}
+        />
+      ))}
+
       {/* Header Section */}
       <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
-          <div>
+          <div  className="font-figtree">
             <Button
               variant="primary"
               size="md"

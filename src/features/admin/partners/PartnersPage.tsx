@@ -13,10 +13,11 @@ import ImageUpload from "../../../components/common/ImageUpload";
 import VideoUpload from "../../../components/common/VideoUpload";
 import VideoPreviewModal from "../../../components/common/VideoPreviewModal";
 import DocumentPreviewModal from "../../../components/common/DocumentPreviewModal";
+import AdminToast from "../../../components/common/AdminToast";
+import type { AdminToastType } from "../../../components/common/AdminToast";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "../../../hooks/useDebounce";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -25,12 +26,13 @@ import type {
   PartnerDocument,
   PartnerSubCategory,
 } from "../../../types/partner";
+import { partnerDocumentService } from "../../../services/partnerdocument.service";
+import type { PartnerDocumentDto } from "../../../types/partnerdocument";
 import { categoryService } from "../../../services/category.service";
 import type { SubCategory } from "../../../types/subcategory";
 import type { Category } from "../../../types/category";
 import SearchableSelectController from "../../../components/common/SearchableSelectController";
 import DocumentUpload from "../../../components/common/DocumentUpload";
-import { FaKey } from "react-icons/fa";
 import Modal from "../../../components/common/Modal";
 import { userService } from "../../../services/user.service";
 import { exportToExcel } from "../../../utils/export.utils";
@@ -39,9 +41,20 @@ import {
   IconTrash,
   IconPlus,
   IconUpload,
-  IconArrowLeft
+  IconArrowLeft,
+  IconKey,
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
+
+// Toast state interface
+interface ToastState {
+  id: string;
+  type: AdminToastType;
+  message: string;
+  title?: string;
+  subtitle?: string;
+  open: boolean;
+}
 
 // Image Preview Modal Component
 function ImagePreviewModal({
@@ -60,7 +73,7 @@ function ImagePreviewModal({
       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
         <div className="flex justify-between items-center p-4 border-b">
           <h3 className="text-lg font-semibold">Image Preview</h3>
-         <button
+          <button
             onClick={onClose}
             className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
           >
@@ -95,17 +108,19 @@ function LogoUploadWithValidation({
   onChange,
   onPreview,
   error,
+  label = "Company Logo"
 }: {
   value: string;
   onChange: (url: string) => void;
   onPreview: (url: string) => void;
   error?: string;
+  label?: string;
 }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2 mb-2">
         <ImageUpload
-          label="Company Logo"
+          label={label}
           value={value}
           onChange={onChange}
           onPreview={onPreview}
@@ -131,7 +146,6 @@ const partnerDocumentSchema = z.object({
   id: z.number().optional(),
   partnerId: z.number().optional(),
   documentName: z.string().min(1, "Document name is required"),
-  documentType: z.string().min(1, "Document type is required"),
   documentUrl: z.string().min(1, "Document URL is required"),
   isActive: z.boolean(),
 });
@@ -240,7 +254,7 @@ export default function PartnersPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  
+  const [savingDocuments, setSavingDocuments] = useState<number[]>([]);
   const [previewImage, setPreviewImage] = useState<{
     url: string;
     isOpen: boolean;
@@ -266,9 +280,46 @@ export default function PartnersPage() {
   });
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [toasts, setToasts] = useState<ToastState[]>([]);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
+
+  // Toast management functions - same as other pages
+  const showToast = (type: AdminToastType, message: string, title?: string, subtitle?: string) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    const newToast: ToastState = {
+      id,
+      type,
+      message,
+      title,
+      subtitle,
+      open: true,
+    };
+    
+    setToasts(prev => [...prev, newToast]);
+    return id;
+  };
+
+  const hideToast = (id: string) => {
+    setToasts(prev => prev.map(toast => 
+      toast.id === id ? { ...toast, open: false } : toast
+    ));
+    
+    // Remove toast from state after animation
+    setTimeout(() => {
+      setToasts(prev => prev.filter(toast => toast.id !== id));
+    }, 300);
+  };
+
+  const toast = {
+    success: (message: string, title?: string, subtitle?: string) => 
+      showToast("success", message, title, subtitle),
+    error: (message: string, title?: string, subtitle?: string) => 
+      showToast("error", message, title, subtitle),
+    info: (message: string, title?: string, subtitle?: string) => 
+      showToast("info", message, title, subtitle),
+  };
 
   const steps = [
     "Basic Information",
@@ -277,18 +328,6 @@ export default function PartnersPage() {
     "Images & Status",
     "Documents",
     "Categories & Sub-Categories",
-  ];
-
-  // Document types options
-  const DOCUMENT_TYPES = [
-    { value: "pdf", label: "PDF Document (.pdf)" },
-    { value: "doc", label: "Word Document (.doc)" },
-    { value: "docx", label: "Word Document (.docx)" },
-    { value: "xls", label: "Excel Spreadsheet (.xls)" },
-    { value: "xlsx", label: "Excel Spreadsheet (.xlsx)" },
-    { value: "ppt", label: "PowerPoint Presentation (.ppt)" },
-    { value: "pptx", label: "PowerPoint Presentation (.pptx)" },
-    { value: "txt", label: "Text File (.txt)" },
   ];
 
   const {
@@ -313,7 +352,7 @@ export default function PartnersPage() {
       mobileNo: "",
       address: "",
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
-      parDoclst: [{ documentName: "", documentUrl: "", documentType: "", isActive: true }],
+      parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
     },
   });
 
@@ -383,7 +422,6 @@ export default function PartnersPage() {
       const documentValidations = documentFields.map((_, index) =>
         trigger([
           `parDoclst.${index}.documentName`,
-          `parDoclst.${index}.documentType`,
           `parDoclst.${index}.documentUrl`,
           `parDoclst.${index}.isActive`,
         ] as any)
@@ -410,6 +448,115 @@ export default function PartnersPage() {
     }
 
     return true;
+  };
+
+  // Add this function to handle document changes and auto-save
+  const handleDocumentChange = async (
+    field: "documentName" | "documentUrl",
+    value: string,
+    index: number
+  ) => {
+    // Update the form value
+    if (field === "documentName") {
+      setValue(`parDoclst.${index}.documentName`, value);
+    } else {
+      setValue(`parDoclst.${index}.documentUrl`, value);
+    }
+
+    // If we're editing an existing partner and both fields have values, auto-save
+    if (editingPartner?.id) {
+      const currentDocument = watch(`parDoclst.${index}`);
+      const documentName =
+        field === "documentName" ? value : currentDocument.documentName;
+      const documentUrl =
+        field === "documentUrl" ? value : currentDocument.documentUrl;
+
+      // Only save if both fields are filled
+      if (
+        documentName &&
+        documentName.trim() !== "" &&
+        documentUrl &&
+        documentUrl.trim() !== ""
+      ) {
+        // Debounce the save to avoid too many API calls
+        const timeoutId = setTimeout(() => {
+          handleDocumentSave(
+            {
+              id: currentDocument.id || 0,
+              partnerId: editingPartner.id!,
+              documentName: documentName.trim(),
+              documentUrl: documentUrl.trim(),
+              isActive: currentDocument.isActive ?? true,
+            },
+            index
+          );
+        }, 1000); // 1 second debounce
+
+        return () => clearTimeout(timeoutId);
+      }
+    }
+  };
+
+  // Update the handleDocumentSave function
+  const handleDocumentSave = async (
+    documentData: PartnerDocumentDto,
+    index: number
+  ) => {
+    if (!editingPartner?.id) {
+      toast.error("Please save partner basic information first");
+      return;
+    }
+
+    // Add to saving documents array to show loading state
+    setSavingDocuments((prev) => [...prev, index]);
+
+    try {
+      const payload: PartnerDocumentDto = {
+        ...documentData,
+        partnerId: editingPartner.id,
+        isActive: true,
+      };
+
+      let response;
+      if (documentData.id && documentData.id > 0) {
+        // Update existing document
+        response = await partnerDocumentService.updateDocument(payload);
+      } else {
+        // Add new document
+        response = await partnerDocumentService.addDocument(payload);
+      }
+
+      // FIX: Remove .data since response is directly ApiResponse<PartnerDocument>
+      if (response.isSuccess) {
+        toast.success(
+          `Document "${documentData.documentName}" saved successfully`
+        );
+
+        // Update the local form state with the returned document (which includes the ID)
+        if (response.output) {
+          setValue(`parDoclst.${index}`, {
+            ...documentData,
+            id: response.output.id,
+            partnerId: editingPartner.id,
+            isActive: true,
+          });
+        }
+
+        // Invalidate queries to refresh data
+        queryClient.invalidateQueries({ queryKey: ["partners"] });
+        queryClient.invalidateQueries({
+          queryKey: ["partner", editingPartner.id],
+        });
+      } else {
+        throw new Error(response.errorMessage || "Failed to save document");
+      }
+    } catch (error: any) {
+      console.error("Document save error:", error);
+      toast.error(`Failed to save document: ${error.message}`);
+    } finally {
+      // Remove from saving documents array
+      setSavingDocuments((prev) => prev.filter((i) => i !== index));
+    }
   };
 
   // Update completed steps when current step changes
@@ -526,11 +673,10 @@ export default function PartnersPage() {
                 id: doc.id,
                 partnerId: doc.partnerId,
                 documentName: doc.documentName,
-                documentType: doc.documentType || "",
                 documentUrl: doc.documentUrl,
                 isActive: doc.isActive ?? true,
               }))
-            : [{ documentName: "", documentUrl: "", documentType: "", isActive: true }],
+            : [{ documentName: "", documentUrl: "", isActive: true }],
       };
       reset(formData);
       setSelectedCategoryId(editingPartner.categoryId);
@@ -568,13 +714,14 @@ export default function PartnersPage() {
       thumbnail: "",
       isActive: true,
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
-      parDoclst: [{ documentName: "", documentUrl: "",  documentType: "", isActive: true }],
+      parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
     };
     reset(defaultValues);
     setCurrentStep(1);
     setEditingPartner(null);
     setSelectedCategoryId(0);
     setCompletedSteps([]);
+    setSavingDocuments([]); // Clear saving state
   };
 
   const createMutation = useMutation({
@@ -697,67 +844,75 @@ export default function PartnersPage() {
       }
       console.log("Exporting partners with params:", exportParams);
       await exportToExcel("Partner", exportParams);
+      toast.success("Partners exported successfully");
     } catch (error) {
       console.error("Export failed:", error);
+      toast.error("Failed to export partners");
     } finally {
       setIsExporting(false);
     }
   };
+
   // Modified onSubmit to handle both create and update
-const onSubmit = async (data: PartnerFormData) => {
-  if (isSubmitting) return;
+  const onSubmit = async (data: PartnerFormData) => {
+    if (isSubmitting) return;
 
-  console.log("Form submission triggered with data:", data);
+    console.log("Form submission triggered with data:", data);
 
-  const isValid = await trigger();
-  if (!isValid) {
-    console.log("Form validation failed:", errors);
-    toast.error("Please fix form errors before submitting");
-    return;
-  }
-
-  setIsSubmitting(true);
-
-  try {
-    const subCategoriesPayload = data.parSubCatlst.map((subCat) => ({
-      id: subCat.id,
-      partnerId: editingPartner?.id || 0,
-      subCategoryId: subCat.subCategoryId,
-      isActive: subCat.isActive,
-    }));
-
-    // Remove documentType to match backend expectations (5 columns instead of 6)
-    const documentsPayload = data.parDoclst.map(doc => {
-      const { documentType, ...docWithoutType } = doc;
-      return {
-        ...docWithoutType,
-        partnerId: editingPartner?.id || 0,
-      };
-    });
-
-    const payload = {
-      ...data,
-      id: editingPartner?.id,
-      parSubCatlst: subCategoriesPayload,
-      parDoclst: documentsPayload,
-      email: data.email || undefined,
-      mobileNo: data.mobileNo || undefined,
-    };
-
-    console.log("Final payload being sent:", JSON.stringify(payload, null, 2));
-    console.log("Documents payload structure:", documentsPayload.map(doc => Object.keys(doc)));
-
-    if (editingPartner) {
-      await updateMutation.mutateAsync(payload as any);
-    } else {
-      await createMutation.mutateAsync(payload as any);
+    const isValid = await trigger();
+    if (!isValid) {
+      console.log("Form validation failed:", errors);
+      toast.error("Please fix form errors before submitting");
+      return;
     }
-  } catch (error) {
-    console.error("Submission error:", error);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+
+    setIsSubmitting(true);
+
+    try {
+      const subCategoriesPayload = data.parSubCatlst.map((subCat) => ({
+        id: subCat.id,
+        partnerId: editingPartner?.id || 0,
+        subCategoryId: subCat.subCategoryId,
+        isActive: subCat.isActive,
+      }));
+
+      const documentsPayload = data.parDoclst.map((doc) => ({
+        id: doc.id,
+        partnerId: editingPartner?.id || 0,
+        documentName: doc.documentName,
+        documentUrl: doc.documentUrl,
+        isActive: true,
+      }));
+
+      const payload = {
+        ...data,
+        id: editingPartner?.id,
+        parSubCatlst: subCategoriesPayload,
+        parDoclst: documentsPayload,
+        email: data.email || undefined,
+        mobileNo: data.mobileNo || undefined,
+      };
+
+      console.log(
+        "Final payload being sent:",
+        JSON.stringify(payload, null, 2)
+      );
+      console.log(
+        "Documents payload structure:",
+        documentsPayload.map((doc) => Object.keys(doc))
+      );
+
+      if (editingPartner) {
+        await updateMutation.mutateAsync(payload as any);
+      } else {
+        await createMutation.mutateAsync(payload as any);
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Unified handleNext function for both create and update modes
   const handleNext = async () => {
@@ -766,10 +921,24 @@ const onSubmit = async (data: PartnerFormData) => {
     let isValid = true;
 
     const stepFields: Record<number, ValidFieldNames[]> = {
-      1: ["businessName", "email", "mobileNo", "businessUnit", "cvr", "address"],
+      1: [
+        "businessName",
+        "email",
+        "mobileNo",
+        "businessUnit",
+        "cvr",
+        "address",
+      ],
       2: ["videoUrl", "logoUrl", "descriptionShort"],
       3: ["textField1", "textField2", "textField3", "textField4", "textField5"],
-      4: ["imageUrl1", "imageUrl2", "imageUrl3", "imageUrl4", "imageUrl5", "isActive"],
+      4: [
+        "imageUrl1",
+        "imageUrl2",
+        "imageUrl3",
+        "imageUrl4",
+        "imageUrl5",
+        "isActive",
+      ],
       5: [],
       6: ["categoryId"],
     };
@@ -786,7 +955,6 @@ const onSubmit = async (data: PartnerFormData) => {
       const documentValidations = documentFields.map((_, index) =>
         trigger([
           `parDoclst.${index}.documentName`,
-          `parDoclst.${index}.documentType`,
           `parDoclst.${index}.documentUrl`,
           `parDoclst.${index}.isActive`,
         ] as any)
@@ -827,14 +995,12 @@ const onSubmit = async (data: PartnerFormData) => {
           isActive: subCat.isActive,
         }));
 
-        // Remove documentType from documents payload to match backend expectations
         const documentsPayload = data.parDoclst.map((doc) => ({
           id: doc.id,
           partnerId: editingPartner?.id || 0,
           documentName: doc.documentName,
           documentUrl: doc.documentUrl,
           isActive: doc.isActive,
-         documentType: doc.documentType
         }));
 
         const payload = {
@@ -848,10 +1014,9 @@ const onSubmit = async (data: PartnerFormData) => {
 
         await updateMutation.mutateAsync(payload as any);
         toast.success(`Step ${currentStep} updated successfully`);
-        
+
         // Move to next step after successful update
         setCurrentStep((prev) => prev + 1);
-        
       } catch (error) {
         console.error("Step update error:", error);
       } finally {
@@ -884,11 +1049,9 @@ const onSubmit = async (data: PartnerFormData) => {
     // For create mode, use original logic
     if (step < currentStep || completedSteps.includes(step)) {
       setCurrentStep(step);
-    }
-    else if (step === currentStep + 1) {
+    } else if (step === currentStep + 1) {
       await handleNext();
-    }
-    else if (step > currentStep) {
+    } else if (step > currentStep) {
       let canNavigate = true;
 
       for (let i = currentStep; i < step; i++) {
@@ -974,38 +1137,10 @@ const onSubmit = async (data: PartnerFormData) => {
       t("admin.partners.deleteConfirm") ||
       "Are you sure you want to delete this partner?";
 
-    toast(
-      <div className="w-full">
-        <div className="font-semibold text-gray-900 mb-2">Confirm Deletion</div>
-        <div className="text-sm text-gray-600 mb-4">
-          {confirmMessage}
-          <br />
-          <strong>Partner: {partnerName}</strong>
-          <br />
-          <span className="text-xs">CVR: {partner.cvr}</span>
-        </div>
-        <div className="flex gap-2 justify-end">
-          <Button variant="secondary" size="sm" onClick={() => toast.dismiss()}>
-            Cancel
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => {
-              deleteMutation.mutate(partner.id!);
-              toast.dismiss();
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      </div>,
-      {
-        duration: 10000,
-        position: "top-center",
-        closeButton: true,
-      }
-    );
+    // Simple confirmation dialog (same as other pages)
+    if (window.confirm(`${confirmMessage}\n\nPartner: ${partnerName}\nCVR: ${partner.cvr}`)) {
+      deleteMutation.mutate(partner.id);
+    }
   };
 
   const addSubCategoryField = () => {
@@ -1019,7 +1154,7 @@ const onSubmit = async (data: PartnerFormData) => {
   };
 
   const addDocumentField = () => {
-    appendDocument({ documentName: "", documentUrl: "", documentType: "", isActive: true });
+    appendDocument({ documentName: "", documentUrl: "", isActive: true });
   };
 
   const removeDocumentField = (index: number) => {
@@ -1113,14 +1248,14 @@ const onSubmit = async (data: PartnerFormData) => {
         );
       },
     },
-    { accessorKey: "address", header: "Address" ,
+    {
+      accessorKey: "address",
+      header: "Address",
       cell: ({ row }) => {
         const address = row.original.address;
         if (!address) return "-";
 
-        return address.length > 50
-          ? `${address.substring(0, 50)}...`
-          : address;
+        return address.length > 50 ? `${address.substring(0, 50)}...` : address;
       },
     },
     { accessorKey: "cvr", header: "CVR" },
@@ -1161,7 +1296,7 @@ const onSubmit = async (data: PartnerFormData) => {
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title="Reset Password"
           >
-            <FaKey className="w-4 h-4" />
+            <IconKey/>
           </button>
           <button
             onClick={() => handleDeletePartner(row.original)}
@@ -1240,22 +1375,23 @@ const onSubmit = async (data: PartnerFormData) => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-  <VideoUpload
-    label="Video Upload"
-    value={videoUrlValue || ""}
-    onChange={(url) => setValue("videoUrl", url)}
-    onPreview={handleVideoPreview}
-    folder="partners/videos"
-    error={errors.videoUrl?.message}
-  />
+              <VideoUpload
+                label=""
+                value={videoUrlValue || ""}
+                onChange={(url) => setValue("videoUrl", url)}
+                onPreview={handleVideoPreview}
+                folder="partners/videos"
+                error={errors.videoUrl?.message}
+              />
 
-  <LogoUploadWithValidation
-    value={logoUrlValue || ""}
-    onChange={(url) => setValue("logoUrl", url)}
-    onPreview={handleImagePreview}
-    error={errors.logoUrl?.message}
-  />
-</div>
+              <LogoUploadWithValidation
+                label="Logo Upload"
+                value={logoUrlValue || ""}
+                onChange={(url) => setValue("logoUrl", url)}
+                onPreview={handleImagePreview}
+                error={errors.logoUrl?.message}
+              />
+            </div>
 
             <TextArea
               label="Short Description"
@@ -1301,9 +1437,7 @@ const onSubmit = async (data: PartnerFormData) => {
       case 4:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-gray-900">
-              Images & Status
-            </h3>
+            <h3 className="text-lg font-bold text-gray-900">Images & Status</h3>
             <div className="grid grid-cols-2 gap-4">
               <ImageUpload
                 label="Image Upload 1"
@@ -1326,11 +1460,8 @@ const onSubmit = async (data: PartnerFormData) => {
                 exactDimensions={{ width: 439, height: 468 }}
                 showDimensionValidation={true}
               />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-
-
-
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <ImageUpload
                 label="Image Upload 3"
                 value={imageUrl3Value}
@@ -1347,8 +1478,8 @@ const onSubmit = async (data: PartnerFormData) => {
                 folder="partners/images"
                 error={errors.imageUrl4?.message}
               />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <ImageUpload
                 label="Image Upload 5"
                 value={imageUrl5Value}
@@ -1360,109 +1491,129 @@ const onSubmit = async (data: PartnerFormData) => {
             </div>
           </div>
         );
-
-    case 5:
-  return (
-    <div className="space-y-6">
-      <h3 className="text-lg font-medium text-gray-900">Documents</h3>
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h4 className="font-medium text-gray-700 mb-3">
-          Partner Documents
-        </h4>
-        <p className="text-sm text-gray-600 mb-4">
-          Add one or more documents for this partner (business licenses,
-          contracts, certificates, etc.)
-        </p>
-        {documentFields.map((field, index) => (
-          <div
-            key={field.id}
-            className="border border-gray-200 rounded-lg p-4 mb-4 bg-white"
-          >
-            <div className="space-y-4 mb-4">
-              <Input
-                label={`Document Name ${index + 1}`}
-                error={errors.parDoclst?.[index]?.documentName?.message}
-                {...register(`parDoclst.${index}.documentName` as const)}
-                placeholder="Enter document name (e.g., Business License, Contract, Certificate)"
-                required
-              />
-              
-              {/* Add Document Type Dropdown */}
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Document Type {index + 1} *
-                </label>
-                <select
-                  {...register(`parDoclst.${index}.documentType` as const)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
+      case 5:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium text-gray-900">Documents</h3>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-medium text-gray-700 mb-3">
+                Partner Documents
+              </h4>
+              {documentFields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="border border-gray-200 rounded-lg p-4 mb-4 bg-white"
                 >
-                  <option value="">Select Document Type</option>
-                  {DOCUMENT_TYPES.map((type) => (
-                    <option key={type.value} value={type.value}>
-                      {type.label}
-                    </option>
-                  ))}
-                </select>
-                {errors.parDoclst?.[index]?.documentType && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.parDoclst[index]?.documentType?.message}
-                  </p>
-                )}
-              </div>
+                  <div className="space-y-4 mb-4">
+                    <Input
+                      label={`Document Name ${index + 1}`}
+                      error={errors.parDoclst?.[index]?.documentName?.message}
+                      value={watch(`parDoclst.${index}.documentName`)}
+                      onChange={(e) =>
+                        handleDocumentChange(
+                          "documentName",
+                          e.target.value,
+                          index
+                        )
+                      }
+                      placeholder="Enter document name (e.g., Business License, Contract, Certificate)"
+                      required
+                      disabled={savingDocuments.includes(index)}
+                    />
 
-              <DocumentUpload
-                label={`Document File ${index + 1}`}
-                value={watch(`parDoclst.${index}.documentUrl`)}
-                onChange={(url) =>
-                  setValue(`parDoclst.${index}.documentUrl`, url)
-                }
-                onPreview={(url) =>
-                  handleDocumentPreview(
-                    url,
-                    watch(`parDoclst.${index}.documentName`)
-                  )
-                }
-                folder="partners/documents"
-                error={errors.parDoclst?.[index]?.documentUrl?.message}
-                required
-              />
-            </div>
-            <div className="flex items-center justify-end">
-              {documentFields.length > 1 && (
-                <Button
-                  type="button"
-                  variant="danger"
-                  onClick={() => removeDocumentField(index)}
-                  disabled={documentFields.length <= 1}
-                >
-                  Remove Document
-                </Button>
+                    <DocumentUpload
+                      label={`Document File ${index + 1}`}
+                      value={watch(`parDoclst.${index}.documentUrl`)}
+                      onChange={(url) => {
+                        setValue(`parDoclst.${index}.documentUrl`, url);
+                        handleDocumentChange("documentUrl", url, index);
+                      }}
+                      onPreview={(url) =>
+                        handleDocumentPreview(
+                          url,
+                          watch(`parDoclst.${index}.documentName`)
+                        )
+                      }
+                      folder="partners/documents"
+                      error={errors.parDoclst?.[index]?.documentUrl?.message}
+                   
+                    />
+
+                    {/* Saving indicator */}
+                    {savingDocuments.includes(index) && (
+                      <div className="flex items-center gap-2 text-blue-600 text-sm">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                        Saving document...
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    {documentFields.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="danger"
+                        onClick={() => {
+                          // If document has been saved to server, delete it
+                          const documentId = watch(`parDoclst.${index}.id`);
+                          if (editingPartner?.id && documentId) {
+                            if (
+                              confirm(
+                                "Are you sure you want to delete this document?"
+                              )
+                            ) {
+                              partnerDocumentService
+                                .deleteDocument(documentId)
+                                .then(() => {
+                                  toast.success(
+                                    "Document deleted successfully"
+                                  );
+                                  removeDocumentField(index);
+                                  queryClient.invalidateQueries({
+                                    queryKey: ["partners"],
+                                  });
+                                })
+                                .catch((error) => {
+                                  toast.error("Failed to delete document");
+                                  console.error(
+                                    "Delete document error:",
+                                    error
+                                  );
+                                });
+                            }
+                          } else {
+                            removeDocumentField(index);
+                          }
+                        }}
+                        disabled={savingDocuments.includes(index)}
+                      >
+                        Remove Document
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={addDocumentField}
+                style={{
+                  backgroundColor: "#95C11F",
+                  borderColor: "#95C11F",
+                  color: "white",
+                }}
+                className="hover:bg-[#85B11F] hover:border-[#85B11F]"
+              >
+                Add Document +
+              </Button>
+              {errors.parDoclst && !errors.parDoclst.root && (
+                <p className="text-red-500 text-sm mt-2">
+                  {errors.parDoclst.message}
+                </p>
               )}
             </div>
           </div>
-        ))}
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={addDocumentField}
-          style={{
-            backgroundColor: '#95C11F',
-            borderColor: '#95C11F',
-            color: 'white'
-          }}
-          className="hover:bg-[#85B11F] hover:border-[#85B11F]"
-        >
-          Add Document +
-        </Button>
-        {errors.parDoclst && !errors.parDoclst.root && (
-          <p className="text-red-500 text-sm mt-2">
-            {errors.parDoclst.message}
-          </p>
-        )}
-      </div>
-    </div>
-  );
+        );
       case 6:
         return (
           <div className="space-y-6">
@@ -1602,17 +1753,19 @@ const onSubmit = async (data: PartnerFormData) => {
                         )}
                       </div>
                     ))}
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={addSubCategoryField}
-                      disabled={
-                        subCategories.filter((subCat) => subCat.isActive)
-                          .length === 0
-                      }
-                    >
-                      Add Another Sub Category
-                    </Button>
+                   <Button
+                type="button"
+                variant="secondary"
+                onClick={addSubCategoryField}
+                style={{
+                  backgroundColor: "#95C11F",
+                  borderColor: "#95C11F",
+                  color: "white",
+                }}
+                className="hover:bg-[#85B11F] hover:border-[#85B11F]"
+              >
+                Add Sub Categories +
+              </Button>
                     {!isLoadingSubCategories &&
                       subCategories.filter((subCat) => subCat.isActive)
                         .length === 0 && (
@@ -1692,7 +1845,7 @@ const onSubmit = async (data: PartnerFormData) => {
             onClick={handleBack}
             disabled={isSubmitting}
           >
-          Previous
+            Previous
           </Button>
         )}
       </div>
@@ -1713,7 +1866,11 @@ const onSubmit = async (data: PartnerFormData) => {
             key="submit"
             size="lg"
             type="submit"
-            disabled={isSubmitting || createMutation.isPending || updateMutation.isPending}
+            disabled={
+              isSubmitting ||
+              createMutation.isPending ||
+              updateMutation.isPending
+            }
           >
             {isSubmitting
               ? "Submitting..."
@@ -1727,11 +1884,22 @@ const onSubmit = async (data: PartnerFormData) => {
   );
 
   return (
-        <div className="p-3">
+    <div className="p-3">
+      {/* Render Toast Banners - same as other pages */}
+      {toasts.map((toastItem) => (
+        <AdminToast
+          key={toastItem.id}
+          type={toastItem.type}
+          message={toastItem.message}
+          onClose={() => hideToast(toastItem.id)}
+          autoDismissMs={5000}
+        />
+      ))}
+
       {!showForm && (
         <div className="p-2 mb-2">
           <div className="flex justify-between items-center">
-            <div>
+            <div  className="font-figtree">
               <Button
                 variant="primary"
                 size="md"
@@ -1796,12 +1964,12 @@ const onSubmit = async (data: PartnerFormData) => {
               </h2>
             </div>
           </div>
-<Stepper
-  currentStep={currentStep}
-  steps={steps}
-  onStepClick={handleStepClick}
-  completedSteps={completedSteps}
-/>
+          <Stepper
+            currentStep={currentStep}
+            steps={steps}
+            onStepClick={handleStepClick}
+            completedSteps={completedSteps}
+          />
           <form
             onSubmit={handleSubmit((data) => {
               console.log("Form submission triggered with data:", data);
@@ -1932,3 +2100,18 @@ const onSubmit = async (data: PartnerFormData) => {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
