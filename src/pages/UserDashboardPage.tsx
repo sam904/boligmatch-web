@@ -26,6 +26,11 @@ interface FavouriteItem {
   userId?: number;
   partnerId?: number;
   isActive?: boolean;
+  partnerName?: string;
+  businessName?: string;
+  descriptionShort?: string;
+  logoUrl?: string;
+  thumbnail?: string;
   [key: string]: any;
 }
 
@@ -36,8 +41,8 @@ interface ConversationItem {
   senderId?: number;
   receiverId?: number;
   type?: string;
-  partner?: string;
-  topic?: string;
+  senderName?: string;
+  fullName?: string;
   timestamp?: string;
   [key: string]: any;
 }
@@ -53,7 +58,7 @@ export default function UserDashboardPage() {
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [conversationsLoading, setConversationsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  console.log("isMobile", isMobile);
+
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -225,7 +230,7 @@ export default function UserDashboardPage() {
 
         {/* Welcome Text */}
         {userData && (
-          <div className="absolute top-60 z-10 px-4 sm:px-6 md:px-8 lg:px-12 mt-auto mb-32 sm:mb-36 md:mb-40 lg:mb-44">
+          <div className="absolute top-60 z-10 px-4 sm:px-6 md:px-8 lg:px-24 mt-auto mb-32 sm:mb-36 md:mb-40 lg:mb-44">
             <div className="text-white">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-1 sm:mb-2 leading-tight">
                 Mit Boligmatch+
@@ -300,7 +305,7 @@ export default function UserDashboardPage() {
 
       {/* Content Section */}
       <div className="bg-[#01351f] py-8 sm:py-12 md:py-16 flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
           {loading && activeView === "default" ? (
             <div className="flex justify-center items-center h-64">
               <div className="text-white text-lg">Loading...</div>
@@ -309,25 +314,25 @@ export default function UserDashboardPage() {
             <>
               {/* Categories Grid */}
               {activeView === "default" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-4">
                   {categories.map((category, index) => {
                     const assets = getCategoryAssets(index);
                     return (
                       <div
                         key={category.id}
                         onClick={() => handleCategoryClick(category)}
-                        className="w-full max-w-md mx-auto rounded-lg sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
+                        className="w-[374px] mx-auto rounded-lg sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
                       >
                         <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-72 rounded-t-lg sm:rounded-t-xl overflow-hidden">
                           <img
                             src={category.imageUrl || assets.image}
                             alt={category.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-[340px] object-fill"
                             onError={(e) => {
                               e.currentTarget.src = assets.image;
                             }}
                           />
-                          <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent"></div>
+                          <div className="absolute bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-white to-transparent"></div>
                         </div>
 
                         <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center gap-2">
@@ -370,40 +375,101 @@ export default function UserDashboardPage() {
                       </div>
                     </div>
                   ) : favorites.length > 0 ? (
-                    <div className="space-y-3">
-                      {favorites.map((favorite) => (
-                        <div
-                          key={favorite.id}
-                          className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-5 flex items-center gap-3 sm:gap-4 hover:shadow-lg transition-shadow cursor-pointer border border-gray-100"
-                        >
-                          <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <div className="text-xs font-semibold text-gray-600">
-                              #{favorite.partnerId}
+                    <>
+                      {/* Mobile List View */}
+                      <div className="md:hidden space-y-3">
+                        {favorites.map((favorite) => (
+                          <div
+                            key={favorite.id}
+                            className="bg-white rounded-lg p-4 flex items-center gap-3 hover:shadow-lg transition-shadow cursor-pointer border border-gray-100"
+                          >
+                            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <div className="text-xs font-semibold text-gray-600">
+                                #{favorite.partnerId}
+                              </div>
                             </div>
-                          </div>
 
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-xs font-medium text-gray-500">
-                                Partner ID: {favorite.partnerId}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-xs font-medium text-gray-500">
+                                  Partner Name:{" "}
+                                  {favorite.partnerName ||
+                                    favorite.businessName ||
+                                    "N/A"}
+                                </span>
+                              </div>
+                              <h3 className="text-sm font-semibold text-gray-900 truncate">
+                                User Name {favorite.userName}
+                              </h3>
+                              <span
+                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  favorite.isActive
+                                    ? "bg-green-50 text-green-700"
+                                    : "bg-gray-100 text-gray-600"
+                                }`}
+                              >
+                                {favorite.isActive ? "Active" : "Inactive"}
                               </span>
                             </div>
-                            <h3 className="text-sm sm:text-base font-semibold text-gray-900 truncate">
-                              Favorite #{favorite.id}
-                            </h3>
-                            <span
-                              className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                                favorite.isActive
-                                  ? "bg-green-50 text-green-700"
-                                  : "bg-gray-100 text-gray-600"
-                              }`}
-                            >
-                              {favorite.isActive ? "Active" : "Inactive"}
-                            </span>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+
+                      {/* Desktop Card View */}
+                      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {favorites.map((favorite) => (
+                          <div
+                            key={favorite.id}
+                            className="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
+                          >
+                            {/* <div className="relative w-full h-64 overflow-hidden bg-gray-100">
+                              <img
+                                src={
+                                  favorite.thumbnail ||
+                                  favorite.logoUrl ||
+                                  dashboard1
+                                }
+                                alt={
+                                  favorite.partnerName || favorite.businessName
+                                }
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.src = dashboard1;
+                                }}
+                              />
+                              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent"></div>
+                            </div> */}
+
+                            <div className="p-5 text-center flex flex-col items-center gap-4">
+                              <div className="w-[83px] h-[77px] flex items-center justify-center mt-4 mb-1 bg-white rounded-lg">
+                                {favorite.logoUrl && (
+                                  <img
+                                    src={favorite.logoUrl}
+                                    alt="Business logo"
+                                    className="w-[83px] h-[77px] object-contain"
+                                  />
+                                )}
+                              </div>
+
+                              <h3 className="text-xl font-extrabold text-[#052011] mb-1">
+                                {favorite.partnerName ||
+                                  favorite.businessName ||
+                                  "Partner Name"}
+                              </h3>
+
+                              <p className="text-sm text-[#052011] leading-relaxed px-2 line-clamp-3">
+                                {favorite.descriptionShort ||
+                                  "Professional services and solutions"}
+                              </p>
+
+                              <button className="mt-3 text-sm font-semibold text-[#01351f] hover:text-[#145939] transition">
+                                More info
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
                   ) : (
                     <div className="text-white text-base sm:text-lg text-center py-8">
                       No favorites found
@@ -425,43 +491,98 @@ export default function UserDashboardPage() {
                       </div>
                     </div>
                   ) : conversations.length > 0 ? (
-                    <div className="space-y-3">
-                      {conversations.map((conversation) => (
-                        <div
-                          key={conversation.id}
-                          className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-5 hover:shadow-lg transition-shadow cursor-pointer border border-gray-100"
-                        >
-                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                  Subject
-                                </span>
-                                <span className="text-sm sm:text-base font-semibold text-gray-800 break-words">
-                                  {conversation.messageSubject || "N/A"}
-                                </span>
+                    <>
+                      {/* Mobile List View */}
+                      <div className="md:hidden space-y-3">
+                        {conversations.map((conversation) => (
+                          <div
+                            key={conversation.id}
+                            className="bg-white rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer border border-gray-100"
+                          >
+                            <div className="flex flex-col gap-2">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                                    Subject
+                                  </span>
+                                  <span className="text-sm font-semibold text-gray-800">
+                                    {conversation.messageSubject || "N/A"}
+                                  </span>
+                                </div>
+                                <div className="flex items-start gap-2">
+                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide flex-shrink-0">
+                                    Content
+                                  </span>
+                                  <span className="text-sm text-gray-600 line-clamp-2">
+                                    {conversation.messageContent || "N/A"}
+                                  </span>
+                                </div>
                               </div>
-                              <div className="flex items-start gap-2">
-                                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide flex-shrink-0">
-                                  Content
-                                </span>
-                                <span className="text-sm text-gray-600 line-clamp-2">
-                                  {conversation.messageContent || "N/A"}
-                                </span>
+                              <div className="flex items-center justify-end gap-2 text-gray-500 hover:text-gray-700">
+                                <span className="text-sm">Read more</span>
+                                <img
+                                  src={chatModelImg}
+                                  alt="Chat"
+                                  className="w-5 h-5"
+                                />
                               </div>
-                            </div>
-                            <div className="flex items-center gap-2 text-gray-500 hover:text-gray-700 self-end sm:self-auto flex-shrink-0">
-                              <span className="text-sm">Read more</span>
-                              <img
-                                src={chatModelImg}
-                                alt="Chat"
-                                className="w-5 h-5"
-                              />
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+
+                      {/* Desktop Card View */}
+                      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {conversations.map((conversation) => (
+                          <div
+                            key={conversation.id}
+                            className="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
+                          >
+                            <div className="relative w-full h-36 flex items-center justify-center">
+                              <div className="w-[83px] h-[77px] bg-white rounded-full flex items-center justify-center">
+                                <img
+                                  src={chatModelImg}
+                                  alt="Message"
+                                  className=""
+                                />
+                              </div>
+                            </div>
+
+                            <div className="p-5 flex flex-col gap-3">
+                              <div className="text-center -mt-2">
+                                <h3 className="text-lg font-bold text-[#052011]">
+                                  {conversation.senderName ||
+                                    conversation.fullName ||
+                                    "User Name"}
+                                </h3>
+                              </div>
+
+                              <div>
+                                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+                                  Subject
+                                </span>
+                                <p className="text-sm font-semibold text-gray-800">
+                                  {conversation.messageSubject || "N/A"}
+                                </p>
+                              </div>
+
+                              <div>
+                                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">
+                                  Content
+                                </span>
+                                <p className="text-sm text-gray-600 line-clamp-3">
+                                  {conversation.messageContent || "N/A"}
+                                </p>
+                              </div>
+
+                              <button className="mt-2 text-sm font-semibold text-[#01351f] hover:text-[#145939] transition self-center">
+                                More info
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
                   ) : (
                     <div className="text-white text-base sm:text-lg text-center py-8">
                       No conversations found

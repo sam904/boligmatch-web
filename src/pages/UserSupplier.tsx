@@ -17,6 +17,7 @@ interface SubCategoryData {
   subCategoryDescription: string;
   categoryIconUrl?: string;
   subCategoryIconUrl?: string;
+  subCategoryImageUrl?: string;
 }
 
 interface PartnerItem {
@@ -104,6 +105,14 @@ const UserSupplier = () => {
   const [partnersLoading, setPartnersLoading] = useState(false);
   const [loadingPartnerId, setLoadingPartnerId] = useState<number | null>(null);
 
+  // Get the background image for the active subcategory
+  const getBackgroundImage = () => {
+    if (!active) return userDashboard;
+
+    const activeSubCategory = subCategories.find((sub) => sub.id === active);
+    return activeSubCategory?.subCategoryImageUrl || userDashboard;
+  };
+
   useEffect(() => {
     const userData = localStorage.getItem("bm_user");
     if (!userData) {
@@ -186,7 +195,7 @@ const UserSupplier = () => {
     <div
       className="relative h-[100vh]"
       style={{
-        backgroundImage: `url(${userDashboard})`,
+        backgroundImage: `url(${getBackgroundImage()})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

@@ -30,6 +30,7 @@ const SupplierProfile = () => {
   const [isAddingToFavorites, setIsAddingToFavorites] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [partnerData, setPartnerData] = useState<any>(null);
+  console.log("partnerData---->", partnerData);
   const [contactSubject, setContactSubject] = useState("");
   const [contactBody, setContactBody] = useState("");
   const [recommendEmail, setRecommendEmail] = useState("");
@@ -615,7 +616,7 @@ const SupplierProfile = () => {
             )}
 
             {activeModal === "contact" && (
-              <div className="flex flex-col items-stretch">
+              <div className="flex flex-col items-stretch z-10">
                 <div className="flex justify-center mb-4">
                   <img
                     src={chatModel}
@@ -663,16 +664,16 @@ const SupplierProfile = () => {
                     {t("supplierProfile.contactModal.contactInfo")}
                   </p>
                   <p className="font-extrabold">
-                    {partnerData?.businessName || "Kabel–specialisten"}
+                    {partnerData?.businessName}
                   </p>
                   <p>
-                    {partnerData?.address || "Hejvangnen 214, 6000 Kolding"}
+                    {partnerData?.address}
                   </p>
                   <p>
                     Tlf. {partnerData?.mobileNo || "56 34 12 67"}{" "}
                     {partnerData?.cvr > 0 ? `, CVR ${partnerData.cvr}` : ""}
                   </p>
-                  <p>{partnerData?.email || "info@kabel-specialisten.dk"}</p>
+                  <p>{partnerData?.email}</p>
                 </div>
               </div>
             )}
