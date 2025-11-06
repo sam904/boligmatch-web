@@ -12,6 +12,7 @@ import Input from "../../../components/common/Input";
 import SearchableSelectController from "../../../components/common/SearchableSelectController";
 import ImageUpload from "../../../components/common/ImageUpload";
 import AdminToast from "../../../components/common/AdminToast";
+import DeleteConfirmation from "../../../components/common/DeleteConfirmation"; // Add this import
 import type { AdminToastType } from "../../../components/common/AdminToast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -166,6 +167,13 @@ export default function SubCategoriesPage() {
     isOpen: false,
   });
   const [toasts, setToasts] = useState<ToastState[]>([]);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    isOpen: boolean;
+    subCategory: SubCategory | null;
+  }>({
+    isOpen: false,
+    subCategory: null,
+  });
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
@@ -391,6 +399,7 @@ export default function SubCategoriesPage() {
         t("admin.subcategories.deleteSuccess") ||
           "Subcategory deleted successfully"
       );
+      setDeleteConfirmation({ isOpen: false, subCategory: null });
     },
     onError: (error: any) => {
       toast.error(
@@ -398,6 +407,7 @@ export default function SubCategoriesPage() {
           t("admin.subcategories.deleteError") ||
           "Failed to delete subcategory"
       );
+      setDeleteConfirmation({ isOpen: false, subCategory: null });
     },
   });
 
@@ -491,15 +501,21 @@ export default function SubCategoriesPage() {
   const handleDeleteSubCategory = (subCategory: SubCategory) => {
     if (!subCategory.id) return;
 
-    const subCategoryName = translateSubCategory(subCategory.name);
-    const confirmMessage =
-      t("admin.subcategories.deleteConfirm") ||
-      "Are you sure you want to delete this subcategory?";
+    // Show delete confirmation modal instead of window.confirm
+    setDeleteConfirmation({
+      isOpen: true,
+      subCategory: subCategory
+    });
+  };
 
-    // Simple confirmation dialog (same as CategoriesPage)
-    if (window.confirm(`${confirmMessage}\n\nSubcategory: ${subCategoryName}`)) {
-      deleteMutation.mutate(subCategory.id);
+  const handleConfirmDelete = () => {
+    if (deleteConfirmation.subCategory?.id) {
+      deleteMutation.mutate(deleteConfirmation.subCategory.id);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ isOpen: false, subCategory: null });
   };
 
   const handleModalClose = () => {
@@ -642,6 +658,23 @@ export default function SubCategoriesPage() {
           autoDismissMs={5000}
         />
       ))}
+
+      {/* Delete Confirmation Modal using common component */}
+      <DeleteConfirmation
+        open={deleteConfirmation.isOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        itemName={
+          deleteConfirmation.subCategory 
+            ? `Subcategory: ${translateSubCategory(deleteConfirmation.subCategory.name)}`
+            : undefined
+        }
+        confirmationMessage={
+          t("admin.subcategories.deleteConfirm") || 
+          "Are you sure you want to delete this subcategory?"
+        }
+        isLoading={deleteMutation.isPending}
+      />
 
       {/* Header Section */}
       <div className="p-2 mb-2">

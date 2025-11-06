@@ -10,6 +10,7 @@ import Button from "../../../components/common/Button";
 import Input from "../../../components/common/Input";
 import ImageUpload from "../../../components/common/ImageUpload";
 import AdminToast from "../../../components/common/AdminToast";
+import DeleteConfirmation from "../../../components/common/DeleteConfirmation";
 import type { AdminToastType } from "../../../components/common/AdminToast";
 import  { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -159,6 +160,13 @@ export default function CategoriesPage() {
     isOpen: false,
   });
   const [toasts, setToasts] = useState<ToastState[]>([]);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    isOpen: boolean;
+    category: Category | null;
+  }>({
+    isOpen: false,
+    category: null,
+  });
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
@@ -361,11 +369,14 @@ export default function CategoriesPage() {
       toast.success(
         t("admin.categories.deleteSuccess") || "Category deleted successfully"
       );
+      setDeleteConfirmation({ isOpen: false, category: null });
     },
-    onError: () =>
+    onError: () => {
       toast.error(
         t("admin.categories.deleteError") || "Failed to delete category"
-      ),
+      );
+      setDeleteConfirmation({ isOpen: false, category: null });
+    },
   });
 
   const onSubmit = async (data: CategoryFormData) => {
@@ -430,15 +441,21 @@ export default function CategoriesPage() {
   const handleDeleteCategory = (category: Category) => {
     if (!category.id) return;
 
-    const categoryName = translateCategory(category.name);
-    const confirmMessage =
-      t("admin.categories.deleteConfirm") ||
-      "Are you sure you want to delete this category?";
+    // Show delete confirmation modal
+    setDeleteConfirmation({
+      isOpen: true,
+      category: category
+    });
+  };
 
-    // Simple confirmation dialog
-    if (window.confirm(`${confirmMessage}\n\nCategory: ${categoryName}`)) {
-      deleteMutation.mutate(category.id);
+  const handleConfirmDelete = () => {
+    if (deleteConfirmation.category?.id) {
+      deleteMutation.mutate(deleteConfirmation.category.id);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ isOpen: false, category: null });
   };
 
   const handleModalClose = () => {
@@ -569,6 +586,23 @@ export default function CategoriesPage() {
           autoDismissMs={5000}
         />
       ))}
+
+      {/* Delete Confirmation Modal using common component */}
+      <DeleteConfirmation
+        open={deleteConfirmation.isOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        itemName={
+          deleteConfirmation.category 
+            ? `Category: ${translateCategory(deleteConfirmation.category.name)}`
+            : undefined
+        }
+        confirmationMessage={
+          t("admin.categories.deleteConfirm") || 
+          "Are you sure you want to delete this category?"
+        }
+        isLoading={deleteMutation.isPending}
+      />
 
       {/* Header Section */}
       <div className="p-2 mb-2">
