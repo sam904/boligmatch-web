@@ -3,8 +3,16 @@ import sampleImg from "/src/assets/userImages/footerLogo.svg";
 import { partnerService } from "../../../services/partner.service";
 import { useEffect, useRef, useState } from "react";
 
-function PartnerStatDetails({ partnerData }) {
-  const [partnerCount, setPartnerCount] = useState<any>(null);
+function PartnerStatDetails({ partnerData }: { partnerData: any }) {
+  const [partnerCount, setPartnerCount] = useState<
+    | {
+        totalPartnerIdPageVisit?: number;
+        totalFavourites?: number;
+        totalPartners?: number;
+        totalRecommendations?: number;
+      }
+    | null
+  >(null);
   const calledRef = useRef(false);
 
   const statistics = [

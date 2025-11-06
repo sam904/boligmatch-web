@@ -76,7 +76,7 @@ function SearchForPartner() {
     <>
       <div className="bg-[#01351f] py-8 sm:py-12 md:py-16 flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
-          {loading === "default" ? (
+          {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="text-white text-lg">Loading...</div>
             </div>

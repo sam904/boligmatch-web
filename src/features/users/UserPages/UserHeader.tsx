@@ -18,14 +18,17 @@ function UserHeader() {
   const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
   const [isChoiceModalOpen, setIsChoiceModalOpen] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
+  console.log(showLangDropdown);
   const [showSidebar, setShowSidebar] = useState(false);
-  const [partnerData, setPartnerData] = useState(null);
+  const [partnerData, setPartnerData] = useState<any | null>(null);
   const { i18n, t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
+  console.log(isMobile)
 
   const userData = useAppSelector((state) => state.auth.user);
 
   const currentLang = i18n.language || "en";
+  console.log(currentLang)
 
   // Check for partner data in localStorage
   useEffect(() => {
@@ -38,7 +41,7 @@ function UserHeader() {
         }
       } catch (error) {
         console.error("Error parsing partner data:", error);
-      } 
+      }
     };
 
     checkPartnerData();
@@ -65,28 +68,26 @@ function UserHeader() {
   }, []);
 
   // Determine what to display: partner or user
-  const isPartner = partnerData && partnerData.roleName === "Partner";
+  const isPartner = !!partnerData && (partnerData as any).roleName === "Partner";
   const displayName = isPartner
-    ? partnerData.firstName
+    ? partnerData?.firstName
     : userData
-    ? `${userData.firstName} ${userData.lastName}`
-    : null;
+      ? `${userData.firstName} ${userData.lastName}`
+      : null;
 
   return (
     <>
       <header className="h-[100vh] relative">
         <div
-          className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-4 z-50 transition-colors duration-300 ${
-            isScrolled ? "bg-[#06351E]" : "bg-transparent"
-          }`}
+          className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-4 z-50 transition-colors duration-300 ${isScrolled ? "bg-[#06351E]" : "bg-transparent"
+            }`}
         >
           <div className="flex items-center justify-between h-full">
             <div className="">
               <img
                 onClick={() => navigate("/")}
-                className={`duration-300 ${
-                  isScrolled ? "h-10" : "h-12"
-                } cursor-pointer`}
+                className={`duration-300 ${isScrolled ? "h-10" : "h-12"
+                  } cursor-pointer`}
                 src={userLogo}
                 alt=""
               />
@@ -109,9 +110,8 @@ function UserHeader() {
                   <img
                     src={userHeader}
                     alt=""
-                    className={`duration-300 ${
-                      isScrolled ? "h-8" : "h-10"
-                    } cursor-pointer`}
+                    className={`duration-300 ${isScrolled ? "h-8" : "h-10"
+                      } cursor-pointer`}
                   />
                 </button>
               )}

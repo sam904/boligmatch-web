@@ -8,13 +8,13 @@
 // import commentImg from "/src/assets/userImages/comment.svg";
 // import shareIconsImg from "/src/assets/userImages/share.svg";
 
-function PartnerProfileShortcut({ partnerData }) {
+function PartnerProfileShortcut({ partnerData }: { partnerData: any }) {
   return (
     <>
       <div className="w-full mx-auto -mt-8 md:-mt-10">
         <div className="w-full h-[52vh] md:h-[70vh] lg:h-[80vh] overflow-hidden shadow-lg">
           <img
-            src={partnerData.thumbnail}
+            src={partnerData?.thumbnail}
             alt="Partner Profile"
             className="w-full h-full object-cover"
           />

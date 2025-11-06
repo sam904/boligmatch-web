@@ -9,8 +9,7 @@ export const partnerService = {
   },
   
   getById: (id: number) => 
-    http.get<Partner>(`/Partner/getPartnerById/${id}`),
-  
+  http.get<{ output: Partner }>(`/Partner/getPartnerById/${id}`),  
   getPaginated: (query: {
     page: number;
     pageSize: number;
@@ -24,19 +23,17 @@ export const partnerService = {
     http.put<Partner>('/Partner/updatePartner', data),
   
   refetchPartner: (id: number) => 
-    http.get<Partner>(`/Partner/getPartnerById/${id}`),
-  
+    http.get<{ output: Partner }>(`/Partner/getPartnerById/${id}`),  
   delete: (id: number) => 
     http.delete<void>(`/Partner/DeletePartner/${id}`),
 
   addPartnerPageVisit: (data: { 
     id: number; 
-    userId: number; 
-    partnerId: number; 
+    userId: number | undefined; 
+    partnerId: number | null; 
     isActive: boolean; 
   }) => http.post('/PartnerPageVisit/addPartnerPageVisit', data),
 
   getPartnerPageCount : (partnerId: number) => 
-    http.get<number>(`/Partner/getPartnersByPartnerIdCountList/${partnerId}`),
-
+    http.get<{ output: Array<{ totalPartnerIdPageVisit: number; totalFavourites: number; totalPartners: number; totalRecommendations: number; }> }>(`/Partner/getPartnersByPartnerIdCountList/${partnerId}`),
 };
