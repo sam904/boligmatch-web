@@ -37,30 +37,47 @@ export default function LandingPage() {
         open={showSignUpModal}
         onClose={() => setShowSignUpModal(false)}
       />
-      <div className="absolute md:top-44 top-28 lg:left-78 sm:left-50 flex max-w-6xl mx-auto px-12 justify-between mt-0 h-[calc(100vh-100vh)]">
+      <div className="absolute md:top-20 top-28 lg:left-64 sm:left-50 flex max-w-6xl mx-auto px-12 justify-between mt-0 h-[calc(100vh-100vh)]">
         <div>
-          <div className="md:w-[150px] w-[70px] flex justify-end">
-            <img src={landingPageIcons} alt="" className="md:w-24 w-10 h-auto" />
+          <div className="md:w-[175px] w-[70px] flex justify-end">
+            <img
+              src={landingPageIcons}
+              alt=""
+              className="md:w-[107px] w-10 h-auto"
+            />
+          </div>
+          <div className="mb-4">
+            <img
+              src={landingPageIcons2}
+              alt=""
+              className="md:w-[107px] w-10 h-auto"
+            />
           </div>
           <div className="">
-            <img src={landingPageIcons2} alt="" className="md:w-24 w-10 h-auto" />
+            <img
+              src={landingPageIcons3}
+              alt=""
+              className="md:w-[107px] w-10 h-auto"
+            />
           </div>
-          <div className="">
-            <img src={landingPageIcons3} alt="" className="md:w-24 w-10 h-auto" />
-          </div>
-          <div className="md:w-[150px] w-[70px] flex justify-end">
-            <img src={landingPageIcons4} alt="" className="md:w-24 w-10 h-auto" />
+          <div className="md:w-[170px] w-[70px] flex justify-end">
+            <img
+              src={landingPageIcons4}
+              alt=""
+              className="md:w-[107px] w-10 h-auto"
+            />
           </div>
         </div>
       </div>
 
-      <div className="bg-[#043428] h-auto">
-        <div className="flex justify-center absolute bottom-0 md:left-[46%] left-[35%]">
+      <div className="bg-[#01351f] h-auto">
+        <div className="flex justify-center absolute bottom-0 md:left-[44%] left-[35%]">
           <button
             onClick={() => setShowSignUpModal(true)}
-            className="bg-[#91C73D] rounded-lg md:text-[18px] text-[16px] cursor-pointer px-4 font-semibold py-2 text-white hover:bg-[#7fb32d] transition-colors figtree"
+            className="bg-[#91C73D] rounded-lg md:text-[18px] text-[16px] cursor-pointer px-6 font-semibold py-2.5 text-white hover:bg-[#7fb32d] transition-colors figtree"
           >
             {t("landing.signUpButton")}
+            {/* Tilmeld dig her */}
           </button>
         </div>
         <h1 className="text-[76px] text-white leading-[66px] text-center rosting-script font-[400]">
@@ -74,16 +91,16 @@ export default function LandingPage() {
         </p>
       </div>
       <ServiceCarousel />
-      <div className="bg-[#043428] h-auto">
+      <div className="bg-[#01351f] h-auto">
         <h1 className="text-[64px] leading-[66px] text-white text-center max-w-[845px] mx-auto font-[800] plus-jakarta-sans">
           {t("landing.transparentJourney")}
         </h1>
-        <p className="text-white text-center text-[18px] mx-auto max-w-8xl py-8 px-4">
+        <p className="text-white text-center text-[18px] mx-auto max-w-7xl py-4 px-4">
           {t("landing.futureDescription")}
         </p>
       </div>
       <Stepper currentStep={currentStep} onStepClick={setCurrentStep} />
-      <footer className="bg-[#043428] text-white text-center p-4 pt-32">
+      <footer className="bg-[#01351f] text-white text-center p-4 pt-32">
         <div className="flex flex-col items-center">
           <div className="text-center">
             <div className="mb-8">

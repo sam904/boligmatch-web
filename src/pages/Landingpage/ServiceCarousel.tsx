@@ -58,7 +58,7 @@ const ServiceCarousel: React.FC = () => {
   ];
 
   return (
-    <div className="w-full min-h-screen bg-[#043428] flex flex-col items-center justify-center overflow-x-hidden py-16 md:py-10 px-0 m-0">
+    <div className="w-full min-h-screen bg-[#01351f] flex flex-col items-center justify-center overflow-x-hidden py-16 md:py-10 px-0 m-0">
       <div className="flex items-center justify-center w-full px-2">
         {services.map((service, index) => (
           <div

@@ -6,12 +6,51 @@ import Partnere from "/src/assets/userImages/Search.svg";
 import PartnerStatDetails from "./PartnerStatDetails";
 import PartnerProfileShortcut from "./PartnerProfileShortcut";
 import SearchForPartner from "./SearchForPartner";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { partnerService } from "../../../services/partner.service";
 
 function ParentStatistics() {
-  const [activeTab, setActiveTab] = useState<"statistik" | "profil" | "partnere">(
-    "statistik"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "statistik" | "profil" | "partnere"
+  >("statistik");
+  const [partnerData, setPartnerData] = useState<any>("");
+  const calledRef = useRef(false);
+  console.log("Partner Data:", partnerData);
+
+  useEffect(() => {
+    if (calledRef.current) return;
+    calledRef.current = true;
+    const token = localStorage.getItem("bm_access");
+    let partnerId = null;
+
+    if (token) {
+      try {
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = JSON.parse(window.atob(base64));
+        console.log("Decoded Token Payload:", jsonPayload);
+
+        partnerId = jsonPayload?.partnerId;
+        console.log("Partner ID:", partnerId);
+      } catch (error) {
+        console.error("Invalid token", error);
+      }
+    }
+
+    const fetchPartnerDetails = async () => {
+      if (!partnerId) return console.error("No Partner ID found in token");
+
+      try {
+        const response = await partnerService.getById(partnerId);
+        console.log("Partner Details:", response);
+        setPartnerData(response?.output);
+      } catch (error) {
+        console.error("Error fetching partner details", error);
+      }
+    };
+
+    fetchPartnerDetails();
+  }, []);
 
   return (
     <>
@@ -30,7 +69,7 @@ function ParentStatistics() {
                 Partner Dashboard
               </h1>
               <h2 className="text-[24px] md:text-[64px] font-[500] tracking-tight">
-                Kabel-specialisten
+                {partnerData?.businessName || "Business Name"}
               </h2>
             </div>
           </div>
@@ -39,7 +78,9 @@ function ParentStatistics() {
               <button
                 onClick={() => setActiveTab("statistik")}
                 className={`whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 text-white rounded-lg transition-colors ${
-                  activeTab === "statistik" ? "bg-[#07583A]" : "bg-[#91C73D] hover:bg-[#7FB333]"
+                  activeTab === "statistik"
+                    ? "bg-[#07583A]"
+                    : "bg-[#91C73D] hover:bg-[#7FB333]"
                 }`}
               >
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
@@ -53,7 +94,9 @@ function ParentStatistics() {
               <button
                 onClick={() => setActiveTab("profil")}
                 className={`whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 text-white rounded-lg transition-colors ${
-                  activeTab === "profil" ? "bg-[#07583A]" : "bg-[#91C73D] hover:bg-[#7FB333]"
+                  activeTab === "profil"
+                    ? "bg-[#07583A]"
+                    : "bg-[#91C73D] hover:bg-[#7FB333]"
                 }`}
               >
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
@@ -67,7 +110,9 @@ function ParentStatistics() {
               <button
                 onClick={() => setActiveTab("partnere")}
                 className={`whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 text-white rounded-lg transition-colors ${
-                  activeTab === "partnere" ? "bg-[#07583A]" : "bg-[#91C73D] hover:bg-[#7FB333]"
+                  activeTab === "partnere"
+                    ? "bg-[#07583A]"
+                    : "bg-[#91C73D] hover:bg-[#7FB333]"
                 }`}
               >
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
@@ -81,8 +126,12 @@ function ParentStatistics() {
           </div>
         </div>
       </div>
-      {activeTab === "statistik" && <PartnerStatDetails />}
-      {activeTab === "profil" && <PartnerProfileShortcut />}
+      {activeTab === "statistik" && (
+        <PartnerStatDetails partnerData={partnerData} />
+      )}
+      {activeTab === "profil" && (
+        <PartnerProfileShortcut partnerData={partnerData} />
+      )}
       {activeTab === "partnere" && <SearchForPartner />}
     </>
   );

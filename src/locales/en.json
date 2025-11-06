@@ -233,7 +233,10 @@
   "manageProfile": "Manage Profile",
   "becomePartner": "Become a Partner",
   "about": "About Boligmatch",
-  "terms": "Terms and Conditions"
+  "terms": "Terms and Conditions",
+  "logINUser": "Logged in as End-user",
+  "notLogIn": "Not logged in",
+  "logInPartner":"Logged in as Partner"
 },
 "services": {
   "moving": {

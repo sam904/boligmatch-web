@@ -18,16 +18,38 @@ function UserHeader() {
   const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
   const [isChoiceModalOpen, setIsChoiceModalOpen] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
-  console.log('showLangDropdown', showLangDropdown)
+  console.log(showLangDropdown);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [partnerData, setPartnerData] = useState<any | null>(null);
   const { i18n, t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
-  console.log('isMobile', isMobile)
+  console.log(isMobile)
 
   const userData = useAppSelector((state) => state.auth.user);
 
   const currentLang = i18n.language || "en";
-  console.log('currentLang', currentLang)
+  console.log(currentLang)
+
+  // Check for partner data in localStorage
+  useEffect(() => {
+    const checkPartnerData = () => {
+      try {
+        const storedPartner = localStorage.getItem("bm_partner");
+        if (storedPartner) {
+          const partner = JSON.parse(storedPartner);
+          setPartnerData(partner);
+        }
+      } catch (error) {
+        console.error("Error parsing partner data:", error);
+      }
+    };
+
+    checkPartnerData();
+
+    // Optional: Listen for storage changes
+    window.addEventListener("storage", checkPartnerData);
+    return () => window.removeEventListener("storage", checkPartnerData);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,32 +67,38 @@ function UserHeader() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  // Determine what to display: partner or user
+  const isPartner = !!partnerData && (partnerData as any).roleName === "Partner";
+  const displayName = isPartner
+    ? partnerData?.firstName
+    : userData
+      ? `${userData.firstName} ${userData.lastName}`
+      : null;
+
   return (
     <>
       <header className="h-[100vh] relative">
         <div
-          className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-4 z-50 transition-colors duration-300 ${
-            isScrolled ? "bg-[#06351E]" : "bg-transparent"
-          }`}
+          className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-4 z-50 transition-colors duration-300 ${isScrolled ? "bg-[#06351E]" : "bg-transparent"
+            }`}
         >
           <div className="flex items-center justify-between h-full">
             <div className="">
               <img
                 onClick={() => navigate("/")}
-                className={`duration-300 ${
-                  isScrolled ? "h-10" : "h-12"
-                } cursor-pointer`}
+                className={`duration-300 ${isScrolled ? "h-10" : "h-12"
+                  } cursor-pointer`}
                 src={userLogo}
                 alt=""
               />
             </div>
 
             <div className="flex items-center md:gap-4 gap-2">
-              {userData ? (
+              {displayName ? (
                 <div className="relative">
                   <div className="flex items-center gap-3 cursor-pointer">
                     <span className="text-white text-sm font-medium">
-                      {userData.firstName} {userData.lastName}
+                      {displayName}
                     </span>
                   </div>
                 </div>
@@ -82,9 +110,8 @@ function UserHeader() {
                   <img
                     src={userHeader}
                     alt=""
-                    className={`duration-300 ${
-                      isScrolled ? "h-8" : "h-10"
-                    } cursor-pointer`}
+                    className={`duration-300 ${isScrolled ? "h-8" : "h-10"
+                      } cursor-pointer`}
                   />
                 </button>
               )}
@@ -116,16 +143,22 @@ function UserHeader() {
           />
 
           {/* Sidebar */}
-          <div className="absolute right-0 top-0 h-full w-64 sm:w-72 bg-[#043428] shadow-2xl transform transition-all duration-500 ease-out translate-x-0">
+          <div className="absolute right-0 top-0 h-full w-64 md:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out translate-x-0">
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/10">
                 <div className="flex items-center gap-3">
-                  {/* User Profile in Sidebar */}
-                  {userData ? (
+                  {/* Partner/User Profile in Sidebar */}
+                  {isPartner ? (
                     <div className="flex items-center gap-3">
                       <span className="text-white text-sm font-medium">
-                        {userData.firstName} {userData.lastName}
+                        {t("sidebar.logInPartner")}
+                      </span>
+                    </div>
+                  ) : userData ? (
+                    <div className="flex items-center gap-3">
+                      <span className="text-white text-sm font-medium">
+                        {t("sidebar.logINUser")}
                       </span>
                     </div>
                   ) : (
@@ -136,11 +169,7 @@ function UserHeader() {
                         setIsChoiceModalOpen(true);
                       }}
                     >
-                      <img
-                        src={userHeader}
-                        alt=""
-                        className="h-8 w-5 cursor-pointer"
-                      />
+                      {t("sidebar.notLogIn")}
                     </button>
                   )}
                 </div>
@@ -231,7 +260,7 @@ function UserHeader() {
                   <button
                     onClick={() => {
                       setShowSidebar(false);
-                      navigate("/partner");
+                      navigate("/partner/statistics");
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
@@ -334,6 +363,7 @@ function UserHeader() {
                     localStorage.removeItem("bm_currentPartner");
                     localStorage.removeItem("bm_subcategories");
                     localStorage.removeItem("bm_currentSubCategory");
+                    localStorage.removeItem("bm_partner");
                     window.location.href = "/";
                   }}
                   className="w-full text-left px-3 py-2.5 text-white hover:bg-red-500/20 rounded-lg transition-colors flex items-center gap-2"

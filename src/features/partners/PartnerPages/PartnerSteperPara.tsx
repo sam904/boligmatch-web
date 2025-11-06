@@ -80,7 +80,7 @@ function ParentSteperPara() {
           </div>
         </div>
       </div>
-      <div className="bg-[#043428] flex flex-col justify-center items-center py-8 sm:py-12 md:py-16 lg:py-22 space-y-2 px-4">
+      <div className="bg-[#01351f] flex flex-col justify-center items-center py-8 sm:py-12 md:py-16 lg:py-22 space-y-2 px-4">
         <div className="text-center">
           <div className="mb-3 sm:mb-4">
             <img
