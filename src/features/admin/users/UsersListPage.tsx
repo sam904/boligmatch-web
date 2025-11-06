@@ -11,6 +11,7 @@ import Input from "../../../components/common/Input";
 import AdminToast from "../../../components/common/AdminToast";
 import type { AdminToastType } from "../../../components/common/AdminToast";
 import { useForm } from "react-hook-form";
+import DeleteConfirmation from "../../../components/common/DeleteConfirmation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
@@ -93,6 +94,13 @@ export default function UsersListPage() {
   const [toasts, setToasts] = useState<ToastState[]>([]);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    isOpen: boolean;
+    user: User | null;
+  }>({
+    isOpen: false,
+    user: null,
+  });
 
   // Toast management functions - same as CategoriesPage
   const showToast = (
@@ -314,9 +322,12 @@ export default function UsersListPage() {
       toast.success(
         t("admin.users.deleteSuccess") || "User deleted successfully"
       );
+      setDeleteConfirmation({ isOpen: false, user: null }); // Close modal on success
     },
-    onError: () =>
-      toast.error(t("admin.users.deleteError") || "Failed to delete user"),
+    onError: () => {
+      toast.error(t("admin.users.deleteError") || "Failed to delete user");
+      setDeleteConfirmation({ isOpen: false, user: null }); // Close modal on error
+    },
   });
 
   const onSubmit = async (data: UserFormData) => {
@@ -358,19 +369,21 @@ export default function UsersListPage() {
   const handleDeleteUser = (user: User) => {
     if (!user.id) return;
 
-    const userName = `${user.firstName} ${user.lastName}`.trim();
-    const confirmMessage =
-      t("admin.users.deleteConfirm") ||
-      "Are you sure you want to delete this user?";
+    // Show delete confirmation modal
+    setDeleteConfirmation({
+      isOpen: true,
+      user: user,
+    });
+  };
 
-    // Simple confirmation dialog (same as CategoriesPage)
-    if (
-      window.confirm(
-        `${confirmMessage}\n\nUser: ${userName}\nEmail: ${user.email}`
-      )
-    ) {
-      deleteMutation.mutate(user.id);
+  const handleConfirmDelete = () => {
+    if (deleteConfirmation.user?.id) {
+      deleteMutation.mutate(deleteConfirmation.user.id);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ isOpen: false, user: null });
   };
 
   const handleResetPassword = (user: User) => {
@@ -512,7 +525,7 @@ export default function UsersListPage() {
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("admin.users.resetPassword") || "Reset Password"}
           >
-            <IconKey/>
+            <IconKey />
           </button>
           <button
             type="button"
@@ -539,7 +552,21 @@ export default function UsersListPage() {
           autoDismissMs={5000}
         />
       ))}
-
+      <DeleteConfirmation
+        open={deleteConfirmation.isOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        itemName={
+          deleteConfirmation.user
+            ? `User: ${deleteConfirmation.user.firstName} ${deleteConfirmation.user.lastName} (${deleteConfirmation.user.email})`
+            : undefined
+        }
+        confirmationMessage={
+          t("admin.users.deleteConfirm") ||
+          "Are you sure you want to delete this user?"
+        }
+        isLoading={deleteMutation.isPending}
+      />
       {/* Header Section */}
       <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
@@ -592,7 +619,6 @@ export default function UsersListPage() {
           </div>
         </div>
       </div>
-
       {/* Loading State */}
       {isLoading ? (
         <div className="bg-white rounded-lg shadow p-8 text-center">
@@ -619,7 +645,6 @@ export default function UsersListPage() {
           </div>
         </div>
       )}
-
       {/* User Form Modal */}
       <Modal
         open={isModalOpen}
@@ -723,7 +748,6 @@ export default function UsersListPage() {
           </div>
         </form>
       </Modal>
-
       {/* Password Reset Modal */}
       <Modal
         open={isPasswordModalOpen}

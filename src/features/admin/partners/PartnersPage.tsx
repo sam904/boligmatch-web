@@ -9,6 +9,7 @@ import Button from "../../../components/common/Button";
 import Input from "../../../components/common/Input";
 import Stepper from "../../../components/common/Stepper";
 import TextArea from "../../../components/common/TextArea";
+import DeleteConfirmation from "../../../components/common/DeleteConfirmation";
 import ImageUpload from "../../../components/common/ImageUpload";
 import VideoUpload from "../../../components/common/VideoUpload";
 import VideoPreviewModal from "../../../components/common/VideoPreviewModal";
@@ -108,7 +109,7 @@ function LogoUploadWithValidation({
   onChange,
   onPreview,
   error,
-  label = "Company Logo"
+  label = "Company Logo",
 }: {
   value: string;
   onChange: (url: string) => void;
@@ -281,12 +282,24 @@ export default function PartnersPage() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [toasts, setToasts] = useState<ToastState[]>([]);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    isOpen: boolean;
+    partner: Partner | null;
+  }>({
+    isOpen: false,
+    partner: null,
+  });
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
   // Toast management functions - same as other pages
-  const showToast = (type: AdminToastType, message: string, title?: string, subtitle?: string) => {
+  const showToast = (
+    type: AdminToastType,
+    message: string,
+    title?: string,
+    subtitle?: string
+  ) => {
     const id = Math.random().toString(36).substring(2, 9);
     const newToast: ToastState = {
       id,
@@ -296,28 +309,28 @@ export default function PartnersPage() {
       subtitle,
       open: true,
     };
-    
-    setToasts(prev => [...prev, newToast]);
+
+    setToasts((prev) => [...prev, newToast]);
     return id;
   };
 
   const hideToast = (id: string) => {
-    setToasts(prev => prev.map(toast => 
-      toast.id === id ? { ...toast, open: false } : toast
-    ));
-    
+    setToasts((prev) =>
+      prev.map((toast) => (toast.id === id ? { ...toast, open: false } : toast))
+    );
+
     // Remove toast from state after animation
     setTimeout(() => {
-      setToasts(prev => prev.filter(toast => toast.id !== id));
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, 300);
   };
 
   const toast = {
-    success: (message: string, title?: string, subtitle?: string) => 
+    success: (message: string, title?: string, subtitle?: string) =>
       showToast("success", message, title, subtitle),
-    error: (message: string, title?: string, subtitle?: string) => 
+    error: (message: string, title?: string, subtitle?: string) =>
       showToast("error", message, title, subtitle),
-    info: (message: string, title?: string, subtitle?: string) => 
+    info: (message: string, title?: string, subtitle?: string) =>
       showToast("info", message, title, subtitle),
   };
 
@@ -771,11 +784,14 @@ export default function PartnersPage() {
       toast.success(
         t("admin.partners.deleteSuccess") || "Partner deleted successfully"
       );
+      setDeleteConfirmation({ isOpen: false, partner: null }); // Close modal on success
     },
-    onError: () =>
+    onError: () => {
       toast.error(
         t("admin.partners.deleteError") || "Failed to delete partner"
-      ),
+      );
+      setDeleteConfirmation({ isOpen: false, partner: null }); // Close modal on error
+    },
   });
 
   // Password reset form
@@ -1132,15 +1148,21 @@ export default function PartnersPage() {
   const handleDeletePartner = (partner: Partner) => {
     if (!partner.id) return;
 
-    const partnerName = partner.businessName;
-    const confirmMessage =
-      t("admin.partners.deleteConfirm") ||
-      "Are you sure you want to delete this partner?";
+    // Show delete confirmation modal
+    setDeleteConfirmation({
+      isOpen: true,
+      partner: partner,
+    });
+  };
 
-    // Simple confirmation dialog (same as other pages)
-    if (window.confirm(`${confirmMessage}\n\nPartner: ${partnerName}\nCVR: ${partner.cvr}`)) {
-      deleteMutation.mutate(partner.id);
+  const handleConfirmDelete = () => {
+    if (deleteConfirmation.partner?.id) {
+      deleteMutation.mutate(deleteConfirmation.partner.id);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ isOpen: false, partner: null });
   };
 
   const addSubCategoryField = () => {
@@ -1296,7 +1318,7 @@ export default function PartnersPage() {
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title="Reset Password"
           >
-            <IconKey/>
+            <IconKey />
           </button>
           <button
             onClick={() => handleDeletePartner(row.original)}
@@ -1536,7 +1558,6 @@ export default function PartnersPage() {
                       }
                       folder="partners/documents"
                       error={errors.parDoclst?.[index]?.documentUrl?.message}
-                   
                     />
 
                     {/* Saving indicator */}
@@ -1753,19 +1774,19 @@ export default function PartnersPage() {
                         )}
                       </div>
                     ))}
-                   <Button
-                type="button"
-                variant="secondary"
-                onClick={addSubCategoryField}
-                style={{
-                  backgroundColor: "#95C11F",
-                  borderColor: "#95C11F",
-                  color: "white",
-                }}
-                className="hover:bg-[#85B11F] hover:border-[#85B11F]"
-              >
-                Add Sub Categories +
-              </Button>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={addSubCategoryField}
+                      style={{
+                        backgroundColor: "#95C11F",
+                        borderColor: "#95C11F",
+                        color: "white",
+                      }}
+                      className="hover:bg-[#85B11F] hover:border-[#85B11F]"
+                    >
+                      Add Sub Categories +
+                    </Button>
                     {!isLoadingSubCategories &&
                       subCategories.filter((subCat) => subCat.isActive)
                         .length === 0 && (
@@ -1896,10 +1917,26 @@ export default function PartnersPage() {
         />
       ))}
 
+      <DeleteConfirmation
+        open={deleteConfirmation.isOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        itemName={
+          deleteConfirmation.partner
+            ? `Partner: ${deleteConfirmation.partner.businessName} (CVR: ${deleteConfirmation.partner.cvr})`
+            : undefined
+        }
+        confirmationMessage={
+          t("admin.partners.deleteConfirm") ||
+          "Are you sure you want to delete this partner?"
+        }
+        isLoading={deleteMutation.isPending}
+      />
+
       {!showForm && (
         <div className="p-2 mb-2">
           <div className="flex justify-between items-center">
-            <div  className="font-figtree">
+            <div className="font-figtree">
               <Button
                 variant="primary"
                 size="md"
@@ -2100,18 +2137,3 @@ export default function PartnersPage() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
