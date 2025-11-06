@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import supplierProfile from "../assets/supplierProfile/suppliier-profile-hero.png";
 import heartIcon from "/src/assets/userImages/Lag_1.svg";
 import share from "../assets/supplierProfile/share.png";
@@ -17,6 +17,7 @@ import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
 import { toast } from "react-toastify";
 import { FaPlayCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { partnerService } from "../services/partner.service";
 // import gradient from "/src/assets/userImages/gradient.svg";
 
 const SupplierProfile = () => {
@@ -36,12 +37,44 @@ const SupplierProfile = () => {
   const [recommendEmail, setRecommendEmail] = useState("");
   const [recommendComment, setRecommendComment] = useState("");
   const navigate = useNavigate();
+  const calledRef = useRef(false);
 
   useEffect(() => {
     const userData = localStorage.getItem("bm_user");
     if (!userData) {
       navigate("/");
     }
+  }, []);
+
+  useEffect(() => {
+    if (calledRef.current) return; 
+    calledRef.current = true;
+
+    const partnerId = getCurrentPartnerId();
+    if (!partnerId) {
+      console.log("No partner ID found");
+    }
+    const userId = userData?.userId;
+    if (!userId) {
+      console.log("No user ID found");
+    }
+
+    const addPartnerView = async () => {
+      try {
+        const payload = {
+          id: 0,
+          userId: userId,
+          partnerId: partnerId,
+          isActive: true,
+        };
+        const response = await partnerService.addPartnerPageVisit(payload);
+        console.log("Partner view logged:", response);
+        console.log("Partner Vigit");
+      } catch (error) {
+        console.error("Error logging partner view:", error);
+      }
+    };
+    addPartnerView();
   }, []);
 
   const getCurrentPartnerId = (): number | null => {
@@ -663,12 +696,8 @@ const SupplierProfile = () => {
                   <p className="mb-1 font-semibold">
                     {t("supplierProfile.contactModal.contactInfo")}
                   </p>
-                  <p className="font-extrabold">
-                    {partnerData?.businessName}
-                  </p>
-                  <p>
-                    {partnerData?.address}
-                  </p>
+                  <p className="font-extrabold">{partnerData?.businessName}</p>
+                  <p>{partnerData?.address}</p>
                   <p>
                     Tlf. {partnerData?.mobileNo || "56 34 12 67"}{" "}
                     {partnerData?.cvr > 0 ? `, CVR ${partnerData.cvr}` : ""}

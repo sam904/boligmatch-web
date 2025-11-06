@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import userLogo from "/src/assets/userImages/footerLogo.svg";
+import userLogo from "/src/assets/userImages/boligmatchLogo.png";
 import userHeaderHamburger from "/src/assets/userImages/userHeaderHamburger.png";
 
 function PartnerHeader() {

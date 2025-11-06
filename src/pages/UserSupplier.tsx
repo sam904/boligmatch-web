@@ -115,7 +115,9 @@ const UserSupplier = () => {
 
   useEffect(() => {
     const userData = localStorage.getItem("bm_user");
-    if (!userData) {
+    const partnerData = localStorage.getItem("bm_partner");
+
+    if (!userData && !partnerData) {
       navigate("/");
     }
   }, []);
@@ -251,7 +253,7 @@ const UserSupplier = () => {
       </section>
 
       <section className="bg-[#043428] w-full flex justify-center py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl px-8 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl px-12 w-full">
           {partnersLoading ? (
             <div className="col-span-3 flex justify-center items-center h-64">
               <div className="text-white text-lg">Loading partners...</div>

@@ -28,4 +28,15 @@ export const partnerService = {
   
   delete: (id: number) => 
     http.delete<void>(`/Partner/DeletePartner/${id}`),
+
+  addPartnerPageVisit: (data: { 
+    id: number; 
+    userId: number; 
+    partnerId: number; 
+    isActive: boolean; 
+  }) => http.post('/PartnerPageVisit/addPartnerPageVisit', data),
+
+  getPartnerPageCount : (partnerId: number) => 
+    http.get<number>(`/Partner/getPartnersByPartnerIdCountList/${partnerId}`),
+
 };

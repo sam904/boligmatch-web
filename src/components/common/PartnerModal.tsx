@@ -8,6 +8,7 @@ import { loginThunk } from "../../features/auth/authSlice";
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
 import loginModelLogo from "/src/assets/userImages/boligmatchLogo2.png";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   userName: z.string().min(1, "Username is required"),
@@ -47,13 +48,17 @@ export default function PartnerModal({ open, onClose }: PartnerModalProps) {
     if (token && user) {
       hasHandledLoginRef.current = true;
       onClose();
+
       try {
-        localStorage.setItem("bm_user", JSON.stringify(user));
         localStorage.setItem("bm_access", token);
-      } catch {}
+        localStorage.removeItem("bm_user");
+        localStorage.setItem("bm_partner", JSON.stringify(user));
+        toast.success("Partner login successful!");
+      } catch (error) {
+        console.error("Failed to save partner data:", error);
+      }
 
       const from = (location.state as any)?.from?.pathname;
-      // Prefer partner routes; fallback to '/partner'
       navigate(from ?? "/partner/statistics", { replace: true });
     }
   }, [token, user, onClose, navigate]);
@@ -77,15 +82,24 @@ export default function PartnerModal({ open, onClose }: PartnerModalProps) {
     <div className="fixed inset-0 z-[1000]">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-[370px] h-[444px]">
+        <div className="w-[370px] h-auto">
           <div className="relative rounded-[23px] bg-[#E6E7E9] shadow-2xl w-full h-full">
             <button
               onClick={onClose}
               aria-label="Close"
               className="absolute right-3 top-3 rounded-full p-1.5 text-black/80 hover:bg-black/5 hover:text-black transition"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
-                <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 11-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 11-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
+                  clipRule="evenodd"
+                />
               </svg>
             </button>
 
@@ -103,15 +117,23 @@ export default function PartnerModal({ open, onClose }: PartnerModalProps) {
 
             <div className="px-6 pb-6">
               <h2 className="text-[20px] font-[800] text-[#000000] text-center">
-                {t("auth.login")}
+                Partner {t("auth.login")}
               </h2>
             </div>
 
             {error && (
               <div className="mx-6 mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
                 <div className="flex items-center">
-                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   {error}
                 </div>
@@ -121,7 +143,10 @@ export default function PartnerModal({ open, onClose }: PartnerModalProps) {
             <div className="px-6 pb-7">
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
-                  <label htmlFor="userName" className="block text-sm font-medium text-black mb-2">
+                  <label
+                    htmlFor="userName"
+                    className="block text-sm font-medium text-black mb-2"
+                  >
                     {t("auth.username")}
                   </label>
                   <input
@@ -131,12 +156,17 @@ export default function PartnerModal({ open, onClose }: PartnerModalProps) {
                     {...register("userName")}
                   />
                   {errors.userName && (
-                    <p className="text-xs text-red-600 mt-1">{errors.userName.message}</p>
+                    <p className="text-xs text-red-600 mt-1">
+                      {errors.userName.message}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-black mb-2">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-black mb-2"
+                  >
                     {t("auth.password")}
                   </label>
                   <input
@@ -146,12 +176,17 @@ export default function PartnerModal({ open, onClose }: PartnerModalProps) {
                     {...register("password")}
                   />
                   {errors.password && (
-                    <p className="text-xs text-red-600 mt-1">{errors.password.message}</p>
+                    <p className="text-xs text-red-600 mt-1">
+                      {errors.password.message}
+                    </p>
                   )}
                 </div>
 
                 <div className="text-sm">
-                  <button type="button" className="text-black hover:text-gray-600 transition-colors font-normal cursor-pointer">
+                  <button
+                    type="button"
+                    className="text-black hover:text-gray-600 transition-colors font-normal cursor-pointer"
+                  >
                     {t("auth.forgotPassword")}
                   </button>
                 </div>
@@ -164,9 +199,24 @@ export default function PartnerModal({ open, onClose }: PartnerModalProps) {
                   >
                     {status === "loading" ? (
                       <span className="flex items-center justify-center">
-                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg
+                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         {t("auth.signingIn")}
                       </span>
