@@ -9,10 +9,11 @@ import Modal from "../../../components/common/Modal";
 import Button from "../../../components/common/Button";
 import Input from "../../../components/common/Input";
 import ImageUpload from "../../../components/common/ImageUpload";
-import { useForm } from "react-hook-form";
+import AdminToast from "../../../components/common/AdminToast";
+import type { AdminToastType } from "../../../components/common/AdminToast";
+import  { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useDbTranslation } from "../../../hooks/useDbTranslation";
 import { useDebounce } from "../../../hooks/useDebounce";
@@ -25,7 +26,7 @@ import {
   IconPlus,
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
-import ToggleSwitch from "../../../components/common/ToggleSwitch"; // Add this import
+import ToggleSwitch from "../../../components/common/ToggleSwitch";
 
 // Enhanced validation schema with dimension validation
 const categorySchema = z.object({
@@ -60,7 +61,17 @@ const categorySchema = z.object({
 
 type CategoryFormData = z.infer<typeof categorySchema>;
 
-// Fixed Image Preview Modal Component - removed unused dimensions
+// Toast state interface
+interface ToastState {
+  id: string;
+  type: AdminToastType;
+  message: string;
+  title?: string;
+  subtitle?: string;
+  open: boolean;
+}
+
+// Fixed Image Preview Modal Component
 function ImagePreviewModal({
   imageUrl,
   isOpen,
@@ -93,7 +104,7 @@ function ImagePreviewModal({
       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
         <div className="flex justify-between items-center p-4 border-b">
           <h3 className="text-lg font-semibold">Image Preview</h3>
-           <button
+          <button
             onClick={onClose}
             className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
           >
@@ -147,8 +158,45 @@ export default function CategoriesPage() {
     url: "",
     isOpen: false,
   });
+  const [toasts, setToasts] = useState<ToastState[]>([]);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
+
+  // Toast management functions
+  const showToast = (type: AdminToastType, message: string, title?: string, subtitle?: string) => {
+  const id = Math.random().toString(36).substring(2, 9);
+  const newToast: ToastState = {
+    id,
+    type,
+    message,
+    title,
+    subtitle,
+    open: true,
+  };
+  
+  setToasts(prev => [...prev, newToast]);
+  return id;
+};
+
+  const hideToast = (id: string) => {
+    setToasts(prev => prev.map(toast => 
+      toast.id === id ? { ...toast, open: false } : toast
+    ));
+    
+    // Remove toast from state after animation
+    setTimeout(() => {
+      setToasts(prev => prev.filter(toast => toast.id !== id));
+    }, 300);
+  };
+
+  const toast = {
+  success: (message: string, title?: string, subtitle?: string) => 
+    showToast("success", message, title, subtitle),
+  error: (message: string, title?: string, subtitle?: string) => 
+    showToast("error", message, title, subtitle),
+  info: (message: string, title?: string, subtitle?: string) => 
+    showToast("info", message, title, subtitle),
+};
 
   // Fetch categories with server-side pagination and search only
   const { data: paginatedData, isLoading } = useQuery({
@@ -259,7 +307,7 @@ export default function CategoriesPage() {
       toast.error(
         error?.message ||
           t("admin.categories.createError") ||
-          "Failed to create category"
+          "Failed to create category. Please try again."
       );
 
       // Handle backend validation errors
@@ -387,36 +435,10 @@ export default function CategoriesPage() {
       t("admin.categories.deleteConfirm") ||
       "Are you sure you want to delete this category?";
 
-    toast(
-      <div className="w-full">
-        <div className="font-semibold text-gray-900 mb-2">Confirm Deletion</div>
-        <div className="text-sm text-gray-600 mb-4">
-          {confirmMessage}
-          <br />
-          <strong>Category: {categoryName}</strong>
-        </div>
-        <div className="flex gap-2 justify-end">
-          <Button variant="secondary" size="sm" onClick={() => toast.dismiss()}>
-            Cancel
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => {
-              deleteMutation.mutate(category.id);
-              toast.dismiss();
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      </div>,
-      {
-        duration: 10000,
-        position: "top-center",
-        closeButton: true,
-      }
-    );
+    // Simple confirmation dialog
+    if (window.confirm(`${confirmMessage}\n\nCategory: ${categoryName}`)) {
+      deleteMutation.mutate(category.id);
+    }
   };
 
   const handleModalClose = () => {
@@ -537,10 +559,21 @@ export default function CategoriesPage() {
 
   return (
     <div className="p-3">
+      {/* Render Toast Banners */}
+      {toasts.map((toastItem) => (
+        <AdminToast
+          key={toastItem.id}
+          type={toastItem.type}
+          message={toastItem.message}
+          onClose={() => hideToast(toastItem.id)}
+          autoDismissMs={5000}
+        />
+      ))}
+
       {/* Header Section */}
       <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
-          <div>
+          <div  className="font-figtree">
             <Button
               variant="primary"
               size="md"
