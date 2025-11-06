@@ -107,7 +107,7 @@ export default function AdminLayout() {
     <div className="flex h-screen overflow-hidden bg-gray-50">
       {/* Sidebar - removed logout button from bottom */}
       <aside
-        className={`flex-shrink-0 bg-[#043428] text-white shadow-xl transition-all duration-300 ${
+        className={`flex-shrink-0 bg-[#01351f] text-white shadow-xl transition-all duration-300 ${
           isCollapsed ? "w-16" : "w-64"
         } flex flex-col`}
       >

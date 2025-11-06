@@ -212,7 +212,7 @@ const UserSupplier = () => {
           </h1>
         </div>
       )}
-      <section className="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 flex flex-wrap md:flex-nowrap items-center justify-center gap-4 md:gap-6 w-full p-2">
+      <section className="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 flex flex-wrap md:flex-nowrap items-center justify-center gap-4 md:gap-4 w-full p-2">
         {loading ? (
           <div className="text-white">Loading subcategories...</div>
         ) : subCategories.length > 0 ? (
@@ -242,7 +242,7 @@ const UserSupplier = () => {
                   }}
                 />
               )}
-              <span className="text-base md:text-lg font-semibold figtree">
+              <span className="text-[20px] font-[600] figtree">
                 {sub.subCategory}
               </span>
             </button>
@@ -252,7 +252,7 @@ const UserSupplier = () => {
         )}
       </section>
 
-      <section className="bg-[#043428] w-full flex justify-center py-12">
+      <section className="bg-[#01351f] w-full flex justify-center py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl px-12 w-full">
           {partnersLoading ? (
             <div className="col-span-3 flex justify-center items-center h-64">
@@ -290,7 +290,7 @@ const UserSupplier = () => {
         </div>
       </section>
 
-      <footer className="bg-[#043428] text-white text-center p-4">
+      <footer className="bg-[#01351f] text-white text-center p-4">
         <div className="flex flex-col items-center">
           <div className="text-center">
             <div className="mb-8">

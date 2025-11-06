@@ -127,8 +127,8 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
                   onClick={() => onStepClick?.(index + 1)}
                   className={`absolute flex items-center justify-center w-[70px] h-[70px] rounded-full transition-all duration-200 ${
                     currentStep >= index + 1
-                      ? "bg-[#043428] text-white"
-                      : "bg-[#043428] text-gray-500"
+                      ? "bg-[#01351f] text-white"
+                      : "bg-[#01351f] text-gray-500"
                   } ${
                     onStepClick
                       ? "cursor-pointer hover:scale-105"
@@ -149,7 +149,7 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
               </span>
 
               {hoveredStep === index && (
-                <div className="absolute top-[80px] left-1/2 transform -translate-x-1/2 w-[150px] bg-[#043428] text-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 z-50">
+                <div className="absolute top-[80px] left-1/2 transform -translate-x-1/2 w-[150px] bg-[#01351f] text-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 z-50">
                   <div className="relative">
                     <img
                       src={jurneyImg}

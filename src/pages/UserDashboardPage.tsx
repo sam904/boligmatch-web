@@ -20,6 +20,7 @@ import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { toast } from "sonner";
 import footerLogo from "/src/assets/userImages/footerLogo.svg";
+import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg"
 
 interface FavouriteItem {
   id?: number;
@@ -58,7 +59,7 @@ export default function UserDashboardPage() {
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [conversationsLoading, setConversationsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  console.log('isMobile', isMobile)
+  console.log("isMobile", isMobile);
 
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -84,7 +85,8 @@ export default function UserDashboardPage() {
 
   useEffect(() => {
     const userData = localStorage.getItem("bm_user");
-    if (!userData) {
+    const partnerData = localStorage.getItem("bm_partner");
+    if (!partnerData && !userData) {
       navigate("/");
     }
   }, []);
@@ -233,12 +235,16 @@ export default function UserDashboardPage() {
         {userData && (
           <div className="absolute top-60 z-10 px-4 sm:px-6 md:px-8 lg:px-24 mt-auto mb-32 sm:mb-36 md:mb-40 lg:mb-44">
             <div className="text-white">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-1 sm:mb-2 leading-tight">
-                Mit Boligmatch+
-              </h1>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-medium leading-tight">
-                {userData.firstName} {userData.lastName}
-              </h2>
+              <div className="max-w-[722px]">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-1 md:mb-0.5 leading-tight">
+                  Mit Boligmatch+
+                </h1>
+              </div>
+              <div className="max-w-[561px] mx-auto">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-medium leading-tight text-center break-words">
+                  {userData.firstName} {userData.lastName}
+                </h2>
+              </div>
             </div>
           </div>
         )}
@@ -334,6 +340,10 @@ export default function UserDashboardPage() {
                             }}
                           />
                           <div className="absolute bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-white to-transparent"></div>
+                          <div className="absolute bottom-0 left-0 right-0">
+                            <img src={categoryGradientImg} alt="" />
+
+                          </div>
                         </div>
 
                         <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center gap-2">
@@ -597,7 +607,7 @@ export default function UserDashboardPage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-[#043428] text-white text-center p-4 sm:p-6">
+      <footer className="bg-[#01351f] text-white text-center p-4 sm:p-6">
         <div className="flex flex-col items-center">
           <div className="mb-6 sm:mb-8">
             <div className="w-40 sm:w-48 md:w-52 h-10 sm:h-11 mx-auto">

@@ -21,7 +21,7 @@ function PartnerProfileShortcut({ partnerData }) {
         </div>
       </div>
 
-      <div className="bg-[#043428] p-4 md:p-8">
+      <div className="bg-[#01351f] p-4 md:p-8">
         {/* <div className="w-full flex flex-row justify-center gap-3 md:gap-6 mb-6 md:mb-8 px-4 md:px-0">
           <button className="flex items-center space-x-2 md:space-x-3 px-2 md:px-6 py-2.5 md:py-4 bg-[#91C73D] text-white rounded-lg hover:bg-[#7FB333] transition-colors">
             <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center">

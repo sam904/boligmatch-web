@@ -59,7 +59,7 @@ function PartnerStatDetails({ partnerData }) {
 
   return (
     <>
-      <div className="bg-[#043428] p-4 md:p-8">
+      <div className="bg-[#01351f] p-4 md:p-8">
         <div className="w-full max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-8 md:mb-12 place-items-center">
           {statistics.map((stat, index) => (
             <div key={index} className="flex flex-col items-center">
@@ -97,7 +97,7 @@ function PartnerStatDetails({ partnerData }) {
         </div>
       </div>
 
-      <div className="bg-[#043428] flex flex-col justify-center items-center py-2 space-y-2">
+      <div className="bg-[#01351f] flex flex-col justify-center items-center py-2 space-y-2">
         <div className="text-center">
           <img src={sampleImg} alt="" />
         </div>

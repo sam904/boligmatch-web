@@ -5,7 +5,7 @@ export default function TermsAndConditions() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#043428] text-white">
+    <div className="min-h-screen bg-[#01351f] text-white">
       <header className="px-4 py-4 sm:px-6 sm:py-6">
         <button
           onClick={() => navigate(-1)}

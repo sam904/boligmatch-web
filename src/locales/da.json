@@ -229,11 +229,14 @@
   "privacyPolicy": "Privatlivspolitik",
   "termsOfService": "Vilkår for brug",
   "signOut": "Log ud",
-    "mitBoligmatch": "Mit Boligmatch+",
-    "manageProfile": "Administrér profil",
-    "becomePartner": "Bliv partner",
-    "about": "Om Boligmatch",
-    "terms": "Vilkår og betingelser"
+  "mitBoligmatch": "Mit Boligmatch+",
+  "manageProfile": "Administrér profil",
+  "becomePartner": "Bliv partner",
+  "about": "Om Boligmatch",
+  "terms": "Vilkår og betingelser",
+  "logINUser": "Logget ind som slutbruger",
+  "notLogIn":"Ikke logget ind",
+  "logInPartner":"Logget ind som partner"
 },
 "services": {
   "moving": {
