@@ -746,10 +746,19 @@ export default function PartnersPage() {
       );
       handleFormClose();
     },
-    onError: () => {
-      toast.error(
-        t("admin.partners.createError") || "Failed to create partner"
-      );
+    onError: (error: any) => {
+      console.error("Create partner error:", error);
+
+      // Extract the actual error message from the API response
+      const apiError = error?.response?.data;
+      const errorMessage =
+        apiError?.failureReason ||
+        apiError?.errorMessage ||
+        error?.message ||
+        t("admin.partners.createError") ||
+        "Failed to create partner";
+
+      toast.error(errorMessage);
       setIsSubmitting(false);
     },
   });
@@ -763,16 +772,23 @@ export default function PartnersPage() {
       toast.success(
         t("admin.partners.updateSuccess") || "Partner updated successfully"
       );
-      // Don't close form on step updates, only close on final update
       if (currentStep === steps.length) {
         handleFormClose();
       }
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Update mutation error:", error);
-      toast.error(
-        t("admin.partners.updateError") || "Failed to update partner"
-      );
+
+      // Extract the actual error message from the API response
+      const apiError = error?.response?.data;
+      const errorMessage =
+        apiError?.failureReason ||
+        apiError?.errorMessage ||
+        error?.message ||
+        t("admin.partners.updateError") ||
+        "Failed to update partner";
+
+      toast.error(errorMessage);
       setIsSubmitting(false);
     },
   });
