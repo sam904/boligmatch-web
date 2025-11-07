@@ -2,13 +2,16 @@ import loginModelLogo from "/src/assets/userImages/boligmatchLogo2.png";
 import chooseUserImg from "/src/assets/userImages/choose_userImg.svg";
 import choosePartnerImg from "/src/assets/userImages/choose_partnerImg.svg";
 import { useTranslation } from "react-i18next";
+import ReactDOM from "react-dom";
 
 type Props = {
   open: boolean;
-  onClose: () => void;  onSelect?: (role: "user" | "partner") => void;
+  onClose: () => void;
+  onSelect?: (role: "user" | "partner") => void;
+  closable?: boolean;
 };
 
-export default function LoginChoiceModal({ open, onClose, onSelect }: Props) {
+export default function LoginChoiceModal({ open, onClose, onSelect, closable = true }: Props) {
   const { t } = useTranslation();
 
   const goToLogin = (role: "user" | "partner") => {
@@ -20,28 +23,30 @@ export default function LoginChoiceModal({ open, onClose, onSelect }: Props) {
 
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+  return ReactDOM.createPortal(
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/50" {...(closable ? { onClick: onClose } : {})} />
       <div className="relative bg-[#E6E7E9] rounded-[23px] shadow-lg w-[370px] h-[444px] mx-4">
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          className="absolute right-[18px] top-[18px] h-[31px] w-[31px] p-0 flex items-center justify-center rounded-full text-black hover:bg-black/5 transition"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="h-[31px] w-[31px]"
+        {closable && (
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="absolute right-[18px] top-[18px] h-[31px] w-[31px] p-0 flex items-center justify-center rounded-full text-black hover:bg-black/5 transition"
           >
-            <path
-              fillRule="evenodd"
-              d="M6.225 4.811a1 1 0 0 1 1.414 0L12 9.172l4.361-4.361a1 1 0 1 1 1.414 1.414L13.414 10.586l4.361 4.361a1 1 0 0 1-1.414 1.414L12 12l-4.361 4.361a1 1 0 1 1-1.414-1.414l4.361-4.361-4.361-4.361a1 1 0 0 1 0-1.414Z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="h-[31px] w-[31px]"
+            >
+              <path
+                fillRule="evenodd"
+                d="M6.225 4.811a1 1 0 0 1 1.414 0L12 9.172l4.361-4.361a1 1 0 1 1 1.414 1.414L13.414 10.586l4.361 4.361a1 1 0 0 1-1.414 1.414L12 12l-4.361 4.361a1 1 0 1 1-1.414-1.414l4.361-4.361-4.361-4.361a1 1 0 0 1 0-1.414Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        )}
 
         <div className="flex justify-center items-center px-6 pt-[62px] pb-4">
           <img
@@ -83,6 +88,7 @@ export default function LoginChoiceModal({ open, onClose, onSelect }: Props) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -23,6 +23,7 @@ import SupplierProfile from "../pages/SupplierProfile";
 import DashboardPage from "../features/admin/dashboard/DashboardPage";
 import AboutBoligmatch from "../pages/AboutBoligmatch";
 import TermsAndConditions from "../pages/TermsAndConditions";
+import RecommendUser from "../pages/RecommendUser";
 
 const router = createBrowserRouter([
   // 🔹 User Routes (Main Site)
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       { path: "supplier-profile", element: <SupplierProfile /> },
       { path: "login", element: <LoginPage /> },
       { path: "*", element: <NotFound /> },
+      { path: "user/recommenduser/:recommendationKey", element: <RecommendUser /> },
     ],
   },
 
