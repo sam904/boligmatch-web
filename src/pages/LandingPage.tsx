@@ -37,7 +37,7 @@ export default function LandingPage() {
         open={showSignUpModal}
         onClose={() => setShowSignUpModal(false)}
       />
-      <div className="absolute md:top-20 top-28 lg:left-64 sm:left-50 flex max-w-6xl mx-auto px-12 justify-between mt-0 h-[calc(100vh-100vh)]">
+      <div className="absolute md:top-20 top-24 lg:left-64 sm:left-50 flex max-w-6xl mx-auto px-12 justify-between mt-0 h-[calc(100vh-100vh)]">
         <div>
           <div className="md:w-[175px] w-[70px] flex justify-end">
             <img
@@ -77,13 +77,12 @@ export default function LandingPage() {
             className="bg-[#91C73D] rounded-lg md:text-[18px] text-[16px] cursor-pointer px-6 font-semibold py-2.5 text-white hover:bg-[#7fb32d] transition-colors figtree"
           >
             {t("landing.signUpButton")}
-            {/* Tilmeld dig her */}
           </button>
         </div>
-        <h1 className="text-[76px] text-white leading-[66px] text-center rosting-script font-[400]">
+        <h1 className="md:text-[76px] text-[40px] text-white leading-[66px] text-center rosting-script font-[400]">
           {t("landing.mainTitle")}
         </h1>
-        <h2 className="text-white text-[60px] leading-[66px] tracking-[0%] text-center max-w-4xl mx-auto py-1 px-4 font-[800] plus-jakarta-sans">
+        <h2 className="text-white md:text-[60px] text-[48px]  leading-[66px] tracking-[0%] text-center max-w-4xl mx-auto py-1 px-4 font-[800] plus-jakarta-sans">
           {t("landing.subtitle")}
         </h2>
         <p className="text-white text-center text-[18px] mx-auto max-w-7xl py-8 px-4 plus-jakarta-sans">

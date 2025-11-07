@@ -209,11 +209,25 @@ const SupplierProfile = () => {
         return;
       }
 
+      // --- Start of added/updated logic ---
+      const userStr = localStorage.getItem("bm_user");
+      const parsedUser = userStr ? JSON.parse(userStr) : null;
+      const userId = parsedUser?.userId ?? userData?.userId;
+
+      if (!userId) {
+        toast.error(
+          "User not found. Please log in again to send a recommendation."
+        );
+        return;
+      }
+
       const payload = {
         patnerId: targetId,
+        userId: userId,
         email: recommendEmail,
         description: recommendComment || "",
         isActive: true,
+        recommendationKey: "",
       };
 
       await recommendationService.add(payload);
@@ -227,12 +241,10 @@ const SupplierProfile = () => {
     }
   };
 
-  // Get background image - priority: imageUrl1 > thumbnail > default
   const getBackgroundImage = () => {
     return partnerData?.imageUrl1 || partnerData?.thumbnail || supplierProfile;
   };
 
-  // Parse services from textField3
   const getServices = () => {
     if (!partnerData?.textField3) return [];
     return partnerData.textField3

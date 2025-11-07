@@ -19,9 +19,10 @@ const schema = z.object({
 interface PartnerModalProps {
   open: boolean;
   onClose: () => void;
+  redirectTo?: string;
 }
 
-export default function PartnerModal({ open, onClose }: PartnerModalProps) {
+export default function PartnerModal({ open, onClose, redirectTo }: PartnerModalProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,6 +63,7 @@ export default function PartnerModal({ open, onClose }: PartnerModalProps) {
 
   const hasHandledLoginRef = React.useRef(false);
   React.useEffect(() => {
+    if (!open) return;
     if (hasHandledLoginRef.current) return;
     if (token && user) {
       hasHandledLoginRef.current = true;
@@ -77,9 +79,10 @@ export default function PartnerModal({ open, onClose }: PartnerModalProps) {
       }
 
       const from = (location.state as any)?.from?.pathname;
-      navigate(from ?? "/partner/statistics", { replace: true });
+      const target = redirectTo ?? from ?? "/partner/statistics";
+      navigate(target, { replace: true });
     }
-  }, [token, user, onClose, navigate]);
+  }, [token, user, onClose, navigate, redirectTo, open]);
 
   React.useEffect(() => {
     if (!open) return;

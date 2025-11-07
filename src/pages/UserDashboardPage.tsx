@@ -21,6 +21,7 @@ import { conversationService } from "../services/conversation.service";
 import { toast } from "sonner";
 import footerLogo from "/src/assets/userImages/footerLogo.svg";
 import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg"
+import { partnerService } from "../services/partner.service";
 
 interface FavouriteItem {
   id?: number;
@@ -216,6 +217,21 @@ export default function UserDashboardPage() {
     setActiveView("default");
   };
 
+  const handleFavoriteMoreInfo = async (favorite: FavouriteItem) => {
+    try {
+      if (!favorite?.partnerId) {
+        toast.error("Invalid partner");
+        return;
+      }
+      const detail = await partnerService.getById(favorite.partnerId);
+      localStorage.setItem("bm_currentPartner", JSON.stringify(detail));
+      navigate("/supplier-profile");
+    } catch (error) {
+      console.error("Error fetching partner details:", error);
+      toast.error("Failed to load partner details. Please try again.");
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <div
@@ -255,11 +271,10 @@ export default function UserDashboardPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 max-w-4xl mx-auto">
               <button
                 onClick={handlePartnersClick}
-                className={`${
-                  activeView === "default"
+                className={`${activeView === "default"
                     ? "bg-[#145939] text-white"
                     : "bg-[#95c11f] text-white"
-                } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
+                  } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
                 type="button"
               >
                 <img src={searchImg} alt="" className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -270,11 +285,10 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={handleFavoritesClick}
-                className={`${
-                  activeView === "favorites"
+                className={`${activeView === "favorites"
                     ? "bg-[#145939] text-white"
                     : "bg-[#95c11f] text-white"
-                } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
+                  } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
                 type="button"
               >
                 <img
@@ -289,11 +303,10 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={handleMessagesClick}
-                className={`${
-                  activeView === "messages"
+                className={`${activeView === "messages"
                     ? "bg-[#145939] text-white"
                     : "bg-[#95c11f] text-white"
-                } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition font-medium cursor-pointer`}
+                  } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition font-medium cursor-pointer`}
                 type="button"
               >
                 <img
@@ -413,11 +426,10 @@ export default function UserDashboardPage() {
                                 User Name {favorite.userName}
                               </h3>
                               <span
-                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                                  favorite.isActive
+                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${favorite.isActive
                                     ? "bg-green-50 text-green-700"
                                     : "bg-gray-100 text-gray-600"
-                                }`}
+                                  }`}
                               >
                                 {favorite.isActive ? "Active" : "Inactive"}
                               </span>
@@ -431,7 +443,7 @@ export default function UserDashboardPage() {
                         {favorites.map((favorite) => (
                           <div
                             key={favorite.id}
-                            className="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
+                            className="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-[330px]"
                           >
                             {/* <div className="relative w-full h-64 overflow-hidden bg-gray-100">
                               <img
@@ -451,7 +463,7 @@ export default function UserDashboardPage() {
                               <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent"></div>
                             </div> */}
 
-                            <div className="p-5 text-center flex flex-col items-center gap-4">
+                            <div className="p-5 text-center flex flex-col items-center gap-4 flex-1">
                               <div className="w-[83px] h-[77px] flex items-center justify-center mt-4 mb-1 bg-white rounded-lg">
                                 {favorite.logoUrl && (
                                   <img
@@ -473,7 +485,7 @@ export default function UserDashboardPage() {
                                   "Professional services and solutions"}
                               </p>
 
-                              <button className="mt-3 text-sm font-semibold text-[#01351f] hover:text-[#145939] transition">
+                              <button onClick={() => handleFavoriteMoreInfo(favorite)} className="mt-auto text-sm font-semibold text-[#01351f] hover:text-[#145939] transition cursor-pointer">
                                 More info
                               </button>
                             </div>

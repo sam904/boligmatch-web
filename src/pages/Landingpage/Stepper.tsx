@@ -74,7 +74,7 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
 
   return (
     <div
-      className="flex items-center justify-center w-full h-[100vh] mx-auto p-14"
+      className="flex items-center justify-center w-full h-[100vh] mx-auto md:p-14"
       style={{
         backgroundImage: `url(${stepperBg})`,
         backgroundSize: "cover",
@@ -82,11 +82,17 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="flex items-start w-full">
+      <div className="flex items-start 
+    w-full 
+    overflow-x-auto 
+    scrollbar-hide
+    md:w-[1400px]
+    md:overflow-visible
+    gap-6">
         {steps.map((step, index) => (
           <React.Fragment key={step.number}>
             <div
-              className="flex flex-col items-center flex-1 min-w-0 z-10 relative"
+              className="flex flex-col items-center flex-1 min-w-[200px] md:min-w-0 z-10 relative"
               onMouseEnter={() => setHoveredStep(index)}
               onMouseLeave={() => setHoveredStep(null)}
             >
@@ -149,7 +155,26 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
               </span>
 
               {hoveredStep === index && (
-                <div className="absolute top-[80px] left-1/2 transform -translate-x-1/2 w-[150px] bg-[#01351f] text-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 z-50">
+                <div className="
+                absolute 
+      top-[90px] 
+      left-1/2 
+      transform -translate-x-1/2 
+      w-[220px] 
+      bg-[#01351f] 
+      text-white 
+      rounded-2xl 
+      shadow-xl 
+      overflow-hidden 
+      transition-all 
+      duration-300 
+      z-50
+
+      md:w-[150px]       /* Desktop original size */
+      md:top-[80px]
+
+      /* ✅ Make it float above scroll on small screens */
+       md:absolute  ">
                   <div className="relative">
                     <img
                       src={jurneyImg}

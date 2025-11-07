@@ -19,9 +19,10 @@ const schema = z.object({
 interface UserModalProps {
   open: boolean;
   onClose: () => void;
+  redirectTo?: string;
 }
 
-export default function UserModal({ open, onClose }: UserModalProps) {
+export default function UserModal({ open, onClose, redirectTo }: UserModalProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,6 +63,7 @@ export default function UserModal({ open, onClose }: UserModalProps) {
 
   const hasHandledLoginRef = React.useRef(false);
   React.useEffect(() => {
+    if (!open) return;
     if (hasHandledLoginRef.current) return;
     if (token && user) {
       hasHandledLoginRef.current = true;
@@ -71,9 +73,10 @@ export default function UserModal({ open, onClose }: UserModalProps) {
       toast.success("Login successful!");
 
       const from = (location.state as any)?.from?.pathname;
-      navigate(from ?? "/profile", { replace: true });
+      const target = redirectTo ?? from ?? "/profile";
+      navigate(target, { replace: true });
     }
-  }, [token, user, onClose, navigate]);
+  }, [token, user, onClose, navigate, open, redirectTo]);
 
   // Lock body scroll when the modal is open
   React.useEffect(() => {

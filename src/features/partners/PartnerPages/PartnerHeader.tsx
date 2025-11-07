@@ -190,42 +190,46 @@ function PartnerHeader() {
                       {t("sidebar.home")}
                     </span>
                   </button>
-                  <button
-                    onClick={() => {
-                      setShowSidebar(false);
-                      navigate("/profile");
-                    }}
-                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
-                  >
-                    <span className="flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 4.5l6 3v6c0 3.59-2.69 6.74-6 7.5-3.31-.76-6-3.91-6-7.5v-6l6-3z"
-                        />
-                      </svg>
-                      {t("sidebar.mitBoligmatch")}
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowSidebar(false);
-                      // navigate("");
-                    }}
-                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
-                  >
-                    <span className="flex items-center gap-2">
-                      <FaGear className="w-4 h-4" />
-                      {t("sidebar.manageProfile")}
-                    </span>
-                  </button>
+                  {partnerData && (
+                    <button
+                      onClick={() => {
+                        setShowSidebar(false);
+                        navigate("/profile");
+                      }}
+                      className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                    >
+                      <span className="flex items-center gap-2">
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 4.5l6 3v6c0 3.59-2.69 6.74-6 7.5-3.31-.76-6-3.91-6-7.5v-6l6-3z"
+                          />
+                        </svg>
+                        {t("sidebar.mitBoligmatch")}
+                      </span>
+                    </button>
+                  )}
+                  {partnerData && (
+                    <button
+                      onClick={() => {
+                        setShowSidebar(false);
+                        // navigate("");
+                      }}
+                      className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                    >
+                      <span className="flex items-center gap-2">
+                        <FaGear className="w-4 h-4" />
+                        {t("sidebar.manageProfile")}
+                      </span>
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       setShowSidebar(false);
@@ -325,35 +329,60 @@ function PartnerHeader() {
                 </nav>
               </div>
               <div className="mt-auto p-6 border-t border-white/10">
-                <button
-                  onClick={() => {
-                    setShowSidebar(false);
-                    tokenStorage.clearAll();
-                    localStorage.removeItem("bm_currentPartner");
-                    localStorage.removeItem("bm_subcategories");
-                    localStorage.removeItem("bm_currentSubCategory");
-                    localStorage.removeItem("bm_partner");
-                    window.location.href = "/";
-                  }}
-                  className="w-full text-left px-3 py-2.5 text-white hover:bg-red-500/20 rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <svg
-                    className="w-4 h-4 text-red-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                {partnerData ? (
+                  <button
+                    onClick={() => {
+                      setShowSidebar(false);
+                      tokenStorage.clearAll();
+                      localStorage.removeItem("bm_currentPartner");
+                      localStorage.removeItem("bm_subcategories");
+                      localStorage.removeItem("bm_currentSubCategory");
+                      localStorage.removeItem("bm_partner");
+                      window.location.href = "/";
+                    }}
+                    className="w-full text-left px-3 py-2.5 text-white hover:bg-red-500/20 rounded-lg transition-colors flex items-center gap-2"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-9V4"
-                    />
-                  </svg>
-                  <span className="font-medium text-red-400">
-                    {t("sidebar.signOut")}
-                  </span>
-                </button>
+                    <svg
+                      className="w-4 h-4 text-red-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-9V4"
+                      />
+                    </svg>
+                    <span className="font-medium text-red-400">
+                      {t("sidebar.signOut")}
+                    </span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setShowSidebar(false);
+                      setIsChoiceModalOpen(true);
+                    }}
+                    className="w-full text-left px-3 py-2.5 text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 12h14M12 5l7 7-7 7"
+                      />
+                    </svg>
+                    <span className="font-medium">Sign In</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>
