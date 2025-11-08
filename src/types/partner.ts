@@ -26,6 +26,7 @@ export interface Partner {
   imageUrl5?: string;
   thumbnail?: string;
   isActive: boolean;
+  status: "All" | "Active" | "InActive";
   createdBy: number;
   createdDate: string;
   modifiedBy?: number | null;
@@ -58,6 +59,7 @@ export interface PartnerDto {
   imageUrl4?: string;
   imageUrl5?: string;
   isActive: boolean;
+  status: "All" | "Active" | "InActive";
   createdBy?: number;
   parSubCatlst?: PartnerSubCategory[];
   parDoclst?: PartnerDocument[];

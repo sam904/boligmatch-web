@@ -25,7 +25,8 @@
     "showing": "Showing",
     "to": "to",
     "of": "of",
-    "items": "items"
+    "items": "items",
+    "noRecordsFound": "No records found"
   },
   "auth": {
     "login": "Login",

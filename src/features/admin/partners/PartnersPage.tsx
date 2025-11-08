@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { partnerService } from "../../../services/partner.service";
 import { subCategoryService } from "../../../services/subCategory.service";
@@ -44,6 +44,7 @@ import {
   IconUpload,
   IconArrowLeft,
   IconKey,
+  IconNoRecords,
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
 
@@ -135,7 +136,7 @@ function LogoUploadWithValidation({
   );
 }
 
-// Schemas
+// Schemas - UPDATED WITH STATUS FIELD
 const partnerSubCategorySchema = z.object({
   id: z.number().optional(),
   partnerId: z.number().optional(),
@@ -164,6 +165,7 @@ const passwordResetSchema = z
 
 type PasswordResetData = z.infer<typeof passwordResetSchema>;
 
+// UPDATED PARTNER SCHEMA WITH STATUS FIELD
 const partnerSchema = z.object({
   userId: z.number().optional(),
   categoryId: z.number().min(1, "Category is required"),
@@ -196,6 +198,7 @@ const partnerSchema = z.object({
   imageUrl5: z.string().optional(),
   thumbnail: z.string().optional(),
   isActive: z.boolean(),
+  status: z.enum(["All", "Active", "InActive"]), // ADDED STATUS FIELD
   parSubCatlst: z
     .array(partnerSubCategorySchema)
     .min(1, "At least one sub category is required"),
@@ -228,6 +231,7 @@ type PartnerFormData = {
   imageUrl5?: string;
   thumbnail?: string;
   isActive: boolean;
+  status: "All" | "Active" | "InActive"; // ADDED STATUS FIELD
   parSubCatlst: PartnerSubCategory[];
   parDoclst: PartnerDocument[];
 };
@@ -249,8 +253,8 @@ export default function PartnersPage() {
   const [pageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
-    "all" | "active" | "inactive"
-  >("all");
+    "All" | "Active" | "InActive"
+  >("All"); // UPDATED STATUS FILTER
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -293,7 +297,7 @@ export default function PartnersPage() {
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
-  // Toast management functions - same as other pages
+  // Toast management functions
   const showToast = (
     type: AdminToastType,
     message: string,
@@ -319,7 +323,6 @@ export default function PartnersPage() {
       prev.map((toast) => (toast.id === id ? { ...toast, open: false } : toast))
     );
 
-    // Remove toast from state after animation
     setTimeout(() => {
       setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, 300);
@@ -332,6 +335,19 @@ export default function PartnersPage() {
       showToast("error", message, title, subtitle),
     info: (message: string, title?: string, subtitle?: string) =>
       showToast("info", message, title, subtitle),
+  };
+
+  // Helper function to extract error message
+  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
+    if (typeof error === "string") return error;
+    if (error instanceof Error) return error.message;
+    if (typeof error === "object" && error !== null) {
+      const apiError = error as any;
+      return (
+        apiError?.message || apiError?.response?.data?.message || defaultMessage
+      );
+    }
+    return defaultMessage;
   };
 
   const steps = [
@@ -356,6 +372,7 @@ export default function PartnersPage() {
     resolver: zodResolver(partnerSchema as any),
     defaultValues: {
       isActive: true,
+      status: "Active", // ADDED DEFAULT STATUS
       cvr: 0,
       businessUnit: 1,
       categoryId: 0,
@@ -425,6 +442,7 @@ export default function PartnersPage() {
         "imageUrl4",
         "imageUrl5",
         "isActive",
+        "status", // ADDED STATUS TO STEP 4
       ],
       5: [],
       6: ["categoryId"],
@@ -595,14 +613,21 @@ export default function PartnersPage() {
     }
   }, [currentStep]);
 
-  // Fetch partners with server-side pagination and search only
+  // UPDATED: Fetch partners with status filter
   const { data: paginatedData, isLoading } = useQuery({
-    queryKey: ["partners", currentPage, pageSize, debouncedSearchTerm],
+    queryKey: [
+      "partners",
+      currentPage,
+      pageSize,
+      debouncedSearchTerm,
+      statusFilter,
+    ],
     queryFn: () =>
       partnerService.getPaginated({
         page: currentPage,
         pageSize,
         searchTerm: debouncedSearchTerm || undefined,
+        status: statusFilter === "All" ? "All" : statusFilter, // ADDED STATUS FILTER
       }),
     enabled: !showForm,
   });
@@ -671,6 +696,7 @@ export default function PartnersPage() {
         imageUrl5: editingPartner.imageUrl5 || "",
         thumbnail: editingPartner.thumbnail || "",
         isActive: editingPartner.isActive,
+        status: editingPartner.status || "Active", // ADDED STATUS
         parSubCatlst:
           editingPartner.parSubCatlst && editingPartner.parSubCatlst.length > 0
             ? editingPartner.parSubCatlst.map((subCat) => ({
@@ -726,6 +752,7 @@ export default function PartnersPage() {
       imageUrl5: "",
       thumbnail: "",
       isActive: true,
+      status: "Active", // ADDED DEFAULT STATUS
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
       parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
     };
@@ -865,6 +892,7 @@ export default function PartnersPage() {
     },
   });
 
+  // UPDATED: Export function with status filter
   const handleExportPartners = async () => {
     try {
       setIsExporting(true);
@@ -874,12 +902,19 @@ export default function PartnersPage() {
       if (debouncedSearchTerm) {
         exportParams.searchTerm = debouncedSearchTerm;
       }
+      // ADDED STATUS FILTER FOR EXPORT
+      if (statusFilter !== "All") {
+        exportParams.status = statusFilter === "Active" ? "Active" : "InActive";
+      } else {
+        exportParams.status = "All";
+      }
       console.log("Exporting partners with params:", exportParams);
       await exportToExcel("Partner", exportParams);
       toast.success("Partners exported successfully");
     } catch (error) {
       console.error("Export failed:", error);
-      toast.error("Failed to export partners");
+      const errorMessage = getErrorMessage(error, "Failed to export partners");
+      toast.error(errorMessage);
     } finally {
       setIsExporting(false);
     }
@@ -970,6 +1005,7 @@ export default function PartnersPage() {
         "imageUrl4",
         "imageUrl5",
         "isActive",
+        "status", // ADDED STATUS TO STEP 4
       ],
       5: [],
       6: ["categoryId"],
@@ -1119,7 +1155,8 @@ export default function PartnersPage() {
     setCurrentPage(1);
   };
 
-  const handleStatusFilterChange = (filter: "all" | "active" | "inactive") => {
+  // UPDATED: Status filter change handler
+  const handleStatusFilterChange = (filter: "All" | "Active" | "InActive") => {
     setStatusFilter(filter);
     setCurrentPage(1);
   };
@@ -1229,18 +1266,10 @@ export default function PartnersPage() {
   const totalItems = paginatedData?.output?.rowCount || 0;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
-  // Apply client-side status filtering only
-  const filteredPartners = useMemo(() => {
-    if (statusFilter === "all") {
-      return partners;
-    } else if (statusFilter === "active") {
-      return partners.filter((partner) => partner.isActive === true);
-    } else if (statusFilter === "inactive") {
-      return partners.filter((partner) => partner.isActive === false);
-    }
-    return partners;
-  }, [partners, statusFilter]);
+  // UPDATED: Check if there are any records to display
+  const hasRecords = partners.length > 0;
 
+  // UPDATED: Columns with status field
   const columns: ColumnDef<Partner>[] = [
     { accessorKey: "id", header: "ID" },
     { accessorKey: "businessName", header: "Business Name" },
@@ -1922,7 +1951,7 @@ export default function PartnersPage() {
 
   return (
     <div className="p-3">
-      {/* Render Toast Banners - same as other pages */}
+      {/* Render Toast Banners */}
       {toasts.map((toastItem) => (
         <AdminToast
           key={toastItem.id}
@@ -1966,7 +1995,7 @@ export default function PartnersPage() {
               </Button>
             </div>
             <div className="flex items-center gap-4">
-              {/* Status Filter Dropdown */}
+              {/* UPDATED: Status Filter Dropdown */}
               <FilterDropdown
                 value={statusFilter}
                 onChange={handleStatusFilterChange}
@@ -1979,12 +2008,12 @@ export default function PartnersPage() {
                 />
               </div>
 
-              {/* Export Button */}
+              {/* UPDATED: Export Button with hasRecords check */}
               <Button
                 variant="outline"
                 size="md"
                 onClick={handleExportPartners}
-                disabled={isExporting}
+                disabled={isExporting || !hasRecords}
                 icon={IconUpload}
                 iconPosition="left"
                 iconSize="w-5 h-5"
@@ -2045,17 +2074,52 @@ export default function PartnersPage() {
               <p className="mt-4 text-gray-600">{t("common.loading")}</p>
             </div>
           ) : (
+            /* UPDATED: Data Table or No Records Message */
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <DataTable data={filteredPartners} columns={columns} />
-              <div className="px-4 pb-4">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  totalItems={totalItems}
-                  pageSize={pageSize}
-                  onPageChange={handlePageChange}
-                />
-              </div>
+              {hasRecords ? (
+                <>
+                  <DataTable data={partners} columns={columns} />
+                  {/* Only show pagination if there are records and more than one page */}
+                  {hasRecords && totalPages > 1 && (
+                    <div className="px-4 pb-4">
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        totalItems={totalItems}
+                        pageSize={pageSize}
+                        onPageChange={handlePageChange}
+                      />
+                    </div>
+                  )}
+                </>
+              ) : (
+                /* No Records Found Message */
+                <div className="p-8 text-center">
+                  <div className="flex flex-col items-center justify-center">
+                    <IconNoRecords className="w-16 h-16 text-gray-400 mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      {t("common.noRecordsFound") || "No records found"}
+                    </h3>
+                    <p className="text-gray-500 text-sm mb-4">
+                      {searchTerm || statusFilter !== "All"
+                        ? "Try adjusting your search or filter criteria"
+                        : "No partners have been created yet"}
+                    </p>
+                    {!searchTerm && statusFilter === "All" && (
+                      <Button
+                        variant="primary"
+                        size="md"
+                        onClick={handleAddPartner}
+                        icon={IconPlus}
+                        iconPosition="left"
+                        iconSize="w-5 h-5"
+                      >
+                        {t("admin.partners.addPartner") || "Add Partner"}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </>

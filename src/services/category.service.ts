@@ -18,6 +18,7 @@ export type SubCategoryByCategory = {
   subCategoryDescription: string;
 };
 
+// Extend PaginatedQuery to include status
 export type PaginatedQuery = {
   page: number;
   pageSize: number;
@@ -29,7 +30,7 @@ export type PaginatedQuery = {
   isPrivateCourse?: boolean;
   isPublish?: boolean;
   statusId?: number;
-  
+  status?: "All" | "Active" | "InActive";
 };
 
 export const categoryService = {

@@ -3,8 +3,13 @@ import { http } from './http.service';
 import type { SubCategory, SubCategoryDto } from '../types/subcategory';
 import type { PaginationRequest } from '../types/category';
 
+// Extend PaginationRequest to include status
+interface SubCategoryPaginationRequest extends PaginationRequest {
+  status?: "All" | "Active" | "InActive";
+}
+
 export const subCategoryService = {
- getAll: async (includeInActive = false) => {
+  getAll: async (includeInActive = false) => {
     const response = await http.get<any>(`/SubCategories/getAllSubCategoriess?includeInActive=${includeInActive}`);
     // Your API returns array directly in output, not output.result
     return response.output || [];
@@ -21,7 +26,7 @@ export const subCategoryService = {
     return response.output?.result || [];
   },
   
-  getPaginated: async (params: PaginationRequest) => {
+  getPaginated: async (params: SubCategoryPaginationRequest) => {
     const response = await http.post<{ output: { result: SubCategory[]; rowCount: number } }>('/SubCategories/getPaginatedSubCategoriess', params);
     return {
       data: response.output.result,

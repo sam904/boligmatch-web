@@ -1,5 +1,5 @@
 // src/features/admin/subcategories/SubCategoriesPage.tsx
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { subCategoryService } from "../../../services/subCategory.service";
 import { categoryService } from "../../../services/category.service";
@@ -12,7 +12,7 @@ import Input from "../../../components/common/Input";
 import SearchableSelectController from "../../../components/common/SearchableSelectController";
 import ImageUpload from "../../../components/common/ImageUpload";
 import AdminToast from "../../../components/common/AdminToast";
-import DeleteConfirmation from "../../../components/common/DeleteConfirmation"; // Add this import
+import DeleteConfirmation from "../../../components/common/DeleteConfirmation";
 import type { AdminToastType } from "../../../components/common/AdminToast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,11 +26,13 @@ import {
   IconTrash,
   IconPencil,
   IconPlus,
+  IconNoRecords,
+  IconUpload,
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
-import ToggleSwitch from "../../../components/common/ToggleSwitch";
+import { exportToExcel } from "../../../utils/export.utils";
 
-// Fixed validation schema - remove unused url parameters
+// Fixed validation schema
 const subCategorySchema = z.object({
   categoryId: z.number().min(1, "Category is required"),
   name: z
@@ -40,29 +42,11 @@ const subCategorySchema = z.object({
   imageUrl: z
     .string()
     .min(1, "Image is required")
-    .url("Please provide a valid image URL")
-    .refine(
-      () => {
-        // This will be validated in the onSubmit function for better UX
-        return true;
-      },
-      {
-        message: "Image must be exactly 1440 × 710 pixels",
-      }
-    ),
+    .url("Please provide a valid image URL"),
   iconUrl: z
     .string()
     .min(1, "Icon is required")
-    .url("Please provide a valid icon URL")
-    .refine(
-      () => {
-        // This will be validated in the onSubmit function for better UX
-        return true;
-      },
-      {
-        message: "Icon must be exactly 512 × 512 pixels",
-      }
-    ),
+    .url("Please provide a valid icon URL"),
   isActive: z.boolean(),
 });
 
@@ -157,8 +141,8 @@ export default function SubCategoriesPage() {
   const [pageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
-    "all" | "active" | "inactive"
-  >("all");
+    "All" | "Active" | "InActive"
+  >("All");
   const [previewImage, setPreviewImage] = useState<{
     url: string;
     isOpen: boolean;
@@ -174,10 +158,11 @@ export default function SubCategoriesPage() {
     isOpen: false,
     subCategory: null,
   });
+  const [isExporting, setIsExporting] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
-  // Toast management functions - same as CategoriesPage
+  // Toast management functions
   const showToast = (
     type: AdminToastType,
     message: string,
@@ -218,15 +203,42 @@ export default function SubCategoriesPage() {
       showToast("info", message, title, subtitle),
   };
 
-  // Fetch subcategories with server-side pagination and search only
-  const { data: paginatedData, isLoading } = useQuery({
-    queryKey: ["subcategories", currentPage, pageSize, debouncedSearchTerm],
+  // Helper function to extract error message
+  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
+    if (typeof error === "string") return error;
+    if (error instanceof Error) return error.message;
+    if (typeof error === "object" && error !== null) {
+      const apiError = error as any;
+      return (
+        apiError?.message || apiError?.response?.data?.message || defaultMessage
+      );
+    }
+    return defaultMessage;
+  };
+
+  // Fetch subcategories with server-side pagination, search and status filter
+  const {
+    data: paginatedData,
+    isLoading,
+    error: fetchError,
+    isError: isFetchError,
+  } = useQuery({
+    queryKey: [
+      "subcategories",
+      currentPage,
+      pageSize,
+      debouncedSearchTerm,
+      statusFilter,
+    ],
     queryFn: () =>
       subCategoryService.getPaginated({
         page: currentPage,
         pageSize,
         searchTerm: debouncedSearchTerm || undefined,
+        status: statusFilter === "All" ? "All" : statusFilter,
       }),
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
   });
 
   // Fetch categories - include inactive but we'll filter them
@@ -267,33 +279,41 @@ export default function SubCategoriesPage() {
   const nameValue = watch("name");
   const imageUrlValue = watch("imageUrl");
   const iconUrlValue = watch("iconUrl");
-  const isActiveValue = watch("isActive");
 
   // Filter categories to show only active ones
   const activeCategories = categories.filter(
     (category) => category.isActive === true
   );
 
-  // Get data from API response - FIX: Use 'data' instead of 'items'
+  // Get data from API response
   const subCategories = paginatedData?.data || [];
   const totalItems = paginatedData?.total || 0;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
-  // Apply client-side status filtering only
-  const filteredSubCategories = useMemo(() => {
-    if (statusFilter === "all") {
-      return subCategories; // Return all subcategories from server
-    } else if (statusFilter === "active") {
-      return subCategories.filter(
-        (subCategory) => subCategory.isActive === true
+  // Check if there are any records to display
+  const hasRecords = subCategories.length > 0;
+
+  // Show fetch error toast
+  useEffect(() => {
+    if (isFetchError && fetchError) {
+      const errorMessage = getErrorMessage(
+        fetchError,
+        "Failed to load subcategories"
       );
-    } else if (statusFilter === "inactive") {
-      return subCategories.filter(
-        (subCategory) => subCategory.isActive === false
-      );
+      toast.error(errorMessage);
     }
-    return subCategories;
-  }, [subCategories, statusFilter]);
+  }, [isFetchError, fetchError]);
+
+  // Show categories error using custom toast
+  useEffect(() => {
+    if (categoriesError) {
+      const errorMessage = getErrorMessage(
+        categoriesError,
+        "Failed to load categories"
+      );
+      toast.error(errorMessage);
+    }
+  }, [categoriesError]);
 
   useEffect(() => {
     if (editingSubCategory) {
@@ -316,13 +336,6 @@ export default function SubCategoriesPage() {
     }
   }, [editingSubCategory, reset]);
 
-  // Show categories error using custom toast
-  useEffect(() => {
-    if (categoriesError) {
-      toast.error("Failed to load categories");
-    }
-  }, [categoriesError]);
-
   const createMutation = useMutation({
     mutationFn: subCategoryService.create,
     onSuccess: () => {
@@ -338,11 +351,11 @@ export default function SubCategoriesPage() {
       reset();
     },
     onError: (error: any) => {
-      toast.error(
-        error?.message ||
-          t("admin.subcategories.createError") ||
-          "Failed to create subcategory"
+      const errorMessage = getErrorMessage(
+        error,
+        t("admin.subcategories.createError") || "Failed to create subcategory"
       );
+      toast.error(errorMessage);
 
       // Handle backend validation errors
       if (error?.response?.data?.errors) {
@@ -373,11 +386,11 @@ export default function SubCategoriesPage() {
       reset();
     },
     onError: (error: any) => {
-      toast.error(
-        error?.message ||
-          t("admin.subcategories.updateError") ||
-          "Failed to update subcategory"
+      const errorMessage = getErrorMessage(
+        error,
+        t("admin.subcategories.updateError") || "Failed to update subcategory"
       );
+      toast.error(errorMessage);
 
       // Handle backend validation errors
       if (error?.response?.data?.errors) {
@@ -392,7 +405,7 @@ export default function SubCategoriesPage() {
     },
   });
 
-  // FIX: Add proper typing for delete mutation parameter
+  // Delete mutation with error handling
   const deleteMutation = useMutation({
     mutationFn: (id: number) => subCategoryService.delete(id),
     onSuccess: () => {
@@ -407,11 +420,11 @@ export default function SubCategoriesPage() {
       setDeleteConfirmation({ isOpen: false, subCategory: null });
     },
     onError: (error: any) => {
-      toast.error(
-        error?.message ||
-          t("admin.subcategories.deleteError") ||
-          "Failed to delete subcategory"
+      const errorMessage = getErrorMessage(
+        error,
+        t("admin.subcategories.deleteError") || "Failed to delete subcategory"
       );
+      toast.error(errorMessage);
       setDeleteConfirmation({ isOpen: false, subCategory: null });
     },
   });
@@ -498,13 +511,16 @@ export default function SubCategoriesPage() {
     setCurrentPage(1);
   };
 
-  const handleStatusFilterChange = (filter: "all" | "active" | "inactive") => {
+  const handleStatusFilterChange = (filter: "All" | "Active" | "InActive") => {
     setStatusFilter(filter);
     setCurrentPage(1); // Reset to first page when filter changes
   };
 
   const handleDeleteSubCategory = (subCategory: SubCategory) => {
-    if (!subCategory.id) return;
+    if (!subCategory.id) {
+      toast.error("Cannot delete subcategory: Invalid ID");
+      return;
+    }
 
     // Show delete confirmation modal instead of window.confirm
     setDeleteConfirmation({
@@ -516,6 +532,9 @@ export default function SubCategoriesPage() {
   const handleConfirmDelete = () => {
     if (deleteConfirmation.subCategory?.id) {
       deleteMutation.mutate(deleteConfirmation.subCategory.id);
+    } else {
+      toast.error("Cannot delete subcategory: Invalid ID");
+      setDeleteConfirmation({ isOpen: false, subCategory: null });
     }
   };
 
@@ -539,6 +558,41 @@ export default function SubCategoriesPage() {
     }
     setEditingSubCategory(null);
     setIsModalOpen(true);
+  };
+
+  const handleExportSubCategories = async () => {
+    try {
+      setIsExporting(true);
+
+      const exportParams: Record<string, any> = {
+        includeIsActive: true,
+      };
+
+      if (debouncedSearchTerm) {
+        exportParams.searchTerm = debouncedSearchTerm;
+      }
+
+      // Update export to handle "All" status
+      if (statusFilter !== "All") {
+        exportParams.status = statusFilter === "Active" ? "Active" : "InActive";
+      } else {
+        exportParams.status = "All";
+      }
+
+      console.log("Exporting subcategories with params:", exportParams);
+      await exportToExcel("SubCategory", exportParams);
+
+      toast.success("Subcategories exported successfully");
+    } catch (error) {
+      console.error("Export failed:", error);
+      const errorMessage = getErrorMessage(
+        error,
+        "Failed to export subcategories"
+      );
+      toast.error(errorMessage);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   // Prepare category options for dropdown - only active categories
@@ -580,7 +634,7 @@ export default function SubCategoriesPage() {
             onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
             className="underline text-sm font-medium"
           >
-            Image
+            {t("admin.subcategories.image") || "Image"}
           </button>
         );
       },
@@ -598,7 +652,7 @@ export default function SubCategoriesPage() {
             onClick={() => setPreviewImage({ url: iconUrl, isOpen: true })}
             className="underline text-sm font-medium"
           >
-            Icon
+            {t("admin.subcategories.icon") || "Icon"}
           </button>
         );
       },
@@ -611,12 +665,13 @@ export default function SubCategoriesPage() {
         <span
           className="px-2 py-1 rounded-full text-xs text-white font-medium"
           style={{
-            backgroundColor: row.original.isActive
-              ? "var(--color-secondary)"
-              : "var(--color-neutral)",
+            backgroundColor:
+              row.original.isActive === true
+                ? "var(--color-secondary)"
+                : "var(--color-neutral)",
           }}
         >
-          {row.original.isActive
+          {row.original.isActive === true
             ? t("common.active") || "Active"
             : t("common.inactive") || "Inactive"}
         </span>
@@ -635,6 +690,7 @@ export default function SubCategoriesPage() {
             }}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("common.edit") || "Edit subcategory"}
+            disabled={updateMutation.isPending}
           >
             <IconPencil />
           </button>
@@ -643,6 +699,7 @@ export default function SubCategoriesPage() {
             onClick={() => handleDeleteSubCategory(row.original)}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("common.delete") || "Delete subcategory"}
+            disabled={deleteMutation.isPending}
           >
             <IconTrash />
           </button>
@@ -653,7 +710,7 @@ export default function SubCategoriesPage() {
 
   return (
     <div className="p-3">
-      {/* Render Toast Banners - same as CategoriesPage */}
+      {/* Render Toast Banners */}
       {toasts.map((toastItem) => (
         <AdminToast
           key={toastItem.id}
@@ -691,7 +748,11 @@ export default function SubCategoriesPage() {
               variant="primary"
               size="md"
               onClick={handleModalOpen}
-              disabled={categoriesLoading || activeCategories.length === 0}
+              disabled={
+                categoriesLoading ||
+                activeCategories.length === 0 ||
+                createMutation.isPending
+              }
               icon={IconPlus}
               iconPosition="left"
               iconSize="w-5 h-5"
@@ -713,9 +774,58 @@ export default function SubCategoriesPage() {
                 onSearchChange={handleSearchChange}
               />
             </div>
+
+            <Button
+              variant="outline"
+              size="md"
+              onClick={handleExportSubCategories}
+              disabled={isExporting || !hasRecords}
+              icon={IconUpload}
+              iconPosition="left"
+              iconSize="w-5 h-5"
+            >
+              {isExporting
+                ? t("common.exporting") || "Exporting..."
+                : t("common.export") || "Export CSV"}
+            </Button>
           </div>
         </div>
       </div>
+
+      {/* Error State */}
+      {isFetchError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+          <div className="flex items-center gap-2 text-red-800">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
+            </svg>
+            <span className="font-medium">Failed to load subcategories</span>
+          </div>
+          <p className="text-red-700 text-sm mt-1">
+            {getErrorMessage(fetchError, "Please try again later")}
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              queryClient.refetchQueries({ queryKey: ["subcategories"] })
+            }
+            className="mt-2"
+          >
+            Retry
+          </Button>
+        </div>
+      )}
 
       {/* Loading State */}
       {isLoading ? (
@@ -729,18 +839,56 @@ export default function SubCategoriesPage() {
           </p>
         </div>
       ) : (
-        /* Data Table - Use filteredSubCategories for display */
+        /* Data Table or No Records Message */
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <DataTable data={filteredSubCategories} columns={columns} />
-          <div className="px-4 pb-4">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              pageSize={pageSize}
-              onPageChange={handlePageChange}
-            />
-          </div>
+          {hasRecords ? (
+            <>
+              <DataTable data={subCategories} columns={columns} />
+              {/* Only show pagination if there are records and more than one page */}
+              {hasRecords && totalPages > 1 && (
+                <div className="px-4 pb-4">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    pageSize={pageSize}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
+            </>
+          ) : (
+            /* No Records Found Message */
+            <div className="p-8 text-center">
+              <div className="flex flex-col items-center justify-center">
+                <IconNoRecords className="w-16 h-16 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  {t("common.noRecordsFound") || "No records found"}
+                </h3>
+                <p className="text-gray-500 text-sm mb-4">
+                  {searchTerm || statusFilter !== "All"
+                    ? "Try adjusting your search or filter criteria"
+                    : "No subcategories have been created yet"}
+                </p>
+                {!searchTerm && statusFilter === "All" && (
+                  <Button
+                    variant="primary"
+                    size="md"
+                    onClick={handleModalOpen}
+                    disabled={
+                      categoriesLoading || activeCategories.length === 0
+                    }
+                    icon={IconPlus}
+                    iconPosition="left"
+                    iconSize="w-5 h-5"
+                  >
+                    {t("admin.subcategories.addSubCategory") ||
+                      "Add Your First Subcategory"}
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -770,7 +918,12 @@ export default function SubCategoriesPage() {
                 ? "No active categories available"
                 : "Select Category"
             }
-            disabled={categoriesLoading || activeCategories.length === 0}
+            disabled={
+              categoriesLoading ||
+              activeCategories.length === 0 ||
+              createMutation.isPending ||
+              updateMutation.isPending
+            }
           />
 
           {/* Show warning if no active categories */}
@@ -814,7 +967,11 @@ export default function SubCategoriesPage() {
             required
             maxLength={100}
             placeholder="Enter subcategory name"
-            disabled={activeCategories.length === 0}
+            disabled={
+              activeCategories.length === 0 ||
+              createMutation.isPending ||
+              updateMutation.isPending
+            }
           />
 
           {/* Character count */}
@@ -823,50 +980,60 @@ export default function SubCategoriesPage() {
           </div>
 
           {/* Image Upload for Subcategory Image */}
-          <ImageUpload
-            label={
-              <>
-                {t("admin.subcategories.imageUrl") || "Image Upload"}
-                <span className="text-red-500 ml-1">*</span>
-              </>
+          <div
+            className={
+              createMutation.isPending || updateMutation.isPending
+                ? "opacity-50 pointer-events-none"
+                : ""
             }
-            value={imageUrlValue}
-            onChange={(url) => {
-              setValue("imageUrl", url, { shouldValidate: true });
-              trigger("imageUrl");
-            }}
-            onPreview={(url) => setPreviewImage({ url, isOpen: true })}
-            folder="subcategories/images"
-            error={errors.imageUrl?.message}
-            exactDimensions={{ width: 1440, height: 710 }}
-            showDimensionValidation={true}
-          />
+          >
+            <ImageUpload
+              label={
+                <>
+                  {t("admin.subcategories.imageUrl") || "Image Upload"}
+                  <span className="text-red-500 ml-1">*</span>
+                </>
+              }
+              value={imageUrlValue}
+              onChange={(url) => {
+                setValue("imageUrl", url, { shouldValidate: true });
+                trigger("imageUrl");
+              }}
+              onPreview={(url) => setPreviewImage({ url, isOpen: true })}
+              folder="subcategories/images"
+              error={errors.imageUrl?.message}
+              exactDimensions={{ width: 1440, height: 710 }}
+              showDimensionValidation={true}
+            />
+          </div>
 
           {/* Image Upload for Subcategory Icon */}
-          <ImageUpload
-            label={
-              <>
-                {t("admin.subcategories.iconUrl") || "Icon Upload"}
-                <span className="text-red-500 ml-1">*</span>
-              </>
+          <div
+            className={
+              createMutation.isPending || updateMutation.isPending
+                ? "opacity-50 pointer-events-none"
+                : ""
             }
-            value={iconUrlValue}
-            onChange={(url) => {
-              setValue("iconUrl", url, { shouldValidate: true });
-              trigger("iconUrl");
-            }}
-            onPreview={(url) => setPreviewImage({ url, isOpen: true })}
-            folder="subcategories/icons"
-            error={errors.iconUrl?.message}
-            exactDimensions={{ width: 512, height: 512 }}
-            showDimensionValidation={true}
-          />
-          {/* Toggle Switch for Active Status */}
-          <ToggleSwitch
-            label={t("common.active") || "Active"}
-            checked={isActiveValue}
-            onChange={(checked) => setValue("isActive", checked)}
-          />
+          >
+            <ImageUpload
+              label={
+                <>
+                  {t("admin.subcategories.iconUrl") || "Icon Upload"}
+                  <span className="text-red-500 ml-1">*</span>
+                </>
+              }
+              value={iconUrlValue}
+              onChange={(url) => {
+                setValue("iconUrl", url, { shouldValidate: true });
+                trigger("iconUrl");
+              }}
+              onPreview={(url) => setPreviewImage({ url, isOpen: true })}
+              folder="subcategories/icons"
+              error={errors.iconUrl?.message}
+              exactDimensions={{ width: 512, height: 512 }}
+              showDimensionValidation={true}
+            />
+          </div>
 
           {/* Validation Summary */}
           {Object.keys(errors).length > 0 && (
@@ -919,7 +1086,9 @@ export default function SubCategoriesPage() {
               }
               className="flex-1"
             >
-              {editingSubCategory
+              {createMutation.isPending || updateMutation.isPending
+                ? "Submitting..."
+                : editingSubCategory
                 ? t("common.update") || "Update"
                 : t("common.create") || "Create"}
             </Button>
