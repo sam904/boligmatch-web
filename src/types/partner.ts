@@ -12,6 +12,7 @@ export interface Partner {
   businessUnit: number;
   videoUrl?: string;
   logoUrl?: string;
+  trustPilotUrl?: string;
   cvr: number;
   descriptionShort?: string;
   textField1?: string;
@@ -46,6 +47,7 @@ export interface PartnerDto {
   businessUnit: number;
   videoUrl?: string;
   logoUrl?: string;
+  trustPilotUrl?: string;
   cvr: number;
   descriptionShort?: string;
   textField1?: string;

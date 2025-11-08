@@ -31,6 +31,16 @@ export interface OTPVerificationResponse {
   output: boolean; // This is boolean, not string
 }
 
+export interface EmailMobileAvailabilityResponse {
+  errorMessage: string | null;
+  fileContent: string | null;
+  fileName: string | null;
+  contentType: string | null;
+  failureReason: string | null;
+  isSuccess: boolean;
+  output: string | null;
+}
+
 // Update the User type locally if needed, or import from types
 export interface UserWithStatus extends User {
   status: "All" | "Active" | "InActive";
@@ -76,4 +86,11 @@ export const userService = {
       `/User/emailOTPVerification?email=${encodeURIComponent(data.email)}&otp=${data.otp}`,
       {} // Empty body since parameters are in query string
     ),
+
+     checkEmailOrMobileAvailability: (emailOrMobile: string) => 
+    http.get<EmailMobileAvailabilityResponse>(
+      `/User/emailOrMobileVerificationAvailability?emailOrMobile=${encodeURIComponent(emailOrMobile)}`
+    ),
+
+
 };
