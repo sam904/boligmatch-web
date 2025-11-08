@@ -36,6 +36,7 @@ import SearchableSelectController from "../../../components/common/SearchableSel
 import DocumentUpload from "../../../components/common/DocumentUpload";
 import Modal from "../../../components/common/Modal";
 import { userService } from "../../../services/user.service";
+import ToggleSwitch from "../../../components/common/ToggleSwitch";
 import { exportToExcel } from "../../../utils/export.utils";
 import {
   IconPencil,
@@ -421,6 +422,7 @@ export default function PartnersPage() {
   const imageUrl5Value = watch("imageUrl5");
   const thumbnailValue = watch("thumbnail");
   const categoryIdValue = watch("categoryId");
+  const isActiveValue = watch("isActive");
 
   // Check if a step is completed
   const isStepCompleted = async (step: number): Promise<boolean> => {
@@ -1657,6 +1659,11 @@ export default function PartnersPage() {
                       </Button>
                     )}
                   </div>
+                  <ToggleSwitch
+                    label={t("common.active") || "Active"}
+                    checked={isActiveValue}
+                    onChange={(checked) => setValue("isActive", checked)}
+                  />
                 </div>
               ))}
               <Button
