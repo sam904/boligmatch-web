@@ -13,6 +13,7 @@ import {
   PointElement,
   Filler,
 } from "chart.js";
+import DashboardSelect from "../../../components/common/DashboardSelect";
 import { dashboardService } from "../../../services/dashboard.service";
 import type {
   ReportQueryRequest,
@@ -39,8 +40,6 @@ interface PartnerUserTrend {
   users: number;
 }
 
-// REMOVED: Unused ApiResponse type
-
 const DashboardPage = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -57,6 +56,13 @@ const DashboardPage = () => {
   const [totalPartnersFromTrends, setTotalPartnersFromTrends] =
     useState<number>(0);
   const [totalUsersFromTrends, setTotalUsersFromTrends] = useState<number>(0);
+
+  const timeFilterOptions = [
+    { value: "day", label: "Today" },
+    { value: "week", label: "This Week" },
+    { value: "month", label: "This Month" },
+    { value: "year", label: "This Year" },
+  ];
 
   // FIXED: Function to generate proper date range based on filter
   const getDateRange = (filter: string) => {
@@ -264,7 +270,7 @@ const DashboardPage = () => {
     }
   };
 
-  // Transform Today data - handles empty response
+  // Transform Today data - FIXED to show integer values
   const transformTodayData = (apiData: any[]): PartnerUserTrend[] => {
     if (!apiData || apiData.length === 0) {
       // Return empty data for all hours when no data
@@ -277,8 +283,11 @@ const DashboardPage = () => {
 
     // If we have data but it's showing zeros, use the first item
     const todayData = apiData[0];
-    const totalUsers = todayData.users || todayData.userCount || 0;
-    const totalPartners = todayData.partners || todayData.partnerCount || 0;
+    // FIXED: Use Math.round() to ensure integer values
+    const totalUsers = Math.round(todayData.users || todayData.userCount || 0);
+    const totalPartners = Math.round(
+      todayData.partners || todayData.partnerCount || 0
+    );
 
     // Distribute totals across hours for visualization
     return Array.from({ length: 24 }, (_, i) => ({
@@ -289,7 +298,7 @@ const DashboardPage = () => {
     }));
   };
 
-  // Transform Week data - updated to match your API structure
+  // Transform Week data - FIXED to show integer values without decimals
   const transformWeekData = (apiData: any[]): PartnerUserTrend[] => {
     const dayOrder = [
       "Sunday",
@@ -309,9 +318,10 @@ const DashboardPage = () => {
         // Use the correct field names from your API response
         const dayName = item.weekDayName || item.date || "";
         if (dayName) {
+          // FIXED: Use Math.round() to ensure integer values
           dataMap.set(dayName, {
-            partners: item.partnerCount || item.partners || 0,
-            users: item.userCount || item.users || 0,
+            partners: Math.round(item.partnerCount || item.partners || 0),
+            users: Math.round(item.userCount || item.users || 0),
           });
         }
       });
@@ -324,7 +334,7 @@ const DashboardPage = () => {
     }));
   };
 
-  // Transform Month data - FIXED to match your actual API response
+  // Transform Month data - FIXED to show integer values
   const transformMonthData = (apiData: any[]): PartnerUserTrend[] => {
     if (!apiData || apiData.length === 0) {
       // Return empty weeks if no data
@@ -337,13 +347,14 @@ const DashboardPage = () => {
 
     // Your API returns data in this structure for month mode
     return apiData.map((item, index) => ({
-      date: item.weekNumber || `Week ${index + 1}`, // Use weekNumber from API
-      partners: item.partnerCount || 0,
-      users: item.userCount || 0,
+      date: item.weekNumber || `Week ${index + 1}`,
+      // FIXED: Use Math.round() to ensure integer values
+      partners: Math.round(item.partnerCount || 0),
+      users: Math.round(item.userCount || 0),
     }));
   };
 
-  // Transform Year data - updated for consistency
+  // Transform Year data - FIXED to show integer values
   const transformYearData = (apiData: any[]): PartnerUserTrend[] => {
     const monthOrder = [
       "January",
@@ -366,9 +377,10 @@ const DashboardPage = () => {
       apiData.forEach((item) => {
         const monthName = item.monthName || "";
         if (monthName) {
+          // FIXED: Use Math.round() to ensure integer values
           dataMap.set(monthName, {
-            partners: item.partnerCount || 0,
-            users: item.userCount || 0,
+            partners: Math.round(item.partnerCount || 0),
+            users: Math.round(item.userCount || 0),
           });
         }
       });
@@ -381,15 +393,13 @@ const DashboardPage = () => {
     }));
   };
 
-  // Handle time filter change
-  const handleTimeFilterChange = (
-    newFilter: "day" | "week" | "month" | "year"
-  ) => {
-    setTimeFilter(newFilter);
+  // Update the handleTimeFilterChange function
+  const handleTimeFilterChange = (newFilter: string) => {
+    setTimeFilter(newFilter as "day" | "week" | "month" | "year");
     fetchPartnerUserTrends(newFilter);
   };
 
-  // Generate mock data with smaller numbers for better visualization
+  // Also update the mock data generator to use integers consistently
   const generateMockTrendData = (filter: string) => {
     let mockData: PartnerUserTrend[] = [];
 
@@ -678,6 +688,7 @@ const DashboardPage = () => {
     };
   };
 
+  // Update the bar chart options to force integer ticks on Y-axis
   const partnerUserBarOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -685,10 +696,36 @@ const DashboardPage = () => {
       legend: {
         position: "top" as const,
       },
+      tooltip: {
+        callbacks: {
+          label: function (context: any) {
+            const value = context.parsed.y;
+            const label = context.dataset.label || "";
+            // FIXED: Ensure tooltip shows integer values
+            return `${label}: ${Math.round(value)}`;
+          },
+        },
+      },
     },
     scales: {
       y: {
         beginAtZero: true,
+        ticks: {
+          // FIXED: Force integer values on Y-axis
+          stepSize: 1,
+          callback: function (tickValue: string | number) {
+            // Ensure only integer values are displayed
+            const value =
+              typeof tickValue === "number" ? tickValue : parseFloat(tickValue);
+            return Number.isInteger(value) ? value.toString() : "";
+          },
+          color: "#6B7280",
+        },
+        grid: { color: "#F3F4F6" },
+      },
+      x: {
+        grid: { display: false },
+        ticks: { color: "#6B7280" },
       },
     },
   };
@@ -898,16 +935,13 @@ const DashboardPage = () => {
               Total Partners & Users
             </h3>
             <div className="flex items-center space-x-4">
-              <select
+              <DashboardSelect
                 value={timeFilter}
-                onChange={(e) => handleTimeFilterChange(e.target.value as any)}
-                className="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-[#165933] focus:border-transparent"
-              >
-                <option value="day">Today</option>
-                <option value="week">This Week</option>
-                <option value="month">This Month</option>
-                <option value="year">This Year</option>
-              </select>
+                onChange={handleTimeFilterChange}
+                options={timeFilterOptions}
+                placeholder="Select period"
+                className="w-32"
+              />
             </div>
           </div>
 
