@@ -45,38 +45,39 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
   });
 
   const onSubmit = async (data: any) => {
-    setIsLoading(true);
-    setError(null);
-    setSuccess(false);
+  setIsLoading(true);
+  setError(null);
+  setSuccess(false);
 
-    try {
-      const registrationData: CreateUserRequest = {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        password: data.password,
-        mobileNo: data.mobileNumber,
-        isActive: true,
-      };
+  try {
+    const registrationData: CreateUserRequest = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      password: data.password,
+      mobileNo: data.mobileNumber,
+      isActive: true,
+      status: "Active", // Add this line
+    };
 
-      await userService.add(registrationData);
+    await userService.add(registrationData);
 
-      // If we get here, the registration was successful
-      setSuccess(true);
-      reset();
-      // Close modal after a short delay to show success message
-      setTimeout(() => {
-        onClose();
-        setSuccess(false);
-      }, 2000);
-    } catch (err: any) {
-      setError(
-        err.response?.data?.message || err.message || "Registration failed"
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    // If we get here, the registration was successful
+    setSuccess(true);
+    reset();
+    // Close modal after a short delay to show success message
+    setTimeout(() => {
+      onClose();
+      setSuccess(false);
+    }, 2000);
+  } catch (err: any) {
+    setError(
+      err.response?.data?.message || err.message || "Registration failed"
+    );
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   if (!open) return null;
 
