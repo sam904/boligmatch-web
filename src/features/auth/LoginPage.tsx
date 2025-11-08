@@ -8,6 +8,7 @@ import { loginThunk } from "./authSlice";
 import { Navigate, useLocation } from "react-router-dom";
 import login_cover from "../../../public/login_cover.png";
 import logo_2 from "../../../public/logo_2.svg";
+import { IconEye, IconEyeOff } from "../../components/common/Icons/Index";
 import { CustomCheckbox } from "../../components/common/CheckBox";
 // import Vector from "../../../public/Vector.png";
 
@@ -20,6 +21,7 @@ export default function LoginPage() {
   const dispatch = useAppDispatch();
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const status = useAppSelector((s) => s.auth.status);
   const token = useAppSelector((s) => s.auth.accessToken);
   const user = useAppSelector((s) => s.auth.user);
@@ -110,21 +112,34 @@ export default function LoginPage() {
                 Password
               </label>
               <button
-            type="button"
-            onClick={() => setIsForgotPasswordOpen(true)}
-            className="text-[#0C2A92] hover:underline font-medium text-sm"
-          >
-            Forgot password?
-          </button>
+                type="button"
+                onClick={() => setIsForgotPasswordOpen(true)}
+                className="text-[#0C2A92] hover:underline font-medium text-sm"
+              >
+                Forgot password?
+              </button>
             </div>
-            <input
-              type="password"
-              {...register("password")}
-              className={`w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#004E34] focus:outline-none transition-colors ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="Enter your password"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                className={`w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#004E34] focus:outline-none transition-colors ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                }`}
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 hover:text-gray-800"
+              >
+                {showPassword ? (
+                  <IconEyeOff className="w-5 h-5" />
+                ) : (
+                  <IconEye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.password.message}
@@ -191,14 +206,14 @@ export default function LoginPage() {
           className="w-full rounded-l-4xl h-screen object-cover"
         />
 
-         <ForgotPasswordModal
-        isOpen={isForgotPasswordOpen}
-        onClose={() => setIsForgotPasswordOpen(false)}
-        onSuccess={() => {
-          // Optional: Show success message or redirect
-          console.log("Password reset successful");
-        }}
-      />
+        <ForgotPasswordModal
+          isOpen={isForgotPasswordOpen}
+          onClose={() => setIsForgotPasswordOpen(false)}
+          onSuccess={() => {
+            // Optional: Show success message or redirect
+            console.log("Password reset successful");
+          }}
+        />
       </div>
     </div>
   );

@@ -111,7 +111,7 @@ function ImagePreviewModal({
       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
         <div className="flex justify-between items-center p-4 border-b">
           <h3 className="text-lg font-semibold">Image Preview</h3>
-           <button
+          <button
             onClick={onClose}
             className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
           >
@@ -178,7 +178,12 @@ export default function SubCategoriesPage() {
   const queryClient = useQueryClient();
 
   // Toast management functions - same as CategoriesPage
-  const showToast = (type: AdminToastType, message: string, title?: string, subtitle?: string) => {
+  const showToast = (
+    type: AdminToastType,
+    message: string,
+    title?: string,
+    subtitle?: string
+  ) => {
     const id = Math.random().toString(36).substring(2, 9);
     const newToast: ToastState = {
       id,
@@ -188,28 +193,28 @@ export default function SubCategoriesPage() {
       subtitle,
       open: true,
     };
-    
-    setToasts(prev => [...prev, newToast]);
+
+    setToasts((prev) => [...prev, newToast]);
     return id;
   };
 
   const hideToast = (id: string) => {
-    setToasts(prev => prev.map(toast => 
-      toast.id === id ? { ...toast, open: false } : toast
-    ));
-    
+    setToasts((prev) =>
+      prev.map((toast) => (toast.id === id ? { ...toast, open: false } : toast))
+    );
+
     // Remove toast from state after animation
     setTimeout(() => {
-      setToasts(prev => prev.filter(toast => toast.id !== id));
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, 300);
   };
 
   const toast = {
-    success: (message: string, title?: string, subtitle?: string) => 
+    success: (message: string, title?: string, subtitle?: string) =>
       showToast("success", message, title, subtitle),
-    error: (message: string, title?: string, subtitle?: string) => 
+    error: (message: string, title?: string, subtitle?: string) =>
       showToast("error", message, title, subtitle),
-    info: (message: string, title?: string, subtitle?: string) => 
+    info: (message: string, title?: string, subtitle?: string) =>
       showToast("info", message, title, subtitle),
   };
 
@@ -504,7 +509,7 @@ export default function SubCategoriesPage() {
     // Show delete confirmation modal instead of window.confirm
     setDeleteConfirmation({
       isOpen: true,
-      subCategory: subCategory
+      subCategory: subCategory,
     });
   };
 
@@ -665,12 +670,14 @@ export default function SubCategoriesPage() {
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
         itemName={
-          deleteConfirmation.subCategory 
-            ? `Subcategory: ${translateSubCategory(deleteConfirmation.subCategory.name)}`
+          deleteConfirmation.subCategory
+            ? `Subcategory: ${translateSubCategory(
+                deleteConfirmation.subCategory.name
+              )}`
             : undefined
         }
         confirmationMessage={
-          t("admin.subcategories.deleteConfirm") || 
+          t("admin.subcategories.deleteConfirm") ||
           "Are you sure you want to delete this subcategory?"
         }
         isLoading={deleteMutation.isPending}
@@ -679,7 +686,7 @@ export default function SubCategoriesPage() {
       {/* Header Section */}
       <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
-          <div  className="font-figtree">
+          <div className="font-figtree">
             <Button
               variant="primary"
               size="md"
@@ -796,7 +803,12 @@ export default function SubCategoriesPage() {
 
           {/* Subcategory Name */}
           <Input
-            label={`${t("admin.subcategories.name") || "Subcategory Name"} *`}
+            label={
+              <>
+                {t("admin.subcategories.name") || "Subcategory Name"}
+                <span className="text-red-500 ml-1">*</span>
+              </>
+            }
             error={errors.name?.message}
             {...register("name")}
             required
@@ -812,7 +824,12 @@ export default function SubCategoriesPage() {
 
           {/* Image Upload for Subcategory Image */}
           <ImageUpload
-            label={`${t("admin.subcategories.imageUrl") || "Image Upload"} *`}
+            label={
+              <>
+                {t("admin.subcategories.imageUrl") || "Image Upload"}
+                <span className="text-red-500 ml-1">*</span>
+              </>
+            }
             value={imageUrlValue}
             onChange={(url) => {
               setValue("imageUrl", url, { shouldValidate: true });
@@ -827,7 +844,12 @@ export default function SubCategoriesPage() {
 
           {/* Image Upload for Subcategory Icon */}
           <ImageUpload
-            label={`${t("admin.subcategories.iconUrl") || "Icon Upload"} *`}
+            label={
+              <>
+                {t("admin.subcategories.iconUrl") || "Icon Upload"}
+                <span className="text-red-500 ml-1">*</span>
+              </>
+            }
             value={iconUrlValue}
             onChange={(url) => {
               setValue("iconUrl", url, { shouldValidate: true });
