@@ -4,13 +4,12 @@ import ForgotPasswordModal from "../auth/ForgotPasswordModal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { loginThunk } from "./authSlice";
+import { loginThunk, logout } from "./authSlice"; // Import logout action
 import { Navigate, useLocation } from "react-router-dom";
 import login_cover from "../../../public/login_cover.png";
 import logo_2 from "../../../public/logo_2.svg";
 import { IconEye, IconEyeOff } from "../../components/common/Icons/Index";
 import { CustomCheckbox } from "../../components/common/CheckBox";
-// import Vector from "../../../public/Vector.png";
 
 const schema = z.object({
   userName: z.string().min(1, "Username/Email is required"),
@@ -22,6 +21,7 @@ export default function LoginPage() {
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [adminError, setAdminError] = useState<string | null>(null); // New state for admin error
   const status = useAppSelector((s) => s.auth.status);
   const token = useAppSelector((s) => s.auth.accessToken);
   const user = useAppSelector((s) => s.auth.user);
@@ -40,17 +40,44 @@ export default function LoginPage() {
     },
   });
 
-  if (token && user) {
-    const redirectTo =
-      user.roleName.toLowerCase() === "admin"
-        ? "/admin"
-        : user.roleName.toLowerCase() === "user"
-        ? "/userProfile/profile"
-        : user.roleName.toLowerCase() === "partner"
-        ? "/partnerDashboard"
-        : "/";
+  // Handle form submission with admin role check
+  const onSubmit = async (data: any) => {
+    setAdminError(null); // Reset admin error
+    
+    const result = await dispatch(loginThunk(data));
+    
+    if (loginThunk.fulfilled.match(result)) {
+      // Check if logged-in user is admin
+      if (result.payload.output.roleName.toLowerCase() !== 'admin') {
+        setAdminError('Access denied. This portal is for administrators only.');
+        // Logout the non-admin user immediately
+        dispatch(logout());
+      }
+    }
+  };
+
+  // Only redirect if user is admin
+  if (token && user && user.roleName.toLowerCase() === 'admin') {
     return (
-      <Navigate to={(loc.state as any)?.from?.pathname ?? redirectTo} replace />
+      <Navigate to={(loc.state as any)?.from?.pathname ?? "/admin"} replace />
+    );
+  }
+
+  // Show access denied for non-admin users with token (shouldn't happen with above logic)
+  if (token && user && user.roleName.toLowerCase() !== 'admin') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center max-w-md mx-4">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h2>
+          <p className="text-gray-600 mb-4">This portal is for administrators only.</p>
+          <button
+            onClick={() => dispatch(logout())}
+            className="bg-[#004E34] text-white px-6 py-2 rounded-lg hover:bg-[#003b27] transition-colors"
+          >
+            Return to Login
+          </button>
+        </div>
+      </div>
     );
   }
 
@@ -69,22 +96,29 @@ export default function LoginPage() {
 
         {/* Login Header - Centered */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">Login</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-3">Admin Login</h2> {/* Changed title */}
           <p className="text-gray-600 text-lg">
-            Enter your Credentials to access your account
-          </p>
+            Administrator access only
+          </p> {/* Changed description */}
         </div>
 
-        {/* Error Message */}
+        {/* Error Messages */}
         {error && (
           <div className="mb-6 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded">
             {error}
           </div>
         )}
+        
+        {/* Admin Access Error */}
+        {adminError && (
+          <div className="mb-6 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded">
+            {adminError}
+          </div>
+        )}
 
         {/* Form */}
         <form
-          onSubmit={handleSubmit((data) => dispatch(loginThunk(data)))}
+          onSubmit={handleSubmit(onSubmit)} // Use custom onSubmit
           className="space-y-6 max-w-md mx-auto w-full"
         >
           <div>
@@ -97,7 +131,7 @@ export default function LoginPage() {
               className={`w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#004E34] focus:outline-none transition-colors ${
                 errors.userName ? "border-red-500" : "border-gray-300"
               }`}
-              placeholder="Enter your username or email"
+              placeholder="Enter admin username or email"
             />
             {errors.userName && (
               <p className="text-red-500 text-sm mt-1">
@@ -105,8 +139,7 @@ export default function LoginPage() {
               </p>
             )}
           </div>
-
-          <div>
+<div>
             <div className="flex justify-between items-center mb-2">
               <label className="block text-gray-700 font-medium mb-2 text-sm">
                 Password
@@ -166,35 +199,6 @@ export default function LoginPage() {
           >
             {status === "loading" ? "Signing In..." : "Login"}
           </button>
-
-          {/* OR Divider */}
-          {/* <div className="flex items-center my-5">
-            <div className="flex-grow border-t border-gray-300"></div>
-            <span className="mx-4 text-gray-500 text-sm">or</span>
-            <div className="flex-grow border-t border-gray-300"></div>
-          </div> */}
-
-          {/* Social Login Buttons */}
-          {/* <div className="flex justify-center gap-4">
-            <button
-              type="button"
-              className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition-all duration-200 font-medium"
-            >
-              <img
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
-                alt="Google"
-                className="w-5 h-5"
-              />
-              Sign in with Google
-            </button>
-            <button
-              type="button"
-              className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 hover:bg-gray-50 transition-all duration-200 font-medium"
-            >
-              <img src={Vector} alt="Apple" className="w-5 h-5" />
-              Sign in with Apple
-            </button>
-          </div> */}
         </form>
       </div>
 
@@ -210,7 +214,6 @@ export default function LoginPage() {
           isOpen={isForgotPasswordOpen}
           onClose={() => setIsForgotPasswordOpen(false)}
           onSuccess={() => {
-            // Optional: Show success message or redirect
             console.log("Password reset successful");
           }}
         />
