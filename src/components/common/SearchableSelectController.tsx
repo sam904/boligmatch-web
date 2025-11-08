@@ -17,7 +17,7 @@ interface SearchableSelectControllerProps<T extends FieldValues> {
   disabled?: boolean;
   isClearable?: boolean;
   required?: boolean;
-  onChange?: (value: number | string) => void; // Add this line
+  onChange?: (value: number | string) => void;
 }
 
 export default function SearchableSelectController<T extends FieldValues>({
@@ -30,7 +30,7 @@ export default function SearchableSelectController<T extends FieldValues>({
   disabled = false,
   isClearable = false,
   required = false,
-  onChange, // Add this line
+  onChange,
 }: SearchableSelectControllerProps<T>) {
   const customStyles: StylesConfig<Option, false> = {
     control: (base, state) => ({
@@ -50,9 +50,16 @@ export default function SearchableSelectController<T extends FieldValues>({
         : state.isFocused
         ? '#91C73D20'
         : 'white',
+      // FIXED: Ensure text is always visible
       color: state.isSelected ? 'white' : '#1f2937',
+      // FIXED: Add hover state for better UX
+      '&:hover': {
+        backgroundColor: state.isSelected ? '#043428' : '#91C73D20',
+        color: state.isSelected ? 'white' : '#1f2937',
+      },
       '&:active': {
         backgroundColor: '#043428',
+        color: 'white',
       },
     }),
     menu: (base) => ({
@@ -63,6 +70,21 @@ export default function SearchableSelectController<T extends FieldValues>({
       ...base,
       color: '#9ca3af',
       fontSize: '0.875rem',
+    }),
+    // FIXED: Add singleValue styles to ensure selected value is visible in the control
+    singleValue: (base) => ({
+      ...base,
+      color: '#1f2937',
+    }),
+    // FIXED: Add input styles to ensure search text is visible
+    input: (base) => ({
+      ...base,
+      color: '#1f2937',
+    }),
+    // FIXED: Add valueContainer styles
+    valueContainer: (base) => ({
+      ...base,
+      color: '#1f2937',
     }),
   };
 
@@ -104,8 +126,9 @@ export default function SearchableSelectController<T extends FieldValues>({
               noOptionsMessage={({ inputValue }) =>
                 inputValue ? 'No options found' : 'No options available'
               }
-              // Add this to ensure proper handling of empty value
-              isOptionSelected={(option) => option.value === field.value}
+              // FIXED: Convert value to string for getOptionValue
+              getOptionValue={(option) => String(option.value)}
+              getOptionLabel={(option) => option.label}
             />
           );
         }}
