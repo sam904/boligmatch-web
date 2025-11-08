@@ -49,6 +49,7 @@ const subCategorySchema = z.object({
     .min(1, "Icon is required")
     .url("Please provide a valid icon URL"),
   isActive: z.boolean(),
+  status: z.enum(["Active", "InActive"]),
 });
 
 type SubCategoryFormData = z.infer<typeof subCategorySchema>;
@@ -273,6 +274,7 @@ export default function SubCategoriesPage() {
       imageUrl: "",
       iconUrl: "",
       isActive: true,
+      status: "Active",
     },
   });
 
@@ -325,6 +327,7 @@ export default function SubCategoriesPage() {
         imageUrl: editingSubCategory.imageUrl || "",
         iconUrl: editingSubCategory.iconUrl || "",
         isActive: editingSubCategory.isActive,
+        status: editingSubCategory.isActive ? "Active" : "InActive",
       });
     } else {
       // Set default category when active categories are loaded
