@@ -45,6 +45,7 @@ const categorySchema = z.object({
     .min(1, "Icon is required")
     .url("Please provide a valid icon URL"),
   isActive: z.boolean(),
+   status: z.enum(["Active", "InActive"]),
 });
 
 type CategoryFormData = z.infer<typeof categorySchema>;
@@ -275,6 +276,7 @@ export default function CategoriesPage() {
       description: "",
       imageUrl: "",
       iconUrl: "",
+      status: "Active",
     },
   });
 
@@ -311,6 +313,7 @@ export default function CategoriesPage() {
         imageUrl: editingCategory.imageUrl || "",
         iconUrl: editingCategory.iconUrl || "",
         isActive: editingCategory.isActive,
+        status: editingCategory.isActive ? "Active" : "InActive",
       });
     } else {
       reset({
