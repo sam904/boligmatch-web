@@ -14,6 +14,7 @@ export interface User {
   franchiseId?: number;
   admissionId?: number;
   isActive: boolean;
+  status: "All" | "Active" | "InActive"; // Add this property
   createdAt?: string;
   updatedAt?: string;
 }
@@ -24,9 +25,9 @@ export interface CreateUserRequest {
   lastName: string;
   email: string;
   mobileNo: string;
-  // Optional: required for self-signup, not required for admin edits
   password?: string;
   isActive: boolean;
+  status: "All" | "Active" | "InActive";
   role?: number;
   roleIds?: string;
 }

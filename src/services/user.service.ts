@@ -31,6 +31,11 @@ export interface OTPVerificationResponse {
   output: boolean; // This is boolean, not string
 }
 
+// Update the User type locally if needed, or import from types
+export interface UserWithStatus extends User {
+  status: "All" | "Active" | "InActive";
+}
+
 export const userService = {
   getById: (id: number) => http.get<User>(`/User/getUserById/${id}`),
   
