@@ -31,6 +31,7 @@ import {
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
 import { exportToExcel } from "../../../utils/export.utils";
+import ToggleSwitch from "../../../components/common/ToggleSwitch";
 
 // Fixed validation schema
 const subCategorySchema = z.object({
@@ -279,6 +280,7 @@ export default function SubCategoriesPage() {
   const nameValue = watch("name");
   const imageUrlValue = watch("imageUrl");
   const iconUrlValue = watch("iconUrl");
+  const isActiveValue = watch("isActive");
 
   // Filter categories to show only active ones
   const activeCategories = categories.filter(
@@ -1034,6 +1036,12 @@ export default function SubCategoriesPage() {
               showDimensionValidation={true}
             />
           </div>
+
+          <ToggleSwitch
+            label={t("common.active") || "Active"}
+            checked={isActiveValue}
+            onChange={(checked) => setValue("isActive", checked)}
+          />
 
           {/* Validation Summary */}
           {Object.keys(errors).length > 0 && (

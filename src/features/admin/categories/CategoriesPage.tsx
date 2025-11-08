@@ -20,6 +20,7 @@ import { useDbTranslation } from "../../../hooks/useDbTranslation";
 import { useDebounce } from "../../../hooks/useDebounce";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { Category } from "../../../types/category";
+import ToggleSwitch from "../../../components/common/ToggleSwitch";
 import TextArea from "../../../components/common/TextArea";
 import {
   IconTrash,
@@ -280,6 +281,7 @@ export default function CategoriesPage() {
   // Watch the form values
   const imageUrlValue = watch("imageUrl");
   const iconUrlValue = watch("iconUrl");
+  const isActiveValue = watch("isActive");
 
   // Add dimension validation function
   const validateImageDimensions = async (
@@ -521,7 +523,10 @@ export default function CategoriesPage() {
       toast.success("Categories exported successfully");
     } catch (error) {
       console.error("Export failed:", error);
-      const errorMessage = getErrorMessage(error, "Failed to export categories");
+      const errorMessage = getErrorMessage(
+        error,
+        "Failed to export categories"
+      );
       toast.error(errorMessage);
     } finally {
       setIsExporting(false);
@@ -861,11 +866,13 @@ export default function CategoriesPage() {
           />
 
           {/* Image Upload for Category Image with 374x340 validation */}
-          <div className={
-            createMutation.isPending || updateMutation.isPending
-              ? "opacity-50 pointer-events-none"
-              : ""
-          }>
+          <div
+            className={
+              createMutation.isPending || updateMutation.isPending
+                ? "opacity-50 pointer-events-none"
+                : ""
+            }
+          >
             <ImageUpload
               label={
                 <>
@@ -887,11 +894,13 @@ export default function CategoriesPage() {
           </div>
 
           {/* Image Upload for Category Icon with 512x512 validation */}
-          <div className={
-            createMutation.isPending || updateMutation.isPending
-              ? "opacity-50 pointer-events-none"
-              : ""
-          }>
+          <div
+            className={
+              createMutation.isPending || updateMutation.isPending
+                ? "opacity-50 pointer-events-none"
+                : ""
+            }
+          >
             <ImageUpload
               label={
                 <>
@@ -933,6 +942,12 @@ export default function CategoriesPage() {
               </p>
             )}
           </div> */}
+
+          <ToggleSwitch
+            label={t("common.active") || "Active"}
+            checked={isActiveValue}
+            onChange={(checked) => setValue("isActive", checked)}
+          />
 
           {/* Form validation summary */}
           {Object.keys(errors).length > 0 && (
