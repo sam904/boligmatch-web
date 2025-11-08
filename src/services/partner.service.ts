@@ -14,6 +14,7 @@ export const partnerService = {
     page: number;
     pageSize: number;
     searchTerm?: string;
+    status?: "All" | "Active" | "InActive";
   }) => http.post<PaginatedPartnersResponse>('/Partner/getPaginatedPartners', query),
   
   create: (data: PartnerDto) => 

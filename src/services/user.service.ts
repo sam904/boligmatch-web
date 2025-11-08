@@ -47,6 +47,7 @@ export const userService = {
     page: number;
     pageSize: number;
     searchTerm?: string;
+    status?: "All" | "Active" | "InActive";
   }) => http.post<PaginatedUsersResponse>(`/User/getPaginatedUsers`, query),
 
   resetUserPassword: (data: { 

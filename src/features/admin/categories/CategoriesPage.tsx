@@ -1,5 +1,5 @@
 // src/features/admin/categories/CategoriesPage.tsx
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { categoryService } from "../../../services/category.service";
 import DataTable from "../../../components/common/DataTable/DataTable";
@@ -25,9 +25,11 @@ import {
   IconTrash,
   IconPencil,
   IconPlus,
+  IconNoRecords,
+  IconUpload,
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
-import ToggleSwitch from "../../../components/common/ToggleSwitch";
+import { exportToExcel } from "../../../utils/export.utils";
 
 // Enhanced validation schema with dimension validation
 const categorySchema = z.object({
@@ -36,27 +38,11 @@ const categorySchema = z.object({
   imageUrl: z
     .string()
     .min(1, "Image is required")
-    .url("Please provide a valid image URL")
-    .refine(
-      () => {
-        return true;
-      },
-      {
-        message: "Image must be exactly 374 × 340 pixels",
-      }
-    ),
+    .url("Please provide a valid image URL"),
   iconUrl: z
     .string()
     .min(1, "Icon is required")
-    .url("Please provide a valid icon URL")
-    .refine(
-      () => {
-        return true;
-      },
-      {
-        message: "Icon must be exactly 512 × 512 pixels",
-      }
-    ),
+    .url("Please provide a valid icon URL"),
   isActive: z.boolean(),
 });
 
@@ -150,8 +136,8 @@ export default function CategoriesPage() {
   const [pageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
-    "all" | "active" | "inactive"
-  >("all");
+    "All" | "Active" | "InActive"
+  >("All");
   const [previewImage, setPreviewImage] = useState<{
     url: string;
     isOpen: boolean;
@@ -167,6 +153,7 @@ export default function CategoriesPage() {
     isOpen: false,
     category: null,
   });
+  const [isExporting, setIsExporting] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
@@ -211,15 +198,42 @@ export default function CategoriesPage() {
       showToast("info", message, title, subtitle),
   };
 
-  // Fetch categories with server-side pagination and search only
-  const { data: paginatedData, isLoading } = useQuery({
-    queryKey: ["categories", currentPage, pageSize, debouncedSearchTerm],
+  // Helper function to extract error message
+  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
+    if (typeof error === "string") return error;
+    if (error instanceof Error) return error.message;
+    if (typeof error === "object" && error !== null) {
+      const apiError = error as any;
+      return (
+        apiError?.message || apiError?.response?.data?.message || defaultMessage
+      );
+    }
+    return defaultMessage;
+  };
+
+  // Fetch categories with server-side pagination, search and status filter
+  const {
+    data: paginatedData,
+    isLoading,
+    error: fetchError,
+    isError: isFetchError,
+  } = useQuery({
+    queryKey: [
+      "categories",
+      currentPage,
+      pageSize,
+      debouncedSearchTerm,
+      statusFilter,
+    ],
     queryFn: () =>
       categoryService.getPaginated({
         page: currentPage,
         pageSize,
         searchTerm: debouncedSearchTerm || undefined,
+        status: statusFilter === "All" ? "All" : statusFilter,
       }),
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
   });
 
   // Get data from API response
@@ -227,17 +241,19 @@ export default function CategoriesPage() {
   const totalItems = paginatedData?.total || 0;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
-  // Apply client-side status filtering only
-  const filteredCategories = useMemo(() => {
-    if (statusFilter === "all") {
-      return categories; // Return all categories from server
-    } else if (statusFilter === "active") {
-      return categories.filter((category) => category.isActive === true);
-    } else if (statusFilter === "inactive") {
-      return categories.filter((category) => category.isActive === false);
+  // Check if there are any records to display
+  const hasRecords = categories.length > 0;
+
+  // Show fetch error toast
+  useEffect(() => {
+    if (isFetchError && fetchError) {
+      const errorMessage = getErrorMessage(
+        fetchError,
+        "Failed to load categories"
+      );
+      toast.error(errorMessage);
     }
-    return categories;
-  }, [categories, statusFilter]);
+  }, [isFetchError, fetchError]);
 
   const {
     register,
@@ -264,7 +280,6 @@ export default function CategoriesPage() {
   // Watch the form values
   const imageUrlValue = watch("imageUrl");
   const iconUrlValue = watch("iconUrl");
-  const isActiveValue = watch("isActive");
 
   // Add dimension validation function
   const validateImageDimensions = async (
@@ -306,6 +321,7 @@ export default function CategoriesPage() {
     }
   }, [editingCategory, reset]);
 
+  // Create mutation with error handling
   const createMutation = useMutation({
     mutationFn: categoryService.add,
     onSuccess: () => {
@@ -317,11 +333,11 @@ export default function CategoriesPage() {
       reset();
     },
     onError: (error: any) => {
-      toast.error(
-        error?.message ||
-          t("admin.categories.createError") ||
-          "Failed to create category. Please try again."
+      const errorMessage = getErrorMessage(
+        error,
+        t("admin.categories.createError") || "Failed to create category"
       );
+      toast.error(errorMessage);
 
       // Handle backend validation errors
       if (error?.response?.data?.errors) {
@@ -336,6 +352,7 @@ export default function CategoriesPage() {
     },
   });
 
+  // Update mutation with error handling
   const updateMutation = useMutation({
     mutationFn: categoryService.update,
     onSuccess: () => {
@@ -348,11 +365,11 @@ export default function CategoriesPage() {
       reset();
     },
     onError: (error: any) => {
-      toast.error(
-        error?.message ||
-          t("admin.categories.updateError") ||
-          "Failed to update category"
+      const errorMessage = getErrorMessage(
+        error,
+        t("admin.categories.updateError") || "Failed to update category"
       );
+      toast.error(errorMessage);
 
       // Handle backend validation errors
       if (error?.response?.data?.errors) {
@@ -367,6 +384,7 @@ export default function CategoriesPage() {
     },
   });
 
+  // Delete mutation with error handling
   const deleteMutation = useMutation({
     mutationFn: categoryService.remove,
     onSuccess: () => {
@@ -376,10 +394,12 @@ export default function CategoriesPage() {
       );
       setDeleteConfirmation({ isOpen: false, category: null });
     },
-    onError: () => {
-      toast.error(
+    onError: (error: any) => {
+      const errorMessage = getErrorMessage(
+        error,
         t("admin.categories.deleteError") || "Failed to delete category"
       );
+      toast.error(errorMessage);
       setDeleteConfirmation({ isOpen: false, category: null });
     },
   });
@@ -438,13 +458,16 @@ export default function CategoriesPage() {
     setCurrentPage(1);
   };
 
-  const handleStatusFilterChange = (filter: "all" | "active" | "inactive") => {
+  const handleStatusFilterChange = (filter: "All" | "Active" | "InActive") => {
     setStatusFilter(filter);
     setCurrentPage(1); // Reset to first page when filter changes
   };
 
   const handleDeleteCategory = (category: Category) => {
-    if (!category.id) return;
+    if (!category.id) {
+      toast.error("Cannot delete category: Invalid ID");
+      return;
+    }
 
     // Show delete confirmation modal
     setDeleteConfirmation({
@@ -456,6 +479,9 @@ export default function CategoriesPage() {
   const handleConfirmDelete = () => {
     if (deleteConfirmation.category?.id) {
       deleteMutation.mutate(deleteConfirmation.category.id);
+    } else {
+      toast.error("Cannot delete category: Invalid ID");
+      setDeleteConfirmation({ isOpen: false, category: null });
     }
   };
 
@@ -467,6 +493,39 @@ export default function CategoriesPage() {
     setIsModalOpen(false);
     setEditingCategory(null);
     clearErrors();
+    reset();
+  };
+
+  const handleExportCategories = async () => {
+    try {
+      setIsExporting(true);
+
+      const exportParams: Record<string, any> = {
+        includeIsActive: true,
+      };
+
+      if (debouncedSearchTerm) {
+        exportParams.searchTerm = debouncedSearchTerm;
+      }
+
+      // Update export to handle "All" status
+      if (statusFilter !== "All") {
+        exportParams.status = statusFilter === "Active" ? "Active" : "InActive";
+      } else {
+        exportParams.status = "All";
+      }
+
+      console.log("Exporting categories with params:", exportParams);
+      await exportToExcel("Category", exportParams);
+
+      toast.success("Categories exported successfully");
+    } catch (error) {
+      console.error("Export failed:", error);
+      const errorMessage = getErrorMessage(error, "Failed to export categories");
+      toast.error(errorMessage);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const columns: ColumnDef<Category>[] = [
@@ -505,7 +564,7 @@ export default function CategoriesPage() {
               onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
               className="underline text-sm font-medium text-left"
             >
-              Image
+              {t("admin.categories.image") || "Image"}
             </button>
           </div>
         );
@@ -525,7 +584,7 @@ export default function CategoriesPage() {
               onClick={() => setPreviewImage({ url: iconUrl, isOpen: true })}
               className="underline text-sm font-medium text-left"
             >
-              Icon
+              {t("admin.categories.icon") || "Icon"}
             </button>
           </div>
         );
@@ -563,6 +622,7 @@ export default function CategoriesPage() {
             }}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("common.edit") || "Edit category"}
+            disabled={updateMutation.isPending}
           >
             <IconPencil />
           </button>
@@ -571,6 +631,7 @@ export default function CategoriesPage() {
             onClick={() => handleDeleteCategory(row.original)}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("common.delete") || "Delete category"}
+            disabled={deleteMutation.isPending}
           >
             <IconTrash />
           </button>
@@ -623,13 +684,14 @@ export default function CategoriesPage() {
               icon={IconPlus}
               iconPosition="left"
               iconSize="w-5 h-5"
+              disabled={createMutation.isPending}
             >
               {t("admin.categories.addCategory") || "Add Category"}
             </Button>
           </div>
 
-          {/* Right side: Filters, SearchBar */}
-          <div className="flex items-center gap-4">
+          {/* Right side: Filters, SearchBar and Export button */}
+          <div className="flex items-center gap-3">
             {/* Status Filter Dropdown */}
             <FilterDropdown
               value={statusFilter}
@@ -642,9 +704,58 @@ export default function CategoriesPage() {
                 onSearchChange={handleSearchChange}
               />
             </div>
+
+            <Button
+              variant="outline"
+              size="md"
+              onClick={handleExportCategories}
+              disabled={isExporting || !hasRecords}
+              icon={IconUpload}
+              iconPosition="left"
+              iconSize="w-5 h-5"
+            >
+              {isExporting
+                ? t("common.exporting") || "Exporting..."
+                : t("common.export") || "Export CSV"}
+            </Button>
           </div>
         </div>
       </div>
+
+      {/* Error State */}
+      {isFetchError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+          <div className="flex items-center gap-2 text-red-800">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
+            </svg>
+            <span className="font-medium">Failed to load categories</span>
+          </div>
+          <p className="text-red-700 text-sm mt-1">
+            {getErrorMessage(fetchError, "Please try again later")}
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              queryClient.refetchQueries({ queryKey: ["categories"] })
+            }
+            className="mt-2"
+          >
+            Retry
+          </Button>
+        </div>
+      )}
 
       {/* Loading State */}
       {isLoading ? (
@@ -658,18 +769,56 @@ export default function CategoriesPage() {
           </p>
         </div>
       ) : (
-        /* Data Table - Use filteredCategories for display */
+        /* Data Table or No Records Message */
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <DataTable data={filteredCategories} columns={columns} />
-          <div className="px-4 pb-4">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              pageSize={pageSize}
-              onPageChange={handlePageChange}
-            />
-          </div>
+          {hasRecords ? (
+            <>
+              <DataTable data={categories} columns={columns} />
+              {/* Only show pagination if there are records and more than one page */}
+              {hasRecords && totalPages > 1 && (
+                <div className="px-4 pb-4">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    pageSize={pageSize}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
+            </>
+          ) : (
+            /* No Records Found Message */
+            <div className="p-8 text-center">
+              <div className="flex flex-col items-center justify-center">
+                <IconNoRecords className="w-16 h-16 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  {t("common.noRecordsFound") || "No records found"}
+                </h3>
+                <p className="text-gray-500 text-sm mb-4">
+                  {searchTerm || statusFilter !== "All"
+                    ? "Try adjusting your search or filter criteria"
+                    : "No categories have been created yet"}
+                </p>
+                {!searchTerm && statusFilter === "All" && (
+                  <Button
+                    variant="primary"
+                    size="md"
+                    onClick={() => {
+                      setEditingCategory(null);
+                      setIsModalOpen(true);
+                    }}
+                    icon={IconPlus}
+                    iconPosition="left"
+                    iconSize="w-5 h-5"
+                  >
+                    {t("admin.categories.addCategory") ||
+                      "Add Your First Category"}
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -697,6 +846,7 @@ export default function CategoriesPage() {
             required
             maxLength={100}
             placeholder="Enter category name"
+            disabled={createMutation.isPending || updateMutation.isPending}
           />
 
           {/* Description TextArea */}
@@ -707,55 +857,82 @@ export default function CategoriesPage() {
             maxLength={500}
             placeholder="Enter category description"
             rows={4}
+            disabled={createMutation.isPending || updateMutation.isPending}
           />
 
-          {/* Image Upload for Category Image with 1440x710 validation */}
-          {/* Image Upload for Category Image with 1440x710 validation */}
-          <ImageUpload
-            label={
-              <>
-                {t("admin.categories.imageUrl") || "Image Upload"}
-                <span className="text-red-500 ml-1">*</span>
-              </>
-            }
-            value={imageUrlValue}
-            onChange={(url) => {
-              setValue("imageUrl", url, { shouldValidate: true });
-              trigger("imageUrl");
-            }}
-            onPreview={(url) => setPreviewImage({ url, isOpen: true })}
-            folder="categories/images"
-            error={errors.imageUrl?.message}
-            exactDimensions={{ width: 374, height: 340 }}
-            showDimensionValidation={true}
-          />
+          {/* Image Upload for Category Image with 374x340 validation */}
+          <div className={
+            createMutation.isPending || updateMutation.isPending
+              ? "opacity-50 pointer-events-none"
+              : ""
+          }>
+            <ImageUpload
+              label={
+                <>
+                  {t("admin.categories.imageUrl") || "Image Upload"}
+                  <span className="text-red-500 ml-1">*</span>
+                </>
+              }
+              value={imageUrlValue}
+              onChange={(url) => {
+                setValue("imageUrl", url, { shouldValidate: true });
+                trigger("imageUrl");
+              }}
+              onPreview={(url) => setPreviewImage({ url, isOpen: true })}
+              folder="categories/images"
+              error={errors.imageUrl?.message}
+              exactDimensions={{ width: 374, height: 340 }}
+              showDimensionValidation={true}
+            />
+          </div>
 
           {/* Image Upload for Category Icon with 512x512 validation */}
-          <ImageUpload
-            label={
-              <>
-                {t("admin.categories.iconUrl") || "Icon Upload"}
-                <span className="text-red-500 ml-1">*</span>
-              </>
-            }
-            value={iconUrlValue}
-            onChange={(url) => {
-              setValue("iconUrl", url, { shouldValidate: true });
-              trigger("iconUrl");
-            }}
-            onPreview={(url) => setPreviewImage({ url, isOpen: true })}
-            folder="categories/icons"
-            error={errors.iconUrl?.message}
-            exactDimensions={{ width: 512, height: 512 }}
-            showDimensionValidation={true}
-          />
+          <div className={
+            createMutation.isPending || updateMutation.isPending
+              ? "opacity-50 pointer-events-none"
+              : ""
+          }>
+            <ImageUpload
+              label={
+                <>
+                  {t("admin.categories.iconUrl") || "Icon Upload"}
+                  <span className="text-red-500 ml-1">*</span>
+                </>
+              }
+              value={iconUrlValue}
+              onChange={(url) => {
+                setValue("iconUrl", url, { shouldValidate: true });
+                trigger("iconUrl");
+              }}
+              onPreview={(url) => setPreviewImage({ url, isOpen: true })}
+              folder="categories/icons"
+              error={errors.iconUrl?.message}
+              exactDimensions={{ width: 512, height: 512 }}
+              showDimensionValidation={true}
+            />
+          </div>
 
-          {/* Toggle Switch for Active Status */}
-          <ToggleSwitch
-            label={t("common.active") || "Active"}
-            checked={isActiveValue}
-            onChange={(checked) => setValue("isActive", checked)}
-          />
+          {/* Status Dropdown */}
+          {/* <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Status *
+            </label>
+            <select
+              {...register("isActive", {
+                setValueAs: (value) => value === "true",
+              })}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200"
+              disabled={createMutation.isPending || updateMutation.isPending}
+            >
+              <option value="true">Active</option>
+              <option value="false">InActive</option>
+            </select>
+            {errors.isActive && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.isActive.message}
+              </p>
+            )}
+          </div> */}
 
           {/* Form validation summary */}
           {Object.keys(errors).length > 0 && (
@@ -781,6 +958,7 @@ export default function CategoriesPage() {
                 {errors.description && <li>{errors.description.message}</li>}
                 {errors.imageUrl && <li>{errors.imageUrl.message}</li>}
                 {errors.iconUrl && <li>{errors.iconUrl.message}</li>}
+                {errors.isActive && <li>{errors.isActive.message}</li>}
               </ul>
             </div>
           )}
@@ -791,6 +969,7 @@ export default function CategoriesPage() {
               variant="outline"
               onClick={handleModalClose}
               className="flex-1"
+              disabled={createMutation.isPending || updateMutation.isPending}
             >
               {t("common.cancel") || "Cancel"}
             </Button>
@@ -802,7 +981,9 @@ export default function CategoriesPage() {
               }
               className="flex-1"
             >
-              {editingCategory
+              {createMutation.isPending || updateMutation.isPending
+                ? "Submitting..."
+                : editingCategory
                 ? t("common.update") || "Update"
                 : t("common.create") || "Create"}
             </Button>

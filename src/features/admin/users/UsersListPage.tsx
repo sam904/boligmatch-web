@@ -1,5 +1,5 @@
 // src/features/admin/users/UsersListPage.tsx
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userService } from "../../../services/user.service";
 import DataTable from "../../../components/common/DataTable/DataTable";
@@ -11,6 +11,7 @@ import Input from "../../../components/common/Input";
 import AdminToast from "../../../components/common/AdminToast";
 import type { AdminToastType } from "../../../components/common/AdminToast";
 import { useForm } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form"; // Type-only import
 import DeleteConfirmation from "../../../components/common/DeleteConfirmation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -22,6 +23,7 @@ import {
   IconPlus,
   IconUpload,
   IconKey,
+  IconNoRecords,
 } from "../../../components/common/Icons/Index";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { User } from "../../../types/user";
@@ -29,6 +31,7 @@ import { exportToExcel } from "../../../utils/export.utils";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
 import ToggleSwitch from "../../../components/common/ToggleSwitch";
 
+// Fixed schema with proper required status
 const userSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
@@ -38,13 +41,8 @@ const userSchema = z.object({
     .min(1, "Mobile number is required")
     .refine(
       (value) => {
-        // Handle empty string case
         if (!value) return false;
-
-        // Check if it's exactly "0" or a 10-digit number
         if (value === "0") return true;
-
-        // Check if it's exactly 10 digits
         return /^\d{10}$/.test(value);
       },
       {
@@ -52,6 +50,7 @@ const userSchema = z.object({
       }
     ),
   isActive: z.boolean(),
+  status: z.enum(["All", "Active", "InActive"]),
 });
 
 // Password reset schema
@@ -88,8 +87,8 @@ export default function UsersListPage() {
   const [pageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
-    "all" | "active" | "inactive"
-  >("all");
+    "All" | "Active" | "InActive"
+  >("All");
   const [isExporting, setIsExporting] = useState(false);
   const [toasts, setToasts] = useState<ToastState[]>([]);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -102,7 +101,7 @@ export default function UsersListPage() {
     user: null,
   });
 
-  // Toast management functions - same as CategoriesPage
+  // Toast management functions
   const showToast = (
     type: AdminToastType,
     message: string,
@@ -128,7 +127,6 @@ export default function UsersListPage() {
       prev.map((toast) => (toast.id === id ? { ...toast, open: false } : toast))
     );
 
-    // Remove toast from state after animation
     setTimeout(() => {
       setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, 300);
@@ -143,24 +141,60 @@ export default function UsersListPage() {
       showToast("info", message, title, subtitle),
   };
 
-  // Fetch users with server-side pagination and search only
-  const { data: paginatedData, isLoading } = useQuery({
-    queryKey: ["users", currentPage, pageSize, debouncedSearchTerm],
+  // Helper function to extract error message
+  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
+    if (typeof error === "string") return error;
+    if (error instanceof Error) return error.message;
+    if (typeof error === "object" && error !== null) {
+      const apiError = error as any;
+      return (
+        apiError?.message || apiError?.response?.data?.message || defaultMessage
+      );
+    }
+    return defaultMessage;
+  };
+
+  // Fetch users with error handling
+  const {
+    data: paginatedData,
+    isLoading,
+    error: fetchError,
+    isError: isFetchError,
+  } = useQuery({
+    queryKey: [
+      "users",
+      currentPage,
+      pageSize,
+      debouncedSearchTerm,
+      statusFilter,
+    ],
     queryFn: () =>
       userService.getPaginated({
         page: currentPage,
         pageSize,
         searchTerm: debouncedSearchTerm || undefined,
+        status: statusFilter === "All" ? "All" : statusFilter,
       }),
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
   });
 
+  // Show fetch error toast
+  useEffect(() => {
+    if (isFetchError && fetchError) {
+      const errorMessage = getErrorMessage(fetchError, "Failed to load users");
+      toast.error(errorMessage);
+    }
+  }, [isFetchError, fetchError]);
+
+  // Fixed useForm with proper typing
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors, isValid },
     reset,
-    watch: watchUser, // Renamed to avoid conflict
+    watch,
     setError,
     clearErrors,
   } = useForm<UserFormData>({
@@ -172,17 +206,18 @@ export default function UsersListPage() {
       email: "",
       mobileNo: "",
       isActive: true,
+      status: "Active",
     },
   });
 
-  const isActiveValue = watchUser("isActive"); // Use the renamed watch
+  const isActiveValue = watch("isActive");
 
   const {
     register: registerPassword,
     handleSubmit: handleSubmitPassword,
     formState: { errors: passwordErrors, isValid: isPasswordValid },
     reset: resetPassword,
-    watch: watchPasswordForm, // Renamed to avoid conflict
+    watch: watchPasswordForm,
   } = useForm<PasswordResetData>({
     resolver: zodResolver(passwordResetSchema),
     mode: "onChange",
@@ -192,7 +227,7 @@ export default function UsersListPage() {
     },
   });
 
-  const watchPassword = watchPasswordForm("newPassword"); // Use the renamed watch
+  const watchPassword = watchPasswordForm("newPassword");
 
   useEffect(() => {
     if (editingUser) {
@@ -202,6 +237,7 @@ export default function UsersListPage() {
         email: editingUser.email || "",
         mobileNo: editingUser.mobileNo || "",
         isActive: editingUser.isActive,
+        status: editingUser.status || "Active",
       });
     } else {
       reset({
@@ -210,25 +246,28 @@ export default function UsersListPage() {
         email: "",
         mobileNo: "",
         isActive: true,
+        status: "Active",
       });
     }
   }, [editingUser, reset]);
 
-  // In the resetPasswordMutation in UsersListPage.tsx
+  // Password reset mutation with error handling
   const resetPasswordMutation = useMutation({
     mutationFn: async (data: { user: User; newPassword: string }) => {
-      // Use the direct reset password endpoint
-      const response = await userService.resetUserPassword({
-        email: data.user.email,
-        newPassword: data.newPassword,
-      });
+      try {
+        const response = await userService.resetUserPassword({
+          email: data.user.email,
+          newPassword: data.newPassword,
+        });
 
-      // The API returns a boolean (true for success)
-      // If response is true, it's successful
-      if (response === true) {
-        return response;
-      } else {
-        throw new Error("Password reset failed");
+        if (response === true) {
+          return response;
+        } else {
+          throw new Error("Password reset failed - server returned false");
+        }
+      } catch (error) {
+        const errorMessage = getErrorMessage(error, "Password reset failed");
+        throw new Error(errorMessage);
       }
     },
     onSuccess: (response, variables) => {
@@ -238,23 +277,24 @@ export default function UsersListPage() {
       resetPassword();
       setResettingUser(null);
     },
-    onError: (error: any, variables) => {
+    onError: (error: Error, variables) => {
       console.error("Reset password error:", error);
-      // Check if it's a network error or API error
-      if (error?.response?.data !== undefined) {
-        // If the API returned a non-true value
-        toast.error(`Password reset failed for ${variables.user.email}`);
-      } else {
-        // Network or other error
-        toast.error(
-          `Failed to reset password for ${variables.user.email}: ${error.message}`
-        );
-      }
+      toast.error(
+        `Failed to reset password for ${variables.user.email}: ${error.message}`
+      );
     },
   });
 
+  // Create user mutation with error handling
   const createMutation = useMutation({
-    mutationFn: userService.add,
+    mutationFn: async (data: UserFormData) => {
+      try {
+        return await userService.add(data);
+      } catch (error) {
+        const errorMessage = getErrorMessage(error, "Failed to create user");
+        throw new Error(errorMessage);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"], exact: false });
       toast.success(
@@ -264,28 +304,41 @@ export default function UsersListPage() {
       reset();
       setEditingUser(null);
     },
-    onError: (error: any) => {
-      toast.error(
-        error?.message ||
-          t("admin.users.createError") ||
-          "Failed to create user"
-      );
+    onError: (error: Error) => {
+      const errorMessage = getErrorMessage(error, "Failed to create user");
+      toast.error(errorMessage);
 
       // Handle backend validation errors
-      if (error?.response?.data?.errors) {
-        const backendErrors = error.response.data.errors;
-        Object.keys(backendErrors).forEach((key) => {
-          setError(key as keyof UserFormData, {
-            type: "server",
-            message: backendErrors[key][0],
+      if (
+        error.message.includes("validation") ||
+        error.message.includes("error")
+      ) {
+        const apiError = error as any;
+        if (apiError?.response?.data?.errors) {
+          const backendErrors = apiError.response.data.errors;
+          Object.keys(backendErrors).forEach((key) => {
+            setError(key as keyof UserFormData, {
+              type: "server",
+              message: Array.isArray(backendErrors[key])
+                ? backendErrors[key][0]
+                : backendErrors[key],
+            });
           });
-        });
+        }
       }
     },
   });
 
+  // Update user mutation with error handling
   const updateMutation = useMutation({
-    mutationFn: userService.update,
+    mutationFn: async (data: UserFormData & { id: number }) => {
+      try {
+        return await userService.update(data);
+      } catch (error) {
+        const errorMessage = getErrorMessage(error, "Failed to update user");
+        throw new Error(errorMessage);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"], exact: false });
       toast.success(
@@ -295,42 +348,57 @@ export default function UsersListPage() {
       setEditingUser(null);
       reset();
     },
-    onError: (error: any) => {
-      toast.error(
-        error?.message ||
-          t("admin.users.updateError") ||
-          "Failed to update user"
-      );
+    onError: (error: Error) => {
+      const errorMessage = getErrorMessage(error, "Failed to update user");
+      toast.error(errorMessage);
 
       // Handle backend validation errors
-      if (error?.response?.data?.errors) {
-        const backendErrors = error.response.data.errors;
-        Object.keys(backendErrors).forEach((key) => {
-          setError(key as keyof UserFormData, {
-            type: "server",
-            message: backendErrors[key][0],
+      if (
+        error.message.includes("validation") ||
+        error.message.includes("error")
+      ) {
+        const apiError = error as any;
+        if (apiError?.response?.data?.errors) {
+          const backendErrors = apiError.response.data.errors;
+          Object.keys(backendErrors).forEach((key) => {
+            setError(key as keyof UserFormData, {
+              type: "server",
+              message: Array.isArray(backendErrors[key])
+                ? backendErrors[key][0]
+                : backendErrors[key],
+            });
           });
-        });
+        }
       }
     },
   });
 
+  // Delete user mutation with error handling
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => userService.remove(id),
+    mutationFn: async (id: number) => {
+      try {
+        return await userService.remove(id);
+      } catch (error) {
+        const errorMessage = getErrorMessage(error, "Failed to delete user");
+        throw new Error(errorMessage);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"], exact: false });
       toast.success(
         t("admin.users.deleteSuccess") || "User deleted successfully"
       );
-      setDeleteConfirmation({ isOpen: false, user: null }); // Close modal on success
+      setDeleteConfirmation({ isOpen: false, user: null });
     },
-    onError: () => {
-      toast.error(t("admin.users.deleteError") || "Failed to delete user");
-      setDeleteConfirmation({ isOpen: false, user: null }); // Close modal on error
+    onError: (error: Error) => {
+      const errorMessage = getErrorMessage(error, "Failed to delete user");
+      toast.error(errorMessage);
+      setDeleteConfirmation({ isOpen: false, user: null });
     },
   });
 
-  const onSubmit = async (data: UserFormData) => {
+  // Fixed onSubmit with proper typing
+  const onSubmit: SubmitHandler<UserFormData> = async (data) => {
     try {
       if (editingUser) {
         await updateMutation.mutateAsync({ ...data, id: editingUser.id });
@@ -338,13 +406,16 @@ export default function UsersListPage() {
         await createMutation.mutateAsync(data);
       }
     } catch (error) {
-      // Error handling is already done in the mutation onError
+      // Error handling is done in the mutation onError
       console.error("Form submission error:", error);
     }
   };
 
   const onSubmitPasswordReset = async (data: PasswordResetData) => {
-    if (!resettingUser) return;
+    if (!resettingUser) {
+      toast.error("No user selected for password reset");
+      return;
+    }
 
     resetPasswordMutation.mutate({
       user: resettingUser,
@@ -361,15 +432,17 @@ export default function UsersListPage() {
     setCurrentPage(1);
   };
 
-  const handleStatusFilterChange = (filter: "all" | "active" | "inactive") => {
+  const handleStatusFilterChange = (filter: "All" | "Active" | "InActive") => {
     setStatusFilter(filter);
-    setCurrentPage(1); // Reset to first page when filter changes
+    setCurrentPage(1);
   };
 
   const handleDeleteUser = (user: User) => {
-    if (!user.id) return;
+    if (!user.id) {
+      toast.error("Cannot delete user: Invalid user ID");
+      return;
+    }
 
-    // Show delete confirmation modal
     setDeleteConfirmation({
       isOpen: true,
       user: user,
@@ -379,6 +452,9 @@ export default function UsersListPage() {
   const handleConfirmDelete = () => {
     if (deleteConfirmation.user?.id) {
       deleteMutation.mutate(deleteConfirmation.user.id);
+    } else {
+      toast.error("Cannot delete user: Invalid user ID");
+      setDeleteConfirmation({ isOpen: false, user: null });
     }
   };
 
@@ -387,6 +463,10 @@ export default function UsersListPage() {
   };
 
   const handleResetPassword = (user: User) => {
+    if (!user.email) {
+      toast.error("Cannot reset password: User email is missing");
+      return;
+    }
     setResettingUser(user);
     setIsPasswordModalOpen(true);
   };
@@ -408,57 +488,47 @@ export default function UsersListPage() {
     try {
       setIsExporting(true);
 
-      // Prepare export parameters according to API spec
       const exportParams: Record<string, any> = {
         includeIsActive: true,
       };
 
-      // Add search term if present
       if (debouncedSearchTerm) {
         exportParams.searchTerm = debouncedSearchTerm;
       }
 
-      // Add status filter if not 'all'
-      if (statusFilter !== "all") {
-        exportParams.isActive = statusFilter === "active";
+      // Update export to handle "All" status
+      if (statusFilter !== "All") {
+        exportParams.status = statusFilter === "Active" ? "Active" : "InActive";
+      } else {
+        exportParams.status = "All";
       }
 
       console.log("Exporting users with params:", exportParams);
-
-      // Use the export utility
       await exportToExcel("User", exportParams);
 
       toast.success("Users exported successfully");
     } catch (error) {
       console.error("Export failed:", error);
-      toast.error("Failed to export users");
+      const errorMessage = getErrorMessage(error, "Failed to export users");
+      toast.error(errorMessage);
     } finally {
       setIsExporting(false);
     }
   };
 
-  // Get data from API response - FIX: Use proper response structure
+  // Safe data extraction with fallbacks
   const users = paginatedData?.output?.result || [];
   const totalItems = paginatedData?.output?.rowCount || 0;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
-  // Apply client-side status filtering only
-  const filteredUsers = useMemo(() => {
-    if (statusFilter === "all") {
-      return users; // Return all users from server
-    } else if (statusFilter === "active") {
-      return users.filter((user) => user.isActive === true);
-    } else if (statusFilter === "inactive") {
-      return users.filter((user) => user.isActive === false);
-    }
-    return users;
-  }, [users, statusFilter]);
+  // Check if there are any records to display
+  const hasRecords = users.length > 0;
 
   const columns: ColumnDef<User>[] = [
     {
       accessorKey: "id",
       header: t("admin.users.id") || "ID",
-      cell: ({ row }) => row.original.id || "-",
+      cell: ({ row }) => row.original.id?.toString() || "-",
     },
     {
       accessorKey: "fullName",
@@ -484,21 +554,20 @@ export default function UsersListPage() {
       cell: ({ row }) => row.original.roleName || "User",
     },
     {
-      accessorKey: "isActive",
+      accessorKey: "status",
       header: t("common.status") || "Status",
       enableSorting: false,
       cell: ({ row }) => (
         <span
           className="px-2 py-1 rounded-full text-xs text-white font-medium"
           style={{
-            backgroundColor: row.original.isActive
-              ? "var(--color-secondary)"
-              : "var(--color-neutral)",
+            backgroundColor:
+              row.original.status === "Active"
+                ? "var(--color-secondary)"
+                : "var(--color-neutral)",
           }}
         >
-          {row.original.isActive
-            ? t("common.active") || "Active"
-            : t("common.inactive") || "Inactive"}
+          {row.original.status || "Inactive"}
         </span>
       ),
     },
@@ -515,6 +584,7 @@ export default function UsersListPage() {
             }}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("common.edit") || "Edit user"}
+            disabled={updateMutation.isPending}
           >
             <IconPencil />
           </button>
@@ -522,7 +592,7 @@ export default function UsersListPage() {
             type="button"
             onClick={() => handleResetPassword(row.original)}
             disabled={resetPasswordMutation.isPending}
-            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50"
             title={t("admin.users.resetPassword") || "Reset Password"}
           >
             <IconKey />
@@ -532,6 +602,7 @@ export default function UsersListPage() {
             onClick={() => handleDeleteUser(row.original)}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title={t("common.delete") || "Delete user"}
+            disabled={deleteMutation.isPending}
           >
             <IconTrash />
           </button>
@@ -542,7 +613,7 @@ export default function UsersListPage() {
 
   return (
     <div className="p-3">
-      {/* Render Toast Banners - same as CategoriesPage */}
+      {/* Render Toast Banners */}
       {toasts.map((toastItem) => (
         <AdminToast
           key={toastItem.id}
@@ -552,6 +623,7 @@ export default function UsersListPage() {
           autoDismissMs={5000}
         />
       ))}
+
       <DeleteConfirmation
         open={deleteConfirmation.isOpen}
         onClose={handleCancelDelete}
@@ -567,6 +639,7 @@ export default function UsersListPage() {
         }
         isLoading={deleteMutation.isPending}
       />
+
       {/* Header Section */}
       <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
@@ -581,6 +654,7 @@ export default function UsersListPage() {
               icon={IconPlus}
               iconPosition="left"
               iconSize="w-5 h-5"
+              disabled={createMutation.isPending}
             >
               {t("admin.users.addUser") || "Add User"}
             </Button>
@@ -588,13 +662,11 @@ export default function UsersListPage() {
 
           {/* Right side: Filters, SearchBar and Export button */}
           <div className="flex items-center gap-3">
-            {/* Status Filter Dropdown - Now shows only icon by default */}
             <FilterDropdown
               value={statusFilter}
               onChange={handleStatusFilterChange}
             />
 
-            {/* Search Bar */}
             <div className="w-64">
               <SearchBar
                 searchTerm={searchTerm}
@@ -602,12 +674,11 @@ export default function UsersListPage() {
               />
             </div>
 
-            {/* Export Button */}
             <Button
               variant="outline"
               size="md"
               onClick={handleExportUsers}
-              disabled={isExporting}
+              disabled={isExporting || !hasRecords}
               icon={IconUpload}
               iconPosition="left"
               iconSize="w-5 h-5"
@@ -619,6 +690,40 @@ export default function UsersListPage() {
           </div>
         </div>
       </div>
+
+      {/* Error State */}
+      {isFetchError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+          <div className="flex items-center gap-2 text-red-800">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
+            </svg>
+            <span className="font-medium">Failed to load users</span>
+          </div>
+          <p className="text-red-700 text-sm mt-1">
+            {getErrorMessage(fetchError, "Please try again later")}
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => queryClient.refetchQueries({ queryKey: ["users"] })}
+            className="mt-2"
+          >
+            Retry
+          </Button>
+        </div>
+      )}
+
       {/* Loading State */}
       {isLoading ? (
         <div className="bg-white rounded-lg shadow p-8 text-center">
@@ -631,20 +736,58 @@ export default function UsersListPage() {
           </p>
         </div>
       ) : (
-        /* Data Table - Use filteredUsers for display */
+        /* Data Table or No Records Message */
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <DataTable data={filteredUsers} columns={columns} />
-          <div className="px-4 pb-4">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              pageSize={pageSize}
-              onPageChange={handlePageChange}
-            />
-          </div>
+          {hasRecords ? (
+            <>
+              <DataTable data={users} columns={columns} />
+              {/* Only show pagination if there are records and more than one page */}
+              {hasRecords && totalPages > 1 && (
+                <div className="px-4 pb-4">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    pageSize={pageSize}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
+            </>
+          ) : (
+            /* No Records Found Message */
+            <div className="p-8 text-center">
+              <div className="flex flex-col items-center justify-center">
+                <IconNoRecords className="w-16 h-16 text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  {t("common.noRecordsFound") || "No records found"}
+                </h3>
+                <p className="text-gray-500 text-sm mb-4">
+                  {searchTerm || statusFilter !== "All"
+                    ? "Try adjusting your search or filter criteria"
+                    : "No users have been created yet"}
+                </p>
+                {!searchTerm && statusFilter === "All" && (
+                  <Button
+                    variant="primary"
+                    size="md"
+                    onClick={() => {
+                      setEditingUser(null);
+                      setIsModalOpen(true);
+                    }}
+                    icon={IconPlus}
+                    iconPosition="left"
+                    iconSize="w-5 h-5"
+                  >
+                    {t("admin.users.addUser") || "Add Your First User"}
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
+
       {/* User Form Modal */}
       <Modal
         open={isModalOpen}
@@ -663,6 +806,7 @@ export default function UsersListPage() {
             {...register("firstName")}
             required
             placeholder="Enter first name"
+            disabled={createMutation.isPending || updateMutation.isPending}
           />
           <Input
             label={t("admin.users.lastName") || "Last Name"}
@@ -670,6 +814,7 @@ export default function UsersListPage() {
             {...register("lastName")}
             required
             placeholder="Enter last name"
+            disabled={createMutation.isPending || updateMutation.isPending}
           />
           <Input
             label={t("admin.users.email") || "Email"}
@@ -678,6 +823,11 @@ export default function UsersListPage() {
             {...register("email")}
             required
             placeholder="Enter email address"
+            disabled={
+              createMutation.isPending ||
+              updateMutation.isPending ||
+              !!editingUser
+            }
           />
           <Input
             label={t("admin.users.mobileNo") || "Mobile Number"}
@@ -685,7 +835,28 @@ export default function UsersListPage() {
             {...register("mobileNo")}
             required
             placeholder="Enter mobile number"
+            disabled={createMutation.isPending || updateMutation.isPending}
           />
+
+          {/* Status Dropdown */}
+          {/* <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Status *
+            </label>
+            <select
+              {...register("status")}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200"
+              disabled={createMutation.isPending || updateMutation.isPending}
+            >
+              <option value="Active">Active</option>
+              <option value="InActive">InActive</option>
+            </select>
+            {errors.status && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.status.message}
+              </p>
+            )}
+          </div> */}
 
           {/* Toggle Switch for Active Status */}
           <ToggleSwitch
@@ -718,6 +889,7 @@ export default function UsersListPage() {
                 {errors.lastName && <li>{errors.lastName.message}</li>}
                 {errors.email && <li>{errors.email.message}</li>}
                 {errors.mobileNo && <li>{errors.mobileNo.message}</li>}
+                {errors.status && <li>{errors.status.message}</li>}
               </ul>
             </div>
           )}
@@ -728,6 +900,7 @@ export default function UsersListPage() {
               variant="outline"
               onClick={handleModalClose}
               className="flex-1"
+              disabled={createMutation.isPending || updateMutation.isPending}
             >
               {t("common.cancel") || "Cancel"}
             </Button>
@@ -748,6 +921,7 @@ export default function UsersListPage() {
           </div>
         </form>
       </Modal>
+
       {/* Password Reset Modal */}
       <Modal
         open={isPasswordModalOpen}
@@ -775,6 +949,7 @@ export default function UsersListPage() {
               {...registerPassword("newPassword")}
               required
               placeholder="Enter new password"
+              disabled={resetPasswordMutation.isPending}
             />
 
             <Input
@@ -784,6 +959,7 @@ export default function UsersListPage() {
               {...registerPassword("confirmPassword")}
               required
               placeholder="Confirm new password"
+              disabled={resetPasswordMutation.isPending}
             />
 
             {watchPassword && (
