@@ -1,3 +1,4 @@
+// src/pages/admin/PartnersPage/PartnersPage.tsx
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { partnerService } from "../../../services/partner.service";
@@ -166,25 +167,33 @@ const passwordResetSchema = z
 
 type PasswordResetData = z.infer<typeof passwordResetSchema>;
 
-// UPDATED PARTNER SCHEMA WITH STATUS FIELD
+// UPDATED PARTNER SCHEMA WITH EMAIL AND MOBILE VALIDATION
 const partnerSchema = z.object({
   userId: z.number().optional(),
   categoryId: z.number().min(1, "Category is required"),
   address: z.string().min(1, "Address is required"),
   businessName: z.string().min(1, "Business Name is required"),
-  email: z.string().email("Invalid email address").optional().or(z.literal("")),
-  mobileNo: z
-    .string()
+  email: z.string()
+    .email("Invalid email address")
+    .optional()
+    .or(z.literal(""))
+    .refine((email) => {
+      if (!email) return true; // Optional field
+      return true; // Custom validation handled separately
+    }),
+  mobileNo: z.string()
     .min(10, "Mobile number must be at least 10 digits")
     .max(15, "Mobile number cannot exceed 15 digits")
-    .regex(
-      /^[0-9+-\s()]+$/,
-      "Mobile number can only contain numbers, +, -, (, ) and spaces"
-    )
+    .regex(/^[0-9+-\s()]+$/, "Mobile number can only contain numbers, +, -, (, ) and spaces")
     .optional()
-    .or(z.literal("")),
+    .or(z.literal(""))
+    .refine((mobileNo) => {
+      if (!mobileNo) return true; // Optional field
+      return true; // Custom validation handled separately
+    }),
   videoUrl: z.string().optional(),
   logoUrl: z.string().optional(),
+  trustPilotUrl: z.string().url("Invalid TrustPilot URL").optional().or(z.literal("")),
   cvr: z.number().min(0, "CVR is required"),
   descriptionShort: z.string().optional(),
   textField1: z.string().optional(),
@@ -199,13 +208,9 @@ const partnerSchema = z.object({
   imageUrl5: z.string().optional(),
   thumbnail: z.string().optional(),
   isActive: z.boolean(),
-  status: z.enum(["All", "Active", "InActive"]), // ADDED STATUS FIELD
-  parSubCatlst: z
-    .array(partnerSubCategorySchema)
-    .min(1, "At least one sub category is required"),
-  parDoclst: z
-    .array(partnerDocumentSchema)
-    .min(1, "At least one document is required"),
+  status: z.enum(["All", "Active", "InActive"]),
+  parSubCatlst: z.array(partnerSubCategorySchema).min(1, "At least one sub category is required"),
+  parDoclst: z.array(partnerDocumentSchema).min(1, "At least one document is required"),
 });
 
 type PartnerFormData = {
@@ -218,6 +223,7 @@ type PartnerFormData = {
   businessUnit: number;
   videoUrl?: string;
   logoUrl?: string;
+  trustPilotUrl?: string;
   cvr: number;
   descriptionShort?: string;
   textField1?: string;
@@ -232,7 +238,7 @@ type PartnerFormData = {
   imageUrl5?: string;
   thumbnail?: string;
   isActive: boolean;
-  status: "All" | "Active" | "InActive"; // ADDED STATUS FIELD
+  status: "All" | "Active" | "InActive";
   parSubCatlst: PartnerSubCategory[];
   parDoclst: PartnerDocument[];
 };
@@ -246,54 +252,48 @@ type ValidFieldNames =
 export default function PartnersPage() {
   const { t } = useTranslation();
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
-  const [resettingPartner, setResettingPartner] = useState<Partner | null>(
-    null
-  );
+  const [resettingPartner, setResettingPartner] = useState<Partner | null>(null);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<
-    "All" | "Active" | "InActive"
-  >("All"); // UPDATED STATUS FILTER
+  const [statusFilter, setStatusFilter] = useState<"All" | "Active" | "InActive">("All");
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [savingDocuments, setSavingDocuments] = useState<number[]>([]);
-  const [previewImage, setPreviewImage] = useState<{
-    url: string;
-    isOpen: boolean;
-  }>({
-    url: "",
-    isOpen: false,
-  });
-  const [previewVideo, setPreviewVideo] = useState<{
-    url: string;
-    isOpen: boolean;
-  }>({
-    url: "",
-    isOpen: false,
-  });
-  const [previewDocument, setPreviewDocument] = useState<{
-    url: string;
-    name: string;
-    isOpen: boolean;
-  }>({
-    url: "",
-    name: "",
-    isOpen: false,
-  });
+  const [previewImage, setPreviewImage] = useState<{ url: string; isOpen: boolean }>({ url: "", isOpen: false });
+  const [previewVideo, setPreviewVideo] = useState<{ url: string; isOpen: boolean }>({ url: "", isOpen: false });
+  const [previewDocument, setPreviewDocument] = useState<{ url: string; name: string; isOpen: boolean }>({ url: "", name: "", isOpen: false });
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [toasts, setToasts] = useState<ToastState[]>([]);
-  const [deleteConfirmation, setDeleteConfirmation] = useState<{
-    isOpen: boolean;
-    partner: Partner | null;
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{ isOpen: boolean; partner: Partner | null }>({ isOpen: false, partner: null });
+
+  // Email and Mobile Validation States
+  const [emailValidation, setEmailValidation] = useState<{
+    checking: boolean;
+    available: boolean | null;
+    message: string;
   }>({
-    isOpen: false,
-    partner: null,
+    checking: false,
+    available: null,
+    message: "",
   });
+
+  const [mobileValidation, setMobileValidation] = useState<{
+    checking: boolean;
+    available: boolean | null;
+    message: string;
+  }>({
+    checking: false,
+    available: null,
+    message: "",
+  });
+
+  const [emailDebounceTimer, setEmailDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+const [mobileDebounceTimer, setMobileDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
@@ -351,6 +351,158 @@ export default function PartnersPage() {
     return defaultMessage;
   };
 
+  // Email validation function
+  const validateEmailAvailability = async (email: string) => {
+    if (!email) {
+      setEmailValidation({
+        checking: false,
+        available: null,
+        message: "",
+      });
+      return;
+    }
+
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailValidation({
+        checking: false,
+        available: false,
+        message: "Please enter a valid email address",
+      });
+      return;
+    }
+
+    setEmailValidation({
+      checking: true,
+      available: null,
+      message: "Checking email availability...",
+    });
+
+    try {
+      const response = await userService.checkEmailOrMobileAvailability(email);
+      
+      if (response.isSuccess) {
+        setEmailValidation({
+          checking: false,
+          available: true,
+          message: "Email is available",
+        });
+      } else {
+        setEmailValidation({
+          checking: false,
+          available: false,
+          message: response.failureReason || "Email already registered",
+        });
+      }
+    } catch (error) {
+      console.error("Email validation error:", error);
+      setEmailValidation({
+        checking: false,
+        available: null,
+        message: "Error checking email availability",
+      });
+    }
+  };
+
+  // Mobile validation function
+  const validateMobileAvailability = async (mobileNo: string) => {
+    if (!mobileNo) {
+      setMobileValidation({
+        checking: false,
+        available: null,
+        message: "",
+      });
+      return;
+    }
+
+    // Clean mobile number (remove spaces, dashes, etc.)
+    const cleanMobile = mobileNo.replace(/[\s\-\(\)]+/g, '');
+    
+    // Basic mobile validation - at least 10 digits
+    if (cleanMobile.length < 10) {
+      setMobileValidation({
+        checking: false,
+        available: false,
+        message: "Mobile number must be at least 10 digits",
+      });
+      return;
+    }
+
+    setMobileValidation({
+      checking: true,
+      available: null,
+      message: "Checking mobile number availability...",
+    });
+
+    try {
+      const response = await userService.checkEmailOrMobileAvailability(cleanMobile);
+      
+      if (response.isSuccess) {
+        setMobileValidation({
+          checking: false,
+          available: true,
+          message: "Mobile number is available",
+        });
+      } else {
+        setMobileValidation({
+          checking: false,
+          available: false,
+          message: response.failureReason || "Mobile number already registered",
+        });
+      }
+    } catch (error) {
+      console.error("Mobile validation error:", error);
+      setMobileValidation({
+        checking: false,
+        available: null,
+        message: "Error checking mobile number availability",
+      });
+    }
+  };
+
+  // Debounced email validation handler
+  const handleEmailChange = (email: string) => {
+    setValue("email", email);
+    
+    // Clear existing timer
+    if (emailDebounceTimer) {
+      clearTimeout(emailDebounceTimer);
+    }
+    
+    // Set new timer for debounced validation
+    const timer = setTimeout(() => {
+      validateEmailAvailability(email);
+    }, 800); // 800ms debounce
+    
+    setEmailDebounceTimer(timer);
+  };
+
+  // Debounced mobile validation handler
+  const handleMobileChange = (mobileNo: string) => {
+    setValue("mobileNo", mobileNo);
+    
+    // Clear existing timer
+    if (mobileDebounceTimer) {
+      clearTimeout(mobileDebounceTimer);
+    }
+    
+    // Set new timer for debounced validation
+    const timer = setTimeout(() => {
+      validateMobileAvailability(mobileNo);
+    }, 800); // 800ms debounce
+    
+    setMobileDebounceTimer(timer);
+  };
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (emailDebounceTimer) clearTimeout(emailDebounceTimer);
+      if (mobileDebounceTimer) clearTimeout(mobileDebounceTimer);
+    };
+  }, [emailDebounceTimer, mobileDebounceTimer]);
+
   const steps = [
     "Basic Information",
     "Media & Description",
@@ -373,7 +525,7 @@ export default function PartnersPage() {
     resolver: zodResolver(partnerSchema as any),
     defaultValues: {
       isActive: true,
-      status: "Active", // ADDED DEFAULT STATUS
+      status: "Active",
       cvr: 0,
       businessUnit: 1,
       categoryId: 0,
@@ -382,6 +534,7 @@ export default function PartnersPage() {
       email: "",
       mobileNo: "",
       address: "",
+      trustPilotUrl:"",
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
       parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
     },
@@ -423,6 +576,8 @@ export default function PartnersPage() {
   const thumbnailValue = watch("thumbnail");
   const categoryIdValue = watch("categoryId");
   const isActiveValue = watch("isActive");
+  const emailValue = watch("email");
+  const mobileNoValue = watch("mobileNo");
 
   // Check if a step is completed
   const isStepCompleted = async (step: number): Promise<boolean> => {
@@ -444,7 +599,7 @@ export default function PartnersPage() {
         "imageUrl4",
         "imageUrl5",
         "isActive",
-        "status", // ADDED STATUS TO STEP 4
+        "status",
       ],
       5: [],
       6: ["categoryId"],
@@ -629,33 +784,28 @@ export default function PartnersPage() {
         page: currentPage,
         pageSize,
         searchTerm: debouncedSearchTerm || undefined,
-        status: statusFilter === "All" ? "All" : statusFilter, // ADDED STATUS FILTER
+        status: statusFilter === "All" ? "All" : statusFilter,
       }),
     enabled: !showForm,
   });
 
-  const { data: categories = [], isLoading: isLoadingCategories } = useQuery<
-    Category[]
-  >({
+  const { data: categories = [], isLoading: isLoadingCategories } = useQuery<Category[]>({
     queryKey: ["categories"],
     queryFn: () => categoryService.getAll(true),
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: subCategories = [], isLoading: isLoadingSubCategories } =
-    useQuery<SubCategory[]>({
-      queryKey: ["subCategories", selectedCategoryId],
-      queryFn: () => subCategoryService.getAll(true),
-      staleTime: 5 * 60 * 1000,
-      select: (data) => {
-        if (selectedCategoryId > 0) {
-          return data.filter(
-            (subCat) => subCat.categoryId === selectedCategoryId
-          );
-        }
-        return data;
-      },
-    });
+  const { data: subCategories = [], isLoading: isLoadingSubCategories } = useQuery<SubCategory[]>({
+    queryKey: ["subCategories", selectedCategoryId],
+    queryFn: () => subCategoryService.getAll(true),
+    staleTime: 5 * 60 * 1000,
+    select: (data) => {
+      if (selectedCategoryId > 0) {
+        return data.filter((subCat) => subCat.categoryId === selectedCategoryId);
+      }
+      return data;
+    },
+  });
 
   const getCategoryName = (categoryId: number) => {
     const category = categories.find((cat) => cat.id === categoryId);
@@ -684,6 +834,7 @@ export default function PartnersPage() {
         businessUnit: editingPartner.businessUnit,
         videoUrl: editingPartner.videoUrl || "",
         logoUrl: editingPartner.logoUrl || "",
+        trustPilotUrl: editingPartner.trustPilotUrl || "",
         cvr: editingPartner.cvr,
         descriptionShort: editingPartner.descriptionShort || "",
         textField1: editingPartner.textField1 || "",
@@ -698,7 +849,7 @@ export default function PartnersPage() {
         imageUrl5: editingPartner.imageUrl5 || "",
         thumbnail: editingPartner.thumbnail || "",
         isActive: editingPartner.isActive,
-        status: editingPartner.status || "Active", // ADDED STATUS
+        status: editingPartner.status || "Active",
         parSubCatlst:
           editingPartner.parSubCatlst && editingPartner.parSubCatlst.length > 0
             ? editingPartner.parSubCatlst.map((subCat) => ({
@@ -722,6 +873,18 @@ export default function PartnersPage() {
       reset(formData);
       setSelectedCategoryId(editingPartner.categoryId);
 
+      // Reset validation states for editing mode
+      setEmailValidation({
+        checking: false,
+        available: null,
+        message: "",
+      });
+      setMobileValidation({
+        checking: false,
+        available: null,
+        message: "",
+      });
+
       // Mark all steps as completed for editing mode
       setCompletedSteps([1, 2, 3, 4, 5, 6]);
     } else if (!showForm) {
@@ -740,6 +903,7 @@ export default function PartnersPage() {
       mobileNo: "",
       videoUrl: "",
       logoUrl: "",
+      trustPilotUrl: "",
       cvr: 0,
       descriptionShort: "",
       textField1: "",
@@ -754,7 +918,7 @@ export default function PartnersPage() {
       imageUrl5: "",
       thumbnail: "",
       isActive: true,
-      status: "Active", // ADDED DEFAULT STATUS
+      status: "Active",
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
       parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
     };
@@ -763,7 +927,19 @@ export default function PartnersPage() {
     setEditingPartner(null);
     setSelectedCategoryId(0);
     setCompletedSteps([]);
-    setSavingDocuments([]); // Clear saving state
+    setSavingDocuments([]);
+    
+    // Reset validation states
+    setEmailValidation({
+      checking: false,
+      available: null,
+      message: "",
+    });
+    setMobileValidation({
+      checking: false,
+      available: null,
+      message: "",
+    });
   };
 
   const createMutation = useMutation({
@@ -829,13 +1005,13 @@ export default function PartnersPage() {
       toast.success(
         t("admin.partners.deleteSuccess") || "Partner deleted successfully"
       );
-      setDeleteConfirmation({ isOpen: false, partner: null }); // Close modal on success
+      setDeleteConfirmation({ isOpen: false, partner: null });
     },
     onError: () => {
       toast.error(
         t("admin.partners.deleteError") || "Failed to delete partner"
       );
-      setDeleteConfirmation({ isOpen: false, partner: null }); // Close modal on error
+      setDeleteConfirmation({ isOpen: false, partner: null });
     },
   });
 
@@ -904,7 +1080,6 @@ export default function PartnersPage() {
       if (debouncedSearchTerm) {
         exportParams.searchTerm = debouncedSearchTerm;
       }
-      // ADDED STATUS FILTER FOR EXPORT
       if (statusFilter !== "All") {
         exportParams.status = statusFilter === "Active" ? "Active" : "InActive";
       } else {
@@ -922,9 +1097,27 @@ export default function PartnersPage() {
     }
   };
 
-  // Modified onSubmit to handle both create and update
+  // Modified onSubmit to handle both create and update with validation
   const onSubmit = async (data: PartnerFormData) => {
     if (isSubmitting) return;
+
+    // Check if email or mobile validations are in progress
+    if (emailValidation.checking || mobileValidation.checking) {
+      toast.error("Please wait for email/mobile validation to complete");
+      return;
+    }
+
+    // Check if email validation failed
+    if (data.email && emailValidation.available === false) {
+      toast.error("Please fix email validation errors before submitting");
+      return;
+    }
+
+    // Check if mobile validation failed
+    if (data.mobileNo && mobileValidation.available === false) {
+      toast.error("Please fix mobile number validation errors before submitting");
+      return;
+    }
 
     console.log("Form submission triggered with data:", data);
 
@@ -960,16 +1153,11 @@ export default function PartnersPage() {
         parDoclst: documentsPayload,
         email: data.email || undefined,
         mobileNo: data.mobileNo || undefined,
+        trustPilotUrl: data.trustPilotUrl || undefined,
       };
 
-      console.log(
-        "Final payload being sent:",
-        JSON.stringify(payload, null, 2)
-      );
-      console.log(
-        "Documents payload structure:",
-        documentsPayload.map((doc) => Object.keys(doc))
-      );
+      console.log("Final payload being sent:", JSON.stringify(payload, null, 2));
+      console.log("Documents payload structure:", documentsPayload.map((doc) => Object.keys(doc)));
 
       if (editingPartner) {
         await updateMutation.mutateAsync(payload as any);
@@ -987,6 +1175,24 @@ export default function PartnersPage() {
   const handleNext = async () => {
     if (isSubmitting) return;
 
+    // Check validation states for step 1
+    if (currentStep === 1) {
+      if (emailValidation.checking || mobileValidation.checking) {
+        toast.error("Please wait for email/mobile validation to complete");
+        return;
+      }
+
+      if (emailValue && emailValidation.available === false) {
+        toast.error("Please fix email validation errors before proceeding");
+        return;
+      }
+
+      if (mobileNoValue && mobileValidation.available === false) {
+        toast.error("Please fix mobile number validation errors before proceeding");
+        return;
+      }
+    }
+
     let isValid = true;
 
     const stepFields: Record<number, ValidFieldNames[]> = {
@@ -997,6 +1203,7 @@ export default function PartnersPage() {
         "businessUnit",
         "cvr",
         "address",
+        "trustPilotUrl",
       ],
       2: ["videoUrl", "logoUrl", "descriptionShort"],
       3: ["textField1", "textField2", "textField3", "textField4", "textField5"],
@@ -1007,7 +1214,7 @@ export default function PartnersPage() {
         "imageUrl4",
         "imageUrl5",
         "isActive",
-        "status", // ADDED STATUS TO STEP 4
+        "status",
       ],
       5: [],
       6: ["categoryId"],
@@ -1394,18 +1601,74 @@ export default function PartnersPage() {
                 error={errors.businessName?.message}
                 {...register("businessName")}
               />
-              <Input
-                label="Email"
-                type="email"
-                error={errors.email?.message}
-                {...register("email")}
-              />
-              <Input
-                label="Mobile Number"
-                error={errors.mobileNo?.message}
-                {...register("mobileNo")}
-                placeholder="Enter mobile number"
-              />
+              
+              {/* Updated Email Field with Validation */}
+              <div className="space-y-1">
+                <Input
+                  label="Email"
+                  type="email"
+                  error={errors.email?.message || (emailValidation.available === false ? emailValidation.message : undefined)}
+                  value={emailValue || ""}
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                  placeholder="Enter email address"
+                />
+                {emailValidation.checking && (
+                  <div className="flex items-center gap-2 text-blue-600 text-sm">
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+                    Checking availability...
+                  </div>
+                )}
+                {emailValidation.available === true && !emailValidation.checking && (
+                  <div className="text-green-600 text-sm flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    {emailValidation.message}
+                  </div>
+                )}
+                {emailValidation.available === false && !emailValidation.checking && errors.email && (
+                  <div className="text-red-600 text-sm flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    {emailValidation.message}
+                  </div>
+                )}
+              </div>
+
+              {/* Updated Mobile Number Field with Validation */}
+              <div className="space-y-1">
+                <Input
+                  label="Mobile Number"
+                  error={errors.mobileNo?.message || (mobileValidation.available === false ? mobileValidation.message : undefined)}
+                  value={mobileNoValue || ""}
+                  onChange={(e) => handleMobileChange(e.target.value)}
+                  placeholder="Enter mobile number"
+                />
+                {mobileValidation.checking && (
+                  <div className="flex items-center gap-2 text-blue-600 text-sm">
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+                    Checking availability...
+                  </div>
+                )}
+                {mobileValidation.available === true && !mobileValidation.checking && (
+                  <div className="text-green-600 text-sm flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    {mobileValidation.message}
+                  </div>
+                )}
+                {mobileValidation.available === false && !mobileValidation.checking && errors.mobileNo && (
+                  <div className="text-red-600 text-sm flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    {mobileValidation.message}
+                  </div>
+                )}
+              </div>
+
               <Input
                 label="CVR"
                 type="number"
@@ -1419,6 +1682,13 @@ export default function PartnersPage() {
               rows={3}
               placeholder="Enter full address"
               {...register("address")}
+            />
+            <Input
+              label="TrustPilot URL"
+              type="url"
+              error={errors.trustPilotUrl?.message}
+              {...register("trustPilotUrl")}
+              placeholder="https://www.trustpilot.com/review/your-business"
             />
           </div>
         );
@@ -2062,7 +2332,7 @@ export default function PartnersPage() {
           <form
             onSubmit={handleSubmit((data) => {
               console.log("Form submission triggered with data:", data);
-              onSubmit(data); // Final submission without step parameter
+              onSubmit(data);
             })}
           >
             <div className="px-1 mb-6">{renderStepContent()}</div>
