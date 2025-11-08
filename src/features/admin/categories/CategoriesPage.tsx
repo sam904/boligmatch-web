@@ -12,7 +12,7 @@ import ImageUpload from "../../../components/common/ImageUpload";
 import AdminToast from "../../../components/common/AdminToast";
 import DeleteConfirmation from "../../../components/common/DeleteConfirmation";
 import type { AdminToastType } from "../../../components/common/AdminToast";
-import  { useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
@@ -171,40 +171,45 @@ export default function CategoriesPage() {
   const queryClient = useQueryClient();
 
   // Toast management functions
-  const showToast = (type: AdminToastType, message: string, title?: string, subtitle?: string) => {
-  const id = Math.random().toString(36).substring(2, 9);
-  const newToast: ToastState = {
-    id,
-    type,
-    message,
-    title,
-    subtitle,
-    open: true,
+  const showToast = (
+    type: AdminToastType,
+    message: string,
+    title?: string,
+    subtitle?: string
+  ) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    const newToast: ToastState = {
+      id,
+      type,
+      message,
+      title,
+      subtitle,
+      open: true,
+    };
+
+    setToasts((prev) => [...prev, newToast]);
+    return id;
   };
-  
-  setToasts(prev => [...prev, newToast]);
-  return id;
-};
 
   const hideToast = (id: string) => {
-    setToasts(prev => prev.map(toast => 
-      toast.id === id ? { ...toast, open: false } : toast
-    ));
-    
+    setToasts((prev) =>
+      prev.map((toast) => (toast.id === id ? { ...toast, open: false } : toast))
+    );
+
     // Remove toast from state after animation
     setTimeout(() => {
-      setToasts(prev => prev.filter(toast => toast.id !== id));
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, 300);
   };
 
   const toast = {
-  success: (message: string, title?: string, subtitle?: string) => 
-    showToast("success", message, title, subtitle),
-  error: (message: string, title?: string, subtitle?: string) => 
-    showToast("error", message, title, subtitle),
-  info: (message: string, title?: string, subtitle?: string) => 
-    showToast("info", message, title, subtitle),
-};
+    success: (message: string, title?: string, subtitle?: string) =>
+      showToast("success", message, title, subtitle),
+    error: (message: string, title?: string, subtitle?: string) =>
+      showToast("error", message, title, subtitle),
+    info: (message: string, title?: string, subtitle?: string) =>
+      showToast("info", message, title, subtitle),
+  };
 
   // Fetch categories with server-side pagination and search only
   const { data: paginatedData, isLoading } = useQuery({
@@ -444,7 +449,7 @@ export default function CategoriesPage() {
     // Show delete confirmation modal
     setDeleteConfirmation({
       isOpen: true,
-      category: category
+      category: category,
     });
   };
 
@@ -593,12 +598,12 @@ export default function CategoriesPage() {
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
         itemName={
-          deleteConfirmation.category 
+          deleteConfirmation.category
             ? `Category: ${translateCategory(deleteConfirmation.category.name)}`
             : undefined
         }
         confirmationMessage={
-          t("admin.categories.deleteConfirm") || 
+          t("admin.categories.deleteConfirm") ||
           "Are you sure you want to delete this category?"
         }
         isLoading={deleteMutation.isPending}
@@ -607,7 +612,7 @@ export default function CategoriesPage() {
       {/* Header Section */}
       <div className="p-2 mb-2">
         <div className="flex justify-between items-center">
-          <div  className="font-figtree">
+          <div className="font-figtree">
             <Button
               variant="primary"
               size="md"
@@ -681,7 +686,12 @@ export default function CategoriesPage() {
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
-            label={t("admin.categories.name") || "Category Name"}
+            label={
+              <>
+                {t("admin.categories.name") || "Category Name"}
+                <span className="text-red-500 ml-1">*</span>
+              </>
+            }
             error={errors.name?.message}
             {...register("name")}
             required
@@ -700,8 +710,14 @@ export default function CategoriesPage() {
           />
 
           {/* Image Upload for Category Image with 1440x710 validation */}
+          {/* Image Upload for Category Image with 1440x710 validation */}
           <ImageUpload
-            label={`${t("admin.categories.imageUrl") || "Image Upload"} *`}
+            label={
+              <>
+                {t("admin.categories.imageUrl") || "Image Upload"}
+                <span className="text-red-500 ml-1">*</span>
+              </>
+            }
             value={imageUrlValue}
             onChange={(url) => {
               setValue("imageUrl", url, { shouldValidate: true });
@@ -716,7 +732,12 @@ export default function CategoriesPage() {
 
           {/* Image Upload for Category Icon with 512x512 validation */}
           <ImageUpload
-            label={`${t("admin.categories.iconUrl") || "Icon Upload"} *`}
+            label={
+              <>
+                {t("admin.categories.iconUrl") || "Icon Upload"}
+                <span className="text-red-500 ml-1">*</span>
+              </>
+            }
             value={iconUrlValue}
             onChange={(url) => {
               setValue("iconUrl", url, { shouldValidate: true });

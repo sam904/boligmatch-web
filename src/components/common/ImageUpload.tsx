@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { ImageUp, Loader2 } from "lucide-react";
 
 interface ImageUploadProps {
-  label: string;
+  label: React.ReactNode;
   value?: string;
   onChange: (url: string) => void;
   folder?: string;
