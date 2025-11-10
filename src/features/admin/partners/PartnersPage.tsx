@@ -10,6 +10,7 @@ import Button from "../../../components/common/Button";
 import Input from "../../../components/common/Input";
 import Stepper from "../../../components/common/Stepper";
 import TextArea from "../../../components/common/TextArea";
+import { useNavigate } from "react-router-dom";
 import DeleteConfirmation from "../../../components/common/DeleteConfirmation";
 import ImageUpload from "../../../components/common/ImageUpload";
 import VideoUpload from "../../../components/common/VideoUpload";
@@ -47,6 +48,7 @@ import {
   IconArrowLeft,
   IconKey,
   IconNoRecords,
+  IconTestimonial
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
 
@@ -270,7 +272,7 @@ export default function PartnersPage() {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [toasts, setToasts] = useState<ToastState[]>([]);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{ isOpen: boolean; partner: Partner | null }>({ isOpen: false, partner: null });
-
+  const navigate = useNavigate();
   // Email and Mobile Validation States
   const [emailValidation, setEmailValidation] = useState<{
     checking: boolean;
@@ -293,7 +295,7 @@ export default function PartnersPage() {
   });
 
   const [emailDebounceTimer, setEmailDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
-const [mobileDebounceTimer, setMobileDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+  const [mobileDebounceTimer, setMobileDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
@@ -351,6 +353,10 @@ const [mobileDebounceTimer, setMobileDebounceTimer] = useState<ReturnType<typeof
     return defaultMessage;
   };
 
+   const handleAddTestimonial = (partner: Partner) => {
+    navigate(`/admin/testimonial/${partner.id}`);
+  };
+
   // Email validation function
   const validateEmailAvailability = async (email: string) => {
     if (!email) {
@@ -389,19 +395,30 @@ const [mobileDebounceTimer, setMobileDebounceTimer] = useState<ReturnType<typeof
           message: "Email is available",
         });
       } else {
+        // Handle duplicate email case
         setEmailValidation({
           checking: false,
           available: false,
           message: response.failureReason || "Email already registered",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Email validation error:", error);
-      setEmailValidation({
-        checking: false,
-        available: null,
-        message: "Error checking email availability",
-      });
+      
+      // Handle API errors specifically
+      if (error.response?.status === 400) {
+        setEmailValidation({
+          checking: false,
+          available: false,
+          message: error.response.data?.failureReason || "Email already registered",
+        });
+      } else {
+        setEmailValidation({
+          checking: false,
+          available: null,
+          message: "Error checking email availability",
+        });
+      }
     }
   };
 
@@ -445,19 +462,30 @@ const [mobileDebounceTimer, setMobileDebounceTimer] = useState<ReturnType<typeof
           message: "Mobile number is available",
         });
       } else {
+        // Handle duplicate mobile case
         setMobileValidation({
           checking: false,
           available: false,
           message: response.failureReason || "Mobile number already registered",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Mobile validation error:", error);
-      setMobileValidation({
-        checking: false,
-        available: null,
-        message: "Error checking mobile number availability",
-      });
+      
+      // Handle API errors specifically
+      if (error.response?.status === 400) {
+        setMobileValidation({
+          checking: false,
+          available: false,
+          message: error.response.data?.failureReason || "Mobile number already registered",
+        });
+      } else {
+        setMobileValidation({
+          checking: false,
+          available: null,
+          message: "Error checking mobile number availability",
+        });
+      }
     }
   };
 
@@ -1558,6 +1586,14 @@ const [mobileDebounceTimer, setMobileDebounceTimer] = useState<ReturnType<typeof
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex gap-2">
+              <button
+            onClick={() => handleAddTestimonial(row.original)}
+            disabled={showForm}
+            className="p-2 text-gray-500 hover:text-green-600 transition-colors"
+            title="Add Testimonial"
+          >
+            <IconTestimonial />
+          </button>
           <button
             onClick={() => handleEditPartner(row.original)}
             disabled={showForm}
@@ -1589,110 +1625,131 @@ const [mobileDebounceTimer, setMobileDebounceTimer] = useState<ReturnType<typeof
 
   const renderStepContent = () => {
     switch (currentStep) {
-      case 1:
-        return (
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">
-              Basic Information
-            </h3>
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                label="Business Name"
-                error={errors.businessName?.message}
-                {...register("businessName")}
-              />
-              
-              {/* Updated Email Field with Validation */}
-              <div className="space-y-1">
-                <Input
-                  label="Email"
-                  type="email"
-                  error={errors.email?.message || (emailValidation.available === false ? emailValidation.message : undefined)}
-                  value={emailValue || ""}
-                  onChange={(e) => handleEmailChange(e.target.value)}
-                  placeholder="Enter email address"
-                />
-                {emailValidation.checking && (
-                  <div className="flex items-center gap-2 text-blue-600 text-sm">
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
-                    Checking availability...
-                  </div>
-                )}
-                {emailValidation.available === true && !emailValidation.checking && (
-                  <div className="text-green-600 text-sm flex items-center gap-1">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    {emailValidation.message}
-                  </div>
-                )}
-                {emailValidation.available === false && !emailValidation.checking && errors.email && (
-                  <div className="text-red-600 text-sm flex items-center gap-1">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    {emailValidation.message}
-                  </div>
-                )}
-              </div>
-
-              {/* Updated Mobile Number Field with Validation */}
-              <div className="space-y-1">
-                <Input
-                  label="Mobile Number"
-                  error={errors.mobileNo?.message || (mobileValidation.available === false ? mobileValidation.message : undefined)}
-                  value={mobileNoValue || ""}
-                  onChange={(e) => handleMobileChange(e.target.value)}
-                  placeholder="Enter mobile number"
-                />
-                {mobileValidation.checking && (
-                  <div className="flex items-center gap-2 text-blue-600 text-sm">
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
-                    Checking availability...
-                  </div>
-                )}
-                {mobileValidation.available === true && !mobileValidation.checking && (
-                  <div className="text-green-600 text-sm flex items-center gap-1">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    {mobileValidation.message}
-                  </div>
-                )}
-                {mobileValidation.available === false && !mobileValidation.checking && errors.mobileNo && (
-                  <div className="text-red-600 text-sm flex items-center gap-1">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    {mobileValidation.message}
-                  </div>
-                )}
-              </div>
-
-              <Input
-                label="CVR"
-                type="number"
-                error={errors.cvr?.message}
-                {...register("cvr", { valueAsNumber: true })}
-              />
+    case 1:
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-medium text-gray-900">
+        Basic Information
+      </h3>
+      <div className="grid grid-cols-2 gap-4">
+        <Input
+          label="Business Name"
+          error={errors.businessName?.message}
+          {...register("businessName")}
+        />
+        
+        {/* Updated Email Field with Validation - FIXED DUPLICATE MESSAGE */}
+        <div className="space-y-1">
+          <Input
+            label="Email"
+            type="email"
+            // REMOVE error prop here to avoid duplicate message
+            value={emailValue || ""}
+            onChange={(e) => handleEmailChange(e.target.value)}
+            placeholder="Enter email address"
+            // Add red border when validation fails
+            className={emailValidation.available === false ? "border-red-500" : ""}
+          />
+          {emailValidation.checking && (
+            <div className="flex items-center gap-2 text-blue-600 text-sm">
+              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+              Checking availability...
             </div>
-            <TextArea
-              label="Address"
-              error={errors.address?.message}
-              rows={3}
-              placeholder="Enter full address"
-              {...register("address")}
-            />
-            <Input
-              label="TrustPilot URL"
-              type="url"
-              error={errors.trustPilotUrl?.message}
-              {...register("trustPilotUrl")}
-              placeholder="https://www.trustpilot.com/review/your-business"
-            />
-          </div>
-        );
+          )}
+          {emailValidation.available === true && !emailValidation.checking && (
+            <div className="text-green-600 text-sm flex items-center gap-1">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              {emailValidation.message}
+            </div>
+          )}
+          {emailValidation.available === false && !emailValidation.checking && (
+            <div className="text-red-600 text-sm flex items-center gap-1">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              {emailValidation.message}
+            </div>
+          )}
+          {/* Show Zod validation errors only if custom validation hasn't already shown an error */}
+          {errors.email?.message && emailValidation.available !== false && (
+            <div className="text-red-600 text-sm flex items-center gap-1">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              {errors.email.message}
+            </div>
+          )}
+        </div>
 
+        {/* Updated Mobile Number Field with Validation - FIXED DUPLICATE MESSAGE */}
+        <div className="space-y-1">
+          <Input
+            label="Mobile Number"
+            // REMOVE error prop here to avoid duplicate message
+            value={mobileNoValue || ""}
+            onChange={(e) => handleMobileChange(e.target.value)}
+            placeholder="Enter mobile number"
+            // Add red border when validation fails
+            className={mobileValidation.available === false ? "border-red-500" : ""}
+          />
+          {mobileValidation.checking && (
+            <div className="flex items-center gap-2 text-blue-600 text-sm">
+              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+              Checking availability...
+            </div>
+          )}
+          {mobileValidation.available === true && !mobileValidation.checking && (
+            <div className="text-green-600 text-sm flex items-center gap-1">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              {mobileValidation.message}
+            </div>
+          )}
+          {mobileValidation.available === false && !mobileValidation.checking && (
+            <div className="text-red-600 text-sm flex items-center gap-1">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              {mobileValidation.message}
+            </div>
+          )}
+          {/* Show Zod validation errors only if custom validation hasn't already shown an error */}
+          {errors.mobileNo?.message && mobileValidation.available !== false && (
+            <div className="text-red-600 text-sm flex items-center gap-1">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              {errors.mobileNo.message}
+            </div>
+          )}
+        </div>
+
+        <Input
+          label="CVR"
+          type="number"
+          error={errors.cvr?.message}
+          {...register("cvr", { valueAsNumber: true })}
+        />
+      </div>
+      <TextArea
+        label="Address"
+        error={errors.address?.message}
+        rows={3}
+        placeholder="Enter full address"
+        {...register("address")}
+      />
+      <Input
+        label="TrustPilot URL"
+        type="url"
+        error={errors.trustPilotUrl?.message}
+        {...register("trustPilotUrl")}
+        placeholder="https://www.trustpilot.com/review/your-business"
+      />
+    </div>
+  );
       case 2:
         return (
           <div className="space-y-4">
