@@ -21,6 +21,7 @@ import ParentStatistics from "../features/partners/PartnerPages/PartnerStatistic
 import UserSupplier from "../pages/UserSupplier";
 import SupplierProfile from "../pages/SupplierProfile";
 import DashboardPage from "../features/admin/dashboard/DashboardPage";
+import TestimonialPage from "../features/admin/testimonial/TestimonialPage";
 import AboutBoligmatch from "../pages/AboutBoligmatch";
 import TermsAndConditions from "../pages/TermsAndConditions";
 import RecommendUser from "../pages/RecommendUser";
@@ -79,6 +80,8 @@ const router = createBrowserRouter([
       { path: "subcategories", element: <SubCategoriesPage /> },
       { path: "partners", element: <PartnersPage /> },
       { path: "users", element: <UsersListPage /> },
+      {path: "testimonial", element: <TestimonialPage/>},
+      { path: "testimonial/:partnerId", element: <TestimonialPage /> },
     ],
   },
 ]);
