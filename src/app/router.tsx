@@ -80,7 +80,6 @@ const router = createBrowserRouter([
       { path: "subcategories", element: <SubCategoriesPage /> },
       { path: "partners", element: <PartnersPage /> },
       { path: "users", element: <UsersListPage /> },
-      {path: "testimonial", element: <TestimonialPage/>},
       { path: "testimonial/:partnerId", element: <TestimonialPage /> },
     ],
   },

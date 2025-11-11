@@ -337,26 +337,34 @@ export const IconNoRecords = ({ className = "w-16 h-16" }: IconProps) => (
 );
 
 export const IconTestimonial = ({ className = "w-5 h-5" }: IconProps) => (
- <div className="relative inline-block">
-    <svg
-      className={className}
-      fill="none"
+  <svg
+    className={className}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M18.3327 9.58268V12.916C18.3327 15.8327 16.666 17.0827 14.166 17.0827H5.83268C3.33268 17.0827 1.66602 15.8327 1.66602 12.916V7.08268C1.66602 4.16602 3.33268 2.91602 5.83268 2.91602H9.99935"
       stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-      />
-    </svg>
-    
-    {/* Single star in top right */}
-    <div className="absolute -top-1 -right-1">
-      <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
-        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-      </svg>
-    </div>
-  </div>
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M5.83398 7.5L8.44232 9.58333C9.30065 10.2667 10.709 10.2667 11.5673 9.58333"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M16.2337 2.34922L16.467 2.82421C16.5837 3.05755 16.8753 3.27422 17.1337 3.32422L17.4503 3.37422C18.4003 3.53255 18.6253 4.23255 17.942 4.92422L17.6503 5.21587C17.4587 5.41587 17.3503 5.79921 17.4087 6.06588L17.4503 6.24088C17.7087 7.39088 17.1003 7.83254 16.1003 7.23254L15.8837 7.10754C15.6253 6.95754 15.2087 6.95754 14.9503 7.10754L14.7337 7.23254C13.7253 7.84087 13.117 7.39088 13.3837 6.24088L13.4253 6.06588C13.4837 5.79921 13.3753 5.41587 13.1837 5.21587L12.892 4.92422C12.2087 4.23255 12.4337 3.53255 13.3837 3.37422L13.7003 3.32422C13.9503 3.28255 14.2503 3.05755 14.367 2.82421L14.6003 2.34922C15.0503 1.44089 15.7837 1.44089 16.2337 2.34922Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
 );
