@@ -71,7 +71,7 @@
     "title": "BoligMatch Admin",
     "dashboard": {
       "title": "Dashboard",
-      "subtitle": "Manage all categories"
+      "subtitle": "Real-time insights and system overview"
     },
     "categories": {
       "title": "Categories",
@@ -153,7 +153,7 @@
     },
     "testimonials":{
       "title": "Testimonials",
-      "subtitle": "Manage customer testimonials",
+      "subtitle": "Manage partner testimonials",
       "addTestimonial": "Add Testimonial",
       "editTestimonial": "Edit Testimonial",
       "manageTestimonials": "Manage Testimonials",
