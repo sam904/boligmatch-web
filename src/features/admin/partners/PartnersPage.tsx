@@ -354,9 +354,12 @@ export default function PartnersPage() {
   };
 
    const handleAddTestimonial = (partner: Partner) => {
-    navigate(`/admin/testimonial/${partner.id}`);
-  };
-
+  navigate(`/admin/testimonial/${partner.id}`, { 
+    state: { 
+      businessName: partner.businessName 
+    } 
+  });
+};
   // Email validation function
   const validateEmailAvailability = async (email: string) => {
     if (!email) {
