@@ -33,6 +33,15 @@ const routeMap: Record<string, RouteInfo> = {
     title: "nav.users",
     subtitle: "admin.users.subtitle",
   },
+  // ADD TESTIMONIAL ROUTES
+  "/admin/testimonial": {
+    title: "admin.testimonials.title",
+    subtitle: "admin.testimonials.subtitle",
+  },
+  "/admin/testimonials": {
+    title: "admin.testimonials.title",
+    subtitle: "admin.testimonials.subtitle",
+  },
 };
 
 export default function AdminLayout() {
@@ -47,6 +56,14 @@ export default function AdminLayout() {
   // Get current page info based on route
   const getCurrentPageInfo = (): RouteInfo => {
     const currentPath = location.pathname;
+
+    // Handle testimonial routes specifically
+    if (currentPath.startsWith("/admin/testimonial")) {
+      return {
+        title: "admin.testimonials.title",
+        subtitle: "admin.testimonials.subtitle",
+      };
+    }
 
     // Find matching route
     for (const [route, routeInfo] of Object.entries(routeMap)) {

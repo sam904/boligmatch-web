@@ -66,6 +66,10 @@
   },
   "admin": {
     "title": "BoligMatch Admin",
+    "dashboard": {
+      "title": "Dashboard",
+      "subtitle": "Realtidsindsigt og systemoversigt"
+    },
     "categories": {
       "title": "Kategorier",
       "subtitle": "Administrer alle kategorier",
