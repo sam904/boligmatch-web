@@ -7,10 +7,11 @@
     "edit": "Edit",
     "delete": "Delete",
     "create": "Create",
+    "creating": "Creating...",
     "update": "Update",
+    "updating": "Updating...",
     "add": "Add",
     "search": "Search",
-    "export": "Export CSV",
     "exporting": "Exporting...",
     "actions": "Actions",
     "status": "Status",
@@ -26,7 +27,14 @@
     "to": "to",
     "of": "of",
     "items": "items",
-    "noRecordsFound": "No records found"
+    "noRecordsFound": "No records found",
+    "ExportCSV":"Export CSV",
+    "Filters":"Filters",
+    "Next":"Next",
+    "Previous":"Previous",
+    "Submitting":"Submitting...",
+    "address": "Address"
+    
   },
   "auth": {
     "login": "Login",
@@ -117,6 +125,7 @@
       "title": "Partners",
       "subtitle": "Manage your partners",
       "addPartner": "Add Partner",
+      "BusinessName": "Business Name",
       "editPartner": "Edit Partner",
       "name": "Name",
       "email": "Email",
@@ -133,7 +142,14 @@
       "deleteSuccess": "Partner deleted successfully",
       "createError": "Failed to create partner",
       "updateError": "Failed to update partner",
-      "deleteError": "Failed to delete partner"
+      "deleteError": "Failed to delete partner",
+      "BasicInformation": "Basic Information",
+      "Media&Description": "Media & Description", 
+      "TextFields": "Text Fields",
+      "Images&Status": "Images & Status",
+      "Documents": "Documents",
+      "businessName": "Business Name",
+      "Categories&SubCategories": "Categories & SubCategories"
     },
     "users": {
       "title": "Users",
@@ -144,12 +160,20 @@
       "firstName": "First Name",
       "lastName": "Last Name",
       "email": "Email",
+      "Enteremailaddress": "Enter email address",
+      "EnterfirstName":"Enter First Name",
+      "EnterlastName":"Enter Last Name",
+      "EntermobileNo":"Enter Mobile Number ",
       "mobileNo": "Mobile No",
       "role": "Role",
       "resetPassword": "Reset Password",
       "id": "ID",
+      "createSuccess": "User created successfully",
       "deleteConfirm": "Are you sure you want to delete this user?",
-      "updateSuccess": "Users updated successfully"
+      "updateSuccess": "Users updated successfully",
+      "createError": "Failed to create user",
+      "updateError": "Failed to update user",
+      "deleteError": "Failed to delete user"
     },
     "testimonials":{
       "title": "Testimonials",
@@ -176,7 +200,8 @@
       "updateError": "Failed to update testimonial",
       "deleteError": "Failed to delete testimonial",
       "addTestimonialDescription": "Create a new testimonial to showcase customer feedback",
-      "editTestimonialDescription": "Edit existing testimonial details"
+      "editTestimonialDescription": "Edit existing testimonial details",
+      "previousTestimonials": "Previous Testimonials"
     }
 
   },

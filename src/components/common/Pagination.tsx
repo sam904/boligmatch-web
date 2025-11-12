@@ -1,4 +1,6 @@
 // src/components/common/Pagination.tsx
+import { useTranslation } from "react-i18next";
+
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -12,6 +14,8 @@ export default function Pagination({
   totalPages,
   onPageChange,
 }: PaginationProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-4">
       {/* Left side - Previous button */}
@@ -21,7 +25,7 @@ export default function Pagination({
           disabled={currentPage === 1}
           className="flex items-center justify-center px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
         >
-          Previous
+          {t("common.Previous") || "Previous"}
         </button>
       </div>
 
@@ -37,7 +41,7 @@ export default function Pagination({
           disabled={currentPage === totalPages}
           className="flex items-center justify-center px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
         >
-          Next
+          {t("common.Next") || "Next"}
         </button>
       </div>
     </div>

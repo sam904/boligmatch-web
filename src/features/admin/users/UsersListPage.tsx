@@ -42,11 +42,11 @@ const userSchema = z.object({
     .refine(
       (value) => {
         if (!value) return false;
-        if (value === "0") return true;
-        return /^\d{10}$/.test(value);
+        // Allow exactly 8 digits
+        return /^\d{8}$/.test(value);
       },
       {
-        message: "Mobile number must be exactly 10 digits or 0 (if optional)",
+        message: "Mobile number must be exactly 8 digits",
       }
     ),
   isActive: z.boolean(),
@@ -567,7 +567,9 @@ export default function UsersListPage() {
                 : "var(--color-neutral)",
           }}
         >
-          {row.original.status || "Inactive"}
+            {row.original.isActive
+            ? t("common.active") || "Active"
+            : t("common.inactive") || "Inactive"}
         </span>
       ),
     },
@@ -685,7 +687,7 @@ export default function UsersListPage() {
             >
               {isExporting
                 ? t("common.exporting") || "Exporting..."
-                : t("common.export") || "Export CSV"}
+                : t("common.ExportCSV") || "Export CSV"}
             </Button>
           </div>
         </div>
@@ -801,28 +803,34 @@ export default function UsersListPage() {
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
-            label={t("admin.users.firstName") || "First Name"}
+            label={<>{t("admin.users.firstName") || "First Name"}
+            <span className="text-red-500 ml-1">*</span>
+            </>}
             error={errors.firstName?.message}
             {...register("firstName")}
             required
-            placeholder="Enter first name"
+            placeholder={t("admin.users.EnterfirstName")||"Enter first name"}
             disabled={createMutation.isPending || updateMutation.isPending}
           />
           <Input
-            label={t("admin.users.lastName") || "Last Name"}
+            label={<>{t("admin.users.lastName") || "Last Name"}
+             <span className="text-red-500 ml-1">*</span>
+            </>}
             error={errors.lastName?.message}
             {...register("lastName")}
             required
-            placeholder="Enter last name"
+            placeholder={t("admin.users.EnterlastName")||"Enter last name"}
             disabled={createMutation.isPending || updateMutation.isPending}
           />
           <Input
-            label={t("admin.users.email") || "Email"}
+            label={<>{t("admin.users.email") || "Email"}
+             <span className="text-red-500 ml-1">*</span>
+            </>}
             type="email"
             error={errors.email?.message}
             {...register("email")}
             required
-            placeholder="Enter email address"
+            placeholder={t("admin.users.Enteremailaddress")||"Enter email address"}
             disabled={
               createMutation.isPending ||
               updateMutation.isPending ||
@@ -830,11 +838,13 @@ export default function UsersListPage() {
             }
           />
           <Input
-            label={t("admin.users.mobileNo") || "Mobile Number"}
+            label={<>{t("admin.users.mobileNo") || "Mobile Number"}
+            <span className="text-red-500 ml-1">*</span>
+            </>}
             error={errors.mobileNo?.message}
             {...register("mobileNo")}
             required
-            placeholder="Enter mobile number"
+            placeholder={t("admin.users.EntermobileNo") || "Mobile Number"}
             disabled={createMutation.isPending || updateMutation.isPending}
           />
 
@@ -913,7 +923,7 @@ export default function UsersListPage() {
               className="flex-1"
             >
               {createMutation.isPending || updateMutation.isPending
-                ? "Submitting..."
+                ? t("common.Submitting") ||  "Submitting..."
                 : editingUser
                 ? t("common.update") || "Update"
                 : t("common.create") || "Create"}

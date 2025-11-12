@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { testimonialService } from "../../../services/testimonial.service";
 import Button from "../../../components/common/Button";
 import Input from "../../../components/common/Input";
@@ -11,10 +11,12 @@ import { useTranslation } from "react-i18next";
 import {
   IconArrowLeft,
   IconStarRating,
+  IconTrash,
+  IconPencil,
 } from "../../../components/common/Icons/Index";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import ToggleSwitch from "../../../components/common/ToggleSwitch";
-import type { TestimonialDto } from "../../../types/testimonial";
+import type { TestimonialDto, Testimonial } from "../../../types/testimonial";
 
 // Form data type
 type TestimonialFormData = {
@@ -45,13 +47,30 @@ export default function TestimonialFormPage() {
   const { t } = useTranslation();
   const { partnerId } = useParams();
   const location = useLocation();
-  const navigate = useNavigate(); // Added navigate hook
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [toasts, setToasts] = useState<ToastState[]>([]);
+  const [showValidation, setShowValidation] = useState(false);
+  const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
 
   // Get businessName from location state
   const locationState = location.state as LocationState;
   const businessName = locationState?.businessName || "";
+
+  // Fetch previous testimonials for this partner
+  const {
+    data: previousTestimonials = [],
+    isLoading: isLoadingTestimonials,
+    error: testimonialsError,
+    refetch: refetchTestimonials
+  } = useQuery({
+    queryKey: ['testimonials', 'partner', partnerId],
+    queryFn: () => {
+      if (!partnerId) return Promise.resolve([]);
+      return testimonialService.getByPartnerIdList(parseInt(partnerId));
+    },
+    enabled: !!partnerId,
+  });
 
   // Toast management functions
   const showToast = (
@@ -106,21 +125,16 @@ export default function TestimonialFormPage() {
     return defaultMessage;
   };
 
-  // Form setup without Zod
+  // Form setup
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isValid },
-    reset,
     watch,
-    setError,
-    clearErrors,
-    trigger,
+    reset: resetForm
   } = useForm<TestimonialFormData>({
-    mode: "onChange",
     defaultValues: {
-      partnerId: 0,
+      partnerId: partnerId ? parseInt(partnerId) : 0,
       rating: 5,
       test: "",
       customerName: "",
@@ -137,49 +151,24 @@ export default function TestimonialFormPage() {
   const testValue = watch("test");
   const partnerIdValue = watch("partnerId");
 
+  // Check if form has validation errors
+  const hasValidationErrors = 
+    !customerNameValue || 
+    customerNameValue.trim() === "" || 
+    !testValue || 
+    testValue.trim() === "" || 
+    !partnerIdValue || 
+    partnerIdValue <= 0;
+
   // Set partnerId from URL parameter when component mounts
   useEffect(() => {
     if (partnerId) {
       const parsedPartnerId = parseInt(partnerId, 10);
       if (!isNaN(parsedPartnerId)) {
-        setValue("partnerId", parsedPartnerId, { shouldValidate: true });
+        setValue("partnerId", parsedPartnerId);
       }
     }
   }, [partnerId, setValue]);
-
-  // Manual validation
-  const validateForm = (data: TestimonialFormData): boolean => {
-    const newErrors: Partial<Record<keyof TestimonialFormData, string>> = {};
-
-    if (!data.customerName || data.customerName.trim() === "") {
-      newErrors.customerName = "Customer name is required";
-    }
-
-    if (!data.partnerId || data.partnerId <= 0) {
-      newErrors.partnerId = "Partner ID is required";
-    }
-
-    if (!data.rating || data.rating < 1 || data.rating > 5) {
-      newErrors.rating = "Rating must be between 1 and 5";
-    }
-
-    if (!data.test || data.test.trim() === "") {
-      newErrors.test = "Share Your Opinion is required";
-    }
-
-    // Clear existing errors
-    clearErrors();
-
-    // Set new errors
-    Object.keys(newErrors).forEach((key) => {
-      setError(key as keyof TestimonialFormData, {
-        type: "manual",
-        message: newErrors[key as keyof TestimonialFormData],
-      });
-    });
-
-    return Object.keys(newErrors).length === 0;
-  };
 
   // Create testimonial mutation
   const createMutation = useMutation({
@@ -209,11 +198,15 @@ export default function TestimonialFormPage() {
         queryKey: ["testimonials"],
         exact: false,
       });
+      // Refetch the testimonials list to show the new one
+      refetchTestimonials();
       toast.success(
         t("admin.testimonials.createSuccess") ||
           "Testimonial created successfully"
       );
-      reset();
+      resetForm();
+      setShowValidation(false);
+      setEditingTestimonial(null);
     },
     onError: (error: Error) => {
       const errorMessage = getErrorMessage(
@@ -224,31 +217,165 @@ export default function TestimonialFormPage() {
     },
   });
 
+  // Update testimonial mutation
+  const updateMutation = useMutation({
+    mutationFn: async (data: TestimonialFormData) => {
+      if (!editingTestimonial) throw new Error("No testimonial selected for editing");
+      
+      try {
+        const submissionData: Testimonial = {
+          ...editingTestimonial,
+          partnerId: data.partnerId,
+          rating: data.rating,
+          test: data.test,
+          customerName: data.customerName,
+          note: data.note,
+          isDisplayed: data.isDisplayed,
+          isActive: data.isActive,
+        };
+
+        return await testimonialService.update(submissionData);
+      } catch (error) {
+        const errorMessage = getErrorMessage(
+          error,
+          "Failed to update testimonial"
+        );
+        throw new Error(errorMessage);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["testimonials"],
+        exact: false,
+      });
+      // Refetch the testimonials list to show the updated one
+      refetchTestimonials();
+      toast.success(
+        t("admin.testimonials.updateSuccess") ||
+          "Testimonial updated successfully"
+      );
+      resetForm();
+      setShowValidation(false);
+      setEditingTestimonial(null);
+    },
+    onError: (error: Error) => {
+      const errorMessage = getErrorMessage(
+        error,
+        "Failed to update testimonial"
+      );
+      toast.error(errorMessage);
+    },
+  });
+
+  // Delete testimonial mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      try {
+        return await testimonialService.remove(id);
+      } catch (error) {
+        const errorMessage = getErrorMessage(
+          error,
+          "Failed to delete testimonial"
+        );
+        throw new Error(errorMessage);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["testimonials"],
+        exact: false,
+      });
+      // Refetch the testimonials list to remove the deleted one
+      refetchTestimonials();
+      toast.success(
+        t("admin.testimonials.deleteSuccess") ||
+          "Testimonial deleted successfully"
+      );
+    },
+    onError: (error: Error) => {
+      const errorMessage = getErrorMessage(
+        error,
+        "Failed to delete testimonial"
+      );
+      toast.error(errorMessage);
+    },
+  });
+
   // Form submission handler
   const onSubmit: SubmitHandler<TestimonialFormData> = async (data) => {
-    if (!validateForm(data)) {
-      toast.error("Please fix the form errors before submitting");
+    // Check if there are validation errors
+    if (hasValidationErrors) {
+      // Show validation errors and prevent submission
+      setShowValidation(true);
+      toast.error("Please fill all required fields");
       return;
     }
 
+    // If no validation errors, proceed with submission
     try {
-      await createMutation.mutateAsync(data);
+      if (editingTestimonial) {
+        await updateMutation.mutateAsync(data);
+      } else {
+        await createMutation.mutateAsync(data);
+      }
     } catch (error) {
-      // Error handling is done in the mutation onError
       console.error("Form submission error:", error);
     }
   };
 
+  // Handle edit testimonial
+  const handleEditTestimonial = (testimonial: Testimonial) => {
+    setEditingTestimonial(testimonial);
+    setValue("partnerId", testimonial.partnerId);
+    setValue("rating", testimonial.rating);
+    setValue("test", testimonial.test);
+    setValue("customerName", testimonial.customerName);
+    setValue("note", testimonial.note || "");
+    setValue("isDisplayed", testimonial.isDisplayed);
+    setValue("isActive", testimonial.isActive);
+    setShowValidation(false);
+    
+    // Scroll to form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Handle delete testimonial
+  const handleDeleteTestimonial = (testimonial: Testimonial) => {
+    if (window.confirm(`Are you sure you want to delete the testimonial from ${testimonial.customerName}?`)) {
+      deleteMutation.mutate(testimonial.id);
+    }
+  };
+
+  // Handle cancel edit
+  const handleCancelEdit = () => {
+    setEditingTestimonial(null);
+    resetForm();
+    setShowValidation(false);
+  };
+
   // Handle form close/back navigation
   const handleFormClose = () => {
-    // Navigate back to the previous page (partners list)
     navigate(-1);
   };
 
-  // Update validation when fields change
-  useEffect(() => {
-    trigger();
-  }, [customerNameValue, partnerIdValue, ratingValue, testValue, trigger]);
+  // Render star rating display
+  const renderStars = (rating: number) => {
+    return (
+      <div className="flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <IconStarRating
+            key={star}
+            className={`w-4 h-4 ${
+              rating >= star ? "text-[#91C73D]" : "text-gray-300"
+            }`}
+          />
+        ))}
+        <span className="text-sm text-gray-600 ml-1">({rating})</span>
+      </div>
+    );
+  };
+
+  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
   return (
     <div className="p-6">
@@ -264,14 +391,13 @@ export default function TestimonialFormPage() {
       ))}
 
       {/* Testimonial Form */}
-      <div className="bg-white rounded-lg shadow p-6">
-        {/* Header Section - Updated with back button */}
+      <div className="bg-white rounded-lg shadow p-6 mb-6">
+        {/* Header Section */}
         <div className="mb-6">
           <div className="flex items-center gap-4 mb-4">
-            {/* Back Button */}
             <button
               onClick={handleFormClose}
-              disabled={createMutation.isPending}
+              disabled={isSubmitting}
               className="flex items-center justify-center w-8 h-8 rounded-full bg-[#165933] text-white"
               title="Go back"
             >
@@ -279,57 +405,62 @@ export default function TestimonialFormPage() {
             </button>
 
             <h1 className="text-2xl font-bold text-gray-900">
-              {t("admin.testimonials.addTestimonial") || "Add New Testimonial"}
+              {editingTestimonial 
+                ? t("admin.testimonials.editTestimonial") || "Edit Testimonial"
+                : t("admin.testimonials.addTestimonial") || "Add New Testimonial"
+              }
             </h1>
           </div>
         </div>
+        
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Hidden Partner ID Field */}
             <div className="hidden">
-              <Input
-                label={t("admin.testimonials.partnerId") || "Partner ID"}
-                type="number"
-                error={errors.partnerId?.message}
+              <input
+                type="hidden"
                 {...register("partnerId", {
                   required: "Partner ID is required",
-                  min: {
-                    value: 1,
-                    message: "Partner ID must be greater than 0",
-                  },
-                  valueAsNumber: true,
+                  min: 1,
                 })}
-                required
-                placeholder="Enter partner ID"
-                disabled={createMutation.isPending || !!partnerId}
-                readOnly={!!partnerId}
               />
             </div>
 
-            {/* Show businessName in a disabled field instead of partnerId */}
+            {/* Show businessName in a disabled field */}
             <Input
-              label={t("admin.testimonials.partnerId") || "Partner Name"}
+              label={
+                <>{t("admin.testimonials.partnerId") || "Partner Name"}
+                  <span className="text-red-500 ml-1">*</span>
+                </>
+              }
               value={businessName}
               disabled={true}
               placeholder="No partner selected"
             />
 
             {/* Customer Name */}
-            <Input
-              label={t("admin.testimonials.customerName") || "Customer Name"}
-              error={errors.customerName?.message}
-              {...register("customerName", {
-                required: "Customer name is required",
-                minLength: { value: 1, message: "Customer name is required" },
-              })}
-              required
-              placeholder="Enter customer name"
-              disabled={createMutation.isPending}
-            />
+            <div>
+              <Input
+                label={
+                  <>{t("admin.testimonials.customerName") || "Customer Name"}
+                    <span className="text-red-500 ml-1">*</span>
+                  </>
+                }
+                {...register("customerName")}
+                placeholder="Enter customer name"
+                disabled={isSubmitting}
+              />
+              {showValidation && (!customerNameValue || customerNameValue.trim() === "") && (
+                <p className="text-red-500 text-sm mt-1">Customer name is required</p>
+              )}
+            </div>
 
             {/* Rating */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t("admin.testimonials.rating") || "Give Ratings"}
+                <>{t("admin.testimonials.rating") || "Give Ratings"}
+                  <span className="text-red-500 ml-1">*</span>
+                </>
               </label>
 
               <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 p-3 rounded-md">
@@ -337,51 +468,51 @@ export default function TestimonialFormPage() {
                   <button
                     key={level}
                     type="button"
-                    onClick={() =>
-                      setValue("rating", level, { shouldValidate: true })
-                    }
-                    disabled={createMutation.isPending}
+                    onClick={() => {
+                      setValue("rating", level);
+                    }}
+                    disabled={isSubmitting}
                   >
                     <IconStarRating
                       className={`w-8 h-8 transition-transform transform hover:scale-105 ${
                         ratingValue >= level
-                          ? "text-[#165933]"
-                          : "text-[#91C73D]"
+                          ? "text-[#91C73D]"
+                          : "text-[#165933]"
                       }`}
                     />
                   </button>
                 ))}
               </div>
-              {errors.rating && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.rating.message}
-                </p>
-              )}
+              <input
+                type="hidden"
+                {...register("rating", {
+                  required: true,
+                  min: 1,
+                  max: 5,
+                })}
+              />
             </div>
 
             {/* Testimonial Text */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t("admin.testimonials.testimonialText") ||
-                  "Share Your Opinion"}
+                <>{t("admin.testimonials.testimonialText") || "Share Your Opinion"}
+                  <span className="text-red-500 ml-1">*</span>
+                </>
               </label>
               <textarea
-                {...register("test", {
-                  required: "Share Your Opinion is required",
-                  minLength: {
-                    value: 1,
-                    message: "Share Your Opinion is required",
-                  },
-                })}
+                {...register("test")}
                 rows={4}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200 resize-none"
+                className={`w-full border rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200 resize-none ${
+                  showValidation && (!testValue || testValue.trim() === "")
+                    ? "border-red-300" 
+                    : "border-gray-300"
+                }`}
                 placeholder="Share details of your Experience..."
-                disabled={createMutation.isPending}
+                disabled={isSubmitting}
               />
-              {errors.test && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.test.message}
-                </p>
+              {showValidation && (!testValue || testValue.trim() === "") && (
+                <p className="text-red-500 text-sm mt-1">Share Your Opinion is required</p>
               )}
             </div>
 
@@ -395,7 +526,7 @@ export default function TestimonialFormPage() {
                 rows={2}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200 resize-none"
                 placeholder="Enter any additional notes..."
-                disabled={createMutation.isPending}
+                disabled={isSubmitting}
               />
             </div>
 
@@ -418,8 +549,8 @@ export default function TestimonialFormPage() {
             </div>
           </div>
 
-          {/* Form validation summary */}
-          {Object.keys(errors).length > 0 && (
+          {/* Form validation summary - Only show when there are actual errors AND showValidation is true */}
+          {showValidation && hasValidationErrors && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
               <div className="flex items-center gap-2 text-red-800 text-sm font-medium">
                 <svg
@@ -438,63 +569,160 @@ export default function TestimonialFormPage() {
                 Please fix the following errors:
               </div>
               <ul className="text-red-700 text-sm mt-2 list-disc list-inside space-y-1">
-                {errors.customerName && <li>{errors.customerName.message}</li>}
-                {errors.partnerId && <li>{errors.partnerId.message}</li>}
-                {errors.rating && <li>{errors.rating.message}</li>}
-                {errors.test && <li>{errors.test.message}</li>}
+                {(!customerNameValue || customerNameValue.trim() === "") && (
+                  <li>Customer name is required</li>
+                )}
+                {(!testValue || testValue.trim() === "") && (
+                  <li>Share Your Opinion is required</li>
+                )}
+                {(!partnerIdValue || partnerIdValue <= 0) && (
+                  <li>Partner ID is required</li>
+                )}
               </ul>
             </div>
           )}
 
-          {/* Form Actions */}
-          <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleFormClose}
-              disabled={createMutation.isPending}
-            >
-              {t("common.cancel") || "Cancel"}
-            </Button>
-
-            <Button
-              type="submit"
-              variant="secondary"
-              disabled={!isValid || createMutation.isPending}
-            >
-              {createMutation.isPending
-                ? t("common.creating") || "Creating..."
-                : t("common.create") || "Create"}
-            </Button>
-          </div>
+         
+         {/* Form Actions */}
+<div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+  {editingTestimonial ? (
+    <>
+      <Button
+        type="button"
+        variant="outline"
+        onClick={handleCancelEdit}
+        disabled={isSubmitting}
+      >
+        {t("common.cancel") || "Cancel"}
+      </Button>
+      <Button
+        type="submit"
+        variant="secondary"
+        disabled={isSubmitting}
+      >
+        {isSubmitting
+          ? t("common.saving") || "Saving..."
+          : t("common.update") || "Update"}
+      </Button>
+    </>
+  ) : (
+    <>
+      <Button
+        type="button"
+        variant="outline"
+        onClick={handleFormClose}
+        disabled={isSubmitting}
+      >
+        {t("common.cancel") || "Cancel"}
+      </Button>
+      <Button
+        type="submit"
+        variant="secondary"
+        disabled={isSubmitting}
+      >
+        {isSubmitting
+          ? t("common.creating") || "Creating..."
+          : t("common.create") || "Create"}
+      </Button>
+    </>
+  )}
+</div>
         </form>
       </div>
 
-      {/* Success Message */}
-      {createMutation.isSuccess && (
-        <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-green-800">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span className="font-medium">Success!</span>
-          </div>
-          <p className="text-green-700 text-sm mt-1">
-            Testimonial created successfully. You can add another testimonial or
-            go back to the list.
-          </p>
+      {/* Previous Testimonials Section */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-gray-900">
+            {t("admin.testimonials.previousTestimonials") || "Previous Testimonials"}
+          </h2>
+          <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+            {previousTestimonials.length} testimonial(s)
+          </span>
         </div>
-      )}
+
+        {isLoadingTestimonials ? (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#91C73D] mx-auto"></div>
+            <p className="text-gray-500 mt-2">Loading testimonials...</p>
+          </div>
+        ) : testimonialsError ? (
+          <div className="text-center py-8 text-red-500">
+            Failed to load testimonials: {getErrorMessage(testimonialsError, "Unknown error")}
+          </div>
+        ) : previousTestimonials.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            No testimonials found for this partner.
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {previousTestimonials.map((testimonial) => (
+              <div
+                key={testimonial.id}
+                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-4 mb-2">
+                      <h3 className="font-semibold text-gray-900">
+                        {testimonial.customerName}
+                      </h3>
+                      {renderStars(testimonial.rating)}
+                      <div className="flex items-center gap-2">
+                        {testimonial.isDisplayed && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Displayed
+                          </span>
+                        )}
+                        {!testimonial.isActive && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            Inactive
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <p className="text-gray-700 mb-2">{testimonial.test}</p>
+                    
+                    {testimonial.note && (
+                      <p className="text-sm text-gray-500 mb-2">
+                        <strong>Note:</strong> {testimonial.note}
+                      </p>
+                    )}
+                    
+                   {/* <div className="text-xs text-gray-400">
+  Created: {new Date(testimonial.createdDate).toLocaleDateString()}
+  {testimonial.modifiedDate && (
+    <> | Modified: {new Date(testimonial.modifiedDate).toLocaleDateString()}</>
+  )}
+</div> */}
+                  </div>
+                  
+                  <div className="flex items-center gap-2 ml-4">
+                    <button
+                      onClick={() => handleEditTestimonial(testimonial)}
+                      disabled={isSubmitting || deleteMutation.isPending}
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      title="Edit testimonial"
+                    >
+                      <IconPencil className="w-4 h-4" />
+                    </button>
+                    
+                    <button
+                      onClick={() => handleDeleteTestimonial(testimonial)}
+                      disabled={isSubmitting || deleteMutation.isPending}
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Delete testimonial"
+                    >
+                      <IconTrash className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

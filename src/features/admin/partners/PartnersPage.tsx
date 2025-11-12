@@ -48,7 +48,7 @@ import {
   IconArrowLeft,
   IconKey,
   IconNoRecords,
-  IconTestimonial
+  IconTestimonial,
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
 
@@ -175,7 +175,8 @@ const partnerSchema = z.object({
   categoryId: z.number().min(1, "Category is required"),
   address: z.string().min(1, "Address is required"),
   businessName: z.string().min(1, "Business Name is required"),
-  email: z.string()
+  email: z
+    .string()
     .email("Invalid email address")
     .optional()
     .or(z.literal(""))
@@ -183,10 +184,10 @@ const partnerSchema = z.object({
       if (!email) return true; // Optional field
       return true; // Custom validation handled separately
     }),
-  mobileNo: z.string()
-    .min(10, "Mobile number must be at least 10 digits")
-    .max(15, "Mobile number cannot exceed 15 digits")
-    .regex(/^[0-9+-\s()]+$/, "Mobile number can only contain numbers, +, -, (, ) and spaces")
+  mobileNo: z
+    .string()
+    .length(8, "Mobile number must be exactly 8 digits")
+    .regex(/^\d+$/, "Mobile number can only contain numbers")
     .optional()
     .or(z.literal(""))
     .refine((mobileNo) => {
@@ -195,7 +196,11 @@ const partnerSchema = z.object({
     }),
   videoUrl: z.string().optional(),
   logoUrl: z.string().optional(),
-  trustPilotUrl: z.string().url("Invalid TrustPilot URL").optional().or(z.literal("")),
+  trustPilotUrl: z
+    .string()
+    .url("Invalid TrustPilot URL")
+    .optional()
+    .or(z.literal("")),
   cvr: z.number().min(0, "CVR is required"),
   descriptionShort: z.string().optional(),
   textField1: z.string().optional(),
@@ -211,8 +216,12 @@ const partnerSchema = z.object({
   thumbnail: z.string().optional(),
   isActive: z.boolean(),
   status: z.enum(["All", "Active", "InActive"]),
-  parSubCatlst: z.array(partnerSubCategorySchema).min(1, "At least one sub category is required"),
-  parDoclst: z.array(partnerDocumentSchema).min(1, "At least one document is required"),
+  parSubCatlst: z
+    .array(partnerSubCategorySchema)
+    .min(1, "At least one sub category is required"),
+  parDoclst: z
+    .array(partnerDocumentSchema)
+    .min(1, "At least one document is required"),
 });
 
 type PartnerFormData = {
@@ -254,24 +263,41 @@ type ValidFieldNames =
 export default function PartnersPage() {
   const { t } = useTranslation();
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
-  const [resettingPartner, setResettingPartner] = useState<Partner | null>(null);
+  const [resettingPartner, setResettingPartner] = useState<Partner | null>(
+    null
+  );
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"All" | "Active" | "InActive">("All");
+  const [statusFilter, setStatusFilter] = useState<
+    "All" | "Active" | "InActive"
+  >("All");
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [savingDocuments, setSavingDocuments] = useState<number[]>([]);
-  const [previewImage, setPreviewImage] = useState<{ url: string; isOpen: boolean }>({ url: "", isOpen: false });
-  const [previewVideo, setPreviewVideo] = useState<{ url: string; isOpen: boolean }>({ url: "", isOpen: false });
-  const [previewDocument, setPreviewDocument] = useState<{ url: string; name: string; isOpen: boolean }>({ url: "", name: "", isOpen: false });
+  const [previewImage, setPreviewImage] = useState<{
+    url: string;
+    isOpen: boolean;
+  }>({ url: "", isOpen: false });
+  const [previewVideo, setPreviewVideo] = useState<{
+    url: string;
+    isOpen: boolean;
+  }>({ url: "", isOpen: false });
+  const [previewDocument, setPreviewDocument] = useState<{
+    url: string;
+    name: string;
+    isOpen: boolean;
+  }>({ url: "", name: "", isOpen: false });
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [toasts, setToasts] = useState<ToastState[]>([]);
-  const [deleteConfirmation, setDeleteConfirmation] = useState<{ isOpen: boolean; partner: Partner | null }>({ isOpen: false, partner: null });
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    isOpen: boolean;
+    partner: Partner | null;
+  }>({ isOpen: false, partner: null });
   const navigate = useNavigate();
   // Email and Mobile Validation States
   const [emailValidation, setEmailValidation] = useState<{
@@ -294,8 +320,12 @@ export default function PartnersPage() {
     message: "",
   });
 
-  const [emailDebounceTimer, setEmailDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
-  const [mobileDebounceTimer, setMobileDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+  const [emailDebounceTimer, setEmailDebounceTimer] = useState<ReturnType<
+    typeof setTimeout
+  > | null>(null);
+  const [mobileDebounceTimer, setMobileDebounceTimer] = useState<ReturnType<
+    typeof setTimeout
+  > | null>(null);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
@@ -353,13 +383,13 @@ export default function PartnersPage() {
     return defaultMessage;
   };
 
-   const handleAddTestimonial = (partner: Partner) => {
-  navigate(`/admin/testimonial/${partner.id}`, { 
-    state: { 
-      businessName: partner.businessName 
-    } 
-  });
-};
+  const handleAddTestimonial = (partner: Partner) => {
+    navigate(`/admin/testimonial/${partner.id}`, {
+      state: {
+        businessName: partner.businessName,
+      },
+    });
+  };
   // Email validation function
   const validateEmailAvailability = async (email: string) => {
     if (!email) {
@@ -390,7 +420,7 @@ export default function PartnersPage() {
 
     try {
       const response = await userService.checkEmailOrMobileAvailability(email);
-      
+
       if (response.isSuccess) {
         setEmailValidation({
           checking: false,
@@ -407,13 +437,14 @@ export default function PartnersPage() {
       }
     } catch (error: any) {
       console.error("Email validation error:", error);
-      
+
       // Handle API errors specifically
       if (error.response?.status === 400) {
         setEmailValidation({
           checking: false,
           available: false,
-          message: error.response.data?.failureReason || "Email already registered",
+          message:
+            error.response.data?.failureReason || "Email already registered",
         });
       } else {
         setEmailValidation({
@@ -425,7 +456,7 @@ export default function PartnersPage() {
     }
   };
 
-  // Mobile validation function
+  // Mobile validation function - UPDATED FOR 8 DIGITS
   const validateMobileAvailability = async (mobileNo: string) => {
     if (!mobileNo) {
       setMobileValidation({
@@ -437,14 +468,24 @@ export default function PartnersPage() {
     }
 
     // Clean mobile number (remove spaces, dashes, etc.)
-    const cleanMobile = mobileNo.replace(/[\s\-\(\)]+/g, '');
-    
-    // Basic mobile validation - at least 10 digits
-    if (cleanMobile.length < 10) {
+    const cleanMobile = mobileNo.replace(/[\s\-\(\)]+/g, "");
+
+    // UPDATED: Basic mobile validation - exactly 8 digits
+    if (cleanMobile.length !== 8) {
       setMobileValidation({
         checking: false,
         available: false,
-        message: "Mobile number must be at least 10 digits",
+        message: "Mobile number must be exactly 8 digits",
+      });
+      return;
+    }
+
+    // UPDATED: Validate that it contains only digits
+    if (!/^\d+$/.test(cleanMobile)) {
+      setMobileValidation({
+        checking: false,
+        available: false,
+        message: "Mobile number can only contain numbers",
       });
       return;
     }
@@ -456,8 +497,10 @@ export default function PartnersPage() {
     });
 
     try {
-      const response = await userService.checkEmailOrMobileAvailability(cleanMobile);
-      
+      const response = await userService.checkEmailOrMobileAvailability(
+        cleanMobile
+      );
+
       if (response.isSuccess) {
         setMobileValidation({
           checking: false,
@@ -474,13 +517,15 @@ export default function PartnersPage() {
       }
     } catch (error: any) {
       console.error("Mobile validation error:", error);
-      
+
       // Handle API errors specifically
       if (error.response?.status === 400) {
         setMobileValidation({
           checking: false,
           available: false,
-          message: error.response.data?.failureReason || "Mobile number already registered",
+          message:
+            error.response.data?.failureReason ||
+            "Mobile number already registered",
         });
       } else {
         setMobileValidation({
@@ -495,34 +540,34 @@ export default function PartnersPage() {
   // Debounced email validation handler
   const handleEmailChange = (email: string) => {
     setValue("email", email);
-    
+
     // Clear existing timer
     if (emailDebounceTimer) {
       clearTimeout(emailDebounceTimer);
     }
-    
+
     // Set new timer for debounced validation
     const timer = setTimeout(() => {
       validateEmailAvailability(email);
     }, 800); // 800ms debounce
-    
+
     setEmailDebounceTimer(timer);
   };
 
   // Debounced mobile validation handler
   const handleMobileChange = (mobileNo: string) => {
     setValue("mobileNo", mobileNo);
-    
+
     // Clear existing timer
     if (mobileDebounceTimer) {
       clearTimeout(mobileDebounceTimer);
     }
-    
+
     // Set new timer for debounced validation
     const timer = setTimeout(() => {
       validateMobileAvailability(mobileNo);
     }, 800); // 800ms debounce
-    
+
     setMobileDebounceTimer(timer);
   };
 
@@ -535,12 +580,13 @@ export default function PartnersPage() {
   }, [emailDebounceTimer, mobileDebounceTimer]);
 
   const steps = [
-    "Basic Information",
-    "Media & Description",
-    "Text Fields",
-    "Images & Status",
-    "Documents",
-    "Categories & Sub-Categories",
+    t("admin.partners.BasicInformation") || "Basic Information",
+    t("admin.partners.Media&Description") || "Media & Description",
+    t("admin.partners.TextFields") || "Text Fields",
+    t("admin.partners.Images&Status") || "Images & Status",
+    t("admin.partners.Documents") || "Documents",
+    t("admin.partners.Categories&SubCategories") ||
+      "Categories & SubCategories",
   ];
 
   const {
@@ -565,7 +611,7 @@ export default function PartnersPage() {
       email: "",
       mobileNo: "",
       address: "",
-      trustPilotUrl:"",
+      trustPilotUrl: "",
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
       parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
     },
@@ -820,23 +866,28 @@ export default function PartnersPage() {
     enabled: !showForm,
   });
 
-  const { data: categories = [], isLoading: isLoadingCategories } = useQuery<Category[]>({
+  const { data: categories = [], isLoading: isLoadingCategories } = useQuery<
+    Category[]
+  >({
     queryKey: ["categories"],
     queryFn: () => categoryService.getAll(true),
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: subCategories = [], isLoading: isLoadingSubCategories } = useQuery<SubCategory[]>({
-    queryKey: ["subCategories", selectedCategoryId],
-    queryFn: () => subCategoryService.getAll(true),
-    staleTime: 5 * 60 * 1000,
-    select: (data) => {
-      if (selectedCategoryId > 0) {
-        return data.filter((subCat) => subCat.categoryId === selectedCategoryId);
-      }
-      return data;
-    },
-  });
+  const { data: subCategories = [], isLoading: isLoadingSubCategories } =
+    useQuery<SubCategory[]>({
+      queryKey: ["subCategories", selectedCategoryId],
+      queryFn: () => subCategoryService.getAll(true),
+      staleTime: 5 * 60 * 1000,
+      select: (data) => {
+        if (selectedCategoryId > 0) {
+          return data.filter(
+            (subCat) => subCat.categoryId === selectedCategoryId
+          );
+        }
+        return data;
+      },
+    });
 
   const getCategoryName = (categoryId: number) => {
     const category = categories.find((cat) => cat.id === categoryId);
@@ -959,7 +1010,7 @@ export default function PartnersPage() {
     setSelectedCategoryId(0);
     setCompletedSteps([]);
     setSavingDocuments([]);
-    
+
     // Reset validation states
     setEmailValidation({
       checking: false,
@@ -1146,7 +1197,9 @@ export default function PartnersPage() {
 
     // Check if mobile validation failed
     if (data.mobileNo && mobileValidation.available === false) {
-      toast.error("Please fix mobile number validation errors before submitting");
+      toast.error(
+        "Please fix mobile number validation errors before submitting"
+      );
       return;
     }
 
@@ -1187,8 +1240,14 @@ export default function PartnersPage() {
         trustPilotUrl: data.trustPilotUrl || undefined,
       };
 
-      console.log("Final payload being sent:", JSON.stringify(payload, null, 2));
-      console.log("Documents payload structure:", documentsPayload.map((doc) => Object.keys(doc)));
+      console.log(
+        "Final payload being sent:",
+        JSON.stringify(payload, null, 2)
+      );
+      console.log(
+        "Documents payload structure:",
+        documentsPayload.map((doc) => Object.keys(doc))
+      );
 
       if (editingPartner) {
         await updateMutation.mutateAsync(payload as any);
@@ -1219,7 +1278,9 @@ export default function PartnersPage() {
       }
 
       if (mobileNoValue && mobileValidation.available === false) {
-        toast.error("Please fix mobile number validation errors before proceeding");
+        toast.error(
+          "Please fix mobile number validation errors before proceeding"
+        );
         return;
       }
     }
@@ -1511,16 +1572,19 @@ export default function PartnersPage() {
 
   // UPDATED: Columns with status field
   const columns: ColumnDef<Partner>[] = [
-    { accessorKey: "id", header: "ID" },
-    { accessorKey: "businessName", header: "Business Name" },
+    { accessorKey: "id", header: t("admin.partners.id") || "ID" },
+    {
+      accessorKey: "businessName",
+      header: t("admin.partners.BusinessName") || "Business Name",
+    },
     {
       accessorKey: "categoryId",
-      header: "Category",
+      header: t("admin.categories.title") || "Category",
       cell: ({ row }) => getCategoryName(row.original.categoryId),
     },
     {
       accessorKey: "subCategories",
-      header: "Sub Categories",
+      header: t("admin.subcategories.title") || "Sub Categories",
       cell: ({ row }) => {
         const subCategories = row.original.parSubCatlst;
 
@@ -1557,7 +1621,7 @@ export default function PartnersPage() {
     },
     {
       accessorKey: "address",
-      header: "Address",
+      header: t("common.address") || "Address",
       cell: ({ row }) => {
         const address = row.original.address;
         if (!address) return "-";
@@ -1580,16 +1644,18 @@ export default function PartnersPage() {
               : "var(--color-neutral)",
           }}
         >
-          {row.original.isActive ? "Active" : "Inactive"}
+          {row.original.isActive
+            ? t("common.active") || "Active"
+            : t("common.inactive") || "Inactive"}
         </span>
       ),
     },
     {
       id: "actions",
-      header: "Actions",
+      header: t("common.actions") || "Actions",
       cell: ({ row }) => (
         <div className="flex gap-2">
-              <button
+          <button
             onClick={() => handleAddTestimonial(row.original)}
             disabled={showForm}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
@@ -1628,136 +1694,216 @@ export default function PartnersPage() {
 
   const renderStepContent = () => {
     switch (currentStep) {
-    case 1:
-  return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-medium text-gray-900">
-        Basic Information
-      </h3>
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          label="Business Name"
-          error={errors.businessName?.message}
-          {...register("businessName")}
-        />
-        
-        {/* Updated Email Field with Validation - FIXED DUPLICATE MESSAGE */}
-        <div className="space-y-1">
-          <Input
-            label="Email"
-            type="email"
-            // REMOVE error prop here to avoid duplicate message
-            value={emailValue || ""}
-            onChange={(e) => handleEmailChange(e.target.value)}
-            placeholder="Enter email address"
-            // Add red border when validation fails
-            className={emailValidation.available === false ? "border-red-500" : ""}
-          />
-          {emailValidation.checking && (
-            <div className="flex items-center gap-2 text-blue-600 text-sm">
-              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
-              Checking availability...
-            </div>
-          )}
-          {emailValidation.available === true && !emailValidation.checking && (
-            <div className="text-green-600 text-sm flex items-center gap-1">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-              {emailValidation.message}
-            </div>
-          )}
-          {emailValidation.available === false && !emailValidation.checking && (
-            <div className="text-red-600 text-sm flex items-center gap-1">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-              {emailValidation.message}
-            </div>
-          )}
-          {/* Show Zod validation errors only if custom validation hasn't already shown an error */}
-          {errors.email?.message && emailValidation.available !== false && (
-            <div className="text-red-600 text-sm flex items-center gap-1">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-              {errors.email.message}
-            </div>
-          )}
-        </div>
+      case 1:
+        return (
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-gray-900">
+              {t("admin.partners.BasicInformation") || "Basic Information"}
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                label={
+                  <>
+                    {t("admin.partners.businessName") || "Business Name"}
+                    <span className="text-red-500 ml-1">*</span>
+                  </>
+                }
+                error={errors.businessName?.message}
+                {...register("businessName")}
+              />
 
-        {/* Updated Mobile Number Field with Validation - FIXED DUPLICATE MESSAGE */}
-        <div className="space-y-1">
-          <Input
-            label="Mobile Number"
-            // REMOVE error prop here to avoid duplicate message
-            value={mobileNoValue || ""}
-            onChange={(e) => handleMobileChange(e.target.value)}
-            placeholder="Enter mobile number"
-            // Add red border when validation fails
-            className={mobileValidation.available === false ? "border-red-500" : ""}
-          />
-          {mobileValidation.checking && (
-            <div className="flex items-center gap-2 text-blue-600 text-sm">
-              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
-              Checking availability...
-            </div>
-          )}
-          {mobileValidation.available === true && !mobileValidation.checking && (
-            <div className="text-green-600 text-sm flex items-center gap-1">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-              {mobileValidation.message}
-            </div>
-          )}
-          {mobileValidation.available === false && !mobileValidation.checking && (
-            <div className="text-red-600 text-sm flex items-center gap-1">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-              {mobileValidation.message}
-            </div>
-          )}
-          {/* Show Zod validation errors only if custom validation hasn't already shown an error */}
-          {errors.mobileNo?.message && mobileValidation.available !== false && (
-            <div className="text-red-600 text-sm flex items-center gap-1">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-              {errors.mobileNo.message}
-            </div>
-          )}
-        </div>
+              {/* Updated Email Field with Validation - FIXED DUPLICATE MESSAGE */}
+              <div className="space-y-1">
+                <Input
+                  label={
+                    <>
+                      {t("admin.partners.email") || "Email"}
+                      <span className="text-red-500 ml-1">*</span>
+                    </>
+                  }
+                  type="email"
+                  // REMOVE error prop here to avoid duplicate message
+                  value={emailValue || ""}
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                  placeholder="Enter email address"
+                  // Add red border when validation fails
+                  className={
+                    emailValidation.available === false ? "border-red-500" : ""
+                  }
+                />
+                {emailValidation.checking && (
+                  <div className="flex items-center gap-2 text-blue-600 text-sm">
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+                    Checking availability...
+                  </div>
+                )}
+                {emailValidation.available === true &&
+                  !emailValidation.checking && (
+                    <div className="text-green-600 text-sm flex items-center gap-1">
+                      <svg
+                        className="w-4 h-4"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      {emailValidation.message}
+                    </div>
+                  )}
+                {emailValidation.available === false &&
+                  !emailValidation.checking && (
+                    <div className="text-red-600 text-sm flex items-center gap-1">
+                      <svg
+                        className="w-4 h-4"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      {emailValidation.message}
+                    </div>
+                  )}
+                {/* Show Zod validation errors only if custom validation hasn't already shown an error */}
+                {errors.email?.message &&
+                  emailValidation.available !== false && (
+                    <div className="text-red-600 text-sm flex items-center gap-1">
+                      <svg
+                        className="w-4 h-4"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      {errors.email.message}
+                    </div>
+                  )}
+              </div>
 
-        <Input
-          label="CVR"
-          type="number"
-          error={errors.cvr?.message}
-          {...register("cvr", { valueAsNumber: true })}
-        />
-      </div>
-      <TextArea
-        label="Address"
-        error={errors.address?.message}
-        rows={3}
-        placeholder="Enter full address"
-        {...register("address")}
-      />
-      <Input
-        label="TrustPilot URL"
-        type="url"
-        error={errors.trustPilotUrl?.message}
-        {...register("trustPilotUrl")}
-        placeholder="https://www.trustpilot.com/review/your-business"
-      />
-    </div>
-  );
+              {/* Updated Mobile Number Field with 8-digit Validation */}
+              <div className="space-y-1">
+                <Input
+                  label={
+                    <>
+                      {t("admin.partners.phone") || "Mobile Number"}
+                      <span className="text-red-500 ml-1">*</span>
+                    </>
+                  }
+                  // REMOVE error prop here to avoid duplicate message
+                  value={mobileNoValue || ""}
+                  onChange={(e) => handleMobileChange(e.target.value)}
+                  placeholder="Enter 8-digit mobile number"
+                  // Add red border when validation fails
+                  className={
+                    mobileValidation.available === false ? "border-red-500" : ""
+                  }
+                  // Add maxLength to prevent more than 8 digits
+                  maxLength={8}
+                />
+                {mobileValidation.checking && (
+                  <div className="flex items-center gap-2 text-blue-600 text-sm">
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+                    Checking availability...
+                  </div>
+                )}
+                {mobileValidation.available === true &&
+                  !mobileValidation.checking && (
+                    <div className="text-green-600 text-sm flex items-center gap-1">
+                      <svg
+                        className="w-4 h-4"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      {mobileValidation.message}
+                    </div>
+                  )}
+                {mobileValidation.available === false &&
+                  !mobileValidation.checking && (
+                    <div className="text-red-600 text-sm flex items-center gap-1">
+                      <svg
+                        className="w-4 h-4"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      {mobileValidation.message}
+                    </div>
+                  )}
+                {/* Show Zod validation errors only if custom validation hasn't already shown an error */}
+                {errors.mobileNo?.message &&
+                  mobileValidation.available !== false && (
+                    <div className="text-red-600 text-sm flex items-center gap-1">
+                      <svg
+                        className="w-4 h-4"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      {errors.mobileNo.message}
+                    </div>
+                  )}
+              </div>
+
+              <Input
+                label="CVR"
+                type="number"
+                error={errors.cvr?.message}
+                {...register("cvr", { valueAsNumber: true })}
+              />
+            </div>
+            <TextArea
+              label={
+                <>
+                  {t("admin.partners.address") || "Address"}
+                  <span className="text-red-500 ml-1">*</span>
+                </>
+              }
+              error={errors.address?.message}
+              rows={3}
+              placeholder="Enter full address"
+              {...register("address")}
+            />
+            <Input
+              label="TrustPilot URL"
+              type="url"
+              error={errors.trustPilotUrl?.message}
+              {...register("trustPilotUrl")}
+              placeholder="https://www.trustpilot.com/review/your-business"
+            />
+          </div>
+        );
       case 2:
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-gray-900">
-              Media & Description
+              {t("admin.partners.Media&Description") || "Media & Description"}
             </h3>
 
             <div className="space-y-3">
@@ -1804,7 +1950,9 @@ export default function PartnersPage() {
       case 3:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">Text Fields</h3>
+            <h3 className="text-lg font-medium text-gray-900">
+              {t("admin.partners.TextFields") || "Text Fields"}
+            </h3>
             <Input
               label="Text Field 1"
               error={errors.textField1?.message}
@@ -1836,7 +1984,10 @@ export default function PartnersPage() {
       case 4:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-gray-900">Images & Status</h3>
+            <h3 className="text-lg font-bold text-gray-900">
+              {" "}
+              {t("admin.partners.Images&Status") || "Images & Status"}
+            </h3>
             <div className="grid grid-cols-2 gap-4">
               <ImageUpload
                 label="Image Upload 1"
@@ -1904,38 +2055,46 @@ export default function PartnersPage() {
                   className="border border-gray-200 rounded-lg p-4 mb-4 bg-white"
                 >
                   <div className="space-y-4 mb-4">
-                    <Input
-                      label={`Document Name ${index + 1}`}
-                      error={errors.parDoclst?.[index]?.documentName?.message}
-                      value={watch(`parDoclst.${index}.documentName`)}
-                      onChange={(e) =>
-                        handleDocumentChange(
-                          "documentName",
-                          e.target.value,
-                          index
-                        )
-                      }
-                      placeholder="Enter document name (e.g., Business License, Contract, Certificate)"
-                      required
-                      disabled={savingDocuments.includes(index)}
-                    />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Document Name {index + 1}{" "}
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        error={errors.parDoclst?.[index]?.documentName?.message}
+                        value={watch(`parDoclst.${index}.documentName`)}
+                        onChange={(e) =>
+                          handleDocumentChange(
+                            "documentName",
+                            e.target.value,
+                            index
+                          )
+                        }
+                        placeholder="Enter document name (e.g., Business License, Contract, Certificate)"
+                        required
+                        disabled={savingDocuments.includes(index)}
+                      />
+                    </div>
 
-                    <DocumentUpload
-                      label={`Document File ${index + 1}`}
-                      value={watch(`parDoclst.${index}.documentUrl`)}
-                      onChange={(url) => {
-                        setValue(`parDoclst.${index}.documentUrl`, url);
-                        handleDocumentChange("documentUrl", url, index);
-                      }}
-                      onPreview={(url) =>
-                        handleDocumentPreview(
-                          url,
-                          watch(`parDoclst.${index}.documentName`)
-                        )
-                      }
-                      folder="partners/documents"
-                      error={errors.parDoclst?.[index]?.documentUrl?.message}
-                    />
+                    <div>
+                      <DocumentUpload
+                        label={`Document File ${index + 1}`}
+                        value={watch(`parDoclst.${index}.documentUrl`)}
+                        onChange={(url) => {
+                          setValue(`parDoclst.${index}.documentUrl`, url);
+                          handleDocumentChange("documentUrl", url, index);
+                        }}
+                        onPreview={(url) =>
+                          handleDocumentPreview(
+                            url,
+                            watch(`parDoclst.${index}.documentName`)
+                          )
+                        }
+                        folder="partners/documents"
+                        error={errors.parDoclst?.[index]?.documentUrl?.message}
+                        required
+                      />
+                    </div>
 
                     {/* Saving indicator */}
                     {savingDocuments.includes(index) && (
@@ -2021,7 +2180,8 @@ export default function PartnersPage() {
         return (
           <div className="space-y-6">
             <h3 className="text-lg font-bold text-gray-900">
-              Categories & Sub Categories
+              {t("admin.partners.Categories&SubCategories") ||
+                "Categories & SubCategories"}
             </h3>
             <div className="bg-[#F0F2EA] p-4 rounded-lg">
               <h4 className="font-medium text-gray-700 mb-3">
@@ -2248,7 +2408,7 @@ export default function PartnersPage() {
             onClick={handleBack}
             disabled={isSubmitting}
           >
-            Previous
+            {t("common.Previous") || "Previous"}
           </Button>
         )}
       </div>
@@ -2262,7 +2422,9 @@ export default function PartnersPage() {
             onClick={handleNext}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Updating..." : "Next"}
+            {isSubmitting
+              ? t("common.updating") || "Updating..."
+              : t("common.Next") || "Next"}
           </Button>
         ) : (
           <Button
@@ -2357,7 +2519,7 @@ export default function PartnersPage() {
               >
                 {isExporting
                   ? t("common.exporting") || "Exporting..."
-                  : t("common.export") || "Export"}
+                  : t("common.ExportCSV") || "Export CSV"}
               </Button>
             </div>
           </div>

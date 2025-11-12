@@ -50,9 +50,8 @@ export const FilterDropdown = ({
         }`}
       >
         <IconFilter className="w-4 h-4" />
-        <span>Filters</span>
+        <span>{t("common.Filters") || "Filters"}</span>
       </button>
-
       {isOpen && !disabled && (
         <>
           <div
