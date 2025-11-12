@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { userService } from "../../services/user.service";
 import type { CreateUserRequest } from "../../types/user";
-import logo from "/src/assets/userImages/footerLogo.svg";
+import logo from "/src/assets/userImages/boligmatchLogo2.png";
 
 interface SignUpModalProps {
   open: boolean;
@@ -91,7 +91,7 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-center items-center p-4 pb-2 relative">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center p-2">
             <div className="text-2xl font-bold">
               <img
                 src={logo}

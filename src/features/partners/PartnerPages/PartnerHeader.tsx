@@ -278,7 +278,7 @@ function PartnerHeader() {
                       {t("sidebar.about")}
                     </span>
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => {
                       setShowSidebar(false);
                       // navigate("");
@@ -301,7 +301,7 @@ function PartnerHeader() {
                       </svg>
                       {t("sidebar.privacyPolicy")}
                     </span>
-                  </button>
+                  </button> */}
                   <button
                     onClick={() => {
                       setShowSidebar(false);

@@ -37,7 +37,7 @@ export default function LandingPage() {
         open={showSignUpModal}
         onClose={() => setShowSignUpModal(false)}
       />
-      <div className="absolute md:top-20 top-24 lg:left-64 sm:left-50 flex max-w-6xl mx-auto px-12 justify-between mt-0 h-[calc(100vh-100vh)]">
+      <div className="absolute md:top-44 top-24 lg:left-72 sm:left-50 flex max-w-6xl mx-auto px-12 justify-between mt-0 h-[calc(100vh-100vh)]">
         <div>
           <div className="md:w-[175px] w-[70px] flex justify-end">
             <img

@@ -7,6 +7,8 @@ import LoginChoiceModal from "../components/common/LoginChoiceModal";
 import UserModal from "../components/common/UserModal";
 import PartnerModal from "../components/common/PartnerModal";
 import { useAppSelector } from "../app/hooks";
+import Servises from "/src/assets/supplierProfile/services.png"
+import facts from "/src/assets/userImages/faktaLogo.svg"
 
 function RecommendUser() {
     const { recommendationKey } = useParams();
@@ -81,7 +83,7 @@ function RecommendUser() {
             const v = videoRef.current;
             // Some browsers require a direct call to play after a user gesture
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            v.play && v.play().catch(() => {});
+            v.play && v.play().catch(() => { });
         }
     }, [isVideoPlaying]);
 
@@ -197,7 +199,7 @@ function RecommendUser() {
                         onCanPlay={() => {
                             if (videoRef.current) {
                                 const v = videoRef.current;
-                                v.play && v.play().catch(() => {});
+                                v.play && v.play().catch(() => { });
                             }
                         }}
                         onError={(e) => {
@@ -255,7 +257,7 @@ function RecommendUser() {
                                 }}
                             >
                                 <img
-                                    src="/src/assets/supplierProfile/services.png"
+                                    src={Servises}
                                     alt="Services"
                                     className="w-[88px] h-[77px] select-none"
                                 />
@@ -282,7 +284,7 @@ function RecommendUser() {
                                 }}
                             >
                                 <img
-                                    src="/src/assets/userImages/faktaLogo.svg"
+                                    src={facts}
                                     alt="Fakta"
                                     className="w-[59px] h-[63px] select-none"
                                 />
@@ -302,18 +304,18 @@ function RecommendUser() {
                     </div>
                     {/* Recommended by (User details) */}
                     {(data?.user?.fullName || data?.user?.email || data?.user?.mobileNo) && (
-                      <div className="max-w-7xl mx-auto px-6 pb-10">
-                        <div className="mt-2 bg-white rounded-[10px] p-6 text-center shadow-sm">
-                          <h3 className="text-[#01351f] text-xl font-bold">Recommended by</h3>
-                          {data?.user?.fullName && (
-                            <p className="mt-2 text-gray-900 font-semibold">{data.user.fullName}</p>
-                          )}
-                          <div className="mt-1 space-y-1 text-gray-700">
-                            {data?.user?.email && <p>{data.user.email}</p>}
-                            {data?.user?.mobileNo && <p>Tlf: {data.user.mobileNo}</p>}
-                          </div>
+                        <div className="max-w-7xl mx-auto px-6 pb-10">
+                            <div className="mt-2 bg-white rounded-[10px] p-6 text-center shadow-sm">
+                                <h3 className="text-[#01351f] text-xl font-bold">Recommended by</h3>
+                                {data?.user?.fullName && (
+                                    <p className="mt-2 text-gray-900 font-semibold">{data.user.fullName}</p>
+                                )}
+                                <div className="mt-1 space-y-1 text-gray-700">
+                                    {data?.user?.email && <p>{data.user.email}</p>}
+                                    {data?.user?.mobileNo && <p>Tlf: {data.user.mobileNo}</p>}
+                                </div>
+                            </div>
                         </div>
-                      </div>
                     )}
                 </div>
             </div>

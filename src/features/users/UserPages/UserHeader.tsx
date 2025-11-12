@@ -309,7 +309,7 @@ function UserHeader() {
                       {t("sidebar.about")}
                     </span>
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => {
                       setShowSidebar(false);
                       // navigate("");
@@ -332,7 +332,7 @@ function UserHeader() {
                       </svg>
                       {t("sidebar.privacyPolicy")}
                     </span>
-                  </button>
+                  </button> */}
                   <button
                     onClick={() => {
                       setShowSidebar(false);
