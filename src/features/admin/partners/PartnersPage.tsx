@@ -535,12 +535,12 @@ export default function PartnersPage() {
   }, [emailDebounceTimer, mobileDebounceTimer]);
 
   const steps = [
-    "Basic Information",
-    "Media & Description",
-    "Text Fields",
-    "Images & Status",
-    "Documents",
-    "Categories & Sub-Categories",
+    t("admin.partners.BasicInformation") || "Basic Information",
+    t("admin.partners.Media&Description") || "Media & Description",
+    t("admin.partners.TextFields") || "Text Fields",
+    t("admin.partners.Images&Status") || "Images & Status",
+    t("admin.partners.Documents") || "Documents",
+    t("admin.partners.Categories&SubCategories") || "Categories & SubCategories",
   ];
 
   const {
@@ -1511,16 +1511,16 @@ export default function PartnersPage() {
 
   // UPDATED: Columns with status field
   const columns: ColumnDef<Partner>[] = [
-    { accessorKey: "id", header: "ID" },
-    { accessorKey: "businessName", header: "Business Name" },
+    { accessorKey: "id", header: t("admin.partners.id") || "ID"},
+    { accessorKey: "businessName", header: t("admin.partners.BusinessName") || "Business Name" },
     {
       accessorKey: "categoryId",
-      header: "Category",
+      header:  t("admin.categories.title")||"Category",
       cell: ({ row }) => getCategoryName(row.original.categoryId),
     },
     {
       accessorKey: "subCategories",
-      header: "Sub Categories",
+      header: t("admin.subcategories.title")||"Sub Categories",
       cell: ({ row }) => {
         const subCategories = row.original.parSubCatlst;
 
@@ -1557,7 +1557,7 @@ export default function PartnersPage() {
     },
     {
       accessorKey: "address",
-      header: "Address",
+      header: t("common.address")||"Address",
       cell: ({ row }) => {
         const address = row.original.address;
         if (!address) return "-";
@@ -1580,13 +1580,15 @@ export default function PartnersPage() {
               : "var(--color-neutral)",
           }}
         >
-          {row.original.isActive ? "Active" : "Inactive"}
+         {row.original.isActive
+            ? t("common.active") || "Active"
+            : t("common.inactive") || "Inactive"}
         </span>
       ),
     },
     {
       id: "actions",
-      header: "Actions",
+      header: t("common.actions")||"Actions",
       cell: ({ row }) => (
         <div className="flex gap-2">
               <button
@@ -1631,12 +1633,12 @@ export default function PartnersPage() {
     case 1:
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium text-gray-900">
-        Basic Information
-      </h3>
+    <h3 className="text-lg font-medium text-gray-900">
+     {t("admin.partners.BasicInformation") || "Basic Information"}
+    </h3>
       <div className="grid grid-cols-2 gap-4">
         <Input
-          label="Business Name"
+          label={<>{t("admin.partners.businessName") || "Business Name"}<span className="text-red-500 ml-1">*</span></>}
           error={errors.businessName?.message}
           {...register("businessName")}
         />
@@ -1644,7 +1646,7 @@ export default function PartnersPage() {
         {/* Updated Email Field with Validation - FIXED DUPLICATE MESSAGE */}
         <div className="space-y-1">
           <Input
-            label="Email"
+            label={<>{t("admin.partners.email") || "Email"}<span className="text-red-500 ml-1">*</span></>}
             type="email"
             // REMOVE error prop here to avoid duplicate message
             value={emailValue || ""}
@@ -1689,7 +1691,7 @@ export default function PartnersPage() {
         {/* Updated Mobile Number Field with Validation - FIXED DUPLICATE MESSAGE */}
         <div className="space-y-1">
           <Input
-            label="Mobile Number"
+             label={<>{t("admin.partners.phone") || "Mobile Number"}<span className="text-red-500 ml-1">*</span></>}
             // REMOVE error prop here to avoid duplicate message
             value={mobileNoValue || ""}
             onChange={(e) => handleMobileChange(e.target.value)}
@@ -1738,7 +1740,7 @@ export default function PartnersPage() {
         />
       </div>
       <TextArea
-        label="Address"
+         label={<>{t("admin.partners.address") || "Address"}<span className="text-red-500 ml-1">*</span></>}
         error={errors.address?.message}
         rows={3}
         placeholder="Enter full address"
@@ -1757,7 +1759,7 @@ export default function PartnersPage() {
         return (
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-gray-900">
-              Media & Description
+              {t("admin.partners.Media&Description") || "Media & Description"}
             </h3>
 
             <div className="space-y-3">
@@ -1804,7 +1806,7 @@ export default function PartnersPage() {
       case 3:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">Text Fields</h3>
+            <h3 className="text-lg font-medium text-gray-900">{t("admin.partners.TextFields") || "Text Fields"}</h3>
             <Input
               label="Text Field 1"
               error={errors.textField1?.message}
@@ -1836,7 +1838,7 @@ export default function PartnersPage() {
       case 4:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-gray-900">Images & Status</h3>
+            <h3 className="text-lg font-bold text-gray-900">  {t("admin.partners.Images&Status") || "Images & Status"}</h3>
             <div className="grid grid-cols-2 gap-4">
               <ImageUpload
                 label="Image Upload 1"
@@ -1893,7 +1895,7 @@ export default function PartnersPage() {
       case 5:
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-medium text-gray-900">Documents</h3>
+            <h3 className="text-lg font-medium text-gray-900">  {t("admin.partners.Documents") || "Documents"}</h3>
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-medium text-gray-700 mb-3">
                 Partner Documents
@@ -2021,7 +2023,7 @@ export default function PartnersPage() {
         return (
           <div className="space-y-6">
             <h3 className="text-lg font-bold text-gray-900">
-              Categories & Sub Categories
+               {t("admin.partners.Categories&SubCategories") || "Categories & SubCategories"}
             </h3>
             <div className="bg-[#F0F2EA] p-4 rounded-lg">
               <h4 className="font-medium text-gray-700 mb-3">
@@ -2248,22 +2250,22 @@ export default function PartnersPage() {
             onClick={handleBack}
             disabled={isSubmitting}
           >
-            Previous
+            {t("common.Previous") || "Previous"}
           </Button>
         )}
       </div>
       <div className="flex gap-2">
         {currentStep < steps.length ? (
-          <Button
-            key="next"
-            type="button"
-            variant="secondary"
-            size="lg"
-            onClick={handleNext}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Updating..." : "Next"}
-          </Button>
+         <Button
+  key="next"
+  type="button"
+  variant="secondary"
+  size="lg"
+  onClick={handleNext}
+  disabled={isSubmitting}
+>
+  {isSubmitting ? t("common.updating") || "Updating..." : t("common.Next") || "Next"}
+</Button>
         ) : (
           <Button
             key="submit"
@@ -2357,7 +2359,7 @@ export default function PartnersPage() {
               >
                 {isExporting
                   ? t("common.exporting") || "Exporting..."
-                  : t("common.export") || "Export"}
+                  : t("common.ExportCSV") || "Export CSV"}
               </Button>
             </div>
           </div>
