@@ -200,7 +200,8 @@
       "updateError": "Failed to update testimonial",
       "deleteError": "Failed to delete testimonial",
       "addTestimonialDescription": "Create a new testimonial to showcase customer feedback",
-      "editTestimonialDescription": "Edit existing testimonial details"
+      "editTestimonialDescription": "Edit existing testimonial details",
+      "previousTestimonials": "Previous Testimonials"
     }
 
   },

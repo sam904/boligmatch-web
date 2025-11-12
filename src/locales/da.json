@@ -174,7 +174,8 @@
     "updateError": "Kunne ikke opdatere udtalelse",
     "deleteError": "Kunne ikke slette udtalelse",
     "addTestimonialDescription": "Opret en ny udtalelse for at vise kundefeedback",
-    "editTestimonialDescription": "Rediger eksisterende udtalelsesdetaljer"
+    "editTestimonialDescription": "Rediger eksisterende udtalelsesdetaljer",
+    "previousTestimonials": "Tidligere anmeldelser"
 },
     "users": {
       "title": "Brugere",
