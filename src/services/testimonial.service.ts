@@ -57,6 +57,17 @@ export const testimonialService = {
     return response.output || [];
   },
 
+  // Get testimonials by partner ID list
+  getByPartnerIdList: async (partnerId: number): Promise<Testimonial[]> => {
+    const response = await http.get<{
+      output: Testimonial[];
+      isSuccess: boolean;
+      errorMessage: string | null;
+    }>(`/TestImonial/getTestImonialsByPartnerIdList/${partnerId}`);
+    
+    return response.output || [];
+  },
+
   // Get active testimonials for display
   getActiveTestimonials: async (): Promise<Testimonial[]> => {
     const response = await http.get<{
