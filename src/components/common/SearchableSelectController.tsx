@@ -10,7 +10,7 @@ interface Option {
 interface SearchableSelectControllerProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
-  label?: string;
+  label?: React.ReactNode;
   error?: string;
   options: Option[];
   placeholder?: string;

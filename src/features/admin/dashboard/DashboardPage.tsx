@@ -845,10 +845,10 @@ const DashboardPage = () => {
       title: "Total Sub Categories",
       value: formatK(stats?.TotalSubCategories || 0),
     },
-    { title: "Categories", value: formatK(stats?.TotalCategorys || 0) },
-    { title: "Favourites", value: formatK(stats?.TotalFavourites || 0) },
+    { title: "Total Categories", value: formatK(stats?.TotalCategorys || 0) },
+    { title: "Total Favourites", value: formatK(stats?.TotalFavourites || 0) },
     {
-      title: "Recommendations",
+      title: "Total Recommendations",
       value: formatK(stats?.TotalRecommendations || 0),
     },
   ];
