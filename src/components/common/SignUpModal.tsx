@@ -5,7 +5,8 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { userService } from "../../services/user.service";
 import type { CreateUserRequest } from "../../types/user";
-import logo from "/src/assets/userImages/footerLogo.svg";
+import logo from "/src/assets/userImages/boligmatchLogo2.png";
+import { showSignupSuccessToast, showSignupErrorToast } from "./ToastBanner";
 
 interface SignUpModalProps {
   open: boolean;
@@ -64,6 +65,7 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
 
     // If we get here, the registration was successful
     setSuccess(true);
+    showSignupSuccessToast("Registration successful! Welcome to Boligmatch+.");
     reset();
     // Close modal after a short delay to show success message
     setTimeout(() => {
@@ -71,9 +73,9 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
       setSuccess(false);
     }, 2000);
   } catch (err: any) {
-    setError(
-      err.response?.data?.message || err.message || "Registration failed"
-    );
+    const msg = err?.response?.data?.message || err?.message || "Registration failed";
+    setError(msg);
+    showSignupErrorToast(msg);
   } finally {
     setIsLoading(false);
   }
@@ -91,7 +93,7 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-center items-center p-4 pb-2 relative">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center p-2">
             <div className="text-2xl font-bold">
               <img
                 src={logo}

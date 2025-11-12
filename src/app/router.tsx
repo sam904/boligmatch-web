@@ -50,9 +50,11 @@ const router = createBrowserRouter([
   {
     path: "/partner",
     element: (
-      // <RoleGuard roles={["partner"]}>
-      <PartnerLayout />
-      // </RoleGuard>
+      <AuthGuard>
+        <RoleGuard roles={["partner"]}>
+          <PartnerLayout />
+        </RoleGuard>
+      </AuthGuard>
     ),
     children: [
       { index: true, element: <PartnerDashboard /> },

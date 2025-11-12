@@ -11,6 +11,7 @@ import dashboardIcon2 from "/src/assets/userImages/userDashboardicon1.svg";
 import dashboardIcon3 from "/src/assets/userImages/userDashboardicon1.svg";
 import { useNavigate } from "react-router-dom";
 import { subCategoriesService } from "../../../services/subCategories.service";
+import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg";
 
 function SearchForPartner() {
   const [loading, setLoading] = useState(true);
@@ -101,6 +102,9 @@ function SearchForPartner() {
                           }}
                         />
                         <div className="absolute bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-white to-transparent"></div>
+                        <div className="absolute bottom-0 left-0 right-0">
+                          <img src={categoryGradientImg} alt="" />
+                        </div>
                       </div>
 
                       <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center gap-2">

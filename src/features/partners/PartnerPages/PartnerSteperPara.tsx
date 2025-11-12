@@ -91,7 +91,7 @@ function ParentSteperPara() {
           </div>
         </div>
         <p className="text-white text-xs sm:text-sm text-center leading-relaxed">
-          Teningve 7 2610 Rødovre
+          Tørringvej 7 2610 Rødovre
           <br className="sm:hidden" />
           <span className="hidden sm:inline"> </span>Tlf{" "}
           <a href="tel:70228288" className="text-[#91C73D] hover:underline">
