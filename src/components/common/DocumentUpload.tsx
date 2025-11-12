@@ -16,7 +16,7 @@ interface ToastState {
 }
 
 interface DocumentUploadProps {
-  label: string;
+  label: React.ReactNode;
   value: string;
   onChange: (url: string) => void;
   folder?: string;

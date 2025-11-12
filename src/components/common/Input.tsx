@@ -1,6 +1,6 @@
 // src/components/common/Input.tsx
-import React from 'react';
-import clsx from 'clsx';
+import React from "react";
+import clsx from "clsx";
 
 type Props = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: React.ReactNode;
@@ -17,18 +17,17 @@ export default function Input({ label, error, className, ...props }: Props) {
       )}
       <input
         className={clsx(
-          'w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900',
-          'placeholder:text-gray-400',
-          'focus:border-[#91C73D] focus:ring-2 focus:ring-[#91C73D]/20 focus:outline-none',
-          'transition-colors duration-200',
-          error && 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/20',
+          "w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900",
+          "placeholder:text-gray-400",
+          "focus:border-[#91C73D] focus:ring-2 focus:ring-[#91C73D]/20 focus:outline-none",
+          "transition-colors duration-200",
+          error &&
+            "border-rose-500 focus:border-rose-500 focus:ring-rose-500/20",
           className
         )}
         {...props}
       />
-      {error && (
-        <p className="text-sm text-rose-600">{error}</p>
-      )}
+      {error && <p className="text-sm text-rose-600">{error}</p>}
     </div>
   );
 }
