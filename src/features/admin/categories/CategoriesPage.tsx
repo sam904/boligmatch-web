@@ -13,6 +13,7 @@ import AdminToast from "../../../components/common/AdminToast";
 import DeleteConfirmation from "../../../components/common/DeleteConfirmation";
 import type { AdminToastType } from "../../../components/common/AdminToast";
 import { useForm } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
@@ -45,7 +46,7 @@ const categorySchema = z.object({
     .min(1, "Icon is required")
     .url("Please provide a valid icon URL"),
   isActive: z.boolean(),
-   status: z.enum(["Active", "InActive"]),
+  status: z.enum(["Active", "InActive"]),
 });
 
 type CategoryFormData = z.infer<typeof categorySchema>;
@@ -322,6 +323,7 @@ export default function CategoriesPage() {
         imageUrl: "",
         iconUrl: "",
         isActive: true,
+        status: "Active",
       });
     }
   }, [editingCategory, reset]);
@@ -409,7 +411,8 @@ export default function CategoriesPage() {
     },
   });
 
-  const onSubmit = async (data: CategoryFormData) => {
+  // Fixed onSubmit with proper typing
+  const onSubmit: SubmitHandler<CategoryFormData> = async (data) => {
     // Final validation check
     const isFormValid = await trigger();
     if (!isFormValid) {
@@ -886,7 +889,8 @@ export default function CategoriesPage() {
               value={imageUrlValue}
               onChange={(url) => {
                 setValue("imageUrl", url, { shouldValidate: true });
-                trigger("imageUrl");
+                // Force validation of all fields after a short delay
+                setTimeout(() => trigger(), 50);
               }}
               onPreview={(url) => setPreviewImage({ url, isOpen: true })}
               folder="categories/images"
@@ -914,7 +918,8 @@ export default function CategoriesPage() {
               value={iconUrlValue}
               onChange={(url) => {
                 setValue("iconUrl", url, { shouldValidate: true });
-                trigger("iconUrl");
+                // Force validation of all fields after a short delay
+                setTimeout(() => trigger(), 50);
               }}
               onPreview={(url) => setPreviewImage({ url, isOpen: true })}
               folder="categories/icons"
@@ -924,32 +929,16 @@ export default function CategoriesPage() {
             />
           </div>
 
-          {/* Status Dropdown */}
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Status *
-            </label>
-            <select
-              {...register("isActive", {
-                setValueAs: (value) => value === "true",
-              })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200"
-              disabled={createMutation.isPending || updateMutation.isPending}
-            >
-              <option value="true">Active</option>
-              <option value="false">InActive</option>
-            </select>
-            {errors.isActive && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.isActive.message}
-              </p>
-            )}
-          </div> */}
-
           <ToggleSwitch
             label={t("common.active") || "Active"}
             checked={isActiveValue}
-            onChange={(checked) => setValue("isActive", checked)}
+            onChange={(checked) => {
+              setValue("isActive", checked);
+              setValue("status", checked ? "Active" : "InActive", {
+                shouldValidate: true,
+              });
+              trigger();
+            }}
           />
 
           {/* Form validation summary */}
@@ -977,6 +966,7 @@ export default function CategoriesPage() {
                 {errors.imageUrl && <li>{errors.imageUrl.message}</li>}
                 {errors.iconUrl && <li>{errors.iconUrl.message}</li>}
                 {errors.isActive && <li>{errors.isActive.message}</li>}
+                {errors.status && <li>{errors.status.message}</li>}
               </ul>
             </div>
           )}

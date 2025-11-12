@@ -15,6 +15,7 @@ import AdminToast from "../../../components/common/AdminToast";
 import DeleteConfirmation from "../../../components/common/DeleteConfirmation";
 import type { AdminToastType } from "../../../components/common/AdminToast";
 import { useForm } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
@@ -337,6 +338,7 @@ export default function SubCategoriesPage() {
         imageUrl: "",
         iconUrl: "",
         isActive: true,
+        status: "Active",
       });
     }
   }, [editingSubCategory, reset]);
@@ -453,7 +455,7 @@ export default function SubCategoriesPage() {
     });
   };
 
-  const onSubmit = async (data: SubCategoryFormData) => {
+  const onSubmit: SubmitHandler<SubCategoryFormData> = async (data) => {
     // Final validation check
     const isFormValid = await trigger();
     if (!isFormValid) {
@@ -1002,7 +1004,7 @@ export default function SubCategoriesPage() {
               value={imageUrlValue}
               onChange={(url) => {
                 setValue("imageUrl", url, { shouldValidate: true });
-                trigger("imageUrl");
+                setTimeout(() => trigger(), 50);
               }}
               onPreview={(url) => setPreviewImage({ url, isOpen: true })}
               folder="subcategories/images"
@@ -1030,7 +1032,7 @@ export default function SubCategoriesPage() {
               value={iconUrlValue}
               onChange={(url) => {
                 setValue("iconUrl", url, { shouldValidate: true });
-                trigger("iconUrl");
+                setTimeout(() => trigger(), 50);
               }}
               onPreview={(url) => setPreviewImage({ url, isOpen: true })}
               folder="subcategories/icons"
@@ -1043,7 +1045,13 @@ export default function SubCategoriesPage() {
           <ToggleSwitch
             label={t("common.active") || "Active"}
             checked={isActiveValue}
-            onChange={(checked) => setValue("isActive", checked)}
+            onChange={(checked) => {
+              setValue("isActive", checked);
+              setValue("status", checked ? "Active" : "InActive", {
+                shouldValidate: true,
+              });
+              trigger();
+            }}
           />
 
           {/* Validation Summary */}
@@ -1070,6 +1078,7 @@ export default function SubCategoriesPage() {
                 {errors.name && <li>{errors.name.message}</li>}
                 {errors.imageUrl && <li>{errors.imageUrl.message}</li>}
                 {errors.iconUrl && <li>{errors.iconUrl.message}</li>}
+                {errors.status && <li>{errors.status.message}</li>}
               </ul>
             </div>
           )}

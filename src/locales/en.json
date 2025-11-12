@@ -71,7 +71,7 @@
     "title": "BoligMatch Admin",
     "dashboard": {
       "title": "Dashboard",
-      "subtitle": "Manage all categories"
+      "subtitle": "Real-time insights and system overview"
     },
     "categories": {
       "title": "Categories",
@@ -150,7 +150,35 @@
       "id": "ID",
       "deleteConfirm": "Are you sure you want to delete this user?",
       "updateSuccess": "Users updated successfully"
+    },
+    "testimonials":{
+      "title": "Testimonials",
+      "subtitle": "Manage partner testimonials",
+      "addTestimonial": "Add Testimonial",
+      "editTestimonial": "Edit Testimonial",
+      "manageTestimonials": "Manage Testimonials",
+      "manageTestimonialsDescription": "Manage customer testimonials for this partner",
+      "testimonials": "Testimonials",
+      "customerName": "Customer Name",
+      "partnerId": "Partner Name",
+      "rating": "Give Ratings",
+      "testimonialText": "Share Your Opinion",
+      "note": "Note",
+      "displayOnWebsite": "Display on Website",
+      "stars": "stars",
+      "star": "star",
+      "id": "ID",
+      "deleteConfirm": "Are you sure you want to delete this testimonial?",
+      "createSuccess": "Testimonial created successfully",
+      "updateSuccess": "Testimonial updated successfully",
+      "deleteSuccess": "Testimonial deleted successfully",
+      "createError": "Failed to create testimonial",
+      "updateError": "Failed to update testimonial",
+      "deleteError": "Failed to delete testimonial",
+      "addTestimonialDescription": "Create a new testimonial to showcase customer feedback",
+      "editTestimonialDescription": "Edit existing testimonial details"
     }
+
   },
   "landing": {
     "signUpButton": "Sign up here",
