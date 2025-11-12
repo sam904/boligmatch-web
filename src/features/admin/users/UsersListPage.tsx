@@ -42,11 +42,11 @@ const userSchema = z.object({
     .refine(
       (value) => {
         if (!value) return false;
-        if (value === "0") return true;
-        return /^\d{10}$/.test(value);
+        // Allow exactly 8 digits
+        return /^\d{8}$/.test(value);
       },
       {
-        message: "Mobile number must be exactly 10 digits or 0 (if optional)",
+        message: "Mobile number must be exactly 8 digits",
       }
     ),
   isActive: z.boolean(),
