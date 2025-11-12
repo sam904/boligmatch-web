@@ -304,7 +304,7 @@ const UserSupplier = () => {
             </div>
           </div>
           <p className="text-white text-sm figtree font-[400] text-[18px]">
-            Teningve 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
+            Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
           </p>
         </div>
       </footer>

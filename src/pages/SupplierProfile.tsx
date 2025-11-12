@@ -3,7 +3,7 @@ import supplierProfile from "../assets/supplierProfile/suppliier-profile-hero.pn
 import heartIcon from "/src/assets/userImages/Lag_1.svg";
 import share from "../assets/supplierProfile/share.png";
 import chat from "../assets/supplierProfile/chat.png";
-import { Star } from "lucide-react";
+// import { Star } from "lucide-react";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../app/hooks";
@@ -14,12 +14,19 @@ import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
-import { toast } from "react-toastify";
+import { showRecommendationSuccessToast, showRecommendationErrorToast, showContactSuccessToast, showContactErrorToast, showFavouriteSuccessToast, showFavouriteErrorToast } from "../components/common/ToastBanner";
 import { FaPlayCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { partnerService } from "../services/partner.service";
-import footerLogo from "/src/assets/userImages/footerLogo.svg";
+// import footerLogo from "/src/assets/userImages/footerLogo.svg";
 // import gradient from "/src/assets/userImages/gradient.svg";
+import ratingImg from "/src/assets/userImages/rating.png";
+import fullRatingImg from "/src/assets/userImages/ratig2.png";
+// import logo from ""
+import trustPilotLogo from "/src/assets/userImages/boligmatchLogo2.png";
+import startImg from "/src/assets/userImages/star.png";
+import servicesImg from "/src/assets/supplierProfile/services.png";
+import factsImg from "/src/assets/userImages/faktaLogo.svg";
 
 const SupplierProfile = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -98,7 +105,7 @@ const SupplierProfile = () => {
         const normalized = parsed?.output ?? parsed;
         return normalized?.id ?? null;
       }
-    } catch {}
+    } catch { }
     return null;
   };
 
@@ -136,13 +143,13 @@ const SupplierProfile = () => {
       const userId = parsedUser?.userId ?? userData?.userId;
 
       if (!userId) {
-        toast.error("User not found. Please log in again.");
+        showFavouriteErrorToast("User not found. Please log in again.");
         return;
       }
 
       const partnerId = getCurrentPartnerId();
       if (!partnerId) {
-        toast.error("Partner not loaded.");
+        showFavouriteErrorToast("Partner not loaded.");
         return;
       }
 
@@ -153,10 +160,10 @@ const SupplierProfile = () => {
       };
 
       await favouritesService.add(payload);
-      toast.success("Added to favourites");
+      showFavouriteSuccessToast("Added to favourites");
     } catch (error) {
       console.error("Error adding to favorites:", error);
-      toast.error("Failed to add to favourites. Please try again.");
+      showFavouriteErrorToast("Failed to add to favourites. Please try again.");
     } finally {
       setIsAddingToFavorites(false);
     }
@@ -166,7 +173,7 @@ const SupplierProfile = () => {
     try {
       const targetId = getCurrentPartnerId();
       if (!targetId) {
-        toast.error("Partner not loaded.");
+        showContactErrorToast("Partner not loaded.");
         return;
       }
       const userStr = localStorage.getItem("bm_user");
@@ -174,7 +181,7 @@ const SupplierProfile = () => {
       const senderId = parsedUser?.userId ?? userData?.userId;
 
       if (!senderId) {
-        toast.error("User not found. Please log in again.");
+        showContactErrorToast("User not found. Please log in again.");
         return;
       }
 
@@ -188,13 +195,13 @@ const SupplierProfile = () => {
       };
 
       await conversationService.add(payload);
-      toast.success("Message sent successfully");
+      showContactSuccessToast("Message sent successfully");
       setActiveModal(null);
       setContactSubject("");
       setContactBody("");
     } catch (error) {
       console.error("Error sending message:", error);
-      toast.error("Failed to send message. Please try again.");
+      showContactErrorToast("Failed to send message. Please try again.");
     }
   };
 
@@ -202,11 +209,11 @@ const SupplierProfile = () => {
     try {
       const targetId = getCurrentPartnerId();
       if (!targetId) {
-        toast.error("Partner not loaded.");
+        showRecommendationErrorToast("Fejl");
         return;
       }
       if (!recommendEmail) {
-        toast.error("Please enter recipient email.");
+        showRecommendationErrorToast("Fejl");
         return;
       }
 
@@ -216,9 +223,7 @@ const SupplierProfile = () => {
       const userId = parsedUser?.userId ?? userData?.userId;
 
       if (!userId) {
-        toast.error(
-          "User not found. Please log in again to send a recommendation."
-        );
+        showRecommendationErrorToast("Fejl");
         return;
       }
 
@@ -232,13 +237,13 @@ const SupplierProfile = () => {
       };
 
       await recommendationService.add(payload);
-      toast.success("Recommendation sent successfully");
+      showRecommendationSuccessToast("Recommandation Sent Succesfully!!");
       setActiveModal(null);
       setRecommendEmail("");
       setRecommendComment("");
     } catch (error) {
       console.error("Error sending recommendation:", error);
-      toast.error("Failed to send recommendation. Please try again.");
+      showRecommendationErrorToast("Failed to Send Recommandation");
     }
   };
 
@@ -263,6 +268,39 @@ const SupplierProfile = () => {
       .map((s: string) => s.trim())
       .filter((s: string) => s.length > 0);
   };
+
+  // Helper: render a 5-icon rating row.
+  // When rating === 5 -> show 4 x ratingImg + 1 x fullRatingImg as requested.
+  // Otherwise: for i < rating use ratingImg else fullRatingImg.
+  const renderRating = (
+    rating: number,
+    sizeClass: string,
+    gapClass = "gap-1"
+  ) => {
+    const items = Array.from({ length: 5 }, (_, i) => {
+      const src =
+        rating === 5
+          ? i < 4
+            ? ratingImg
+            : fullRatingImg
+          : i < rating
+            ? ratingImg
+            : fullRatingImg;
+      return (
+        <img
+          key={i}
+          src={src}
+          alt="rating"
+          className={`${sizeClass} select-none`}
+        />
+      );
+    });
+    return <div className={`flex items-center ${gapClass}`}>{items}</div>;
+  };
+
+  const reviews: any[] = Array.isArray(partnerData?.testImo)
+    ? partnerData.testImo.filter((r: any) => r && r.isDisplayed)
+    : [];
 
   return (
     <>
@@ -367,97 +405,59 @@ const SupplierProfile = () => {
           <div className="grid grid-cols-3 gap-6 max-w-7xl bg-[#012F2B]">
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
-              <div className="w-[403px] h-[881px] rounded-[10px] bg-white p-6 flex flex-col">
-                <h3 className="text-3xl font-semibold mb-5 text-center">
-                  Trustpilot
+              <div className="w-[403px] h-[859px] rounded-[10px] bg-white p-6 flex flex-col relative">
+                <div className=" flex justify-center p-2">
+                  <img
+                    className="w-[130px] h-[32px]"
+                    src={trustPilotLogo}
+                    alt=""
+                  />
+                </div>
+                <h3 className="text-[32px] font-[800] mb-5 text-center">
+                  Anmeldelser
                 </h3>
-
-                {/* Stars Row */}
-                <div className="flex justify-center items-center gap-1 mb-2">
-                  {Array(4)
-                    .fill(0)
-                    .map((_, i) => (
-                      <Star
-                        key={i}
-                        className="text-[#95C11F] fill-[#95C11F] w-[52px] h-[52px]"
-                      />
-                    ))}
-                  <Star className="text-gray-400 fill-gray-400 w-[52px] h-[52px]" />
+                <div className="space-y-10">
+                  {reviews.length > 0 ? (
+                    reviews.map((rev: any) => {
+                      const r = Math.max(
+                        0,
+                        Math.min(5, Number(rev?.rating) || 0)
+                      );
+                      return (
+                        <div key={rev.id} className="">
+                          <div className="flex justify-center mb-3">
+                            {renderRating(r, "w-[45px] h-[42px]", "gap-2")}
+                          </div>
+                          <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6">
+                            ”{rev?.test}”
+                          </p>
+                          <p className="text-sm font-bold text-black mt-3 text-start px-6">
+                            {rev?.customerName}
+                          </p>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <p className="text-sm font-semibold text-black mt-3">
+                      Ingen anmeldelser endnu.
+                    </p>
+                  )}
                 </div>
 
-                <p className="text-md font-semibold text-black mb-4 text-center">
-                  Fremragende / 273 anmeldelser
-                </p>
-
-                <p className="text-7xl font-bold text-center mb-6">4.0</p>
-
-                {/* Progress Bars */}
-                <div className="space-y-2 mb-4">
-                  {[5, 4, 3, 2, 1].map((num) => (
-                    <div key={num} className="flex items-center gap-3 py-1">
-                      <span className="text-sm w-20">{num} stjerner</span>
-                      <div className="w-[300px] h-3 bg-[#D9D9D9] rounded-full overflow-hidden">
-                        <div className="h-3 bg-[#95C11F] rounded-full w-2/4"></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Review Section Header */}
-                <div className="rounded-xl p-3 mt-auto">
-                  <p className="text-xl font-bold text-center pb-7">
-                    Anmeldelser
-                  </p>
-
-                  {/* Reviewer */}
-                  <div className="flex items-center space-x-3">
-                    <div className="bg-[#9ACD32] text-white font-bold rounded-full w-[60px] h-[60px] flex items-center justify-center text-sm">
-                      NR
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-black leading-tight">
-                        Niels Rasmussen
-                      </span>
-                      <span className="text-sm text-gray-600">
-                        April 21, 2025
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Stars under the review */}
-                <div className="flex items-center gap-1 mt-4 mb-2">
-                  {Array(4)
-                    .fill(0)
-                    .map((_, i) => (
-                      <Star
-                        key={i}
-                        className="text-[#95C11F] fill-[#95C11F] w-6 h-6"
-                      />
-                    ))}
-                  <Star className="text-gray-400 fill-gray-400 w-6 h-6" />
-                </div>
-
-                <p className="text-sm font-semibold text-black mt-3">
-                  Hil idundae pelibus. Ulluptas vollace stibus eaquam quam
-                  dernatus am accatur, sam dolo essint aut utatur? Qui dit
-                  aboribusam, comniam quo dendi conse sapiet quame provitem
-                  iunt. Ulpa nia pra nobitis maionsed quos aborupta sam,
-                  voluptaerum sequi conem fugitibus, volum fugiatibus exceseres
-                  a sam, accae
-                </p>
-
-                {/* CTA Button */}
-                <div className="flex justify-center">
-                  <button className="mt-4 w-[170px] bg-[#91C73D] flex items-center justify-center gap-2 text-white rounded-lg px-4 py-1 text-sm font-semibold hover:bg-[#91C73D]/80">
-                    <Star className="w-5 h-5" />
+                <div className="left-[25%] flex justify-center pt-2 mt-auto">
+                  <button className="absolute w-[202px] h-[66px] bg-[#95C11F] flex items-center justify-center gap-2 text-white rounded-[11px] px-4 text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]">
+                    <img
+                      src={startImg}
+                      alt="rating"
+                      className="w-[33px] h-[33px] select-none"
+                    />
                     Anmeld os på Trustpilot
                   </button>
                 </div>
               </div>
 
               <div
-                className="w-[403px] h-[432px] rounded-[10px] flex justify-center items-center"
+                className="w-[403px] h-[432px] mt-[30px] rounded-[10px] flex justify-center items-center"
                 style={{
                   background:
                     "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
@@ -505,7 +505,7 @@ const SupplierProfile = () => {
                 }}
               >
                 <img
-                  src="/src/assets/supplierProfile/services.png"
+                  src={servicesImg}
                   alt="Services"
                   className="w-[88px] h-[77px] select-none"
                 />
@@ -584,7 +584,7 @@ const SupplierProfile = () => {
                 }}
               >
                 <img
-                  src="/src/assets/userImages/faktaLogo.svg"
+                  src={factsImg}
                   alt="Fakta"
                   className="w-[59px] h-[63px] select-none"
                 />
@@ -719,7 +719,7 @@ const SupplierProfile = () => {
                   <div className="flex justify-center mt-4 mb-6">
                     <button
                       onClick={handleSendConversation}
-                      className="min-w-[120px] h-10 bg-[#91C73D] text-white font-semibold rounded-lg hover:bg-[#7fb02f] transition-colors"
+                      className="min-w-[120px] h-10 bg-[#91C73D] text-white font-semibold rounded-lg hover:bg-[#7fb02f] transition-colors cursor-poi"
                     >
                       {t("supplierProfile.contactModal.send")}
                     </button>
@@ -745,7 +745,7 @@ const SupplierProfile = () => {
           </div>
         )}
       </div>
-      <footer className="bg-[#01351f] text-white text-center p-4">
+      {/* <footer className="bg-[#01351f] text-white text-center p-4">
         <div className="flex flex-col items-center">
           <div className="text-center">
             <div className="mb-8">
@@ -759,10 +759,10 @@ const SupplierProfile = () => {
             </div>
           </div>
           <p className="text-white text-sm figtree font-[400] text-[18px]">
-            Teningve 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
+            Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
           </p>
         </div>
-      </footer>
+      </footer> */}
     </>
   );
 };

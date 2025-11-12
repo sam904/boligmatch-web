@@ -22,53 +22,53 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
   const [hoveredStep, setHoveredStep] = useState<number | null>(null);
 
   const steps = [
-    { 
-      number: "01", 
-      icon: icon1, 
+    {
+      number: "01",
+      icon: icon1,
       label: t("stepper.physical.label"),
-      description: t("stepper.physical.description")
+      description: t("stepper.physical.description"),
     },
-    { 
-      number: "02", 
-      icon: icon2, 
+    {
+      number: "02",
+      icon: icon2,
       label: t("stepper.photography.label"),
-      description: t("stepper.photography.description")
+      description: t("stepper.photography.description"),
     },
     {
       number: "03",
       icon: icon3,
       label: t("stepper.viewing.label"),
-      description: t("stepper.viewing.description")
+      description: t("stepper.viewing.description"),
     },
-    { 
-      number: "04", 
-      icon: icon4, 
+    {
+      number: "04",
+      icon: icon4,
       label: t("stepper.negotiation.label"),
-      description: t("stepper.negotiation.description")
+      description: t("stepper.negotiation.description"),
     },
-    { 
-      number: "05", 
-      icon: icon5, 
+    {
+      number: "05",
+      icon: icon5,
       label: t("stepper.signing.label"),
-      description: t("stepper.signing.description")
+      description: t("stepper.signing.description"),
     },
-    { 
-      number: "06", 
-      icon: icon6, 
+    {
+      number: "06",
+      icon: icon6,
       label: t("stepper.approval.label"),
-      description: t("stepper.approval.description")
+      description: t("stepper.approval.description"),
     },
-    { 
-      number: "07", 
-      icon: icon7, 
+    {
+      number: "07",
+      icon: icon7,
       label: t("stepper.final.label"),
-      description: t("stepper.final.description")
+      description: t("stepper.final.description"),
     },
-    { 
-      number: "08", 
-      icon: icon8, 
+    {
+      number: "08",
+      icon: icon8,
       label: t("stepper.transfer.label"),
-      description: t("stepper.transfer.description")
+      description: t("stepper.transfer.description"),
     },
   ];
 
@@ -82,17 +82,13 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="flex items-start 
-    w-full 
-    overflow-x-auto 
-    scrollbar-hide
-    md:w-[1400px]
-    md:overflow-visible
-    gap-6">
+      <div
+        className="flex items-start w-full overflow-x-auto scrollbar-hide md:w-[full] md:overflow-visible"
+      >
         {steps.map((step, index) => (
           <React.Fragment key={step.number}>
             <div
-              className="flex flex-col items-center flex-1 min-w-[200px] md:min-w-0 z-10 relative"
+              className="flex flex-col items-center flex-1 w-[200px] z-10 relative"
               onMouseEnter={() => setHoveredStep(index)}
               onMouseLeave={() => setHoveredStep(null)}
             >
@@ -131,7 +127,7 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
                 {/* Overlapping button centered on the image */}
                 <button
                   onClick={() => onStepClick?.(index + 1)}
-                  className={`absolute flex items-center justify-center w-[70px] h-[70px] rounded-full transition-all duration-200 ${
+                  className={`absolute flex items-center justify-center w-[80px] h-[80px] rounded-full transition-all duration-200 ${
                     currentStep >= index + 1
                       ? "bg-[#01351f] text-white"
                       : "bg-[#01351f] text-gray-500"
@@ -147,7 +143,7 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
 
               {/* Step Label */}
               <span
-                className={`mt-2 text-sm font-medium text-center max-w-[120px] ${
+                className={`mt-2 text-sm font-medium text-center w-[120px] ${
                   currentStep >= index + 1 ? "text-white" : "text-gray-500"
                 }`}
               >
@@ -155,26 +151,15 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
               </span>
 
               {hoveredStep === index && (
-                <div className="
-                absolute 
-      top-[90px] 
-      left-1/2 
-      transform -translate-x-1/2 
-      w-[220px] 
-      bg-[#01351f] 
-      text-white 
-      rounded-2xl 
-      shadow-xl 
-      overflow-hidden 
-      transition-all 
-      duration-300 
-      z-50
-
+                <div
+                  className="absolute top-[90px] left-1/2 transform -translate-x-1/2 w-[220px] bg-[#01351f]  text-white rounded-2xl 
+      shadow-xl overflow-hidden transition-all duration-300 z-50
       md:w-[150px]       /* Desktop original size */
       md:top-[80px]
 
       /* ✅ Make it float above scroll on small screens */
-       md:absolute  ">
+       md:absolute  "
+                >
                   <div className="relative">
                     <img
                       src={jurneyImg}

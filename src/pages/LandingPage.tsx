@@ -37,9 +37,9 @@ export default function LandingPage() {
         open={showSignUpModal}
         onClose={() => setShowSignUpModal(false)}
       />
-      <div className="absolute md:top-44 top-24 lg:left-72 sm:left-50 flex max-w-6xl mx-auto px-12 justify-between mt-0 h-[calc(100vh-100vh)]">
+      <div className="absolute md:top-42 top-24 lg:left-80 sm:left-50 flex max-w-6xl mx-auto px-12 justify-between mt-0 h-[calc(100vh-100vh)]">
         <div>
-          <div className="md:w-[175px] w-[70px] flex justify-end">
+          <div className="md:w-[165px] w-[70px] flex justify-end">
             <img
               src={landingPageIcons}
               alt=""
@@ -60,7 +60,7 @@ export default function LandingPage() {
               className="md:w-[107px] w-10 h-auto"
             />
           </div>
-          <div className="md:w-[170px] w-[70px] flex justify-end">
+          <div className="md:w-[165px] w-[70px] flex justify-end">
             <img
               src={landingPageIcons4}
               alt=""

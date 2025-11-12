@@ -1,4 +1,5 @@
 import React from "react";
+import { toast } from "react-toastify";
 
 export type ToastType = "success" | "error" | "info";
 
@@ -38,8 +39,8 @@ export default function ToastBanner({
     type === "success"
       ? "bg-[#95C11F] text-white"
       : type === "error"
-      ? "bg-[#9CA3AF] text-white"
-      : "bg-[#165933] text-white";
+        ? "bg-[#9CA3AF] text-white"
+        : "bg-[#165933] text-white";
 
   return (
     <div
@@ -52,7 +53,7 @@ export default function ToastBanner({
     >
       <div
         className={
-          `pointer-events-auto flex items-center justify-between rounded-2xl px-4 py-2.5 shadow-lg ${baseColors}`
+          `pointer-events-auto flex items-center justify-between rounded-full px-5 py-3 shadow-lg ${baseColors}`
         }
       >
         <div className="flex items-center gap-3">
@@ -73,11 +74,11 @@ export default function ToastBanner({
               </svg>
             )}
           </span>
-          <span className="font-bold text-sm sm:text-base leading-none">{message}</span>
+          <span className="font-bold text-base leading-none">{message}</span>
         </div>
         <button
           onClick={() => setOpen(false)}
-          className="cursor-pointer rounded-md p-1 hover:bg-white/10 transition-colors"
+          className="cursor-pointer rounded-md p-1 transition-colors"
           aria-label="Close notification"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,3 +89,67 @@ export default function ToastBanner({
     </div>
   );
 }
+
+export const showRecommendationSuccessToast = (message: string = "Recommandation Sent Succesfully!!") =>
+  toast(<ToastBanner type="success" message={message} fixed={false} />, {
+    closeButton: false,
+    hideProgressBar: true,
+    className: "bg-transparent shadow-none p-0",
+    style: { background: "transparent", boxShadow: "none" },
+  });
+
+export const showRecommendationErrorToast = (message: string = "Failed to Send Recommandation") =>
+  toast(<ToastBanner type="error" message={message} fixed={false} />, {
+    closeButton: false,
+    hideProgressBar: true,
+    className: "bg-transparent shadow-none p-0",
+    style: { background: "transparent", boxShadow: "none" },
+  });
+
+export const showContactSuccessToast = (message: string = "Message sent successfully") =>
+  toast(<ToastBanner type="success" message={message} fixed={false} />, {
+    closeButton: false,
+    hideProgressBar: true,
+    className: "bg-transparent shadow-none p-0",
+    style: { background: "transparent", boxShadow: "none" },
+  });
+
+export const showContactErrorToast = (message: string = "Failed to send message. Please try again.") =>
+  toast(<ToastBanner type="error" message={message} fixed={false} />, {
+    closeButton: false,
+    hideProgressBar: true,
+    className: "bg-transparent shadow-none p-0",
+    style: { background: "transparent", boxShadow: "none" },
+  });
+
+export const showFavouriteSuccessToast = (message: string = "Added to favourites") =>
+  toast(<ToastBanner type="success" message={message} fixed={false} />, {
+    closeButton: false,
+    hideProgressBar: true,
+    className: "bg-transparent shadow-none p-0",
+    style: { background: "transparent", boxShadow: "none" },
+  });
+
+export const showFavouriteErrorToast = (message: string = "Failed to add to favourites. Please try again.") =>
+  toast(<ToastBanner type="error" message={message} fixed={false} />, {
+    closeButton: false,
+    hideProgressBar: true,
+    className: "bg-transparent shadow-none p-0",
+    style: { background: "transparent", boxShadow: "none" },
+  });
+
+export const showSignupSuccessToast = (message: string = "Registration successful! Welcome to Boligmatch+.") =>
+  toast(<ToastBanner type="success" message={message} fixed={false} />, {
+    closeButton: false,
+    hideProgressBar: true,
+    className: "bg-transparent shadow-none p-0",
+    style: { background: "transparent", boxShadow: "none" },
+  });
+
+export const showSignupErrorToast = (message: string = "Registration failed") =>
+  toast(<ToastBanner type="error" message={message} fixed={false} />, {
+    closeButton: false,
+    hideProgressBar: true,
+    className: "bg-transparent shadow-none p-0",
+    style: { background: "transparent", boxShadow: "none" },
+  });

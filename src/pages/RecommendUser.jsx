@@ -5,7 +5,6 @@ import UserHeader from "../features/users/UserPages/UserHeader";
 import { FaPlayCircle } from "react-icons/fa";
 import LoginChoiceModal from "../components/common/LoginChoiceModal";
 import UserModal from "../components/common/UserModal";
-import PartnerModal from "../components/common/PartnerModal";
 import { useAppSelector } from "../app/hooks";
 import Servises from "/src/assets/supplierProfile/services.png"
 import facts from "/src/assets/userImages/faktaLogo.svg"
@@ -16,8 +15,8 @@ function RecommendUser() {
     const token = useAppSelector((s) => s.auth.accessToken);
     const isAuthenticated = Boolean(token);
     const [showChoice, setShowChoice] = useState(false);
-    const [showUserModal, setShowUserModal] = useState(false);
-    const [showPartnerModal, setShowPartnerModal] = useState(false);
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [modalRole, setModalRole] = useState("user");
     const [data, setData] = useState(null);
     console.log('data------>', data);
     const [isLoading, setIsLoading] = useState(true);
@@ -31,8 +30,7 @@ function RecommendUser() {
             setShowChoice(true);
         } else {
             setShowChoice(false);
-            setShowUserModal(false);
-            setShowPartnerModal(false);
+            setShowAuthModal(false);
         }
     }, [isAuthenticated]);
 
@@ -132,20 +130,16 @@ function RecommendUser() {
                 onClose={() => setShowChoice(false)}
                 onSelect={(role) => {
                     setShowChoice(false);
-                    if (role === "user") setShowUserModal(true);
-                    if (role === "partner") setShowPartnerModal(true);
+                    setModalRole(role === "partner" ? "partner" : "user");
+                    setShowAuthModal(true);
                 }}
                 closable={false}
             />
             <UserModal
-                open={showUserModal}
-                onClose={() => setShowUserModal(false)}
+                open={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
                 redirectTo={location.pathname}
-            />
-            <PartnerModal
-                open={showPartnerModal}
-                onClose={() => setShowPartnerModal(false)}
-                redirectTo={location.pathname}
+                roleTarget={modalRole}
             />
             {/* Hero Section with Video/Image */}
             <div

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { userService } from "../../services/user.service";
 import type { CreateUserRequest } from "../../types/user";
 import logo from "/src/assets/userImages/boligmatchLogo2.png";
+import { showSignupSuccessToast, showSignupErrorToast } from "./ToastBanner";
 
 interface SignUpModalProps {
   open: boolean;
@@ -64,6 +65,7 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
 
     // If we get here, the registration was successful
     setSuccess(true);
+    showSignupSuccessToast("Registration successful! Welcome to Boligmatch+.");
     reset();
     // Close modal after a short delay to show success message
     setTimeout(() => {
@@ -71,9 +73,9 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
       setSuccess(false);
     }, 2000);
   } catch (err: any) {
-    setError(
-      err.response?.data?.message || err.message || "Registration failed"
-    );
+    const msg = err?.response?.data?.message || err?.message || "Registration failed";
+    setError(msg);
+    showSignupErrorToast(msg);
   } finally {
     setIsLoading(false);
   }

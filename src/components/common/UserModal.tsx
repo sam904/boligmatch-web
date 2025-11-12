@@ -10,6 +10,8 @@ import { useTranslation } from "react-i18next";
 import loginModelLogo from "/src/assets/userImages/boligmatchLogo2.png";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { logout } from "../../features/auth/authSlice";
+import ToastBanner from "./ToastBanner";
 
 const schema = z.object({
   userName: z.string().min(1, "Username is required"),
@@ -20,9 +22,10 @@ interface UserModalProps {
   open: boolean;
   onClose: () => void;
   redirectTo?: string;
+  roleTarget?: "user" | "partner";
 }
 
-export default function UserModal({ open, onClose, redirectTo }: UserModalProps) {
+export default function UserModal({ open, onClose, redirectTo, roleTarget = "user" }: UserModalProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,6 +34,26 @@ export default function UserModal({ open, onClose, redirectTo }: UserModalProps)
   const user = useAppSelector((s) => s.auth.user);
   const error = useAppSelector((s) => s.auth.error);
   const { t } = useTranslation();
+
+  const showSuccess = (message: string) => {
+    toast(({ closeToast }) => (
+      <ToastBanner
+        type="success"
+        message={message}
+        onClose={closeToast}
+        autoDismissMs={3000}
+        fixed={false}
+      />
+    ), {
+      position: "top-right",
+      closeButton: false,
+      hideProgressBar: true,
+      autoClose: 3000,
+      icon: false,
+      style: { background: "transparent", boxShadow: "none", padding: 0 },
+      bodyClassName: "p-0 m-0",
+    });
+  };
 
   const [mode, setMode] = useState<"login" | "forgot-email" | "otp" | "reset">(
     "login"
@@ -66,19 +89,51 @@ export default function UserModal({ open, onClose, redirectTo }: UserModalProps)
     if (!open) return;
     if (hasHandledLoginRef.current) return;
     if (token && user) {
-      hasHandledLoginRef.current = true;
-      onClose();
-      localStorage.setItem("bm_user", JSON.stringify(user));
-      localStorage.setItem("bm_access", token);
-      toast.success("Login successful!");
+      try {
+        const roleIds = String((user as any)?.roleIds ?? "");
+        const roleName = String((user as any)?.roleName ?? "");
 
-      const from = (location.state as any)?.from?.pathname;
-      const target = redirectTo ?? from ?? "/profile";
-      navigate(target, { replace: true });
+        const isAdmin = roleIds.split(",").map((r: string) => r.trim()).includes("1") || roleName.toLowerCase() === "admin";
+        if (isAdmin) {
+          toast.error("You are not authorised for login");
+          try {
+            localStorage.removeItem("bm_user");
+            localStorage.removeItem("bm_partner");
+          } catch {}
+          dispatch(logout());
+          onClose();
+          return;
+        }
+
+        hasHandledLoginRef.current = true;
+        onClose();
+
+        const isPartner = roleIds.split(",").map((r: string) => r.trim()).includes("2") || roleName === "Partner";
+        const isUser = roleIds.split(",").map((r: string) => r.trim()).includes("3") || roleName === "User";
+
+        localStorage.setItem("bm_access", token);
+        if (isPartner && !isUser) {
+          localStorage.removeItem("bm_user");
+          localStorage.setItem("bm_partner", JSON.stringify(user));
+          showSuccess("Partner login successful!");
+        } else {
+          localStorage.removeItem("bm_partner");
+          localStorage.setItem("bm_user", JSON.stringify(user));
+          showSuccess("Login successful!");
+        }
+
+        const from = (location.state as any)?.from?.pathname;
+        const defaultByRole = isPartner && !isUser ? "/partner/statistics" : "/profile";
+        const target = redirectTo ?? from ?? defaultByRole;
+        navigate(target, { replace: true });
+      } catch (e) {
+        const from = (location.state as any)?.from?.pathname;
+        const target = redirectTo ?? from ?? "/profile";
+        navigate(target, { replace: true });
+      }
     }
   }, [token, user, onClose, navigate, open, redirectTo]);
 
-  // Lock body scroll when the modal is open
   React.useEffect(() => {
     if (!open) return;
     const original = document.body.style.overflow;
@@ -232,7 +287,7 @@ export default function UserModal({ open, onClose, redirectTo }: UserModalProps)
             <div className="px-6 pb-6">
               <h2 className="text-[20px] font-[800] text-[#000000] text-center">
                 {mode === "login"
-                  ? t("auth.login")
+                  ? `${roleTarget === "partner" ? "Partner " : ""}${t("auth.login")}`
                   : mode === "forgot-email"
                   ? "Forgot Password"
                   : mode === "otp"

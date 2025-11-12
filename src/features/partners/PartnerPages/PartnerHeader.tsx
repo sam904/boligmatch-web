@@ -4,7 +4,6 @@ import userLogo from "/src/assets/userImages/boligmatchLogo.png";
 import userHeader from "/src/assets/userImages/userHeader.png";
 import UserModal from "../../../components/common/UserModal";
 import LoginChoiceModal from "../../../components/common/LoginChoiceModal";
-import PartnerModal from "../../../components/common/PartnerModal";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../app/hooks";
 import { tokenStorage } from "../../../lib/storage";
@@ -15,7 +14,7 @@ function PartnerHeader() {
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
+  const [modalRole, setModalRole] = useState<"user" | "partner">("user");
   const [isChoiceModalOpen, setIsChoiceModalOpen] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   console.log("showLangDropdown", showLangDropdown);
@@ -395,20 +394,20 @@ function PartnerHeader() {
         onSelect={(role) => {
           setIsChoiceModalOpen(false);
           if (role === "user") {
+            setModalRole("user");
             setIsModalOpen(true);
           } else {
-            setIsPartnerModalOpen(true);
+            setModalRole("partner");
+            setIsModalOpen(true);
           }
         }}
       />
 
       {isModalOpen && (
-        <UserModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      )}
-      {isPartnerModalOpen && (
-        <PartnerModal
-          open={isPartnerModalOpen}
-          onClose={() => setIsPartnerModalOpen(false)}
+        <UserModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          roleTarget={modalRole}
         />
       )}
     </>

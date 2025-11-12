@@ -107,7 +107,7 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
           <img src={sampleImg} alt="" />
         </div>
         <p className="text-white text-sm text-center">
-          Teningve 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
+          Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
         </p>
       </div>
     </>

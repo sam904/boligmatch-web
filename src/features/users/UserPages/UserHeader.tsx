@@ -4,7 +4,6 @@ import userLogo from "/src/assets/userImages/boligmatchLogo.png";
 import userHeader from "/src/assets/userImages/userHeader.png";
 import UserModal from "../../../components/common/UserModal";
 import LoginChoiceModal from "../../../components/common/LoginChoiceModal";
-import PartnerModal from "../../../components/common/PartnerModal";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../app/hooks";
 import { tokenStorage } from "../../../lib/storage";
@@ -15,7 +14,7 @@ function UserHeader() {
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
+  const [modalRole, setModalRole] = useState<"user" | "partner">("user");
   const [isChoiceModalOpen, setIsChoiceModalOpen] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   console.log(showLangDropdown);
@@ -259,12 +258,41 @@ function UserHeader() {
                           {t("sidebar.manageProfile")}
                         </span>
                       </button>
+                      <button
+                        onClick={() => {
+                          setShowSidebar(false);
+                          navigate("/partner/statistics");
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                      >
+                        <span className="flex items-center gap-2">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 17v-2a4 4 0 118 0v2m-6 4h4a2 2 0 002-2v-2H7v2a2 2 0 002 2z"
+                            />
+                          </svg>
+                          Partner Pitch
+                        </span>
+                      </button>
                     </>
                   )}
                   <button
                     onClick={() => {
                       setShowSidebar(false);
-                      navigate("/partner/statistics");
+                      if (!displayName) {
+                        setModalRole("partner");
+                        setIsModalOpen(true);
+                        return;
+                      }
+                      navigate("/partner");
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
@@ -426,20 +454,20 @@ function UserHeader() {
         onSelect={(role) => {
           setIsChoiceModalOpen(false);
           if (role === "user") {
+            setModalRole("user");
             setIsModalOpen(true);
           } else {
-            setIsPartnerModalOpen(true);
+            setModalRole("partner");
+            setIsModalOpen(true);
           }
         }}
       />
 
       {isModalOpen && (
-        <UserModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      )}
-      {isPartnerModalOpen && (
-        <PartnerModal
-          open={isPartnerModalOpen}
-          onClose={() => setIsPartnerModalOpen(false)}
+        <UserModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          roleTarget={modalRole}
         />
       )}
     </>
