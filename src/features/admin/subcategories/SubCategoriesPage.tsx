@@ -28,10 +28,8 @@ import {
   IconPencil,
   IconPlus,
   IconNoRecords,
-  IconUpload,
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
-import { exportToExcel } from "../../../utils/export.utils";
 import ToggleSwitch from "../../../components/common/ToggleSwitch";
 
 // Fixed validation schema
@@ -161,7 +159,6 @@ export default function SubCategoriesPage() {
     isOpen: false,
     subCategory: null,
   });
-  const [isExporting, setIsExporting] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
@@ -567,41 +564,6 @@ export default function SubCategoriesPage() {
     setIsModalOpen(true);
   };
 
-  const handleExportSubCategories = async () => {
-    try {
-      setIsExporting(true);
-
-      const exportParams: Record<string, any> = {
-        includeIsActive: true,
-      };
-
-      if (debouncedSearchTerm) {
-        exportParams.searchTerm = debouncedSearchTerm;
-      }
-
-      // Update export to handle "All" status
-      if (statusFilter !== "All") {
-        exportParams.status = statusFilter === "Active" ? "Active" : "InActive";
-      } else {
-        exportParams.status = "All";
-      }
-
-      console.log("Exporting subcategories with params:", exportParams);
-      await exportToExcel("SubCategory", exportParams);
-
-      toast.success("Subcategories exported successfully");
-    } catch (error) {
-      console.error("Export failed:", error);
-      const errorMessage = getErrorMessage(
-        error,
-        "Failed to export subcategories"
-      );
-      toast.error(errorMessage);
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
   // Prepare category options for dropdown - only active categories
   const categoryOptions = activeCategories.map((category) => ({
     value: category.id,
@@ -781,20 +743,6 @@ export default function SubCategoriesPage() {
                 onSearchChange={handleSearchChange}
               />
             </div>
-
-            <Button
-              variant="outline"
-              size="md"
-              onClick={handleExportSubCategories}
-              disabled={isExporting || !hasRecords}
-              icon={IconUpload}
-              iconPosition="left"
-              iconSize="w-5 h-5"
-            >
-              {isExporting
-                ? t("common.exporting") || "Exporting..."
-                : t("common.export") || "Export CSV"}
-            </Button>
           </div>
         </div>
       </div>
