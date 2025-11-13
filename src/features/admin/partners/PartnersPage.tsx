@@ -2466,7 +2466,7 @@ export default function PartnersPage() {
             }
           >
             {isSubmitting
-              ? "Submitting..."
+              ? t("common.Submitting") || "Submitting..."
               : editingPartner
               ? t("common.update")
               : t("common.create")}

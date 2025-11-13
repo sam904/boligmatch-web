@@ -968,7 +968,7 @@ export default function CategoriesPage() {
               className="flex-1"
             >
               {createMutation.isPending || updateMutation.isPending
-                ? "Submitting..."
+                ? t("common.Submitting") || "Submitting..."
                 : editingCategory
                 ? t("common.update") || "Update"
                 : t("common.create") || "Create"}
