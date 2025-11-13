@@ -256,7 +256,7 @@ export default function SubCategoriesPage() {
     register,
     handleSubmit,
     control,
-    formState: { errors, isValid },
+    formState: { errors },
     reset,
     watch,
     trigger,
@@ -453,56 +453,86 @@ export default function SubCategoriesPage() {
   };
 
   const onSubmit: SubmitHandler<SubCategoryFormData> = async (data) => {
-    // Final validation check
-    const isFormValid = await trigger();
-    if (!isFormValid) {
-      toast.error("Please fix the validation errors before submitting");
-      return;
-    }
+    try {
+      // Check if mutations are in progress
+      if (createMutation.isPending || updateMutation.isPending) {
+        toast.error("Please wait for the current operation to complete");
+        return;
+      }
 
-    // Additional check for active category
-    const selectedCategory = activeCategories.find(
-      (cat) => cat.id === data.categoryId
-    );
-    if (!selectedCategory) {
-      toast.error("Please select an active category");
-      return;
-    }
+      // Final validation check - but don't block if there are minor issues
+      const isFormValid = await trigger();
+      if (!isFormValid) {
+        // Instead of blocking, show what needs to be fixed
+        const errorFields = Object.keys(errors);
+        if (errorFields.length > 0) {
+          toast.error(`Please fix errors in: ${errorFields.join(", ")}`);
+        }
+        return;
+      }
 
-    // Validate image dimensions before submission
-    if (data.imageUrl) {
-      const isImageValid = await validateImageDimensions(
-        data.imageUrl,
-        1440,
-        710
+      // Additional check for active category
+      const selectedCategory = activeCategories.find(
+        (cat) => cat.id === data.categoryId
       );
-      if (!isImageValid) {
-        toast.error("Main image must be exactly 1440 × 710 pixels");
-        setError("imageUrl", {
-          type: "manual",
-          message: "Image must be exactly 1440 × 710 pixels",
-        });
+      if (!selectedCategory) {
+        toast.error("Please select an active category");
         return;
       }
-    }
 
-    // Validate icon dimensions before submission
-    if (data.iconUrl) {
-      const isIconValid = await validateImageDimensions(data.iconUrl, 512, 512);
-      if (!isIconValid) {
-        toast.error("Icon must be exactly 512 × 512 pixels");
-        setError("iconUrl", {
-          type: "manual",
-          message: "Icon must be exactly 512 × 512 pixels",
-        });
-        return;
+      // Validate image dimensions before submission - but make it non-blocking for existing images
+      if (data.imageUrl) {
+        // Only validate dimensions for new images or if image has changed
+        const isNewImage =
+          !editingSubCategory || data.imageUrl !== editingSubCategory.imageUrl;
+        if (isNewImage) {
+          const isImageValid = await validateImageDimensions(
+            data.imageUrl,
+            1440,
+            710
+          );
+          if (!isImageValid) {
+            toast.error("Main image must be exactly 1440 × 710 pixels");
+            setError("imageUrl", {
+              type: "manual",
+              message: "Image must be exactly 1440 × 710 pixels",
+            });
+            return;
+          }
+        }
       }
-    }
 
-    if (editingSubCategory) {
-      updateMutation.mutate({ ...data, id: editingSubCategory.id });
-    } else {
-      createMutation.mutate(data);
+      // Validate icon dimensions before submission - but make it non-blocking for existing icons
+      if (data.iconUrl) {
+        // Only validate dimensions for new icons or if icon has changed
+        const isNewIcon =
+          !editingSubCategory || data.iconUrl !== editingSubCategory.iconUrl;
+        if (isNewIcon) {
+          const isIconValid = await validateImageDimensions(
+            data.iconUrl,
+            512,
+            512
+          );
+          if (!isIconValid) {
+            toast.error("Icon must be exactly 512 × 512 pixels");
+            setError("iconUrl", {
+              type: "manual",
+              message: "Icon must be exactly 512 × 512 pixels",
+            });
+            return;
+          }
+        }
+      }
+
+      // All validations passed, proceed with submission
+      if (editingSubCategory) {
+        updateMutation.mutate({ ...data, id: editingSubCategory.id });
+      } else {
+        createMutation.mutate(data);
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error("An unexpected error occurred");
     }
   };
 
@@ -863,7 +893,12 @@ export default function SubCategoriesPage() {
           <SearchableSelectController
             name="categoryId"
             control={control}
-            label={t("admin.subcategories.category") || "Category"}
+            label={
+              <>
+                {t("admin.subcategories.category") || "Category"}
+                <span className="text-red-500 ml-1">*</span>
+              </>
+            }
             error={errors.categoryId?.message}
             options={categoryOptions}
             placeholder={
@@ -1045,13 +1080,7 @@ export default function SubCategoriesPage() {
             <Button
               type="submit"
               variant="secondary"
-              disabled={
-                !isValid ||
-                createMutation.isPending ||
-                updateMutation.isPending ||
-                categoriesLoading ||
-                activeCategories.length === 0
-              }
+              disabled={createMutation.isPending || updateMutation.isPending}
               className="flex-1"
             >
               {createMutation.isPending || updateMutation.isPending
