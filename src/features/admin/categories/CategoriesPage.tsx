@@ -28,10 +28,8 @@ import {
   IconPencil,
   IconPlus,
   IconNoRecords,
-  IconUpload,
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
-import { exportToExcel } from "../../../utils/export.utils";
 
 // Enhanced validation schema with dimension validation
 const categorySchema = z.object({
@@ -156,7 +154,6 @@ export default function CategoriesPage() {
     isOpen: false,
     category: null,
   });
-  const [isExporting, setIsExporting] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
 
@@ -504,41 +501,6 @@ export default function CategoriesPage() {
     reset();
   };
 
-  const handleExportCategories = async () => {
-    try {
-      setIsExporting(true);
-
-      const exportParams: Record<string, any> = {
-        includeIsActive: true,
-      };
-
-      if (debouncedSearchTerm) {
-        exportParams.searchTerm = debouncedSearchTerm;
-      }
-
-      // Update export to handle "All" status
-      if (statusFilter !== "All") {
-        exportParams.status = statusFilter === "Active" ? "Active" : "InActive";
-      } else {
-        exportParams.status = "All";
-      }
-
-      console.log("Exporting categories with params:", exportParams);
-      await exportToExcel("Category", exportParams);
-
-      toast.success("Categories exported successfully");
-    } catch (error) {
-      console.error("Export failed:", error);
-      const errorMessage = getErrorMessage(
-        error,
-        "Failed to export categories"
-      );
-      toast.error(errorMessage);
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
   const columns: ColumnDef<Category>[] = [
     {
       accessorKey: "id",
@@ -715,20 +677,6 @@ export default function CategoriesPage() {
                 onSearchChange={handleSearchChange}
               />
             </div>
-
-            <Button
-              variant="outline"
-              size="md"
-              onClick={handleExportCategories}
-              disabled={isExporting || !hasRecords}
-              icon={IconUpload}
-              iconPosition="left"
-              iconSize="w-5 h-5"
-            >
-              {isExporting
-                ? t("common.exporting") || "Exporting..."
-                : t("common.export") || "Export CSV"}
-            </Button>
           </div>
         </div>
       </div>

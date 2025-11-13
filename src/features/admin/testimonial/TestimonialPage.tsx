@@ -601,7 +601,7 @@ export default function TestimonialFormPage() {
         disabled={isSubmitting}
       >
         {isSubmitting
-          ? t("common.saving") || "Saving..."
+          ? t("common.updating") || "Updating..."
           : t("common.update") || "Update"}
       </Button>
     </>
