@@ -15,6 +15,7 @@ import {
 } from "chart.js";
 import DashboardSelect from "../../../components/common/DashboardSelect";
 import { dashboardService } from "../../../services/dashboard.service";
+import { useTranslation } from "react-i18next";
 import type {
   ReportQueryRequest,
   DashboardStats,
@@ -43,6 +44,7 @@ interface PartnerUserTrend {
 const DashboardPage = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+   const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
   const [userTrends, setUserTrends] = useState<number[]>([]);
   const [lastYearTrends, setLastYearTrends] = useState<number[]>([]);
@@ -58,12 +60,12 @@ const DashboardPage = () => {
   const [totalUsersFromTrends, setTotalUsersFromTrends] = useState<number>(0);
 
   const timeFilterOptions = [
-    { value: "day", label: "Today" },
-    { value: "week", label: "This Week" },
-    { value: "month", label: "This Month" },
-    { value: "year", label: "This Year" },
-    { value: "all", label: "All Time" }, // Added All Time option
-  ];
+  { value: "day", label: t("admin.dashboard.today") || "Today" },
+  { value: "week", label: t("admin.dashboard.thisweek") || "This Week" },
+  { value: "month", label: t("admin.dashboard.thismonth") || "This Month" },
+  { value: "year", label: t("admin.dashboard.thisyear") || "This Year" },
+  { value: "all", label: t("admin.dashboard.alltime") || "All Time" },
+];
 
   // FIXED: Function to generate proper date range based on filter
   const getDateRange = (filter: string) => {
@@ -899,19 +901,31 @@ const DashboardPage = () => {
   }
 
   const statsData = [
-    { title: "Total Users", value: formatK(stats?.TotalUsers || 0) },
-    { title: "Total Partners", value: formatK(stats?.TotalPartners || 0) },
-    {
-      title: "Total Sub Categories",
-      value: formatK(stats?.TotalSubCategories || 0),
-    },
-    { title: "Total Categories", value: formatK(stats?.TotalCategorys || 0) },
-    { title: "Total Favourites", value: formatK(stats?.TotalFavourites || 0) },
-    {
-      title: "Total Recommendations",
-      value: formatK(stats?.TotalRecommendations || 0),
-    },
-  ];
+  { 
+    title: t("admin.dashboard.TotalUsers") || "Total Users", 
+    value: formatK(stats?.TotalUsers || 0) 
+  },
+  { 
+    title: t("admin.dashboard.TotalPartners") || "Total Partners", 
+    value: formatK(stats?.TotalPartners || 0) 
+  },
+  {
+    title: t("admin.dashboard.TotalSubCategories") || "Total Sub Categories",
+    value: formatK(stats?.TotalSubCategories || 0),
+  },
+  { 
+    title: t("admin.dashboard.TotalCategories") || "Total Categories", 
+    value: formatK(stats?.TotalCategorys || 0) 
+  },
+  { 
+    title: t("admin.dashboard.TotalFavourites") || "Total Favourites", 
+    value: formatK(stats?.TotalFavourites || 0) 
+  },
+  {
+    title: t("admin.dashboard.TotalRecommendations") || "Total Recommendations",
+    value: formatK(stats?.TotalRecommendations || 0),
+  },
+];
 
   const growthRate = calculateGrowthRate();
 
@@ -943,9 +957,9 @@ const DashboardPage = () => {
         {/* Categories & Subcategories Card */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Categories & Subcategories
-            </h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+  {t("admin.partners.Categories&SubCategories") || "Categories & Subcategories"}
+</h3>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex-shrink-0">
@@ -958,30 +972,30 @@ const DashboardPage = () => {
                 <div className="text-center">
                   <div className="flex items-center justify-center mb-2">
                     <div className="w-4 h-4 rounded-full mr-2 bg-[#165933]"></div>
-                    <span className="text-gray-700 font-medium text-sm">
-                      Categories
-                    </span>
+                  <span className="text-gray-700 font-medium text-sm">
+  {t("admin.categories.title") || "Categories"}
+</span>
                   </div>
                   <div className="text-2xl font-bold text-gray-900">
                     {formatK(stats?.TotalCategorys || 0)}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    Total Categories
-                  </div>
+                 <div className="text-xs text-gray-500 mt-1">
+  {t("admin.dashboard.TotalCategories") || "Total Categories"}
+</div>
                 </div>
                 <div className="text-center">
                   <div className="flex items-center justify-center mb-2">
                     <div className="w-4 h-4 rounded-full mr-2 bg-[#95C11F]"></div>
-                    <span className="text-gray-700 font-medium text-sm">
-                      Sub Categories
-                    </span>
+                   <span className="text-gray-700 font-medium text-sm">
+  {t("admin.subcategories.title") || "Sub Categories"}
+</span>
                   </div>
                   <div className="text-2xl font-bold text-gray-900">
                     {formatK(stats?.TotalSubCategories || 0)}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    Total Subcategories
-                  </div>
+                 <div className="text-xs text-gray-500 mt-1">
+  {t("admin.dashboard.TotalSubCategories") || "Total Subcategories"}
+</div>
                 </div>
               </div>
             </div>
@@ -991,9 +1005,9 @@ const DashboardPage = () => {
         {/* Partners & Users Bar Chart */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Total Partners & Users
-            </h3>
+           <h3 className="text-lg font-semibold text-gray-900">
+  {t("admin.dashboard.TotalPartners&Users") || "Total Partners & Users"}
+</h3>
             <div className="flex items-center space-x-4">
               <DashboardSelect
                 value={timeFilter}
@@ -1020,16 +1034,26 @@ const DashboardPage = () => {
 
           <div className="mt-6 grid grid-cols-2 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-[#165933]">
-                {formatK(totalPartnersFromTrends)}
-              </div>
-              <div className="text-sm text-[#8A92A6]">Total Partners</div>
+              <div className="text-2xl font-bold text-[#95C11F]">
+  {formatK(totalUsersFromTrends)}
+  <span className="sr-only">
+    {t("admin.dashboard.TotalUsers") || "Total Users"}
+  </span>
+</div>
+             <div className="text-sm text-[#8A92A6]">
+  {t("admin.dashboard.TotalPartners") || "Total Partners"}
+</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[#95C11F]">
-                {formatK(totalUsersFromTrends)}
-              </div>
-              <div className="text-sm text-[#8A92A6]">Total Users</div>
+              <div className="text-2xl font-bold text-[#165933]">
+  {formatK(totalPartnersFromTrends)}
+  <span className="sr-only">
+    {t("admin.dashboard.TotalPartners") || "Total Partners"}
+  </span>
+</div>
+           <div className="text-sm text-[#8A92A6]">
+  {t("admin.dashboard.TotalUsers") || "Total Users"}
+</div>
             </div>
           </div>
         </div>
