@@ -863,6 +863,8 @@ export default function PartnersPage() {
         pageSize,
         searchTerm: debouncedSearchTerm || undefined,
         status: statusFilter === "All" ? "All" : statusFilter,
+        sortDirection: "desc",
+        sortField: "id",
       }),
     enabled: !showForm,
   });

@@ -201,6 +201,8 @@ export default function UsersListPage() {
         pageSize,
         searchTerm: debouncedSearchTerm || undefined,
         status: statusFilter === "All" ? "All" : statusFilter,
+        sortDirection: "desc",
+        sortField: "id",
       }),
     retry: 1,
     staleTime: 5 * 60 * 1000,

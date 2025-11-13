@@ -2,6 +2,16 @@
 import { http } from './http.service';
 import type { Partner, PartnerDto, PaginatedPartnersResponse } from '../types/partner';
 
+// ADD THIS INTERFACE
+export interface GetPaginatedParams {
+  page: number;
+  pageSize: number;
+  searchTerm?: string;
+  status?: "All" | "Active" | "InActive";
+  sortDirection?: "asc" | "desc";
+  sortField?: string;
+}
+
 export const partnerService = {
   getAll: async (includeInActive = false) => {
     const response = await http.get<{ output: { result: Partner[] } }>(`/Partner/getAllPartners?includeInActive=${includeInActive}`);
@@ -9,13 +19,11 @@ export const partnerService = {
   },
   
   getById: (id: number) => 
-  http.get<{ output: Partner }>(`/Partner/getPartnerById/${id}`),  
-  getPaginated: (query: {
-    page: number;
-    pageSize: number;
-    searchTerm?: string;
-    status?: "All" | "Active" | "InActive";
-  }) => http.post<PaginatedPartnersResponse>('/Partner/getPaginatedPartners', query),
+    http.get<{ output: Partner }>(`/Partner/getPartnerById/${id}`),  
+  
+  // UPDATE THIS METHOD TO USE THE NEW INTERFACE
+  getPaginated: (query: GetPaginatedParams) => 
+    http.post<PaginatedPartnersResponse>('/Partner/getPaginatedPartners', query),
   
   create: (data: PartnerDto) => 
     http.post<Partner>('/Partner/addPartner', data),
@@ -25,6 +33,7 @@ export const partnerService = {
   
   refetchPartner: (id: number) => 
     http.get<{ output: Partner }>(`/Partner/getPartnerById/${id}`),  
+  
   delete: (id: number) => 
     http.delete<void>(`/Partner/DeletePartner/${id}`),
 

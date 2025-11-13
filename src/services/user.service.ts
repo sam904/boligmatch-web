@@ -46,6 +46,16 @@ export interface UserWithStatus extends User {
   status: "All" | "Active" | "InActive";
 }
 
+// ADD THIS INTERFACE
+export interface GetPaginatedParams {
+  page: number;
+  pageSize: number;
+  searchTerm?: string;
+  status?: "All" | "Active" | "InActive";
+  sortDirection?: "asc" | "desc";
+  sortField?: string;
+}
+
 export const userService = {
   getById: (id: number) => http.get<User>(`/User/getUserById/${id}`),
   
@@ -58,12 +68,9 @@ export const userService = {
   
   remove: (id: number) => http.delete<void>(`/User/DeleteUser/${id}`),
   
-  getPaginated: (query: {
-    page: number;
-    pageSize: number;
-    searchTerm?: string;
-    status?: "All" | "Active" | "InActive";
-  }) => http.post<PaginatedUsersResponse>(`/User/getPaginatedUsers`, query),
+  // UPDATE THIS METHOD TO USE THE NEW INTERFACE
+  getPaginated: (query: GetPaginatedParams) => 
+    http.post<PaginatedUsersResponse>(`/User/getPaginatedUsers`, query),
 
   resetUserPassword: (data: { 
     email: string; 
@@ -87,10 +94,8 @@ export const userService = {
       {} // Empty body since parameters are in query string
     ),
 
-     checkEmailOrMobileAvailability: (emailOrMobile: string) => 
+  checkEmailOrMobileAvailability: (emailOrMobile: string) => 
     http.get<EmailMobileAvailabilityResponse>(
       `/User/emailOrMobileVerificationAvailability?emailOrMobile=${encodeURIComponent(emailOrMobile)}`
     ),
-
-
 };
