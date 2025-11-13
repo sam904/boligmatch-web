@@ -4,6 +4,7 @@ import { uploadService } from '../../services/uploadS3.service';
 import AdminToast from './AdminToast';
 import type { AdminToastType } from './AdminToast';
 import { FileText } from 'lucide-react';
+import { useTranslation } from 'react-i18next'; // Add this import
 
 // Toast state interface
 interface ToastState {
@@ -36,6 +37,7 @@ export default function DocumentUpload({
   required = false,
   accept = '.pdf,.doc,.docx,.txt,.xlsx,.xls,.xlsm,.ppt,.pptx,.rtf',
 }: DocumentUploadProps) {
+  const { t } = useTranslation(); // Add this hook
   const [uploading, setUploading] = useState(false);
   const [toasts, setToasts] = useState<ToastState[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -97,7 +99,7 @@ export default function DocumentUpload({
 
     if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
       toast.error(
-        'Please select a valid document file (PDF, Word, Excel, PowerPoint, Text)'
+        t('admin.partners.invalidDocumentFile') || 'Please select a valid document file (PDF, Word, Excel, PowerPoint, Text)'
       );
       return;
     }
@@ -105,7 +107,7 @@ export default function DocumentUpload({
     // Check file size (50MB)
     const maxSize = 50 * 1024 * 1024;
     if (file.size > maxSize) {
-      toast.error('Document size should be less than 50MB');
+      toast.error(t('admin.partners.documentSizeExceeded') || 'Document size should be less than 50MB');
       return;
     }
 
@@ -113,10 +115,10 @@ export default function DocumentUpload({
     try {
       const url = await uploadService.uploadDocument(file, folder);
       onChange(url);
-      toast.success('Document uploaded successfully');
+      toast.success(t('admin.partners.uploadSuccess') || 'Document uploaded successfully');
     } catch (error) {
       console.error('Document upload error:', error);
-      toast.error('Failed to upload document');
+      toast.error(t('admin.partners.uploadFailed') || 'Failed to upload document');
     } finally {
       setUploading(false);
       if (fileInputRef.current) {
@@ -154,12 +156,12 @@ export default function DocumentUpload({
   };
 
   const getFileTypeText = (url: string) => {
-    if (url.includes('.pdf')) return 'PDF Document';
-    if (url.includes('.doc')) return 'Word Document';
-    if (url.includes('.xls')) return 'Excel Spreadsheet';
-    if (url.includes('.ppt')) return 'PowerPoint Presentation';
-    if (url.includes('.txt')) return 'Text File';
-    return 'Document';
+    if (url.includes('.pdf')) return t('admin.partners.pdfDocument') || 'PDF Document';
+    if (url.includes('.doc')) return t('admin.partners.wordDocument') || 'Word Document';
+    if (url.includes('.xls')) return t('admin.partners.excelSpreadsheet') || 'Excel Spreadsheet';
+    if (url.includes('.ppt')) return t('admin.partners.powerpointPresentation') || 'PowerPoint Presentation';
+    if (url.includes('.txt')) return t('admin.partners.textFile') || 'Text File';
+    return t('admin.partners.document') || 'Document';
   };
 
   return (
@@ -181,9 +183,15 @@ export default function DocumentUpload({
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
 
-      {/* Sub Label */}
+      {/* Sub Label - FIXED: Now using the t function */}
       <p className="text-sm text-gray-500 mb-2">
-        Upload Document <span className="text-gray-400">(Max: 50MB)</span>
+        {t("admin.partners.UploadDocument") || "Upload Document"}{" "}
+        <span className="text-gray-400">
+          {t("admin.partners.maxFileSize", { 
+            defaultValue: "(Max: {{size}}MB)",
+            size: 50 
+          })}
+        </span>
       </p>
 
       {/* Upload Box */}
@@ -225,7 +233,9 @@ export default function DocumentUpload({
                 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <p className="text-sm">Uploading...</p>
+            <p className="text-sm">
+              {t('admin.partners.uploading') || 'Uploading...'}
+            </p>
           </div>
         ) : value ? (
           <div className="flex flex-col items-center gap-3 text-center">
@@ -245,10 +255,10 @@ export default function DocumentUpload({
           <div className="flex flex-col items-center text-gray-600">
             <FileText className="w-6 h-6 text-[#91C73D] mb-1" />
             <p className="text-sm text-[#91C73D] font-medium">
-              Click to upload document
+              {t('admin.partners.clickToUpload') || 'Click to upload document'}
             </p>
             <p className="text-xs text-gray-400 mt-1">
-              PDF, Word, Excel, PowerPoint, Text
+              {t('admin.partners.supportedFormats') || 'PDF, Word, Excel, PowerPoint, Text'}
             </p>
           </div>
         )}
@@ -292,7 +302,7 @@ export default function DocumentUpload({
                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3-3H7"
                     />
                   </svg>
-                  Preview
+                  {t('admin.partners.preview') || 'Preview'}
                 </button>
                 <a
                   href={value}
@@ -313,7 +323,7 @@ export default function DocumentUpload({
                       d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                     />
                   </svg>
-                  Open
+                  {t('admin.partners.open') || 'Open'}
                 </a>
                 <a
                   href={value}
@@ -333,7 +343,7 @@ export default function DocumentUpload({
                       d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                     />
                   </svg>
-                  Download
+                  {t('admin.partners.download') || 'Download'}
                 </a>
               </div>
             </div>
