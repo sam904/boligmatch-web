@@ -447,7 +447,7 @@ export default function TestimonialFormPage() {
                   </>
                 }
                 {...register("customerName")}
-                placeholder="Enter customer name"
+                placeholder={t("admin.testimonials.enterCustomerName") || "Enter customer name"}
                 disabled={isSubmitting}
               />
               {showValidation && (!customerNameValue || customerNameValue.trim() === "") && (
@@ -508,7 +508,7 @@ export default function TestimonialFormPage() {
                     ? "border-red-300" 
                     : "border-gray-300"
                 }`}
-                placeholder="Share details of your Experience..."
+                placeholder={t("admin.testimonials.shareDetailsofyourExperience") ||"Share details of your Experience..."}
                 disabled={isSubmitting}
               />
               {showValidation && (!testValue || testValue.trim() === "") && (
@@ -519,13 +519,13 @@ export default function TestimonialFormPage() {
             {/* Note */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t("admin.testimonials.note") || "Note"} (Optional)
+                {t("admin.testimonials.note") || "Note"}
               </label>
               <textarea
                 {...register("note")}
                 rows={2}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200 resize-none"
-                placeholder="Enter any additional notes..."
+                placeholder= {t("admin.testimonials.enteranyadditionalNotes") ||"Enter any additional notes..."}
                 disabled={isSubmitting}
               />
             </div>
@@ -636,9 +636,9 @@ export default function TestimonialFormPage() {
           <h2 className="text-xl font-bold text-gray-900">
             {t("admin.testimonials.previousTestimonials") || "Previous Testimonials"}
           </h2>
-          <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+          {/* <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
             {previousTestimonials.length} testimonial(s)
-          </span>
+          </span> */}
         </div>
 
         {isLoadingTestimonials ? (
@@ -668,7 +668,7 @@ export default function TestimonialFormPage() {
                         {testimonial.customerName}
                       </h3>
                       {renderStars(testimonial.rating)}
-                      <div className="flex items-center gap-2">
+                      {/* <div className="flex items-center gap-2">
                         {testimonial.isDisplayed && (
                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                             Displayed
@@ -679,7 +679,7 @@ export default function TestimonialFormPage() {
                             Inactive
                           </span>
                         )}
-                      </div>
+                      </div> */}
                     </div>
                     
                     <p className="text-gray-700 mb-2">{testimonial.test}</p>
