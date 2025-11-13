@@ -100,6 +100,33 @@ export default function UsersListPage() {
     isOpen: false,
     user: null,
   });
+  // Email and Mobile Validation States
+  const [emailValidation, setEmailValidation] = useState<{
+    checking: boolean;
+    available: boolean | null;
+    message: string;
+  }>({
+    checking: false,
+    available: null,
+    message: "",
+  });
+
+  const [mobileValidation, setMobileValidation] = useState<{
+    checking: boolean;
+    available: boolean | null;
+    message: string;
+  }>({
+    checking: false,
+    available: null,
+    message: "",
+  });
+
+  const [emailDebounceTimer, setEmailDebounceTimer] = useState<ReturnType<
+    typeof setTimeout
+  > | null>(null);
+  const [mobileDebounceTimer, setMobileDebounceTimer] = useState<ReturnType<
+    typeof setTimeout
+  > | null>(null);
 
   // Toast management functions
   const showToast = (
@@ -192,7 +219,7 @@ export default function UsersListPage() {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isValid },
+    formState: { errors },
     reset,
     watch,
     setError,
@@ -239,6 +266,18 @@ export default function UsersListPage() {
         isActive: editingUser.isActive,
         status: editingUser.status || "Active",
       });
+
+      // Reset validation states for editing mode
+      setEmailValidation({
+        checking: false,
+        available: null,
+        message: "",
+      });
+      setMobileValidation({
+        checking: false,
+        available: null,
+        message: "",
+      });
     } else {
       reset({
         firstName: "",
@@ -247,6 +286,18 @@ export default function UsersListPage() {
         mobileNo: "",
         isActive: true,
         status: "Active",
+      });
+
+      // Reset validation states for new user
+      setEmailValidation({
+        checking: false,
+        available: null,
+        message: "",
+      });
+      setMobileValidation({
+        checking: false,
+        available: null,
+        message: "",
       });
     }
   }, [editingUser, reset]);
@@ -397,9 +448,308 @@ export default function UsersListPage() {
     },
   });
 
-  // Fixed onSubmit with proper typing
+  // Enhanced email validation function
+  const validateEmailAvailability = async (email: string) => {
+    if (!email) {
+      setEmailValidation({
+        checking: false,
+        available: null,
+        message: "",
+      });
+      return;
+    }
+
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailValidation({
+        checking: false,
+        available: false,
+        message: "Please enter a valid email address",
+      });
+      return;
+    }
+
+    // If editing and email hasn't changed, mark as available without API call
+    if (editingUser && email === editingUser.email) {
+      setEmailValidation({
+        checking: false,
+        available: true,
+        message: "Email unchanged",
+      });
+      return;
+    }
+
+    // If we already validated this email and it's available, don't call API again
+    if (
+      emailValidation.available === true &&
+      emailValidation.message.includes("available")
+    ) {
+      return;
+    }
+
+    setEmailValidation({
+      checking: true,
+      available: null,
+      message: "Checking email availability...",
+    });
+
+    try {
+      const response = await userService.checkEmailOrMobileAvailability(email);
+
+      if (response.isSuccess) {
+        setEmailValidation({
+          checking: false,
+          available: true,
+          message: "Email is available",
+        });
+      } else {
+        setEmailValidation({
+          checking: false,
+          available: false,
+          message: response.failureReason || "Email already registered",
+        });
+      }
+    } catch (error: any) {
+      console.error("Email validation error:", error);
+
+      if (error.response?.status === 400) {
+        setEmailValidation({
+          checking: false,
+          available: false,
+          message:
+            error.response.data?.failureReason || "Email already registered",
+        });
+      } else {
+        setEmailValidation({
+          checking: false,
+          available: null,
+          message: "Error checking email availability",
+        });
+      }
+    }
+  };
+
+  // Enhanced mobile validation function
+  const validateMobileAvailability = async (mobileNo: string) => {
+    if (!mobileNo) {
+      setMobileValidation({
+        checking: false,
+        available: null,
+        message: "",
+      });
+      return;
+    }
+
+    // Clean mobile number (remove spaces, dashes, etc.)
+    const cleanMobile = mobileNo.replace(/[\s\-\(\)]+/g, "");
+
+    // UPDATED: Basic mobile validation - exactly 8 digits
+    if (cleanMobile.length !== 8) {
+      setMobileValidation({
+        checking: false,
+        available: false,
+        message: "Mobile number must be exactly 8 digits",
+      });
+      return;
+    }
+
+    // UPDATED: Validate that it contains only digits
+    if (!/^\d+$/.test(cleanMobile)) {
+      setMobileValidation({
+        checking: false,
+        available: false,
+        message: "Mobile number can only contain numbers",
+      });
+      return;
+    }
+
+    // If editing and mobile hasn't changed, mark as available without API call
+    if (editingUser && cleanMobile === editingUser.mobileNo) {
+      setMobileValidation({
+        checking: false,
+        available: true,
+        message: "Mobile number unchanged",
+      });
+      return;
+    }
+
+    // If we already validated this mobile and it's available, don't call API again
+    if (
+      mobileValidation.available === true &&
+      mobileValidation.message.includes("available")
+    ) {
+      return;
+    }
+
+    setMobileValidation({
+      checking: true,
+      available: null,
+      message: "Checking mobile number availability...",
+    });
+
+    try {
+      const response = await userService.checkEmailOrMobileAvailability(
+        cleanMobile
+      );
+
+      if (response.isSuccess) {
+        setMobileValidation({
+          checking: false,
+          available: true,
+          message: "Mobile number is available",
+        });
+      } else {
+        setMobileValidation({
+          checking: false,
+          available: false,
+          message: response.failureReason || "Mobile number already registered",
+        });
+      }
+    } catch (error: any) {
+      console.error("Mobile validation error:", error);
+
+      if (error.response?.status === 400) {
+        setMobileValidation({
+          checking: false,
+          available: false,
+          message:
+            error.response.data?.failureReason ||
+            "Mobile number already registered",
+        });
+      } else {
+        setMobileValidation({
+          checking: false,
+          available: null,
+          message: "Error checking mobile number availability",
+        });
+      }
+    }
+  };
+
+  // Debounced email validation handler
+  const handleEmailChange = (email: string) => {
+    setValue("email", email);
+
+    // Clear existing timer
+    if (emailDebounceTimer) {
+      clearTimeout(emailDebounceTimer);
+    }
+
+    // Set new timer for debounced validation
+    const timer = setTimeout(() => {
+      validateEmailAvailability(email);
+    }, 800); // 800ms debounce
+
+    setEmailDebounceTimer(timer);
+  };
+
+  // Debounced mobile validation handler
+  const handleMobileChange = (mobileNo: string) => {
+    setValue("mobileNo", mobileNo);
+
+    // Clear existing timer
+    if (mobileDebounceTimer) {
+      clearTimeout(mobileDebounceTimer);
+    }
+
+    // Set new timer for debounced validation
+    const timer = setTimeout(() => {
+      validateMobileAvailability(mobileNo);
+    }, 800); // 800ms debounce
+
+    setMobileDebounceTimer(timer);
+  };
+
+  // Add this useEffect to handle validation state updates
+  useEffect(() => {
+    if (emailValidation.available === false) {
+      setError("email", {
+        type: "manual",
+        message: emailValidation.message,
+      });
+    } else if (emailValidation.available === true) {
+      clearErrors("email");
+    }
+
+    if (mobileValidation.available === false) {
+      setError("mobileNo", {
+        type: "manual",
+        message: mobileValidation.message,
+      });
+    } else if (mobileValidation.available === true) {
+      clearErrors("mobileNo");
+    }
+  }, [
+    emailValidation.available,
+    mobileValidation.available,
+    setError,
+    clearErrors,
+  ]);
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (emailDebounceTimer) clearTimeout(emailDebounceTimer);
+      if (mobileDebounceTimer) clearTimeout(mobileDebounceTimer);
+    };
+  }, [emailDebounceTimer, mobileDebounceTimer]);
+
+  // Fixed onSubmit function
   const onSubmit: SubmitHandler<UserFormData> = async (data) => {
     try {
+      // Check if mutations are in progress
+      if (createMutation.isPending || updateMutation.isPending) {
+        toast.error("Please wait for the current operation to complete");
+        return;
+      }
+
+      // Check if email or mobile validations are in progress
+      if (emailValidation.checking || mobileValidation.checking) {
+        toast.error("Please wait for email/mobile validation to complete");
+        return;
+      }
+
+      // Enhanced validation checks - SIMPLIFIED
+      const currentEmail = data.email;
+      const currentMobile = data.mobileNo;
+
+      // Email validation - only check if validation explicitly failed
+      if (emailValidation.available === false) {
+        toast.error("Please fix email validation errors before submitting");
+        return;
+      }
+
+      // Mobile validation - only check if validation explicitly failed
+      if (mobileValidation.available === false) {
+        toast.error(
+          "Please fix mobile number validation errors before submitting"
+        );
+        return;
+      }
+
+      // For new users, ensure validations have completed
+      if (!editingUser) {
+        if (emailValidation.available === null && currentEmail) {
+          // Trigger validation and wait briefly
+          await validateEmailAvailability(currentEmail);
+          if (emailValidation.checking) {
+            toast.error("Please wait for email validation to complete");
+            return;
+          }
+        }
+
+        if (mobileValidation.available === null && currentMobile) {
+          // Trigger validation and wait briefly
+          await validateMobileAvailability(currentMobile);
+          if (mobileValidation.checking) {
+            toast.error("Please wait for mobile number validation to complete");
+            return;
+          }
+        }
+      }
+
+      // All validations passed, proceed with submission
       if (editingUser) {
         await updateMutation.mutateAsync({ ...data, id: editingUser.id });
       } else {
@@ -476,6 +826,18 @@ export default function UsersListPage() {
     setEditingUser(null);
     reset();
     clearErrors();
+
+    // Reset validation states
+    setEmailValidation({
+      checking: false,
+      available: null,
+      message: "",
+    });
+    setMobileValidation({
+      checking: false,
+      available: null,
+      message: "",
+    });
   };
 
   const handlePasswordModalClose = () => {
@@ -567,7 +929,7 @@ export default function UsersListPage() {
                 : "var(--color-neutral)",
           }}
         >
-            {row.original.isActive
+          {row.original.isActive
             ? t("common.active") || "Active"
             : t("common.inactive") || "Inactive"}
         </span>
@@ -803,50 +1165,189 @@ export default function UsersListPage() {
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
-            label={<>{t("admin.users.firstName") || "First Name"}
-            <span className="text-red-500 ml-1">*</span>
-            </>}
+            label={
+              <>
+                {t("admin.users.firstName") || "First Name"}
+                <span className="text-red-500 ml-1">*</span>
+              </>
+            }
             error={errors.firstName?.message}
             {...register("firstName")}
             required
-            placeholder={t("admin.users.EnterfirstName")||"Enter first name"}
+            placeholder={t("admin.users.EnterfirstName") || "Enter first name"}
             disabled={createMutation.isPending || updateMutation.isPending}
           />
           <Input
-            label={<>{t("admin.users.lastName") || "Last Name"}
-             <span className="text-red-500 ml-1">*</span>
-            </>}
+            label={
+              <>
+                {t("admin.users.lastName") || "Last Name"}
+                <span className="text-red-500 ml-1">*</span>
+              </>
+            }
             error={errors.lastName?.message}
             {...register("lastName")}
             required
-            placeholder={t("admin.users.EnterlastName")||"Enter last name"}
+            placeholder={t("admin.users.EnterlastName") || "Enter last name"}
             disabled={createMutation.isPending || updateMutation.isPending}
           />
-          <Input
-            label={<>{t("admin.users.email") || "Email"}
-             <span className="text-red-500 ml-1">*</span>
-            </>}
-            type="email"
-            error={errors.email?.message}
-            {...register("email")}
-            required
-            placeholder={t("admin.users.Enteremailaddress")||"Enter email address"}
-            disabled={
-              createMutation.isPending ||
-              updateMutation.isPending ||
-              !!editingUser
-            }
-          />
-          <Input
-            label={<>{t("admin.users.mobileNo") || "Mobile Number"}
-            <span className="text-red-500 ml-1">*</span>
-            </>}
-            error={errors.mobileNo?.message}
-            {...register("mobileNo")}
-            required
-            placeholder={t("admin.users.EntermobileNo") || "Mobile Number"}
-            disabled={createMutation.isPending || updateMutation.isPending}
-          />
+          {/* Updated Email Field with Validation */}
+          <div className="space-y-1">
+            <Input
+              label={
+                <>
+                  {t("admin.users.email") || "Email"}
+                  <span className="text-red-500 ml-1">*</span>
+                </>
+              }
+              type="email"
+              {...register("email")} // Add this back
+              value={watch("email") || ""}
+              onChange={(e) => handleEmailChange(e.target.value)}
+              placeholder={
+                t("admin.users.Enteremailaddress") || "Enter email address"
+              }
+              className={
+                emailValidation.available === false ? "border-red-500" : ""
+              }
+              disabled={createMutation.isPending || updateMutation.isPending}
+            />
+            {emailValidation.checking && (
+              <div className="flex items-center gap-2 text-blue-600 text-sm">
+                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+                Checking availability...
+              </div>
+            )}
+            {emailValidation.available === true &&
+              !emailValidation.checking && (
+                <div className="text-green-600 text-sm flex items-center gap-1">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {emailValidation.message}
+                </div>
+              )}
+            {emailValidation.available === false &&
+              !emailValidation.checking && (
+                <div className="text-red-600 text-sm flex items-center gap-1">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {emailValidation.message}
+                </div>
+              )}
+            {/* Show Zod validation errors only if custom validation hasn't already shown an error */}
+            {errors.email?.message && emailValidation.available !== false && (
+              <div className="text-red-600 text-sm flex items-center gap-1">
+                <svg
+                  className="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {errors.email.message}
+              </div>
+            )}
+          </div>
+
+          {/* Updated Mobile Number Field with 8-digit Validation */}
+          <div className="space-y-1">
+            <Input
+              label={
+                <>
+                  {t("admin.users.mobileNo") || "Mobile Number"}
+                  <span className="text-red-500 ml-1">*</span>
+                </>
+              }
+              {...register("mobileNo")} // Add this back
+              value={watch("mobileNo") || ""}
+              onChange={(e) => handleMobileChange(e.target.value)}
+              placeholder={t("admin.users.EntermobileNo") || "Mobile Number"}
+              className={
+                mobileValidation.available === false ? "border-red-500" : ""
+              }
+              maxLength={8}
+              disabled={createMutation.isPending || updateMutation.isPending}
+            />
+            {mobileValidation.checking && (
+              <div className="flex items-center gap-2 text-blue-600 text-sm">
+                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+                Checking availability...
+              </div>
+            )}
+            {mobileValidation.available === true &&
+              !mobileValidation.checking && (
+                <div className="text-green-600 text-sm flex items-center gap-1">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {mobileValidation.message}
+                </div>
+              )}
+            {mobileValidation.available === false &&
+              !mobileValidation.checking && (
+                <div className="text-red-600 text-sm flex items-center gap-1">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {mobileValidation.message}
+                </div>
+              )}
+            {/* Show Zod validation errors only if custom validation hasn't already shown an error */}
+            {errors.mobileNo?.message &&
+              mobileValidation.available !== false && (
+                <div className="text-red-600 text-sm flex items-center gap-1">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {errors.mobileNo.message}
+                </div>
+              )}
+          </div>
 
           {/* Status Dropdown */}
           {/* <div>
@@ -875,7 +1376,7 @@ export default function UsersListPage() {
             onChange={(checked) => setValue("isActive", checked)}
           />
 
-          {/* Form validation summary */}
+          {/* Improved Form validation summary */}
           {Object.keys(errors).length > 0 && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3">
               <div className="flex items-center gap-2 text-red-800 text-sm font-medium">
@@ -897,8 +1398,8 @@ export default function UsersListPage() {
               <ul className="text-red-700 text-sm mt-1 list-disc list-inside">
                 {errors.firstName && <li>{errors.firstName.message}</li>}
                 {errors.lastName && <li>{errors.lastName.message}</li>}
-                {errors.email && <li>{errors.email.message}</li>}
-                {errors.mobileNo && <li>{errors.mobileNo.message}</li>}
+                {errors.email?.message && <li>{errors.email.message}</li>}
+                {errors.mobileNo?.message && <li>{errors.mobileNo.message}</li>}
                 {errors.status && <li>{errors.status.message}</li>}
               </ul>
             </div>
@@ -917,13 +1418,11 @@ export default function UsersListPage() {
             <Button
               type="submit"
               variant="secondary"
-              disabled={
-                !isValid || createMutation.isPending || updateMutation.isPending
-              }
+              disabled={createMutation.isPending || updateMutation.isPending}
               className="flex-1"
             >
               {createMutation.isPending || updateMutation.isPending
-                ? t("common.Submitting") ||  "Submitting..."
+                ? t("common.Submitting") || "Submitting..."
                 : editingUser
                 ? t("common.update") || "Update"
                 : t("common.create") || "Create"}

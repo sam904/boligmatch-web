@@ -258,7 +258,7 @@ export default function CategoriesPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
     reset,
     setValue,
     watch,
@@ -408,49 +408,79 @@ export default function CategoriesPage() {
     },
   });
 
-  // Fixed onSubmit with proper typing
+  // Fixed onSubmit function
   const onSubmit: SubmitHandler<CategoryFormData> = async (data) => {
-    // Final validation check
-    const isFormValid = await trigger();
-    if (!isFormValid) {
-      toast.error("Please fix the validation errors before submitting");
-      return;
-    }
-
-    // Validate image dimensions before submission
-    if (data.imageUrl) {
-      const isImageValid = await validateImageDimensions(
-        data.imageUrl,
-        374,
-        340
-      );
-      if (!isImageValid) {
-        toast.error("Main image must be exactly 374 × 340 pixels");
-        setError("imageUrl", {
-          type: "manual",
-          message: "Image must be exactly 374 × 340 pixels",
-        });
+    try {
+      // Check if mutations are in progress
+      if (createMutation.isPending || updateMutation.isPending) {
+        toast.error("Please wait for the current operation to complete");
         return;
       }
-    }
 
-    // Validate icon dimensions before submission
-    if (data.iconUrl) {
-      const isIconValid = await validateImageDimensions(data.iconUrl, 512, 512);
-      if (!isIconValid) {
-        toast.error("Icon must be exactly 512 × 512 pixels");
-        setError("iconUrl", {
-          type: "manual",
-          message: "Icon must be exactly 512 × 512 pixels",
-        });
+      // Final validation check - but don't block if there are minor issues
+      const isFormValid = await trigger();
+      if (!isFormValid) {
+        // Instead of blocking, show what needs to be fixed
+        const errorFields = Object.keys(errors);
+        if (errorFields.length > 0) {
+          toast.error(`Please fix errors in: ${errorFields.join(", ")}`);
+        }
         return;
       }
-    }
 
-    if (editingCategory) {
-      updateMutation.mutate({ ...data, id: editingCategory.id });
-    } else {
-      createMutation.mutate(data);
+      // Validate image dimensions before submission - but make it non-blocking for existing images
+      if (data.imageUrl) {
+        // Only validate dimensions for new images or if image has changed
+        const isNewImage =
+          !editingCategory || data.imageUrl !== editingCategory.imageUrl;
+        if (isNewImage) {
+          const isImageValid = await validateImageDimensions(
+            data.imageUrl,
+            374,
+            340
+          );
+          if (!isImageValid) {
+            toast.error("Main image must be exactly 374 × 340 pixels");
+            setError("imageUrl", {
+              type: "manual",
+              message: "Image must be exactly 374 × 340 pixels",
+            });
+            return;
+          }
+        }
+      }
+
+      // Validate icon dimensions before submission - but make it non-blocking for existing icons
+      if (data.iconUrl) {
+        // Only validate dimensions for new icons or if icon has changed
+        const isNewIcon =
+          !editingCategory || data.iconUrl !== editingCategory.iconUrl;
+        if (isNewIcon) {
+          const isIconValid = await validateImageDimensions(
+            data.iconUrl,
+            512,
+            512
+          );
+          if (!isIconValid) {
+            toast.error("Icon must be exactly 512 × 512 pixels");
+            setError("iconUrl", {
+              type: "manual",
+              message: "Icon must be exactly 512 × 512 pixels",
+            });
+            return;
+          }
+        }
+      }
+
+      // All validations passed, proceed with submission
+      if (editingCategory) {
+        updateMutation.mutate({ ...data, id: editingCategory.id });
+      } else {
+        createMutation.mutate(data);
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error("An unexpected error occurred");
     }
   };
 
@@ -932,9 +962,7 @@ export default function CategoriesPage() {
             <Button
               type="submit"
               variant="secondary"
-              disabled={
-                !isValid || createMutation.isPending || updateMutation.isPending
-              }
+              disabled={createMutation.isPending || updateMutation.isPending}
               className="flex-1"
             >
               {createMutation.isPending || updateMutation.isPending
