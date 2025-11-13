@@ -1086,7 +1086,7 @@ export default function SubCategoriesPage() {
               className="flex-1"
             >
               {createMutation.isPending || updateMutation.isPending
-                ? "Submitting..."
+                ? t("common.Submitting") || "Submitting..."
                 : editingSubCategory
                 ? t("common.update") || "Update"
                 : t("common.create") || "Create"}
