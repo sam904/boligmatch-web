@@ -12,6 +12,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { logout } from "../../features/auth/authSlice";
 import ToastBanner from "./ToastBanner";
+import SignUpModal from "./SignUpModal";
 
 const schema = z.object({
   userName: z.string().min(1, "Username is required"),
@@ -23,6 +24,7 @@ interface UserModalProps {
   onClose: () => void;
   redirectTo?: string;
   roleTarget?: "user" | "partner";
+  showSignUp?: boolean;
 }
 
 export default function UserModal({
@@ -30,6 +32,7 @@ export default function UserModal({
   onClose,
   redirectTo,
   roleTarget = "user",
+  showSignUp = false,
 }: UserModalProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -79,6 +82,7 @@ export default function UserModal({
   const [newPassword, setNewPassword] = useState("");
   const [fpLoading, setFpLoading] = useState(false);
   const [fpError, setFpError] = useState<string | null>(null);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
 
   const {
     register,
@@ -266,6 +270,10 @@ export default function UserModal({
     }
   };
 
+  const handleSignUpClick = () => {
+    setIsSignUpOpen(true);
+  };
+
   if (!open) return null;
 
   return ReactDOM.createPortal(
@@ -390,7 +398,19 @@ export default function UserModal({
                       {t("auth.forgotPassword")}
                     </button>
                   </div>
-
+                  {showSignUp && (
+                    <div className="text-sm">
+                      Don’t have an account?{" "}
+                      <button
+                        type="button"
+                        onClick={handleSignUpClick}
+                        className="text-black hover:text-gray-600 transition-colors font-normal cursor-pointer"
+                      >
+                        Sign Up Here
+                      </button>
+                    </div>
+                  )}
+               
                   <div className="pt-2">
                     <button
                       type="submit"
@@ -534,6 +554,7 @@ export default function UserModal({
           </div>
         </div>
       </div>
+      <SignUpModal open={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
     </div>,
     document.body
   );

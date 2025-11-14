@@ -16,6 +16,7 @@ import UsersListPage from "../features/admin/users/UsersListPage";
 import UserDashboardPage from "../pages/UserDashboardPage";
 import PartnerDashboard from "../features/partners/PartnerDashboard";
 import ParentStatistics from "../features/partners/PartnerPages/PartnerStatistics";
+import PartnerDocuments from "../features/partners/PartnerPages/PartnerDocuments";
 // import PartnerProfileShortcut from "../features/partners/PartnerPages/PartnerProfileShortcut";
 // import SearchForPartner from "../features/partners/PartnerPages/SearchForPartner";
 import UserSupplier from "../pages/UserSupplier";
@@ -25,6 +26,7 @@ import TestimonialPage from "../features/admin/testimonial/TestimonialPage";
 import AboutBoligmatch from "../pages/AboutBoligmatch";
 import TermsAndConditions from "../pages/TermsAndConditions";
 import RecommendUser from "../pages/RecommendUser";
+import ManageProfile from "../pages/ManageProfile";
 
 const router = createBrowserRouter([
   // 🔹 User Routes (Main Site)
@@ -38,6 +40,7 @@ const router = createBrowserRouter([
       { path: "about", element: <AboutBoligmatch /> },
       { path: "terms", element: <TermsAndConditions /> },
       { path: "profile", element: <UserDashboardPage /> },
+      { path: "manage-profile", element: <ManageProfile /> },
       { path: "user-supplier", element: <UserSupplier /> },
       { path: "supplier-profile", element: <SupplierProfile /> },
       { path: "login", element: <LoginPage /> },
@@ -60,6 +63,7 @@ const router = createBrowserRouter([
       { index: true, element: <PartnerDashboard /> },
       { path: "dashboard", element: <PartnerDashboard /> },
       { path: "statistics", element: <ParentStatistics /> },
+      { path: "documents", element: <PartnerDocuments /> },
       // { path: "profile-shortcut", element: <PartnerProfileShortcut /> },
       // { path: "search", element: <SearchForPartner /> },
     ],

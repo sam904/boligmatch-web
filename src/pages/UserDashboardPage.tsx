@@ -20,8 +20,9 @@ import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { toast } from "sonner";
 import footerLogo from "/src/assets/userImages/footerLogo.svg";
-import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg"
+import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg";
 import { partnerService } from "../services/partner.service";
+import responsiveBannerImg from "/src/assets/userImages/profileResponsiveBanner.png";
 
 interface FavouriteItem {
   id?: number;
@@ -60,10 +61,27 @@ export default function UserDashboardPage() {
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [conversationsLoading, setConversationsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [openConversation, setOpenConversation] =
+    useState<ConversationItem | null>(null);
   console.log("isMobile", isMobile);
 
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const formatConvDate = (value?: string) => {
+    if (!value) return "-";
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return "-";
+    try {
+      return d.toLocaleDateString("da-DK", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+      });
+    } catch {
+      return d.toISOString().split("T")[0];
+    }
+  };
 
   const userData = useAppSelector((state) => state.auth.user);
 
@@ -106,6 +124,27 @@ export default function UserDashboardPage() {
       image: images[index % images.length],
       icon: icons[index % icons.length],
     };
+  };
+
+  // Helpers to safely read Category/Subcategory names from favourite payloads
+  const getFavouriteCategory = (fav: FavouriteItem) => {
+    return (
+      fav.categoryName ||
+      fav.category ||
+      fav.categorys ||
+      fav?.parSubCatlst?.[0]?.categorys ||
+      "-"
+    );
+  };
+
+  const getFavouriteSubCategory = (fav: FavouriteItem) => {
+    return (
+      fav.subCategoryName ||
+      fav.subCategory ||
+      fav.subCategories ||
+      fav?.parSubCatlst?.[0]?.subCategories ||
+      "-"
+    );
   };
 
   const handleCategoryClick = async (category: Category) => {
@@ -235,7 +274,14 @@ export default function UserDashboardPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <div
-        className="relative h-[100vh]"
+        className={`
+              relative 
+              h-[368px]      
+              md:h-[100vh]     
+              bg-no-repeat bg-cover bg-center
+              bg-[url('/src/assets/userImages/profileResponsiveBanner.png')] 
+              md:bg-none       
+  `}
         style={{
           backgroundImage: `url(${userDashboard})`,
           backgroundSize: "cover",
@@ -249,15 +295,15 @@ export default function UserDashboardPage() {
 
         {/* Welcome Text */}
         {userData && (
-          <div className="absolute top-60 z-10 px-4 sm:px-6 md:px-8 lg:px-24 mt-auto mb-32 sm:mb-36 md:mb-40 lg:mb-44">
+          <div className="absolute md:top-60 top-32 z-10 px-4 sm:px-6 md:px-8 lg:px-24 mt-auto mb-32 sm:mb-36 md:mb-40 lg:mb-44">
             <div className="text-white">
               <div className="max-w-[722px]">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-1 md:mb-0.5 leading-tight">
+                <h1 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-0 md:mb-0.5 leading-tight">
                   Mit Boligmatch+
                 </h1>
               </div>
               <div className="max-w-[561px] mx-auto">
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-medium leading-tight text-center break-words">
+                <h2 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-medium leading-tight text-center break-words">
                   {userData.firstName} {userData.lastName}
                 </h2>
               </div>
@@ -268,53 +314,63 @@ export default function UserDashboardPage() {
         {/* Action Buttons */}
         <div className="absolute inset-x-0 bottom-0 z-10 pb-6 sm:pb-8 md:pb-10">
           <div className="px-4 sm:px-6 md:px-8">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 max-w-4xl mx-auto">
+            <div className="flex flex-row sm:flex-row items-center justify-between sm:justify-center gap-2 sm:gap-4 md:gap-6 max-w-4xl mx-auto px-2">
               <button
                 onClick={handlePartnersClick}
-                className={`${activeView === "default"
+                className={`${
+                  activeView === "default"
                     ? "bg-[#145939] text-white"
                     : "bg-[#95c11f] text-white"
-                  } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
+                } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl rounded-xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer min-h-[48px]`}
                 type="button"
               >
-                <img src={searchImg} alt="" className="h-5 w-5 sm:h-6 sm:w-6" />
-                <span className="font-semibold text-base sm:text-lg whitespace-nowrap">
+                <img
+                  src={searchImg}
+                  alt=""
+                  className="md:h-6 md:w-6 h-[18px] w-[18px]"
+                />
+                <span className="font-semibold md:text-lg text-[14px] whitespace-nowrap figtree">
                   {t("userDashboard.buttons.partners")}
                 </span>
               </button>
 
               <button
                 onClick={handleFavoritesClick}
-                className={`${activeView === "favorites"
+                className={`${
+                  activeView === "favorites"
                     ? "bg-[#145939] text-white"
                     : "bg-[#95c11f] text-white"
-                  } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
+                } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl rounded-xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer min-h-[48px]`}
                 type="button"
               >
                 <img
                   src={favoriteImg}
                   alt=""
-                  className="h-5 w-5 sm:h-6 sm:w-6"
+                  className="md:h-6 md:w-6 h-[18px] w-[18px]"
                 />
-                <span className="font-semibold text-base sm:text-lg whitespace-nowrap">
+                <span className="font-semibold md:text-lg text-[14px] whitespace-nowrap figtree hidden sm:inline">
                   {t("userDashboard.buttons.favorites")}
+                </span>
+                <span className="font-semibold md:text-lg text-[14px] whitespace-nowrap figtree sm:hidden">
+                  Favoritter
                 </span>
               </button>
 
               <button
                 onClick={handleMessagesClick}
-                className={`${activeView === "messages"
+                className={`${
+                  activeView === "messages"
                     ? "bg-[#145939] text-white"
                     : "bg-[#95c11f] text-white"
-                  } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition font-medium cursor-pointer`}
+                } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl rounded-xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition font-medium cursor-pointer min-h-[48px]`}
                 type="button"
               >
                 <img
                   src={commentImg}
                   alt=""
-                  className="h-5 w-5 sm:h-6 sm:w-6"
+                  className="md:h-6 md:w-6 h-[18px] w-[18px]"
                 />
-                <span className="font-semibold text-base sm:text-lg whitespace-nowrap">
+                <span className="font-semibold md:text-lg text-[14px] whitespace-nowrap">
                   {t("userDashboard.buttons.messages")}
                 </span>
               </button>
@@ -322,9 +378,7 @@ export default function UserDashboardPage() {
           </div>
         </div>
       </div>
-
-      {/* Content Section */}
-      <div className="bg-[#01351f] py-8 sm:py-12 md:py-16 flex-1">
+      <div className="bg-[#01351f] py-4 md:py-16 flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
           {loading && activeView === "default" ? (
             <div className="flex justify-center items-center h-64">
@@ -341,21 +395,20 @@ export default function UserDashboardPage() {
                       <div
                         key={category.id}
                         onClick={() => handleCategoryClick(category)}
-                        className="w-[374px] mx-auto rounded-lg sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
+                        className="w-[374px] h-[394px] sm:w-auto sm:h-auto mx-auto rounded-[18px] sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
                       >
-                        <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-72 rounded-t-lg sm:rounded-t-xl overflow-hidden">
+                        <div className="relative w-full h-[222px] sm:h-56 md:h-64 lg:h-72 rounded-t-[18px] sm:rounded-t-xl overflow-hidden">
                           <img
                             src={category.imageUrl || assets.image}
                             alt={category.name}
-                            className="w-full h-[340px] object-fill"
+                            className="w-full h-full object-cover"
                             onError={(e) => {
                               e.currentTarget.src = assets.image;
                             }}
                           />
-                          <div className="absolute bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-white to-transparent"></div>
+                          <div className="absolute bottom-0 left-0 right-0 h-[120px] sm:h-[50px] bg-gradient-to-t from-white to-transparent"></div>
                           <div className="absolute bottom-0 left-0 right-0">
                             <img src={categoryGradientImg} alt="" />
-
                           </div>
                         </div>
 
@@ -405,34 +458,42 @@ export default function UserDashboardPage() {
                         {favorites.map((favorite) => (
                           <div
                             key={favorite.id}
-                            className="bg-white rounded-lg p-4 flex items-center gap-3 hover:shadow-lg transition-shadow cursor-pointer border border-gray-100"
+                            className="bg-white rounded-lg p-4 flex items-center gap-3 border border-gray-100 cursor-pointer"
+                            onClick={() => handleFavoriteMoreInfo(favorite)}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                handleFavoriteMoreInfo(favorite);
+                              }
+                            }}
                           >
-                            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                              <div className="text-xs font-semibold text-gray-600">
-                                #{favorite.partnerId}
-                              </div>
+                            <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                              <img
+                                className="w-[70px]"
+                                src={favorite.logoUrl}
+                                alt=""
+                              />
                             </div>
 
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-xs font-medium text-gray-500">
-                                  Partner Name:{" "}
+                                <span className="text-[20PX] font-[800] text-[#000000]">
                                   {favorite.partnerName ||
                                     favorite.businessName ||
                                     "N/A"}
                                 </span>
                               </div>
-                              <h3 className="text-sm font-semibold text-gray-900 truncate">
-                                User Name {favorite.userName}
-                              </h3>
-                              <span
-                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${favorite.isActive
-                                    ? "bg-green-50 text-green-700"
-                                    : "bg-gray-100 text-gray-600"
-                                  }`}
-                              >
-                                {favorite.isActive ? "Active" : "Inactive"}
-                              </span>
+                            
+                            </div>
+                            <div className="ml-auto text-right">
+                              <div className="text-[12px] text-[#6b7280]">
+                                {getFavouriteCategory(favorite)}
+                              </div>
+                              <div className="text-[14px] font-[800] text-[#000000]">
+                                {getFavouriteSubCategory(favorite)}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -443,7 +504,7 @@ export default function UserDashboardPage() {
                         {favorites.map((favorite) => (
                           <div
                             key={favorite.id}
-                            className="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-[330px]"
+                            className="bg-white rounded-xl overflow-hidden flex flex-col h-[330px]"
                           >
                             {/* <div className="relative w-full h-64 overflow-hidden bg-gray-100">
                               <img
@@ -485,7 +546,10 @@ export default function UserDashboardPage() {
                                   "Professional services and solutions"}
                               </p>
 
-                              <button onClick={() => handleFavoriteMoreInfo(favorite)} className="mt-auto text-sm font-semibold text-[#01351f] hover:text-[#145939] transition cursor-pointer">
+                              <button
+                                onClick={() => handleFavoriteMoreInfo(favorite)}
+                                className="mt-auto text-sm font-semibold text-[#01351f] hover:text-[#145939] transition cursor-pointer"
+                              >
                                 More info
                               </button>
                             </div>
@@ -520,34 +584,39 @@ export default function UserDashboardPage() {
                         {conversations.map((conversation) => (
                           <div
                             key={conversation.id}
-                            className="bg-white rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer border border-gray-100"
+                            className="bg-white rounded-xl p-4 border border-gray-200"
                           >
-                            <div className="flex flex-col gap-2">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-1.5">
-                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                    Subject
-                                  </span>
-                                  <span className="text-sm font-semibold text-gray-800">
-                                    {conversation.messageSubject || "N/A"}
-                                  </span>
+                            <div className="flex items-start justify-between mb-3">
+                              <div>
+                                <div className="text-sm font-extrabold text-[#052011]">
+                                  Partner
                                 </div>
-                                <div className="flex items-start gap-2">
-                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide flex-shrink-0">
-                                    Content
-                                  </span>
-                                  <span className="text-sm text-gray-600 line-clamp-2">
-                                    {conversation.messageContent || "N/A"}
-                                  </span>
+                                <div className="text-sm text-[#052011]">
+                                  {conversation.receiverName || "-"}
                                 </div>
                               </div>
-                              <div className="flex items-center justify-end gap-2 text-gray-500 hover:text-gray-700">
-                                <span className="text-sm">Read more</span>
+                              <div
+                                className="flex items-center gap-2 text-[#01351f] cursor-pointer"
+                                onClick={() =>
+                                  setOpenConversation(conversation)
+                                }
+                              >
+                                <span className="text-sm font-semibold">
+                                  Læs mere
+                                </span>
                                 <img
                                   src={chatModelImg}
                                   alt="Chat"
                                   className="w-5 h-5"
                                 />
+                              </div>
+                            </div>
+                            <div className="mt-1">
+                              <div className="text-sm font-extrabold text-[#052011] mb-1">
+                                Emne
+                              </div>
+                              <div className="text-sm text-[#052011] line-clamp-2">
+                                {conversation.messageSubject || "-"}
                               </div>
                             </div>
                           </div>
@@ -559,48 +628,40 @@ export default function UserDashboardPage() {
                         {conversations.map((conversation) => (
                           <div
                             key={conversation.id}
-                            className="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
+                            className="bg-white rounded-2xl p-5 border border-gray-200"
                           >
-                            <div className="relative w-full h-36 flex items-center justify-center">
-                              <div className="w-[83px] h-[77px] bg-white rounded-full flex items-center justify-center">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <div className="text-base font-extrabold text-[#052011]">
+                                  Partner
+                                </div>
+                                <div className="text-sm text-[#052011]">
+                                  {conversation.receiverName || "-"}
+                                </div>
+                              </div>
+                              <div
+                                className="flex items-center gap-2 text-[#01351f] cursor-pointer"
+                                onClick={() =>
+                                  setOpenConversation(conversation)
+                                }
+                              >
+                                <span className="text-sm font-semibold">
+                                  Læs mere
+                                </span>
                                 <img
                                   src={chatModelImg}
-                                  alt="Message"
-                                  className=""
+                                  alt="Chat"
+                                  className="w-5 h-5"
                                 />
                               </div>
                             </div>
-
-                            <div className="p-5 flex flex-col gap-3">
-                              <div className="text-center -mt-2">
-                                <h3 className="text-lg font-bold text-[#052011]">
-                                  {conversation.senderName ||
-                                    conversation.fullName ||
-                                    "User Name"}
-                                </h3>
+                            <div>
+                              <div className="text-base font-extrabold text-[#052011] mb-1">
+                                Emne
                               </div>
-
-                              <div>
-                                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">
-                                  Subject
-                                </span>
-                                <p className="text-sm font-semibold text-gray-800">
-                                  {conversation.messageSubject || "N/A"}
-                                </p>
+                              <div className="text-sm text-[#052011] line-clamp-2">
+                                {conversation.messageSubject || "-"}
                               </div>
-
-                              <div>
-                                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">
-                                  Content
-                                </span>
-                                <p className="text-sm text-gray-600 line-clamp-3">
-                                  {conversation.messageContent || "N/A"}
-                                </p>
-                              </div>
-
-                              <button className="mt-2 text-sm font-semibold text-[#01351f] hover:text-[#145939] transition self-center">
-                                More info
-                              </button>
                             </div>
                           </div>
                         ))}
@@ -618,6 +679,61 @@ export default function UserDashboardPage() {
         </div>
       </div>
 
+      {/* Conversation Detail Modal */}
+      {openConversation && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="relative z-[1001] w-[90%] max-w-md bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-[#1F7A58]/10">
+            <button
+              className="absolute right-4 top-3 text-black text-xl cursor-pointer hover:text-gray-700"
+              aria-label="Close"
+              onClick={() => setOpenConversation(null)}
+            >
+              ×
+            </button>
+
+            <div className="flex flex-col items-center gap-2 mb-4">
+              <img
+                src={chatModelImg}
+                alt="chat"
+                className="w-[64px] h-[64px]"
+              />
+              <h3 className="text-center font-extrabold text-lg">Besked</h3>
+            </div>
+
+            <div className="space-y-4 text-[#052011]">
+              <div>
+                <div className="text-sm font-extrabold">Dato</div>
+                <div className="text-sm">
+                  {formatConvDate(openConversation.createdDate)}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">Partner</div>
+                <div className="text-sm">
+                  {openConversation.receiverName ||
+                    openConversation.senderName ||
+                    openConversation.fullName ||
+                    "-"}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">Emne</div>
+                <div className="text-sm">
+                  {openConversation.messageSubject || "-"}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">Beskrivelse</div>
+                <div className="text-sm leading-relaxed">
+                  {openConversation.messageContent || "-"}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
       <footer className="bg-[#01351f] text-white text-center p-4 sm:p-6">
         <div className="flex flex-col items-center">
@@ -631,7 +747,8 @@ export default function UserDashboardPage() {
             </div>
           </div>
           <p className="text-white text-xs sm:text-sm md:text-base figtree font-normal text-center px-4">
-            Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
+            Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR
+            33160437
           </p>
         </div>
       </footer>

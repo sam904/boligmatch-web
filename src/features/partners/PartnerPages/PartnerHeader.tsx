@@ -8,9 +8,17 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../app/hooks";
 import { tokenStorage } from "../../../lib/storage";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { FaGear } from "react-icons/fa6";
+import homeIcon from "/src/assets/userImages/home.png";
+import myBoligmatchIcon from "/src/assets/userImages/my-boligmatch.png";
+import manageProfileIcon from "/src/assets/userImages/gear.png";
+// import partnerPitchIcon from "/src/assets/userImages/partnerPitch.png";
+import docsIcon from "/src/assets/userImages/docsIcon.png"
+import becomePartnerIcon from "/src/assets/userImages/becomePartner.png";
+import aboutBoligmatchIcon from "/src/assets/userImages/aboutBoligmatch.png";
+import termsConditionIcon from "/src/assets/userImages/termsAndCondi.png";
+import signOutIcon from "/src/assets/userImages/signOut.png";
 
-function PartnerHeader() {
+function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,7 +55,7 @@ function PartnerHeader() {
 
   return (
     <>
-      <header className="h-[100vh] relative">
+      <header className={`${fullHeight ? "h-[100vh]" : "h-20"} relative`}>
         <div
           className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-4 z-50 transition-colors duration-300 ${
             isScrolled ? "bg-[#06351E]" : "bg-transparent"
@@ -173,19 +181,11 @@ function PartnerHeader() {
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
                     <span className="flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                        />
-                      </svg>
+                      <img
+                        src={homeIcon}
+                        alt=""
+                        className="w-[30px] h-[30px]"
+                      />
                       {t("sidebar.home")}
                     </span>
                   </button>
@@ -198,19 +198,11 @@ function PartnerHeader() {
                       className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                     >
                       <span className="flex items-center gap-2">
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 4.5l6 3v6c0 3.59-2.69 6.74-6 7.5-3.31-.76-6-3.91-6-7.5v-6l6-3z"
-                          />
-                        </svg>
+                        <img
+                          src={myBoligmatchIcon}
+                          alt=""
+                          className="w-[30px] h-[30px]"
+                        />
                         {t("sidebar.mitBoligmatch")}
                       </span>
                     </button>
@@ -224,8 +216,30 @@ function PartnerHeader() {
                       className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                     >
                       <span className="flex items-center gap-2">
-                        <FaGear className="w-4 h-4" />
+                        <img
+                          src={manageProfileIcon}
+                          alt=""
+                          className="w-[30px] h-[30px]"
+                        />
                         {t("sidebar.manageProfile")}
+                      </span>
+                    </button>
+                  )}
+                  {partnerData && (
+                    <button
+                      onClick={() => {
+                        setShowSidebar(false);
+                        navigate("/partner/documents");
+                      }}
+                      className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                    >
+                      <span className="flex items-center gap-2">
+                        <img
+                          src={docsIcon}
+                          alt=""
+                          className="w-[30px] h-[30px]"
+                        />
+                        Document
                       </span>
                     </button>
                   )}
@@ -237,19 +251,11 @@ function PartnerHeader() {
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
                     <span className="flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
+                      <img
+                        src={becomePartnerIcon}
+                        alt=""
+                        className="w-[30px] h-[30px]"
+                      />
                       {t("sidebar.becomePartner")}
                     </span>
                   </button>
@@ -261,19 +267,11 @@ function PartnerHeader() {
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
                     <span className="flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
-                        />
-                      </svg>
+                      <img
+                        src={aboutBoligmatchIcon}
+                        alt=""
+                        className="w-[30px] h-[30px]"
+                      />
                       {t("sidebar.about")}
                     </span>
                   </button>
@@ -309,19 +307,11 @@ function PartnerHeader() {
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
                     <span className="flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
+                      <img
+                        src={termsConditionIcon}
+                        alt=""
+                        className="w-[30px] h-[30px]"
+                      />
                       {t("sidebar.terms")}
                     </span>
                   </button>
@@ -339,22 +329,14 @@ function PartnerHeader() {
                       localStorage.removeItem("bm_partner");
                       window.location.href = "/";
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white hover:bg-red-500/20 rounded-lg transition-colors flex items-center gap-2"
+                    className="w-full text-left px-3 py-2.5 text-white hover:bg-[#95C11F]/20 rounded-lg transition-colors flex items-center gap-2"
                   >
-                    <svg
-                      className="w-4 h-4 text-red-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-9V4"
-                      />
-                    </svg>
-                    <span className="font-medium text-red-400">
+                    <img
+                      src={signOutIcon}
+                      alt=""
+                      className="w-[30px] h-[30px]"
+                    />
+                    <span className="font-medium text-[#95C11F]">
                       {t("sidebar.signOut")}
                     </span>
                   </button>

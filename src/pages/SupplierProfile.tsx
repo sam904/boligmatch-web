@@ -14,15 +14,19 @@ import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
-import { showRecommendationSuccessToast, showRecommendationErrorToast, showContactSuccessToast, showContactErrorToast, showFavouriteSuccessToast, showFavouriteErrorToast } from "../components/common/ToastBanner";
+import {
+  showRecommendationSuccessToast,
+  showRecommendationErrorToast,
+  showContactSuccessToast,
+  showContactErrorToast,
+  showFavouriteSuccessToast,
+  showFavouriteErrorToast,
+} from "../components/common/ToastBanner";
 import { FaPlayCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { partnerService } from "../services/partner.service";
-// import footerLogo from "/src/assets/userImages/footerLogo.svg";
-// import gradient from "/src/assets/userImages/gradient.svg";
 import ratingImg from "/src/assets/userImages/rating.png";
 import fullRatingImg from "/src/assets/userImages/ratig2.png";
-// import logo from ""
 import trustPilotLogo from "/src/assets/userImages/boligmatchLogo2.png";
 import startImg from "/src/assets/userImages/star.png";
 import servicesImg from "/src/assets/supplierProfile/services.png";
@@ -57,6 +61,20 @@ const SupplierProfile = () => {
       navigate("/");
     }
   }, []);
+
+  const getCurrentUserId = (): number | null => {
+    try {
+      const userStr = localStorage.getItem("bm_user");
+      if (!userStr) return null;
+      const parsed = JSON.parse(userStr);
+      const normalized = parsed?.output ?? parsed;
+      const candidate = normalized?.userId ?? normalized?.id;
+      const asNum = Number(candidate);
+      return Number.isFinite(asNum) && asNum > 0 ? asNum : null;
+    } catch {
+      return null;
+    }
+  };
 
   useEffect(() => {
     const partnerData = localStorage.getItem("bm_partner");
@@ -105,7 +123,7 @@ const SupplierProfile = () => {
         const normalized = parsed?.output ?? parsed;
         return normalized?.id ?? null;
       }
-    } catch { }
+    } catch {}
     return null;
   };
 
@@ -135,12 +153,10 @@ const SupplierProfile = () => {
     loadPartnerData();
   }, []);
 
-  const handleAddToFavorites = async () => {
+  const handleToggleFavourite = async () => {
     try {
       setIsAddingToFavorites(true);
-      const userStr = localStorage.getItem("bm_user");
-      const parsedUser = userStr ? JSON.parse(userStr) : null;
-      const userId = parsedUser?.userId ?? userData?.userId;
+      const userId = getCurrentUserId();
 
       if (!userId) {
         showFavouriteErrorToast("User not found. Please log in again.");
@@ -153,17 +169,51 @@ const SupplierProfile = () => {
         return;
       }
 
-      const payload = {
-        userId: userId,
-        partnerId: partnerId,
-        isActive: true,
-      };
+      const isFav = String(partnerData?.isValidFavourite) === "True";
 
-      await favouritesService.add(payload);
-      showFavouriteSuccessToast("Added to favourites");
-    } catch (error) {
-      console.error("Error adding to favorites:", error);
-      showFavouriteErrorToast("Failed to add to favourites. Please try again.");
+      if (isFav) {
+        try {
+          const all: any = await favouritesService.getAll();
+          const list: any[] = Array.isArray(all)
+            ? all
+            : all?.items || all?.output || [];
+          const match = (list || []).find(
+            (f: any) =>
+              Number(f?.userId) === Number(userId) &&
+              Number(f?.partnerId) === Number(partnerId)
+          );
+          if (!match?.id) {
+            showFavouriteErrorToast("Favourite not found.");
+            return;
+          }
+          await favouritesService.remove(match.id);
+          showFavouriteSuccessToast("Removed from favourites successfully");
+          setPartnerData((prev: any) => ({
+            ...(prev || {}),
+            isValidFavourite: "False",
+          }));
+        } catch (err) {
+          console.error("Error removing favourite:", err);
+          showFavouriteErrorToast(
+            "Failed to remove from favourites. Please try again."
+          );
+        }
+      } else {
+        try {
+          const payload = { userId, partnerId, isActive: true };
+          await favouritesService.add(payload as any);
+          showFavouriteSuccessToast("Added to favourites");
+          setPartnerData((prev: any) => ({
+            ...(prev || {}),
+            isValidFavourite: "True",
+          }));
+        } catch (err) {
+          console.error("Error adding favourite:", err);
+          showFavouriteErrorToast(
+            "Failed to add to favourites. Please try again."
+          );
+        }
+      }
     } finally {
       setIsAddingToFavorites(false);
     }
@@ -260,6 +310,14 @@ const SupplierProfile = () => {
       .map((s: string) => s.replace(/^•\s*/, ""));
   };
 
+  const stripLeadingBullet = (s: any) => {
+    try {
+      return String(s).replace(/^[\s•\-*\u2022]+/, "").trim();
+    } catch {
+      return s;
+    }
+  };
+
   // Parse references from textField4
   const getReferences = () => {
     if (!partnerData?.textField4) return [];
@@ -284,8 +342,8 @@ const SupplierProfile = () => {
             ? ratingImg
             : fullRatingImg
           : i < rating
-            ? ratingImg
-            : fullRatingImg;
+          ? ratingImg
+          : fullRatingImg;
       return (
         <img
           key={i}
@@ -304,17 +362,17 @@ const SupplierProfile = () => {
 
   return (
     <>
-      <div className="h-[100vh]">
+      <div className="md:h-[100vh]">
         {!isVideoPlaying ? (
           <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat md:h-[100vh] h-[368px]"
             style={{
               backgroundImage: `url(${getBackgroundImage()})`,
             }}
           ></div>
         ) : (
           <video
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full md:h-full h-[368px] object-cover"
             autoPlay
             controls
             onEnded={() => setIsVideoPlaying(false)}
@@ -325,10 +383,11 @@ const SupplierProfile = () => {
         )}
 
         <UserHeader />
+
         <div className="bg-[#01351f] pt-0">
           <div className="w-full mx-auto px-12 flex justify-center">
             {!isVideoPlaying && partnerData?.videoUrl && (
-              <div className="absolute top-[50%] justify-center items-center text-white">
+              <div className="absolute md:top-[50%] top-44 justify-center items-center text-white">
                 <FaPlayCircle
                   onClick={() => setIsVideoPlaying(true)}
                   className="h-14 w-14 cursor-pointer hover:scale-110 transition-transform"
@@ -339,49 +398,48 @@ const SupplierProfile = () => {
             <img src={gradient} alt="" />
           </div> */}
             <div
-              className="flex gap-10 justify-center absolute bottom-0 w-full py-8 pb-0"
+              className="flex md:gap-10 gap-3 justify-center absolute md:bottom-0 w-full md:py-8 pb-0"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(4, 52, 40, 0) 0%, #043428 100%)",
+                  "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
               }}
             >
               {!isPartner && (
                 <>
                   <button
-                    className="bg-[#91C73D] text-white px-6 py-3 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-[#7fb02f] transition-colors"
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: 600,
-                      lineHeight: "100%",
-                    }}
-                    onClick={handleAddToFavorites}
+                    className="bg-[#91C73D] text-white md:px-6 md:py-3 px-[6px] py-[11px] md:rounded-lg rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors md:text-[20px] text-[10px] md:leading-[100%] leading-[11px] font-[700] shadow-md w-[110px] h-[46px] md:w-auto md:h-auto opacity-100"
+                    onClick={handleToggleFavourite}
                     disabled={isAddingToFavorites}
                   >
-                    <img src={heartIcon} alt="" />
-                    {t("supplierProfile.saveFavoriteButton")}
+                    <img
+                      src={heartIcon}
+                      alt=""
+                      className="w-[25px] h-[22px] md:w-auto md:h-auto"
+                    />
+                    {String(partnerData?.isValidFavourite) === "True"
+                      ? t("supplierProfile.removeFromFavorites")
+                      : t("supplierProfile.saveFavoriteButton")}
                   </button>
                   <button
-                    className="bg-[#91C73D] text-white px-6 py-3 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-[#7fb02f] transition-colors"
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: 600,
-                      lineHeight: "100%",
-                    }}
+                    className="bg-[#91C73D] text-white md:px-6 md:py-3 px-[6px] py-[11px] md:rounded-lg rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors md:text-[20px] text-[10px] md:leading-[100%] leading-[11px] font-[700] shadow-md w-[110px] h-[46px] md:w-auto md:h-auto opacity-100"
                     onClick={() => setActiveModal("recommend")}
                   >
-                    <img src={share} alt="" />
+                    <img
+                      src={share}
+                      alt=""
+                      className="w-[25px] h-[22px] md:w-auto md:h-auto"
+                    />
                     {t("supplierProfile.recommendation")}
                   </button>
                   <button
-                    className="bg-[#91C73D] text-white px-6 py-3 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-[#7fb02f] transition-colors"
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: 600,
-                      lineHeight: "100%",
-                    }}
+                    className="bg-[#91C73D] text-white md:px-6 md:py-3 px-[6px] py-[11px] md:rounded-lg rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors md:text-[20px] text-[10px] md:leading-[100%] leading-[11px] font-[700] shadow-md w-[110px] h-[46px] md:w-auto md:h-auto opacity-100"
                     onClick={() => setActiveModal("contact")}
                   >
-                    <img src={chat} alt="" />
+                    <img
+                      src={chat}
+                      alt=""
+                      className="w-[25px] h-[22px] md:w-auto md:h-auto"
+                    />
                     {t("supplierProfile.conversation")}
                   </button>
                 </>
@@ -391,21 +449,21 @@ const SupplierProfile = () => {
         </div>
 
         <div className="bg-[#01351f] pt-10">
-          <h1 className="font-extrabold text-6xl text-center text-white py-10">
+          <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white py-10">
             {partnerData?.businessName || partnerData?.fullName || "Loading..."}
           </h1>
           <div className="max-w-6xl m-auto">
-            <p className="text-white font-[400] text-[18px] text-center">
+            <p className="text-white font-[400] md:text-[18px] text-[12px] text-center px-8">
               {partnerData?.descriptionShort || "Loading..."}
             </p>
           </div>
         </div>
 
         <div className="bg-[#012F2B] min-h-screen flex justify-center items-center p-8">
-          <div className="grid grid-cols-3 gap-6 max-w-7xl bg-[#012F2B]">
+          <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-7xl bg-[#012F2B]">
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
-              <div className="w-[403px] h-[859px] rounded-[10px] bg-white p-6 flex flex-col relative">
+              <div className="md:w-[403px] w-full md:h-[859px] h-auto rounded-[10px] bg-white p-6 flex flex-col relative">
                 <div className=" flex justify-center p-2">
                   <img
                     className="w-[130px] h-[32px]"
@@ -457,7 +515,7 @@ const SupplierProfile = () => {
               </div>
 
               <div
-                className="w-[403px] h-[432px] mt-[30px] rounded-[10px] flex justify-center items-center"
+                className="md:w-[403px] w-full md:h-[432px] h-auto mt-[30px] rounded-[10px] flex justify-center items-center"
                 style={{
                   background:
                     "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
@@ -489,7 +547,7 @@ const SupplierProfile = () => {
 
             {/* Middle Section */}
             <div className="flex flex-col gap-6">
-              <div className="w-[403px] h-[432px] rounded-[10px] overflow-hidden">
+              <div className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] overflow-hidden">
                 <img
                   src={partnerData?.imageUrl2}
                   alt={partnerData?.businessName}
@@ -498,7 +556,7 @@ const SupplierProfile = () => {
               </div>
 
               <div
-                className="w-[403px] h-[432px] rounded-[10px] p-[53px_34px] gap-[10px] flex flex-col items-center justify-start"
+                className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] p-[53px_34px] gap-[10px] flex flex-col items-center justify-start"
                 style={{
                   background:
                     "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
@@ -517,10 +575,10 @@ const SupplierProfile = () => {
                 <ul className="text-white list-none space-y-2 w-full">
                   {getServices().length > 0 ? (
                     getServices().map((service: string, idx: number) => (
-                      <li key={idx} className="relative pl-5">
+                      <p key={idx} className="relative pl-5">
                         <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
                         {service}
-                      </li>
+                      </p>
                     ))
                   ) : (
                     <>
@@ -537,7 +595,7 @@ const SupplierProfile = () => {
                 </ul>
               </div>
 
-              <div className="bg-[#0E3E38] rounded-2xl p-6 aspect-square">
+              <div className="bg-[#0E3E38] rounded-2xl p-6 md:w-[403px] w-full md:h-[432px] h-auto">
                 <div className="flex flex-col items-center gap-2 mb-2">
                   <img src="/src/assets/supplierProfile/gallery.png" alt="" />
                   <h3 className="text-3xl font-semibold text-white py-4">
@@ -560,7 +618,7 @@ const SupplierProfile = () => {
 
             {/* Right Column */}
             <div className="flex flex-col gap-6">
-              <div className="bg-white rounded-[10px] w-[403px] h-[432px] flex justify-center items-center">
+              <div className="bg-white rounded-[10px] md:w-[403px] w-full md:h-[432px] h-auto flex justify-center items-center">
                 <div className="text-center">
                   <img
                     src={partnerData?.logoUrl || kabelLogoImg}
@@ -577,7 +635,7 @@ const SupplierProfile = () => {
               </div>
 
               <div
-                className="w-[403px] h-[432px] rounded-[10px] flex flex-col items-center gap-[10px] p-[53px_34px]"
+                className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] flex flex-col items-center gap-[10px] p-[53px_34px]"
                 style={{
                   background:
                     "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
@@ -593,24 +651,24 @@ const SupplierProfile = () => {
                   Fakta
                 </h2>
 
-                <ul className="text-white text-sm list-none space-y-2 w-full">
+                <div className="text-white text-sm list-none space-y-2 w-full">
                   {partnerData?.textField2 && (
-                    <li className="relative pl-5">
+                    <p className="relative pl-5">
                       <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-                      {partnerData.textField2}
-                    </li>
+                      {stripLeadingBullet(partnerData.textField2)}
+                    </p>
                   )}
-                </ul>
+                </div>
               </div>
 
-              <div className="rounded-2xl flex justify-center items-center overflow-hidden">
+              <div className="rounded-[10px] flex justify-center items-center overflow-hidden md:w-[403px] w-full md:h-[432px] h-auto">
                 <img
                   src={
                     partnerData?.imageUrl3 ||
                     "/src/assets/userImages/subcategoryDetailImg.png"
                   }
                   alt="Work"
-                  className="w-full h-auto object-cover"
+                  className="w-full h-full object-cover"
                 />
               </div>
             </div>
