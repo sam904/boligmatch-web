@@ -91,7 +91,10 @@
       "thisweek":"This week",
       "thisyear":"This year",
       "thismonth": "This month",
-      "alltime":"All Time"
+      "lastyear":"Last Year",
+      "alltime":"All Time",
+      "userGrowthAnalytics":"User Growth Analytics",
+      "growthRate":"Growth Rate"
     },
     "categories": {
       "title": "Categories",
