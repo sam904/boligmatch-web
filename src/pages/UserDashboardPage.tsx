@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import footerLogo from "/src/assets/userImages/footerLogo.svg";
 import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg";
 import { partnerService } from "../services/partner.service";
-import responsiveBannerImg from "/src/assets/userImages/profileResponsiveBanner.png";
+// import responsiveBannerImg from "/src/assets/userImages/profileResponsiveBanner.png";
 
 interface FavouriteItem {
   id?: number;
