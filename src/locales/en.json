@@ -79,7 +79,19 @@
     "title": "BoligMatch Admin",
     "dashboard": {
       "title": "Dashboard",
-      "subtitle": "Real-time insights and system overview"
+      "subtitle": "Real-time insights and system overview",
+      "TotalUsers":"Total Users",
+      "TotalPartners":"Total Partners",
+      "TotalSubCategories":"Total Sub Categories",
+      "TotalCategories": "Total Categories",
+      "TotalFavourites": "Total Favourites",
+      "TotalRecommendations": "Total Recommendations",
+      "TotalPartners&Users": "Total Partners & Users",
+      "today":"Today",
+      "thisweek":"This week",
+      "thisyear":"This year",
+      "thismonth": "This month",
+      "alltime":"All Time"
     },
     "categories": {
       "title": "Categories",
@@ -171,7 +183,10 @@
       "SelectCategory":"Select Category",
       "AddsubCategory":"Add sub Category",
       "shortDescription": "Short Description",
-      "exactly": "Exactly"
+      "exactly": "Exactly",
+      "preview":"Preview",
+      "open":"Open",
+      "download":"Download"
     },
     "users": {
       "title": "Users",
