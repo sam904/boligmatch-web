@@ -146,10 +146,32 @@
       "BasicInformation": "Basic Information",
       "Media&Description": "Media & Description", 
       "TextFields": "Text Fields",
+      "TextField1": "TextField 1",
+      "TextField2": "TextField 2",
+      "TextField3": "TextField 3",
+      "TextField4": "TextField 4",
+      "TextField5": "TextField 5",
+      "TextField6": "TextField 6",
       "Images&Status": "Images & Status",
+      "ImageUpload1":"Image upload 1",
+      "ImageUpload2":"Image upload 2",
+      "ImageUpload3":"Image upload 3",
+      "ImageUpload4":"Image upload 4",
+      "ImageUpload5":"Image upload 5",
       "Documents": "Documents",
+      "DocumentFile": "Document File",
+      "DocumentName":"Document Name",
       "businessName": "Business Name",
-      "Categories&SubCategories": "Categories & SubCategories"
+      "Categories&SubCategories": "Categories & SubCategories",
+      "thumbnailUpload" : "Thumbnail Upload",
+      "uploadVideo": "Upload video",
+      "UploadDocument":"Upload Document",
+      "AddDocument": "Add Document",
+      "logoUpload" : "Upload logo",
+      "SelectCategory":"Select Category",
+      "AddsubCategory":"Add sub Category",
+      "shortDescription": "Short Description",
+      "exactly": "Exactly"
     },
     "users": {
       "title": "Users",
@@ -201,7 +223,10 @@
       "deleteError": "Failed to delete testimonial",
       "addTestimonialDescription": "Create a new testimonial to showcase customer feedback",
       "editTestimonialDescription": "Edit existing testimonial details",
-      "previousTestimonials": "Previous Testimonials"
+      "previousTestimonials": "Previous Testimonials",
+      "enterCustomerName": "Enter Customer Name",
+      "shareDetailsofyourExperience": "Share Details of your Experience...",
+      "enteranyadditionalNotes": "Enter any additional Notes..."
     }
 
   },

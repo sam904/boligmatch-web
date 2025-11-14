@@ -39,6 +39,7 @@ import DocumentUpload from "../../../components/common/DocumentUpload";
 import Modal from "../../../components/common/Modal";
 import { userService } from "../../../services/user.service";
 import ToggleSwitch from "../../../components/common/ToggleSwitch";
+import RichTextEditor from "../../../components/common/RichTextEditor";
 import { exportToExcel } from "../../../utils/export.utils";
 import {
   IconPencil,
@@ -862,6 +863,8 @@ export default function PartnersPage() {
         pageSize,
         searchTerm: debouncedSearchTerm || undefined,
         status: statusFilter === "All" ? "All" : statusFilter,
+        sortDirection: "desc",
+        sortField: "id",
       }),
     enabled: !showForm,
   });
@@ -1696,8 +1699,8 @@ export default function PartnersPage() {
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">
+          <div className="space-y-5">
+            <h3 className="text-lg font-bold text-gray-900 mt-6">
               {t("admin.partners.BasicInformation") || "Basic Information"}
             </h3>
             <div className="grid grid-cols-2 gap-4">
@@ -1902,13 +1905,15 @@ export default function PartnersPage() {
       case 2:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-gray-900">
+            <h3 className="text-lg font-bold text-gray-900 mt-6">
               {t("admin.partners.Media&Description") || "Media & Description"}
             </h3>
 
             <div className="space-y-3">
               <ImageUpload
-                label="Thumbnail Upload"
+                label={
+                  t("admin.partners.thumbnailUpload") || "Thumbnail Upload"
+                }
                 value={thumbnailValue}
                 onChange={(url) => setValue("thumbnail", url)}
                 onPreview={handleImagePreview}
@@ -1930,7 +1935,7 @@ export default function PartnersPage() {
               />
 
               <LogoUploadWithValidation
-                label="Logo Upload"
+                label={t("admin.partners.logoUpload") || "Logo Upload"}
                 value={logoUrlValue || ""}
                 onChange={(url) => setValue("logoUrl", url)}
                 onPreview={handleImagePreview}
@@ -1939,7 +1944,9 @@ export default function PartnersPage() {
             </div>
 
             <TextArea
-              label="Short Description"
+              label={
+                t("admin.partners.shortDescription") || "Short Description"
+              }
               error={errors.descriptionShort?.message}
               rows={3}
               {...register("descriptionShort")}
@@ -1950,31 +1957,43 @@ export default function PartnersPage() {
       case 3:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-bold text-gray-900 mt-6">
               {t("admin.partners.TextFields") || "Text Fields"}
             </h3>
             <Input
-              label="Text Field 1"
+              label={t("admin.partners.TextField1") || "Text Fields 1"}
               error={errors.textField1?.message}
               {...register("textField1")}
             />
+            <div>
+              <RichTextEditor
+                label={t("admin.partners.TextField2") || "Text Fields 2"}
+                value={watch("textField2") || ""}
+                onChange={(value) => setValue("textField2", value)}
+                error={errors.textField2?.message}
+                placeholder="Enter formatted text for Text Field 2..."
+                height="min-h-[50px]"
+              />
+            </div>
+
+            {/* Rich Text Editor for Text Field 3 */}
+            <div>
+              <RichTextEditor
+                label={t("admin.partners.TextField3") || "Text Fields 3"}
+                value={watch("textField3") || ""}
+                onChange={(value) => setValue("textField3", value)}
+                error={errors.textField3?.message}
+                placeholder="Enter formatted text for Text Field 3..."
+                height="min-h-[50px]"
+              />
+            </div>
             <Input
-              label="Text Field 2"
-              error={errors.textField2?.message}
-              {...register("textField2")}
-            />
-            <Input
-              label="Text Field 3"
-              error={errors.textField3?.message}
-              {...register("textField3")}
-            />
-            <Input
-              label="Text Field 4"
+              label={t("admin.partners.TextField4") || "Text Fields 4"}
               error={errors.textField4?.message}
               {...register("textField4")}
             />
             <Input
-              label="Text Field 5"
+              label={t("admin.partners.TextField5") || "Text Fields 5"}
               error={errors.textField5?.message}
               {...register("textField5")}
             />
@@ -1984,13 +2003,13 @@ export default function PartnersPage() {
       case 4:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-gray-900">
+            <h3 className="text-lg font-bold text-gray-900 mt-6">
               {" "}
               {t("admin.partners.Images&Status") || "Images & Status"}
             </h3>
             <div className="grid grid-cols-2 gap-4">
               <ImageUpload
-                label="Image Upload 1"
+                label={t("admin.partners.ImageUpload1") || "Image Upload 1"}
                 value={imageUrl1Value}
                 onChange={(url) => setValue("imageUrl1", url)}
                 onPreview={handleImagePreview}
@@ -2001,7 +2020,7 @@ export default function PartnersPage() {
               />
 
               <ImageUpload
-                label="Image Upload 2"
+                label={t("admin.partners.ImageUpload2") || "Image Upload 2"}
                 value={imageUrl2Value}
                 onChange={(url) => setValue("imageUrl2", url)}
                 onPreview={handleImagePreview}
@@ -2013,7 +2032,7 @@ export default function PartnersPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <ImageUpload
-                label="Image Upload 3"
+                label={t("admin.partners.ImageUpload3") || "Image Upload 3"}
                 value={imageUrl3Value}
                 onChange={(url) => setValue("imageUrl3", url)}
                 onPreview={handleImagePreview}
@@ -2021,7 +2040,7 @@ export default function PartnersPage() {
                 error={errors.imageUrl3?.message}
               />
               <ImageUpload
-                label="Image Upload 4"
+                label={t("admin.partners.ImageUpload4") || "Image Upload 4"}
                 value={imageUrl4Value}
                 onChange={(url) => setValue("imageUrl4", url)}
                 onPreview={handleImagePreview}
@@ -2031,7 +2050,7 @@ export default function PartnersPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <ImageUpload
-                label="Image Upload 5"
+                label={t("admin.partners.ImageUpload5") || "Image Upload 5"}
                 value={imageUrl5Value}
                 onChange={(url) => setValue("imageUrl5", url)}
                 onPreview={handleImagePreview}
@@ -2044,11 +2063,14 @@ export default function PartnersPage() {
       case 5:
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-medium text-gray-900">Documents</h3>
+            <h3 className="text-lg font-bold text-gray-900 mt-6">
+              {" "}
+              {t("admin.partners.Documents") || "Documents"}
+            </h3>
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-700 mb-3">
+              {/* <h4 className="font-medium text-gray-700 mb-3">
                 Partner Documents
-              </h4>
+              </h4> */}
               {documentFields.map((field, index) => (
                 <div
                   key={field.id}
@@ -2057,8 +2079,8 @@ export default function PartnersPage() {
                   <div className="space-y-4 mb-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Document Name {index + 1}{" "}
-                        <span className="text-red-500">*</span>
+                        {t("admin.partners.DocumentName") || "Document Name"}{" "}
+                        {index + 1} <span className="text-red-500">*</span>
                       </label>
                       <Input
                         error={errors.parDoclst?.[index]?.documentName?.message}
@@ -2078,7 +2100,9 @@ export default function PartnersPage() {
 
                     <div>
                       <DocumentUpload
-                        label={`Document File ${index + 1}`}
+                        label={`${
+                          t("admin.partners.DocumentFile") || "Document File"
+                        } ${index + 1}`}
                         value={watch(`parDoclst.${index}.documentUrl`)}
                         onChange={(url) => {
                           setValue(`parDoclst.${index}.documentUrl`, url);
@@ -2166,7 +2190,7 @@ export default function PartnersPage() {
                 }}
                 className="hover:bg-[#85B11F] hover:border-[#85B11F]"
               >
-                Add Document +
+                {t("admin.partners.AddDocument") || "Add Document"} +
               </Button>
               {errors.parDoclst && !errors.parDoclst.root && (
                 <p className="text-red-500 text-sm mt-2">
@@ -2179,13 +2203,13 @@ export default function PartnersPage() {
       case 6:
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-bold text-gray-900">
+            <h3 className="text-lg font-bold text-gray-900 mt-6">
               {t("admin.partners.Categories&SubCategories") ||
                 "Categories & SubCategories"}
             </h3>
             <div className="bg-[#F0F2EA] p-4 rounded-lg">
               <h4 className="font-medium text-gray-700 mb-3">
-                Select Category
+                {t("admin.partners.SelectCategory") || "Select Category"}
               </h4>
               {isLoadingCategories ? (
                 <div className="text-center py-2">
@@ -2198,7 +2222,7 @@ export default function PartnersPage() {
                 <SearchableSelectController
                   name="categoryId"
                   control={control}
-                  label="Category"
+                  label={t("admin.categories.title") || "Category"}
                   error={errors.categoryId?.message}
                   options={categories
                     .filter((cat) => cat.isActive)
@@ -2276,7 +2300,9 @@ export default function PartnersPage() {
                           <SearchableSelectController
                             name={`parSubCatlst.${index}.subCategoryId`}
                             control={control}
-                            label={`Sub Category ${index + 1}`}
+                            label={`${
+                              t("admin.subcategories.title") || "Sub Category"
+                            } ${index + 1}`}
                             error={
                               errors.parSubCatlst?.[index]?.subCategoryId
                                 ?.message
@@ -2327,7 +2353,9 @@ export default function PartnersPage() {
                       }}
                       className="hover:bg-[#85B11F] hover:border-[#85B11F]"
                     >
-                      Add Sub Categories +
+                      {t("admin.partners.AddsubCategory") ||
+                        "Add Sub Categories"}{" "}
+                      +
                     </Button>
                     {!isLoadingSubCategories &&
                       subCategories.filter((subCat) => subCat.isActive)
@@ -2438,7 +2466,7 @@ export default function PartnersPage() {
             }
           >
             {isSubmitting
-              ? "Submitting..."
+              ? t("common.Submitting") || "Submitting..."
               : editingPartner
               ? t("common.update")
               : t("common.create")}

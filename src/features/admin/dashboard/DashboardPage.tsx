@@ -50,7 +50,7 @@ const DashboardPage = () => {
     PartnerUserTrend[]
   >([]);
   const [timeFilter, setTimeFilter] = useState<
-    "day" | "week" | "month" | "year"
+    "day" | "week" | "month" | "year" | "all"
   >("week");
   const [trendsLoading, setTrendsLoading] = useState(false);
   const [totalPartnersFromTrends, setTotalPartnersFromTrends] =
@@ -62,6 +62,7 @@ const DashboardPage = () => {
     { value: "week", label: "This Week" },
     { value: "month", label: "This Month" },
     { value: "year", label: "This Year" },
+    { value: "all", label: "All Time" }, // Added All Time option
   ];
 
   // FIXED: Function to generate proper date range based on filter
@@ -128,6 +129,14 @@ const DashboardPage = () => {
           toDate: formatDate(now),
         };
 
+      case "all":
+        // For All Time: Use empty strings
+        const veryOldDate = new Date(0, 0, 0);
+        return {
+          fromDate: formatDate(veryOldDate),
+          toDate: formatDate(now),
+        };
+
       default:
         // Default to current week
         const defaultSunday = new Date(now);
@@ -153,6 +162,8 @@ const DashboardPage = () => {
         return "Month";
       case "year":
         return "Year";
+      case "all":
+        return "All";
       default:
         return "ThisWeek";
     }
@@ -164,6 +175,7 @@ const DashboardPage = () => {
       const dateRange = getDateRange(filter);
       const mode = getModeFromTimeFilter(filter);
 
+      // For "All Time" filter, we'll use the specific payload you provided
       const trendsPayload: ReportQueryRequest = {
         reportType: "GetPartnerUserListByDashBoardReport",
         mode: mode,
@@ -188,6 +200,22 @@ const DashboardPage = () => {
         courseId: "string",
         testId: "string",
       };
+
+      // For "All Time", we can override specific fields to match your exact payload
+      if (filter === "all") {
+        trendsPayload.fromDate = "string";
+        trendsPayload.toDate = "string";
+        trendsPayload.pagination = {
+          page: 0,
+          pageSize: 0,
+          searchTerm: "string",
+          sortDirection: "string",
+          sortField: "string",
+          userId: 0,
+          pageNumber: 0,
+          rowsPerPage: 0,
+        };
+      }
 
       console.log(
         "📤 Sending Payload for",
@@ -265,9 +293,32 @@ const DashboardPage = () => {
         return transformMonthData(apiData);
       case "year":
         return transformYearData(apiData);
+      case "all":
+        return transformAllTimeData(apiData);
       default:
         return transformWeekData(apiData);
     }
+  };
+
+  // Transform All Time data - FIXED to show integer values
+  const transformAllTimeData = (apiData: any[]): PartnerUserTrend[] => {
+    if (!apiData || apiData.length === 0) {
+      // Return empty data for years when no data
+      const currentYear = new Date().getFullYear();
+      return Array.from({ length: 5 }, (_, i) => ({
+        date: (currentYear - 4 + i).toString(),
+        partners: 0,
+        users: 0,
+      }));
+    }
+
+    // For All Time, we expect data grouped by years
+    return apiData.map((item) => ({
+      date: item.year || item.date || "Unknown",
+      // FIXED: Use Math.round() to ensure integer values
+      partners: Math.round(item.partnerCount || item.partners || 0),
+      users: Math.round(item.userCount || item.users || 0),
+    }));
   };
 
   // Transform Today data - FIXED to show integer values
@@ -395,11 +446,11 @@ const DashboardPage = () => {
 
   // Update the handleTimeFilterChange function
   const handleTimeFilterChange = (newFilter: string) => {
-    setTimeFilter(newFilter as "day" | "week" | "month" | "year");
+    setTimeFilter(newFilter as "day" | "week" | "month" | "year" | "all");
     fetchPartnerUserTrends(newFilter);
   };
 
-  // Also update the mock data generator to use integers consistently
+  // Also update the mock data generator to use integers consistently and add All Time case
   const generateMockTrendData = (filter: string) => {
     let mockData: PartnerUserTrend[] = [];
 
@@ -447,6 +498,15 @@ const DashboardPage = () => {
           date: month,
           partners: Math.floor(Math.random() * 50) + 20,
           users: Math.floor(Math.random() * 80) + 30,
+        }));
+        break;
+      case "all":
+        // For All Time, show data by years
+        const currentYear = new Date().getFullYear();
+        mockData = Array.from({ length: 5 }, (_, i) => ({
+          date: (currentYear - 4 + i).toString(),
+          partners: Math.floor(Math.random() * 100) + 50,
+          users: Math.floor(Math.random() * 200) + 100,
         }));
         break;
     }

@@ -4,6 +4,7 @@ import { testimonialService } from "../../../services/testimonial.service";
 import Button from "../../../components/common/Button";
 import Input from "../../../components/common/Input";
 import AdminToast from "../../../components/common/AdminToast";
+import DeleteConfirmation from "../../../components/common/DeleteConfirmation";
 import type { AdminToastType } from "../../../components/common/AdminToast";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
@@ -51,7 +52,15 @@ export default function TestimonialFormPage() {
   const queryClient = useQueryClient();
   const [toasts, setToasts] = useState<ToastState[]>([]);
   const [showValidation, setShowValidation] = useState(false);
-  const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
+  const [editingTestimonial, setEditingTestimonial] =
+    useState<Testimonial | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    isOpen: boolean;
+    testimonial: Testimonial | null;
+  }>({
+    isOpen: false,
+    testimonial: null,
+  });
 
   // Get businessName from location state
   const locationState = location.state as LocationState;
@@ -62,9 +71,9 @@ export default function TestimonialFormPage() {
     data: previousTestimonials = [],
     isLoading: isLoadingTestimonials,
     error: testimonialsError,
-    refetch: refetchTestimonials
+    refetch: refetchTestimonials,
   } = useQuery({
-    queryKey: ['testimonials', 'partner', partnerId],
+    queryKey: ["testimonials", "partner", partnerId],
     queryFn: () => {
       if (!partnerId) return Promise.resolve([]);
       return testimonialService.getByPartnerIdList(parseInt(partnerId));
@@ -131,7 +140,7 @@ export default function TestimonialFormPage() {
     handleSubmit,
     setValue,
     watch,
-    reset: resetForm
+    reset: resetForm,
   } = useForm<TestimonialFormData>({
     defaultValues: {
       partnerId: partnerId ? parseInt(partnerId) : 0,
@@ -152,12 +161,12 @@ export default function TestimonialFormPage() {
   const partnerIdValue = watch("partnerId");
 
   // Check if form has validation errors
-  const hasValidationErrors = 
-    !customerNameValue || 
-    customerNameValue.trim() === "" || 
-    !testValue || 
-    testValue.trim() === "" || 
-    !partnerIdValue || 
+  const hasValidationErrors =
+    !customerNameValue ||
+    customerNameValue.trim() === "" ||
+    !testValue ||
+    testValue.trim() === "" ||
+    !partnerIdValue ||
     partnerIdValue <= 0;
 
   // Set partnerId from URL parameter when component mounts
@@ -220,8 +229,9 @@ export default function TestimonialFormPage() {
   // Update testimonial mutation
   const updateMutation = useMutation({
     mutationFn: async (data: TestimonialFormData) => {
-      if (!editingTestimonial) throw new Error("No testimonial selected for editing");
-      
+      if (!editingTestimonial)
+        throw new Error("No testimonial selected for editing");
+
       try {
         const submissionData: Testimonial = {
           ...editingTestimonial,
@@ -291,6 +301,7 @@ export default function TestimonialFormPage() {
         t("admin.testimonials.deleteSuccess") ||
           "Testimonial deleted successfully"
       );
+      setDeleteConfirmation({ isOpen: false, testimonial: null });
     },
     onError: (error: Error) => {
       const errorMessage = getErrorMessage(
@@ -298,6 +309,7 @@ export default function TestimonialFormPage() {
         "Failed to delete testimonial"
       );
       toast.error(errorMessage);
+      setDeleteConfirmation({ isOpen: false, testimonial: null });
     },
   });
 
@@ -334,16 +346,32 @@ export default function TestimonialFormPage() {
     setValue("isDisplayed", testimonial.isDisplayed);
     setValue("isActive", testimonial.isActive);
     setShowValidation(false);
-    
+
     // Scroll to form
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Handle delete testimonial
+  // Handle delete testimonial - now opens confirmation modal instead of immediate delete
   const handleDeleteTestimonial = (testimonial: Testimonial) => {
-    if (window.confirm(`Are you sure you want to delete the testimonial from ${testimonial.customerName}?`)) {
-      deleteMutation.mutate(testimonial.id);
+    setDeleteConfirmation({
+      isOpen: true,
+      testimonial: testimonial,
+    });
+  };
+
+  // Handle confirm delete from confirmation modal
+  const handleConfirmDelete = () => {
+    if (deleteConfirmation.testimonial?.id) {
+      deleteMutation.mutate(deleteConfirmation.testimonial.id);
+    } else {
+      toast.error("Cannot delete testimonial: Invalid ID");
+      setDeleteConfirmation({ isOpen: false, testimonial: null });
     }
+  };
+
+  // Handle cancel delete from confirmation modal
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ isOpen: false, testimonial: null });
   };
 
   // Handle cancel edit
@@ -390,6 +418,23 @@ export default function TestimonialFormPage() {
         />
       ))}
 
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmation
+        open={deleteConfirmation.isOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        itemName={
+          deleteConfirmation.testimonial
+            ? `Testimonial from: ${deleteConfirmation.testimonial.customerName}`
+            : undefined
+        }
+        confirmationMessage={
+          t("admin.testimonials.deleteConfirm") ||
+          "Are you sure you want to delete this testimonial?"
+        }
+        isLoading={deleteMutation.isPending}
+      />
+
       {/* Testimonial Form */}
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         {/* Header Section */}
@@ -405,14 +450,14 @@ export default function TestimonialFormPage() {
             </button>
 
             <h1 className="text-2xl font-bold text-gray-900">
-              {editingTestimonial 
+              {editingTestimonial
                 ? t("admin.testimonials.editTestimonial") || "Edit Testimonial"
-                : t("admin.testimonials.addTestimonial") || "Add New Testimonial"
-              }
+                : t("admin.testimonials.addTestimonial") ||
+                  "Add New Testimonial"}
             </h1>
           </div>
         </div>
-        
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Hidden Partner ID Field */}
@@ -429,7 +474,8 @@ export default function TestimonialFormPage() {
             {/* Show businessName in a disabled field */}
             <Input
               label={
-                <>{t("admin.testimonials.partnerId") || "Partner Name"}
+                <>
+                  {t("admin.testimonials.partnerId") || "Partner Name"}
                   <span className="text-red-500 ml-1">*</span>
                 </>
               }
@@ -442,23 +488,31 @@ export default function TestimonialFormPage() {
             <div>
               <Input
                 label={
-                  <>{t("admin.testimonials.customerName") || "Customer Name"}
+                  <>
+                    {t("admin.testimonials.customerName") || "Customer Name"}
                     <span className="text-red-500 ml-1">*</span>
                   </>
                 }
                 {...register("customerName")}
-                placeholder="Enter customer name"
+                placeholder={
+                  t("admin.testimonials.enterCustomerName") ||
+                  "Enter customer name"
+                }
                 disabled={isSubmitting}
               />
-              {showValidation && (!customerNameValue || customerNameValue.trim() === "") && (
-                <p className="text-red-500 text-sm mt-1">Customer name is required</p>
-              )}
+              {showValidation &&
+                (!customerNameValue || customerNameValue.trim() === "") && (
+                  <p className="text-red-500 text-sm mt-1">
+                    Customer name is required
+                  </p>
+                )}
             </div>
 
             {/* Rating */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                <>{t("admin.testimonials.rating") || "Give Ratings"}
+                <>
+                  {t("admin.testimonials.rating") || "Give Ratings"}
                   <span className="text-red-500 ml-1">*</span>
                 </>
               </label>
@@ -496,7 +550,9 @@ export default function TestimonialFormPage() {
             {/* Testimonial Text */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                <>{t("admin.testimonials.testimonialText") || "Share Your Opinion"}
+                <>
+                  {t("admin.testimonials.testimonialText") ||
+                    "Share Your Opinion"}
                   <span className="text-red-500 ml-1">*</span>
                 </>
               </label>
@@ -505,27 +561,35 @@ export default function TestimonialFormPage() {
                 rows={4}
                 className={`w-full border rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200 resize-none ${
                   showValidation && (!testValue || testValue.trim() === "")
-                    ? "border-red-300" 
+                    ? "border-red-300"
                     : "border-gray-300"
                 }`}
-                placeholder="Share details of your Experience..."
+                placeholder={
+                  t("admin.testimonials.shareDetailsofyourExperience") ||
+                  "Share details of your Experience..."
+                }
                 disabled={isSubmitting}
               />
               {showValidation && (!testValue || testValue.trim() === "") && (
-                <p className="text-red-500 text-sm mt-1">Share Your Opinion is required</p>
+                <p className="text-red-500 text-sm mt-1">
+                  Share Your Opinion is required
+                </p>
               )}
             </div>
 
             {/* Note */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t("admin.testimonials.note") || "Note"} (Optional)
+                {t("admin.testimonials.note") || "Note"}
               </label>
               <textarea
                 {...register("note")}
                 rows={2}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200 resize-none"
-                placeholder="Enter any additional notes..."
+                placeholder={
+                  t("admin.testimonials.enteranyadditionalNotes") ||
+                  "Enter any additional notes..."
+                }
                 disabled={isSubmitting}
               />
             </div>
@@ -582,51 +646,50 @@ export default function TestimonialFormPage() {
             </div>
           )}
 
-         
-         {/* Form Actions */}
-<div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
-  {editingTestimonial ? (
-    <>
-      <Button
-        type="button"
-        variant="outline"
-        onClick={handleCancelEdit}
-        disabled={isSubmitting}
-      >
-        {t("common.cancel") || "Cancel"}
-      </Button>
-      <Button
-        type="submit"
-        variant="secondary"
-        disabled={isSubmitting}
-      >
-        {isSubmitting
-          ? t("common.saving") || "Saving..."
-          : t("common.update") || "Update"}
-      </Button>
-    </>
-  ) : (
-    <>
-      <Button
-        type="button"
-        variant="outline"
-        onClick={handleFormClose}
-        disabled={isSubmitting}
-      >
-        {t("common.cancel") || "Cancel"}
-      </Button>
-      <Button
-        type="submit"
-        variant="secondary"
-        disabled={isSubmitting}
-      >
-        {isSubmitting
-          ? t("common.creating") || "Creating..."
-          : t("common.create") || "Create"}
-      </Button>
-    </>
-  )}
-</div>
+          {/* Form Actions */}
+          <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+            {editingTestimonial ? (
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleCancelEdit}
+                  disabled={isSubmitting}
+                >
+                  {t("common.cancel") || "Cancel"}
+                </Button>
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting
+                    ? t("common.updating") || "Updating..."
+                    : t("common.update") || "Update"}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleFormClose}
+                  disabled={isSubmitting}
+                >
+                  {t("common.cancel") || "Cancel"}
+                </Button>
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting
+                    ? t("common.creating") || "Creating..."
+                    : t("common.create") || "Create"}
+                </Button>
+              </>
+            )}
+          </div>
         </form>
       </div>
 
@@ -634,11 +697,12 @@ export default function TestimonialFormPage() {
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">
-            {t("admin.testimonials.previousTestimonials") || "Previous Testimonials"}
+            {t("admin.testimonials.previousTestimonials") ||
+              "Previous Testimonials"}
           </h2>
-          <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+          {/* <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
             {previousTestimonials.length} testimonial(s)
-          </span>
+          </span> */}
         </div>
 
         {isLoadingTestimonials ? (
@@ -648,7 +712,8 @@ export default function TestimonialFormPage() {
           </div>
         ) : testimonialsError ? (
           <div className="text-center py-8 text-red-500">
-            Failed to load testimonials: {getErrorMessage(testimonialsError, "Unknown error")}
+            Failed to load testimonials:{" "}
+            {getErrorMessage(testimonialsError, "Unknown error")}
           </div>
         ) : previousTestimonials.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
@@ -668,7 +733,7 @@ export default function TestimonialFormPage() {
                         {testimonial.customerName}
                       </h3>
                       {renderStars(testimonial.rating)}
-                      <div className="flex items-center gap-2">
+                      {/* <div className="flex items-center gap-2">
                         {testimonial.isDisplayed && (
                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                             Displayed
@@ -679,25 +744,25 @@ export default function TestimonialFormPage() {
                             Inactive
                           </span>
                         )}
-                      </div>
+                      </div> */}
                     </div>
-                    
+
                     <p className="text-gray-700 mb-2">{testimonial.test}</p>
-                    
+
                     {testimonial.note && (
                       <p className="text-sm text-gray-500 mb-2">
                         <strong>Note:</strong> {testimonial.note}
                       </p>
                     )}
-                    
-                   {/* <div className="text-xs text-gray-400">
+
+                    {/* <div className="text-xs text-gray-400">
   Created: {new Date(testimonial.createdDate).toLocaleDateString()}
   {testimonial.modifiedDate && (
     <> | Modified: {new Date(testimonial.modifiedDate).toLocaleDateString()}</>
   )}
 </div> */}
                   </div>
-                  
+
                   <div className="flex items-center gap-2 ml-4">
                     <button
                       onClick={() => handleEditTestimonial(testimonial)}
@@ -707,7 +772,7 @@ export default function TestimonialFormPage() {
                     >
                       <IconPencil className="w-4 h-4" />
                     </button>
-                    
+
                     <button
                       onClick={() => handleDeleteTestimonial(testimonial)}
                       disabled={isSubmitting || deleteMutation.isPending}
