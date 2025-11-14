@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { subCategoriesService } from "../services/subCategories.service";
 import { partnerService } from "../services/partner.service";
 import footerLogo from "/src/assets/userImages/footerLogo.svg";
+import subCategoryGradient from "/src/assets/userImages/subCatGradient.png";
 
 interface SubCategoryData {
   id: number;
@@ -204,7 +205,10 @@ const UserSupplier = () => {
       }}
     >
       <UserHeader />
-      <div className="absolute inset-0 bg-gradient-to-b from-[rgba(22,89,51,0)] to-[#043428] pointer-events-none" />
+      {/* <div className="absolute inset-0 bg-gradient-to-b from-[rgba(22,89,51,0)] to-[#043428] pointer-events-none" /> */}
+      <div className="absolute bottom-0">
+        <img src={subCategoryGradient} alt="" />
+      </div>
       {categoryName && (
         <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4">
           <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
@@ -304,7 +308,8 @@ const UserSupplier = () => {
             </div>
           </div>
           <p className="text-white text-sm figtree font-[400] text-[18px]">
-            Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
+            Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR
+            33160437
           </p>
         </div>
       </footer>

@@ -12,6 +12,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { logout } from "../../features/auth/authSlice";
 import ToastBanner from "./ToastBanner";
+import SignUpModal from "./SignUpModal";
 
 const schema = z.object({
   userName: z.string().min(1, "Username is required"),
@@ -23,9 +24,16 @@ interface UserModalProps {
   onClose: () => void;
   redirectTo?: string;
   roleTarget?: "user" | "partner";
+  showSignUp?: boolean;
 }
 
-export default function UserModal({ open, onClose, redirectTo, roleTarget = "user" }: UserModalProps) {
+export default function UserModal({
+  open,
+  onClose,
+  redirectTo,
+  roleTarget = "user",
+  showSignUp = false,
+}: UserModalProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,23 +44,26 @@ export default function UserModal({ open, onClose, redirectTo, roleTarget = "use
   const { t } = useTranslation();
 
   const showSuccess = (message: string) => {
-    toast(({ closeToast }) => (
-      <ToastBanner
-        type="success"
-        message={message}
-        onClose={closeToast}
-        autoDismissMs={3000}
-        fixed={false}
-      />
-    ), {
-      position: "top-right",
-      closeButton: false,
-      hideProgressBar: true,
-      autoClose: 3000,
-      icon: false,
-      style: { background: "transparent", boxShadow: "none", padding: 0 },
-      bodyClassName: "p-0 m-0",
-    });
+    toast(
+      ({ closeToast }) => (
+        <ToastBanner
+          type="success"
+          message={message}
+          onClose={closeToast}
+          autoDismissMs={3000}
+          fixed={false}
+        />
+      ),
+      {
+        position: "top-right",
+        closeButton: false,
+        hideProgressBar: true,
+        autoClose: 3000,
+        icon: false,
+        style: { background: "transparent", boxShadow: "none", padding: 0 },
+        className: "p-0 m-0",
+      }
+    );
   };
 
   const [mode, setMode] = useState<"login" | "forgot-email" | "otp" | "reset">(
@@ -71,6 +82,7 @@ export default function UserModal({ open, onClose, redirectTo, roleTarget = "use
   const [newPassword, setNewPassword] = useState("");
   const [fpLoading, setFpLoading] = useState(false);
   const [fpError, setFpError] = useState<string | null>(null);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
 
   const {
     register,
@@ -93,7 +105,11 @@ export default function UserModal({ open, onClose, redirectTo, roleTarget = "use
         const roleIds = String((user as any)?.roleIds ?? "");
         const roleName = String((user as any)?.roleName ?? "");
 
-        const isAdmin = roleIds.split(",").map((r: string) => r.trim()).includes("1") || roleName.toLowerCase() === "admin";
+        const isAdmin =
+          roleIds
+            .split(",")
+            .map((r: string) => r.trim())
+            .includes("1") || roleName.toLowerCase() === "admin";
         if (isAdmin) {
           toast.error("You are not authorised for login");
           try {
@@ -108,8 +124,16 @@ export default function UserModal({ open, onClose, redirectTo, roleTarget = "use
         hasHandledLoginRef.current = true;
         onClose();
 
-        const isPartner = roleIds.split(",").map((r: string) => r.trim()).includes("2") || roleName === "Partner";
-        const isUser = roleIds.split(",").map((r: string) => r.trim()).includes("3") || roleName === "User";
+        const isPartner =
+          roleIds
+            .split(",")
+            .map((r: string) => r.trim())
+            .includes("2") || roleName === "Partner";
+        const isUser =
+          roleIds
+            .split(",")
+            .map((r: string) => r.trim())
+            .includes("3") || roleName === "User";
 
         localStorage.setItem("bm_access", token);
         if (isPartner && !isUser) {
@@ -123,7 +147,8 @@ export default function UserModal({ open, onClose, redirectTo, roleTarget = "use
         }
 
         const from = (location.state as any)?.from?.pathname;
-        const defaultByRole = isPartner && !isUser ? "/partner/statistics" : "/profile";
+        const defaultByRole =
+          isPartner && !isUser ? "/partner/statistics" : "/profile";
         const target = redirectTo ?? from ?? defaultByRole;
         navigate(target, { replace: true });
       } catch (e) {
@@ -245,6 +270,10 @@ export default function UserModal({ open, onClose, redirectTo, roleTarget = "use
     }
   };
 
+  const handleSignUpClick = () => {
+    setIsSignUpOpen(true);
+  };
+
   if (!open) return null;
 
   return ReactDOM.createPortal(
@@ -287,7 +316,9 @@ export default function UserModal({ open, onClose, redirectTo, roleTarget = "use
             <div className="px-6 pb-6">
               <h2 className="text-[20px] font-[800] text-[#000000] text-center">
                 {mode === "login"
-                  ? `${roleTarget === "partner" ? "Partner " : ""}${t("auth.login")}`
+                  ? `${roleTarget === "partner" ? "Partner " : ""}${t(
+                      "auth.login"
+                    )}`
                   : mode === "forgot-email"
                   ? "Forgot Password"
                   : mode === "otp"
@@ -367,7 +398,19 @@ export default function UserModal({ open, onClose, redirectTo, roleTarget = "use
                       {t("auth.forgotPassword")}
                     </button>
                   </div>
-
+                  {showSignUp && (
+                    <div className="text-sm">
+                      Don’t have an account?{" "}
+                      <button
+                        type="button"
+                        onClick={handleSignUpClick}
+                        className="text-black hover:text-gray-600 transition-colors font-normal cursor-pointer"
+                      >
+                        Sign Up Here
+                      </button>
+                    </div>
+                  )}
+               
                   <div className="pt-2">
                     <button
                       type="submit"
@@ -511,6 +554,7 @@ export default function UserModal({ open, onClose, redirectTo, roleTarget = "use
           </div>
         </div>
       </div>
+      <SignUpModal open={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
     </div>,
     document.body
   );

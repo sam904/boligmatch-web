@@ -18,11 +18,8 @@ import { showRecommendationSuccessToast, showRecommendationErrorToast, showConta
 import { FaPlayCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { partnerService } from "../services/partner.service";
-// import footerLogo from "/src/assets/userImages/footerLogo.svg";
-// import gradient from "/src/assets/userImages/gradient.svg";
 import ratingImg from "/src/assets/userImages/rating.png";
 import fullRatingImg from "/src/assets/userImages/ratig2.png";
-// import logo from ""
 import trustPilotLogo from "/src/assets/userImages/boligmatchLogo2.png";
 import startImg from "/src/assets/userImages/star.png";
 import servicesImg from "/src/assets/supplierProfile/services.png";
@@ -57,6 +54,20 @@ const SupplierProfile = () => {
       navigate("/");
     }
   }, []);
+
+  const getCurrentUserId = (): number | null => {
+    try {
+      const userStr = localStorage.getItem("bm_user");
+      if (!userStr) return null;
+      const parsed = JSON.parse(userStr);
+      const normalized = parsed?.output ?? parsed;
+      const candidate = normalized?.userId ?? normalized?.id;
+      const asNum = Number(candidate);
+      return Number.isFinite(asNum) && asNum > 0 ? asNum : null;
+    } catch {
+      return null;
+    }
+  };
 
   useEffect(() => {
     const partnerData = localStorage.getItem("bm_partner");
@@ -135,12 +146,12 @@ const SupplierProfile = () => {
     loadPartnerData();
   }, []);
 
-  const handleAddToFavorites = async () => {
+  
+
+  const handleToggleFavourite = async () => {
     try {
       setIsAddingToFavorites(true);
-      const userStr = localStorage.getItem("bm_user");
-      const parsedUser = userStr ? JSON.parse(userStr) : null;
-      const userId = parsedUser?.userId ?? userData?.userId;
+      const userId = getCurrentUserId();
 
       if (!userId) {
         showFavouriteErrorToast("User not found. Please log in again.");
@@ -153,17 +164,37 @@ const SupplierProfile = () => {
         return;
       }
 
-      const payload = {
-        userId: userId,
-        partnerId: partnerId,
-        isActive: true,
-      };
+      const isFav = String(partnerData?.isValidFavourite) === "True";
 
-      await favouritesService.add(payload);
-      showFavouriteSuccessToast("Added to favourites");
-    } catch (error) {
-      console.error("Error adding to favorites:", error);
-      showFavouriteErrorToast("Failed to add to favourites. Please try again.");
+      if (isFav) {
+        try {
+          const all: any = await favouritesService.getAll();
+          const list: any[] = Array.isArray(all) ? all : all?.items || all?.output || [];
+          const match = (list || []).find(
+            (f: any) => Number(f?.userId) === Number(userId) && Number(f?.partnerId) === Number(partnerId)
+          );
+          if (!match?.id) {
+            showFavouriteErrorToast("Favourite not found.");
+            return;
+          }
+          await favouritesService.remove(match.id);
+          showFavouriteSuccessToast("Removed from favourites successfully");
+          setPartnerData((prev: any) => ({ ...(prev || {}), isValidFavourite: "False" }));
+        } catch (err) {
+          console.error("Error removing favourite:", err);
+          showFavouriteErrorToast("Failed to remove from favourites. Please try again.");
+        }
+      } else {
+        try {
+          const payload = { userId, partnerId, isActive: true };
+          await favouritesService.add(payload as any);
+          showFavouriteSuccessToast("Added to favourites");
+          setPartnerData((prev: any) => ({ ...(prev || {}), isValidFavourite: "True" }));
+        } catch (err) {
+          console.error("Error adding favourite:", err);
+          showFavouriteErrorToast("Failed to add to favourites. Please try again.");
+        }
+      }
     } finally {
       setIsAddingToFavorites(false);
     }
@@ -342,9 +373,10 @@ const SupplierProfile = () => {
               className="flex gap-10 justify-center absolute bottom-0 w-full py-8 pb-0"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(4, 52, 40, 0) 0%, #043428 100%)",
+                  "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
               }}
-            >
+            > 
+
               {!isPartner && (
                 <>
                   <button
@@ -354,11 +386,13 @@ const SupplierProfile = () => {
                       fontWeight: 600,
                       lineHeight: "100%",
                     }}
-                    onClick={handleAddToFavorites}
+                    onClick={handleToggleFavourite}
                     disabled={isAddingToFavorites}
                   >
                     <img src={heartIcon} alt="" />
-                    {t("supplierProfile.saveFavoriteButton")}
+                    {String(partnerData?.isValidFavourite) === "True"
+                      ? "Remove from favourites"
+                      : t("supplierProfile.saveFavoriteButton")}
                   </button>
                   <button
                     className="bg-[#91C73D] text-white px-6 py-3 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-[#7fb02f] transition-colors"

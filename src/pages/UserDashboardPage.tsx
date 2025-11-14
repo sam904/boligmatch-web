@@ -20,7 +20,7 @@ import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { toast } from "sonner";
 import footerLogo from "/src/assets/userImages/footerLogo.svg";
-import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg"
+import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg";
 import { partnerService } from "../services/partner.service";
 
 interface FavouriteItem {
@@ -60,10 +60,22 @@ export default function UserDashboardPage() {
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [conversationsLoading, setConversationsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [openConversation, setOpenConversation] = useState<ConversationItem | null>(null);
   console.log("isMobile", isMobile);
 
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const formatConvDate = (value?: string) => {
+    if (!value) return "-";
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return "-";
+    try {
+      return d.toLocaleDateString("da-DK", { day: "2-digit", month: "2-digit", year: "2-digit" });
+    } catch {
+      return d.toISOString().split("T")[0];
+    }
+  };
 
   const userData = useAppSelector((state) => state.auth.user);
 
@@ -271,10 +283,11 @@ export default function UserDashboardPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 max-w-4xl mx-auto">
               <button
                 onClick={handlePartnersClick}
-                className={`${activeView === "default"
+                className={`${
+                  activeView === "default"
                     ? "bg-[#145939] text-white"
                     : "bg-[#95c11f] text-white"
-                  } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
+                } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
                 type="button"
               >
                 <img src={searchImg} alt="" className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -285,10 +298,11 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={handleFavoritesClick}
-                className={`${activeView === "favorites"
+                className={`${
+                  activeView === "favorites"
                     ? "bg-[#145939] text-white"
                     : "bg-[#95c11f] text-white"
-                  } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
+                } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition cursor-pointer`}
                 type="button"
               >
                 <img
@@ -303,10 +317,11 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={handleMessagesClick}
-                className={`${activeView === "messages"
+                className={`${
+                  activeView === "messages"
                     ? "bg-[#145939] text-white"
                     : "bg-[#95c11f] text-white"
-                  } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition font-medium cursor-pointer`}
+                } w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 rounded-xl sm:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-md hover:opacity-90 transition font-medium cursor-pointer`}
                 type="button"
               >
                 <img
@@ -355,7 +370,6 @@ export default function UserDashboardPage() {
                           <div className="absolute bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-white to-transparent"></div>
                           <div className="absolute bottom-0 left-0 right-0">
                             <img src={categoryGradientImg} alt="" />
-
                           </div>
                         </div>
 
@@ -405,7 +419,7 @@ export default function UserDashboardPage() {
                         {favorites.map((favorite) => (
                           <div
                             key={favorite.id}
-                            className="bg-white rounded-lg p-4 flex items-center gap-3 hover:shadow-lg transition-shadow cursor-pointer border border-gray-100"
+                            className="bg-white rounded-lg p-4 flex items-center gap-3 border border-gray-100"
                           >
                             <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
                               <div className="text-xs font-semibold text-gray-600">
@@ -426,10 +440,11 @@ export default function UserDashboardPage() {
                                 User Name {favorite.userName}
                               </h3>
                               <span
-                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${favorite.isActive
+                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  favorite.isActive
                                     ? "bg-green-50 text-green-700"
                                     : "bg-gray-100 text-gray-600"
-                                  }`}
+                                }`}
                               >
                                 {favorite.isActive ? "Active" : "Inactive"}
                               </span>
@@ -443,7 +458,7 @@ export default function UserDashboardPage() {
                         {favorites.map((favorite) => (
                           <div
                             key={favorite.id}
-                            className="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-[330px]"
+                            className="bg-white rounded-xl overflow-hidden flex flex-col h-[330px]"
                           >
                             {/* <div className="relative w-full h-64 overflow-hidden bg-gray-100">
                               <img
@@ -485,7 +500,10 @@ export default function UserDashboardPage() {
                                   "Professional services and solutions"}
                               </p>
 
-                              <button onClick={() => handleFavoriteMoreInfo(favorite)} className="mt-auto text-sm font-semibold text-[#01351f] hover:text-[#145939] transition cursor-pointer">
+                              <button
+                                onClick={() => handleFavoriteMoreInfo(favorite)}
+                                className="mt-auto text-sm font-semibold text-[#01351f] hover:text-[#145939] transition cursor-pointer"
+                              >
                                 More info
                               </button>
                             </div>
@@ -520,34 +538,37 @@ export default function UserDashboardPage() {
                         {conversations.map((conversation) => (
                           <div
                             key={conversation.id}
-                            className="bg-white rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer border border-gray-100"
+                            className="bg-white rounded-xl p-4 border border-gray-200"
                           >
-                            <div className="flex flex-col gap-2">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-1.5">
-                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                    Subject
-                                  </span>
-                                  <span className="text-sm font-semibold text-gray-800">
-                                    {conversation.messageSubject || "N/A"}
-                                  </span>
+                            <div className="flex items-start justify-between mb-3">
+                              <div>
+                                <div className="text-sm font-extrabold text-[#052011]">
+                                  Partner
                                 </div>
-                                <div className="flex items-start gap-2">
-                                  <span className="text-xs font-medium text-gray-500 uppercase tracking-wide flex-shrink-0">
-                                    Content
-                                  </span>
-                                  <span className="text-sm text-gray-600 line-clamp-2">
-                                    {conversation.messageContent || "N/A"}
-                                  </span>
+                                <div className="text-sm text-[#052011]">
+                                  {conversation.receiverName || "-"}
                                 </div>
                               </div>
-                              <div className="flex items-center justify-end gap-2 text-gray-500 hover:text-gray-700">
-                                <span className="text-sm">Read more</span>
+                              <div
+                                className="flex items-center gap-2 text-[#01351f] cursor-pointer"
+                                onClick={() => setOpenConversation(conversation)}
+                              >
+                                <span className="text-sm font-semibold">
+                                  Læs mere
+                                </span>
                                 <img
                                   src={chatModelImg}
                                   alt="Chat"
                                   className="w-5 h-5"
                                 />
+                              </div>
+                            </div>
+                            <div className="mt-1">
+                              <div className="text-sm font-extrabold text-[#052011] mb-1">
+                                Emne
+                              </div>
+                              <div className="text-sm text-[#052011] line-clamp-2">
+                                {conversation.messageSubject || "-"}
                               </div>
                             </div>
                           </div>
@@ -559,48 +580,38 @@ export default function UserDashboardPage() {
                         {conversations.map((conversation) => (
                           <div
                             key={conversation.id}
-                            className="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
+                            className="bg-white rounded-2xl p-5 border border-gray-200"
                           >
-                            <div className="relative w-full h-36 flex items-center justify-center">
-                              <div className="w-[83px] h-[77px] bg-white rounded-full flex items-center justify-center">
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <div className="text-base font-extrabold text-[#052011]">
+                                  Partner
+                                </div>
+                                <div className="text-sm text-[#052011]">
+                                  {conversation.receiverName || "-"}
+                                </div>
+                              </div>
+                              <div
+                                className="flex items-center gap-2 text-[#01351f] cursor-pointer"
+                                onClick={() => setOpenConversation(conversation)}
+                              >
+                                <span className="text-sm font-semibold">
+                                  Læs mere
+                                </span>
                                 <img
                                   src={chatModelImg}
-                                  alt="Message"
-                                  className=""
+                                  alt="Chat"
+                                  className="w-5 h-5"
                                 />
                               </div>
                             </div>
-
-                            <div className="p-5 flex flex-col gap-3">
-                              <div className="text-center -mt-2">
-                                <h3 className="text-lg font-bold text-[#052011]">
-                                  {conversation.senderName ||
-                                    conversation.fullName ||
-                                    "User Name"}
-                                </h3>
+                            <div>
+                              <div className="text-base font-extrabold text-[#052011] mb-1">
+                                Emne
                               </div>
-
-                              <div>
-                                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">
-                                  Subject
-                                </span>
-                                <p className="text-sm font-semibold text-gray-800">
-                                  {conversation.messageSubject || "N/A"}
-                                </p>
+                              <div className="text-sm text-[#052011] line-clamp-2">
+                                {conversation.messageSubject || "-"}
                               </div>
-
-                              <div>
-                                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">
-                                  Content
-                                </span>
-                                <p className="text-sm text-gray-600 line-clamp-3">
-                                  {conversation.messageContent || "N/A"}
-                                </p>
-                              </div>
-
-                              <button className="mt-2 text-sm font-semibold text-[#01351f] hover:text-[#145939] transition self-center">
-                                More info
-                              </button>
                             </div>
                           </div>
                         ))}
@@ -618,6 +629,48 @@ export default function UserDashboardPage() {
         </div>
       </div>
 
+      {/* Conversation Detail Modal */}
+      {openConversation && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50" />
+          <div className="relative z-[1001] w-[90%] max-w-md bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-[#1F7A58]/10">
+            <button
+              className="absolute right-4 top-3 text-black text-xl cursor-pointer hover:text-gray-700"
+              aria-label="Close"
+              onClick={() => setOpenConversation(null)}
+            >
+              ×
+            </button>
+
+            <div className="flex flex-col items-center gap-2 mb-4">
+              <img src={chatModelImg} alt="chat" className="w-[64px] h-[64px]" />
+              <h3 className="text-center font-extrabold text-lg">Besked</h3>
+            </div>
+
+            <div className="space-y-4 text-[#052011]">
+              <div>
+                <div className="text-sm font-extrabold">Dato</div>
+                <div className="text-sm">{formatConvDate(openConversation.createdDate)}</div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">Partner</div>
+                <div className="text-sm">{openConversation.receiverName || openConversation.senderName || openConversation.fullName || "-"}</div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">Emne</div>
+                <div className="text-sm">{openConversation.messageSubject || "-"}</div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">Beskrivelse</div>
+                <div className="text-sm leading-relaxed">
+                  {openConversation.messageContent || "-"}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
       <footer className="bg-[#01351f] text-white text-center p-4 sm:p-6">
         <div className="flex flex-col items-center">
@@ -631,7 +684,8 @@ export default function UserDashboardPage() {
             </div>
           </div>
           <p className="text-white text-xs sm:text-sm md:text-base figtree font-normal text-center px-4">
-            Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
+            Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR
+            33160437
           </p>
         </div>
       </footer>

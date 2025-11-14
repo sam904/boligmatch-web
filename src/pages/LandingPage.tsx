@@ -19,7 +19,7 @@ export default function LandingPage() {
     <div
       className={`
               relative 
-              h-[366px]      
+              h-[368px]      
               md:h-[100vh]     
               bg-no-repeat bg-cover bg-center
               bg-[url('/src/assets/userImages/mobile-landingImg.png')] 
@@ -37,7 +37,7 @@ export default function LandingPage() {
         open={showSignUpModal}
         onClose={() => setShowSignUpModal(false)}
       />
-      <div className="absolute md:top-42 top-24 lg:left-80 sm:left-50 flex max-w-6xl mx-auto px-12 justify-between mt-0 h-[calc(100vh-100vh)]">
+      <div className="absolute md:top-32 top-28 lg:left-68 left-0 flex max-w-6xl mx-auto md:px-12 px-8 justify-between mt-0 h-[calc(100vh-100vh)]">
         <div>
           <div className="md:w-[165px] w-[70px] flex justify-end">
             <img
@@ -74,7 +74,7 @@ export default function LandingPage() {
         <div className="flex justify-center absolute bottom-0 md:left-[44%] left-[35%]">
           <button
             onClick={() => setShowSignUpModal(true)}
-            className="bg-[#91C73D] rounded-lg md:text-[18px] text-[16px] cursor-pointer px-6 font-semibold py-2.5 text-white hover:bg-[#7fb32d] transition-colors figtree"
+            className="bg-[#91C73D] rounded-lg md:text-[18px] text-[16px] cursor-pointer px-6 font-semibold md:py-2.5 py-2 text-white hover:bg-[#7fb32d] transition-colors figtree"
           >
             {t("landing.signUpButton")}
           </button>
@@ -82,10 +82,10 @@ export default function LandingPage() {
         <h1 className="md:text-[76px] text-[40px] text-white leading-[66px] text-center rosting-script font-[400]">
           {t("landing.mainTitle")}
         </h1>
-        <h2 className="text-white md:text-[60px] text-[48px]  leading-[66px] tracking-[0%] text-center max-w-4xl mx-auto py-1 px-4 font-[800] plus-jakarta-sans">
+        <h2 className="text-white md:text-[60px] md:text-[48px] text-[40px]  md:leading-[66px] leading-[48px] tracking-[0%] text-center max-w-4xl md:mx-auto mx-8 md:py-1 py-0 px-4 font-[800] plus-jakarta-sans">
           {t("landing.subtitle")}
         </h2>
-        <p className="text-white text-center text-[18px] mx-auto max-w-7xl py-8 px-4 plus-jakarta-sans">
+        <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans">
           {t("landing.description")}
         </p>
       </div>

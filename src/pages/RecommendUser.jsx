@@ -78,7 +78,7 @@ function RecommendUser() {
     useEffect(() => {
         if (isVideoPlaying && videoRef.current) {
             // Trigger play programmatically for better iOS/Android support
-            const v = videoRef.current;
+            const v = videoRef.current; 
             // Some browsers require a direct call to play after a user gesture
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             v.play && v.play().catch(() => { });
@@ -140,6 +140,7 @@ function RecommendUser() {
                 onClose={() => setShowAuthModal(false)}
                 redirectTo={location.pathname}
                 roleTarget={modalRole}
+                showSignUp={true}
             />
             {/* Hero Section with Video/Image */}
             <div
