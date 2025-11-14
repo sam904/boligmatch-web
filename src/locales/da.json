@@ -29,7 +29,9 @@
     "Next":"Næste",
     "Previous":"Forrige",
     "Submitting":"Indsender...",
-    "address":"adresse"
+    "address":"adresse",
+    "updating":"opdaterer...",
+    "creating":"opretter..."
   },
   "auth": {
     "login": "Log ind",
@@ -75,7 +77,22 @@
     "title": "BoligMatch Admin",
     "dashboard": {
       "title": "Dashboard",
-      "subtitle": "Realtidsindsigt og systemoversigt"
+      "subtitle": "Realtidsindsigt og systemoversigt",
+      "TotalUsers":"Totalt antal brugere",
+      "TotalPartners":"Totalt antal partnere",
+      "TotalSubCategories":"Totalt antal underkategorier",
+      "TotalCategories": "Totalt antal kategorier",
+      "TotalFavourites": "Totalt antal favoritter",
+      "TotalRecommendations": "Totalt antal anbefalinger",
+      "TotalPartners&Users": "Totalt antal partnere og brugere",
+      "today":"i dag",
+      "thisweek":"denne uge",
+      "thisyear":"dette år",
+      "lastyear":"Sidste år",
+      "thismonth": "denne måned",
+      "alltime":"hele tiden",
+      "userGrowthAnalytics":"Bruger Vækst Analyser",
+      "growthRate":"Vækstrate"
     },
     "categories": {
       "title": "Kategorier",
@@ -169,7 +186,10 @@
       "shortDescription": "Kort beskrivelse",
       "SelectCategory": "Vælg kategori",
       "AddsubCategory": "Tilføj underkategori",
-      "exactly ":"Præcis"
+      "exactly ":"Præcis",
+      "preview":"forhåndsvisning",
+      "open":"åbn",
+      "download":"download"
     },
   "testimonials": {
     "title": "Udtalelser",
