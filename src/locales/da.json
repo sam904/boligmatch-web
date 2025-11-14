@@ -88,8 +88,11 @@
       "today":"i dag",
       "thisweek":"denne uge",
       "thisyear":"dette år",
+      "lastyear":"Sidste år",
       "thismonth": "denne måned",
-      "alltime":"hele tiden"
+      "alltime":"hele tiden",
+      "userGrowthAnalytics":"Bruger Vækst Analyser",
+      "growthRate":"Vækstrate"
     },
     "categories": {
       "title": "Kategorier",

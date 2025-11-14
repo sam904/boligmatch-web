@@ -1065,7 +1065,7 @@ const DashboardPage = () => {
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center space-x-6">
               <h3 className="text-lg font-semibold text-gray-900">
-                User Growth Analytics
+              {t("admin.dashboard.userGrowthAnalytics") || "User Growth Analytics"} 
               </h3>
               <div className="flex space-x-4 text-sm text-gray-500">
                 <span className="text-[#165933] font-medium flex items-center">
@@ -1081,7 +1081,7 @@ const DashboardPage = () => {
             </div>
             <div className="text-right">
               <div className="text-sm font-medium text-gray-500">
-                Growth Rate
+              {t("admin.dashboard.growthRate") || "Growth Rate"}
               </div>
               <div className="text-lg font-bold text-[#165933]">
                 +{growthRate}%
