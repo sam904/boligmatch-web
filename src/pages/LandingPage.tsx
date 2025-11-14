@@ -37,7 +37,7 @@ export default function LandingPage() {
         open={showSignUpModal}
         onClose={() => setShowSignUpModal(false)}
       />
-      <div className="absolute md:top-32 top-28 lg:left-68 left-0 flex max-w-6xl mx-auto md:px-12 px-8 justify-between mt-0 h-[calc(100vh-100vh)]">
+      <div className="absolute md:top-26 top-28 lg:left-66 left-0 flex max-w-6xl mx-auto md:px-12 px-8 justify-between mt-0 h-[calc(100vh-100vh)]">
         <div>
           <div className="md:w-[165px] w-[70px] flex justify-end">
             <img
@@ -91,10 +91,10 @@ export default function LandingPage() {
       </div>
       <ServiceCarousel />
       <div className="bg-[#01351f] h-auto">
-        <h1 className="text-[64px] leading-[66px] text-white text-center max-w-[845px] mx-auto font-[800] plus-jakarta-sans">
+        <h1 className="md:text-[64px] text-[42px] md:leading-[66px] leading-[42px] text-white text-center max-w-[845px] mx-auto font-[800] plus-jakarta-sans">
           {t("landing.transparentJourney")}
         </h1>
-        <p className="text-white text-center text-[18px] mx-auto max-w-7xl py-4 px-4">
+        <p className="text-white text-center md:text-[18px] text-[16px] mx-auto max-w-7xl py-4 px-4">
           {t("landing.futureDescription")}
         </p>
       </div>

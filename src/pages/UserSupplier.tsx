@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // import userLogo from "/src/assets/userImages/userLogo.png";
 import userDashboard from "/src/assets/userImages/user-supplier.png";
 import JimmysELservice from "../assets/userSupplier/Jimmys EL-service.png";
@@ -58,23 +58,23 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
   onMoreInfo,
   isLoading = false,
 }) => (
-  <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-[413px] h-[453px] flex flex-col items-center px-8 py-10 text-center">
-    <div className="mb-6">
+  <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-[361px] h-[262px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-6 md:px-8 md:py-10 text-center">
+    <div className="mb-3 md:mb-6">
       <img
         src={logoUrl}
         alt={name || fullName || "Partner"}
-        className="w-[120px] h-[120px] object-contain"
+        className="w-[72px] h-[72px] md:w-[120px] md:h-[120px] object-contain"
         onError={(e) => {
           (e.currentTarget as HTMLImageElement).src = JimmysELservice;
         }}
       />
     </div>
-    <h3 className="text-[24px] font-bold text-[#000000] mb-4 px-4">
+    <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-4 px-4">
       {name || fullName || "Partner"}
     </h3>
     {description && (
-      <div className="flex-1 flex items-start justify-center w-full mb-6 overflow-hidden">
-        <p className="text-[#000000] leading-[1.6] font-[400] text-[14px] line-clamp-6">
+      <div className="flex-1 flex items-start justify-center w-full mb-3 md:mb-6 overflow-hidden">
+        <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-3 md:line-clamp-6">
           {description}
         </p>
       </div>
@@ -82,7 +82,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
     <button
       onClick={onMoreInfo}
       disabled={isLoading}
-      className={`font-bold text-[16px] hover:underline cursor-pointer ${
+      className={`font-bold text-[14px] md:text-[16px] hover:underline cursor-pointer ${
         isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
       }`}
     >
@@ -105,6 +105,7 @@ const UserSupplier = () => {
   const [partners, setPartners] = useState<PartnerItem[]>([]);
   const [partnersLoading, setPartnersLoading] = useState(false);
   const [loadingPartnerId, setLoadingPartnerId] = useState<number | null>(null);
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
 
   // Get the background image for the active subcategory
   const getBackgroundImage = () => {
@@ -196,7 +197,7 @@ const UserSupplier = () => {
 
   return (
     <div
-      className="relative h-[100vh]"
+      className="relative md:h-[100vh]"
       style={{
         backgroundImage: `url(${getBackgroundImage()})`,
         backgroundSize: "cover",
@@ -210,13 +211,69 @@ const UserSupplier = () => {
         <img src={subCategoryGradient} alt="" />
       </div>
       {categoryName && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4">
+        <div className="absolute z-10 pointer-events-none px-4 inset-x-0 top-44 md:inset-0 md:flex md:items-center md:justify-center">
           <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
             {categoryName}
           </h1>
-        </div>
+        </div>  
       )}
-      <section className="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 flex flex-wrap md:flex-nowrap items-center justify-center gap-4 md:gap-4 w-full p-2">
+      {/* Mobile: horizontal scroll bar styled like the screenshot */}
+      <section className="absolute top-72 md:bottom-0 left-1/2 transform -translate-x-1/2 px-4 w-full md:hidden">
+        <div
+          ref={mobileScrollRef}
+          className="flex items-center gap-3 overflow-x-auto no-scrollbar py-2"
+        >
+          {loading ? (
+            <div className="text-white">Loading subcategories...</div>
+          ) : subCategories.length > 0 ? (
+            subCategories.map((sub) => (
+              <button
+                key={sub.id}
+                onClick={() => setActive(sub.id)}
+                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent
+                ${
+                  active === sub.id
+                    ? "bg-[#95C11F] text-white shadow-md"
+                    : "bg-transparent text-white hover:bg-white/10 hover:text-[#b6e924]"
+                }`}
+                aria-pressed={active === sub.id}
+                title={sub.subCategory}
+              >
+                {sub.subCategoryIconUrl && (
+                  <img
+                    src={sub.subCategoryIconUrl}
+                    alt={sub.subCategory}
+                    className={`w-[24px] h-[24px] object-contain brightness-0 invert`}
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display =
+                        "none";
+                    }}
+                  />
+                )}
+                <span className="figtree font-[600] text-[14px] leading-[100%] tracking-normal text-center align-middle">
+                  {sub.subCategory}
+                </span>
+              </button>
+            ))
+          ) : (
+            <div className="text-white">No subcategories available</div>
+          )}
+        </div>
+        {/* Next button to scroll the list */}
+        <button
+          type="button"
+          aria-label="Next"
+          className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white/20 text-white flex items-center justify-center backdrop-blur hover:bg-white/30 active:scale-95"
+          onClick={() =>
+            mobileScrollRef.current?.scrollBy({ left: 200, behavior: "smooth" })
+          }
+        >
+          <span className="text-lg leading-none">›</span>
+        </button>
+      </section>
+
+      {/* Desktop: keep existing layout and styling unchanged */}
+      <section className="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex md:flex-nowrap items-center justify-center gap-4 w-full p-2">
         {loading ? (
           <div className="text-white">Loading subcategories...</div>
         ) : subCategories.length > 0 ? (

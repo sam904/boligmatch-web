@@ -28,13 +28,12 @@
     "of": "of",
     "items": "items",
     "noRecordsFound": "No records found",
-    "ExportCSV":"Export CSV",
-    "Filters":"Filters",
-    "Next":"Next",
-    "Previous":"Previous",
-    "Submitting":"Submitting...",
+    "ExportCSV": "Export CSV",
+    "Filters": "Filters",
+    "Next": "Next",
+    "Previous": "Previous",
+    "Submitting": "Submitting...",
     "address": "Address"
-    
   },
   "auth": {
     "login": "Login",
@@ -47,7 +46,7 @@
     "welcomeBack": "Welcome back",
     "pleaseLogin": "Please log in to access the system",
     "forgotPassword": "Forgot your password?",
-    "userRole":"User"
+    "userRole": "User"
   },
   "nav": {
     "home": "Home",
@@ -144,7 +143,7 @@
       "updateError": "Failed to update partner",
       "deleteError": "Failed to delete partner",
       "BasicInformation": "Basic Information",
-      "Media&Description": "Media & Description", 
+      "Media&Description": "Media & Description",
       "TextFields": "Text Fields",
       "TextField1": "TextField 1",
       "TextField2": "TextField 2",
@@ -153,23 +152,23 @@
       "TextField5": "TextField 5",
       "TextField6": "TextField 6",
       "Images&Status": "Images & Status",
-      "ImageUpload1":"Image upload 1",
-      "ImageUpload2":"Image upload 2",
-      "ImageUpload3":"Image upload 3",
-      "ImageUpload4":"Image upload 4",
-      "ImageUpload5":"Image upload 5",
+      "ImageUpload1": "Image upload 1",
+      "ImageUpload2": "Image upload 2",
+      "ImageUpload3": "Image upload 3",
+      "ImageUpload4": "Image upload 4",
+      "ImageUpload5": "Image upload 5",
       "Documents": "Documents",
       "DocumentFile": "Document File",
-      "DocumentName":"Document Name",
+      "DocumentName": "Document Name",
       "businessName": "Business Name",
       "Categories&SubCategories": "Categories & SubCategories",
-      "thumbnailUpload" : "Thumbnail Upload",
+      "thumbnailUpload": "Thumbnail Upload",
       "uploadVideo": "Upload video",
-      "UploadDocument":"Upload Document",
+      "UploadDocument": "Upload Document",
       "AddDocument": "Add Document",
-      "logoUpload" : "Upload logo",
-      "SelectCategory":"Select Category",
-      "AddsubCategory":"Add sub Category",
+      "logoUpload": "Upload logo",
+      "SelectCategory": "Select Category",
+      "AddsubCategory": "Add sub Category",
       "shortDescription": "Short Description",
       "exactly": "Exactly"
     },
@@ -183,9 +182,9 @@
       "lastName": "Last Name",
       "email": "Email",
       "Enteremailaddress": "Enter email address",
-      "EnterfirstName":"Enter First Name",
-      "EnterlastName":"Enter Last Name",
-      "EntermobileNo":"Enter Mobile Number ",
+      "EnterfirstName": "Enter First Name",
+      "EnterlastName": "Enter Last Name",
+      "EntermobileNo": "Enter Mobile Number ",
       "mobileNo": "Mobile No",
       "role": "Role",
       "resetPassword": "Reset Password",
@@ -197,7 +196,7 @@
       "updateError": "Failed to update user",
       "deleteError": "Failed to delete user"
     },
-    "testimonials":{
+    "testimonials": {
       "title": "Testimonials",
       "subtitle": "Manage partner testimonials",
       "addTestimonial": "Add Testimonial",
@@ -228,7 +227,6 @@
       "shareDetailsofyourExperience": "Share Details of your Experience...",
       "enteranyadditionalNotes": "Enter any additional Notes..."
     }
-
   },
   "landing": {
     "signUpButton": "Sign up here",
@@ -280,8 +278,9 @@
   "supplierProfile": {
     "contactButton": "Contact Supplier",
     "saveFavoriteButton": "Save as Favorite",
-    "recommendation":"Recommend us to others",
-    "conversation":"Conversations",
+    "removeFromFavorites": "Remove from favorites",
+    "recommendation": "Recommend us to others",
+    "conversation": "Conversations",
     "recommendModal": {
       "title": "Recommend us to others",
       "description": "Do you think a friend could use our service? Send them a message here",
@@ -298,121 +297,120 @@
       "contactInfo": "Contact information"
     }
   },
- "sidebar": {
-  "home": "Home",
-  "dashboard": "Dashboard",
-  "favourites": "Favourites",
-  "partners": "Partners",
-  "messages": "Messages",
-  "profileSettings": "Profile Settings",
-  "privacyPolicy": "Privacy Policy",
-  "termsOfService": "Terms of Service",
-  "signOut": "Sign Out",
-  "mitBoligmatch": "My Boligmatch+",
-  "manageProfile": "Manage Profile",
-  "becomePartner": "Become a Partner",
-  "about": "About Boligmatch",
-  "terms": "Terms and Conditions",
-  "logINUser": "Logged in as End-user",
-  "notLogIn": "Not logged in",
-  "logInPartner":"Logged in as Partner"
-},
-"services": {
-  "moving": {
-    "title": "Moving and storage",
-    "description": "Professional moving services and storage solutions for your home"
+  "sidebar": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "favourites": "Favourites",
+    "partners": "Partners",
+    "messages": "Messages",
+    "profileSettings": "Profile Settings",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "signOut": "Sign Out",
+    "mitBoligmatch": "My Boligmatch+",
+    "manageProfile": "Manage Profile",
+    "becomePartner": "Become a Partner",
+    "about": "About Boligmatch",
+    "terms": "Terms and Conditions",
+    "logINUser": "Logged in as End-user",
+    "notLogIn": "Not logged in",
+    "logInPartner": "Logged in as Partner"
   },
-  "construction": {
-    "title": "Construction and civil engineering",
-    "description": "Expert builders and construction professionals for your building needs"
-  },
-  "craftsmen": {
-    "title": "Craftsmen",
-    "description": "Carpenter, bricklayer, electrician, plumber, painter, glazier, handyman, caulker"
-  },
-  "interior": {
-    "title": "Interior design",
-    "description": "Beautiful interior solutions and design services for your home"
-  },
-  "consulting": {
-    "title": "Consulting",
-    "description": "Expert advice and professional consulting services"
-  }
-},
-"stepper": {
-  "physical": {
-    "label": "Physical assessment and documentation",
-    "description": "Our team conducts a thorough evaluation of your property, documenting every detail to prepare for sale."
-  },
-  "photography": {
-    "label": "Photography and description",
-    "description": "Professional photos and detailed descriptions showcase your property in the best light."
-  },
-  "viewing": {
-    "label": "For sale, open house and viewings",
-    "description": "We organize and manage property viewings and open house events to attract potential buyers."
-  },
-  "negotiation": {
-    "label": "Offer and negotiation",
-    "description": "Expert handling of offers and negotiations to secure the best possible deal for you."
-  },
-  "signing": {
-    "label": "Signing by buyer and seller",
-    "description": "Finalizing the agreement with all parties signing the necessary documents."
-  },
-  "approval": {
-    "label": "Bank and advisor approval",
-    "description": "Securing necessary approvals from financial institutions and legal advisors."
-  },
-  "final": {
-    "label": "Final transaction and registration",
-    "description": "Completing the legal transaction and registering the property transfer."
-  },
-  "transfer": {
-    "label": "Transfer and follow-up",
-    "description": "Handing over the property to the new owner and ensuring all details are finalized."
-  }
-},
-"partnerStepper": {
-  "cta": "Become a Boligmatch+ partner",
-  "heroTitle": "Do you want to be part of an innovative concept where we have each other's back?",
-  "modalTitle": "Request partnership",
-  "p1": "We need strong and skilled partners. We have already partnered with a range of different companies and invite you to take part in this exciting journey and become part of a visionary community.",
-  "p2_before": "If you're interested in hearing more about the possibilities, don't hesitate to contact our partner manager {{name}} at",
-  "p2_after": ".",
-  "p3": "We look forward to hearing from you!",
-  "contactName": "Klaus Rasmussen"
-},
-"partnerSteperPara": {
-  "intro1": "Welcome to Boligmatch+ partnerships. We are in the process of building a network of skilled and trustworthy suppliers for the home, so home-interested users can easily and safely search for products and services in one place. We call the platform Boligmatch+, and in the future it will also be the place where our housing customers can follow their buying or selling process. By bringing these activities together under one roof, we make it easy for visitors to meet their needs, while increasing the chance that they will choose one or more of our partners over competitors.",
-  "intro2": "We believe that a strong collaboration should go both ways, where we act as ambassadors for each other and support each other in creating value. As a partner at Boligmatch, you gain access to a number of exclusive benefits that strengthen your business and open new opportunities. We invite you to take part in this exciting journey and become part of a visionary community.",
-  "heading": "What benefits do you get as a Boligmatch+ partner?",
-  "benefits": {
-    "1": {
-      "title": "Access to our platform",
-      "description": "Boligmatch+ gives you exclusive access to a platform filled with ready-to-buy customers with needs for products and services related to home and leisure."
+  "services": {
+    "moving": {
+      "title": "Moving and storage",
+      "description": "Professional moving services and storage solutions for your home"
     },
-    "2": {
-      "title": "Visibility and marketing",
-      "description": "On Boligmatch+, your company gains visibility around the clock, all year round. You get your own mini-website with a professionally produced profile video, a description of the company and its competencies, as well as the display of Trustpilot reviews. Activities can be followed on your own dashboard."
+    "construction": {
+      "title": "Construction and civil engineering",
+      "description": "Expert builders and construction professionals for your building needs"
     },
-    "3": {
-      "title": "Focus during viewings",
-      "description": "We bring partners into play at open houses and viewings by focusing on the development opportunities in the individual home, and highlighting which partners can help buyers. This gives you a significant head start compared to competitors."
+    "craftsmen": {
+      "title": "Craftsmen",
+      "description": "Carpenter, bricklayer, electrician, plumber, painter, glazier, handyman, caulker"
     },
-    "4": {
-      "title": "Free participation in our network group",
-      "description": "As a partner, you also become part of our B2B network. Here you can build strong relationships, share knowledge and create new business opportunities in a dynamic and inspiring environment, and gain access to exciting benefits and events."
+    "interior": {
+      "title": "Interior design",
+      "description": "Beautiful interior solutions and design services for your home"
     },
-    "5": {
-      "title": "Discount at Boligmatch for your employees",
-      "description": "All of your employees who join Boligmatch+ receive a 20% discount at Boligmatch."
+    "consulting": {
+      "title": "Consulting",
+      "description": "Expert advice and professional consulting services"
+    }
+  },
+  "stepper": {
+    "physical": {
+      "label": "Physical assessment and documentation",
+      "description": "Our team conducts a thorough evaluation of your property, documenting every detail to prepare for sale."
     },
-    "6": {
-      "title": "Kick-back for referring customers",
-      "description": "If you bring a new housing customer to Boligmatch, we reward you with 10% of the fee, which is transferred to your account in the Boligmatch+ benefits program."
+    "photography": {
+      "label": "Photography and description",
+      "description": "Professional photos and detailed descriptions showcase your property in the best light."
+    },
+    "viewing": {
+      "label": "For sale, open house and viewings",
+      "description": "We organize and manage property viewings and open house events to attract potential buyers."
+    },
+    "negotiation": {
+      "label": "Offer and negotiation",
+      "description": "Expert handling of offers and negotiations to secure the best possible deal for you."
+    },
+    "signing": {
+      "label": "Signing by buyer and seller",
+      "description": "Finalizing the agreement with all parties signing the necessary documents."
+    },
+    "approval": {
+      "label": "Bank and advisor approval",
+      "description": "Securing necessary approvals from financial institutions and legal advisors."
+    },
+    "final": {
+      "label": "Final transaction and registration",
+      "description": "Completing the legal transaction and registering the property transfer."
+    },
+    "transfer": {
+      "label": "Transfer and follow-up",
+      "description": "Handing over the property to the new owner and ensuring all details are finalized."
+    }
+  },
+  "partnerStepper": {
+    "cta": "Become a Boligmatch+ partner",
+    "heroTitle": "Do you want to be part of an innovative concept where we have each other's back?",
+    "modalTitle": "Request partnership",
+    "p1": "We need strong and skilled partners. We have already partnered with a range of different companies and invite you to take part in this exciting journey and become part of a visionary community.",
+    "p2_before": "If you're interested in hearing more about the possibilities, don't hesitate to contact our partner manager {{name}} at",
+    "p2_after": ".",
+    "p3": "We look forward to hearing from you!",
+    "contactName": "Klaus Rasmussen"
+  },
+  "partnerSteperPara": {
+    "intro1": "Welcome to Boligmatch+ partnerships. We are in the process of building a network of skilled and trustworthy suppliers for the home, so home-interested users can easily and safely search for products and services in one place. We call the platform Boligmatch+, and in the future it will also be the place where our housing customers can follow their buying or selling process. By bringing these activities together under one roof, we make it easy for visitors to meet their needs, while increasing the chance that they will choose one or more of our partners over competitors.",
+    "intro2": "We believe that a strong collaboration should go both ways, where we act as ambassadors for each other and support each other in creating value. As a partner at Boligmatch, you gain access to a number of exclusive benefits that strengthen your business and open new opportunities. We invite you to take part in this exciting journey and become part of a visionary community.",
+    "heading": "What benefits do you get as a Boligmatch+ partner?",
+    "benefits": {
+      "1": {
+        "title": "Access to our platform",
+        "description": "Boligmatch+ gives you exclusive access to a platform filled with ready-to-buy customers with needs for products and services related to home and leisure."
+      },
+      "2": {
+        "title": "Visibility and marketing",
+        "description": "On Boligmatch+, your company gains visibility around the clock, all year round. You get your own mini-website with a professionally produced profile video, a description of the company and its competencies, as well as the display of Trustpilot reviews. Activities can be followed on your own dashboard."
+      },
+      "3": {
+        "title": "Focus during viewings",
+        "description": "We bring partners into play at open houses and viewings by focusing on the development opportunities in the individual home, and highlighting which partners can help buyers. This gives you a significant head start compared to competitors."
+      },
+      "4": {
+        "title": "Free participation in our network group",
+        "description": "As a partner, you also become part of our B2B network. Here you can build strong relationships, share knowledge and create new business opportunities in a dynamic and inspiring environment, and gain access to exciting benefits and events."
+      },
+      "5": {
+        "title": "Discount at Boligmatch for your employees",
+        "description": "All of your employees who join Boligmatch+ receive a 20% discount at Boligmatch."
+      },
+      "6": {
+        "title": "Kick-back for referring customers",
+        "description": "If you bring a new housing customer to Boligmatch, we reward you with 10% of the fee, which is transferred to your account in the Boligmatch+ benefits program."
+      }
     }
   }
-}
-
 }

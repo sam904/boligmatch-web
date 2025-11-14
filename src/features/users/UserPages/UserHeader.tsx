@@ -74,6 +74,15 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("bm_lang");
+      if (saved && saved !== i18n.language) {
+        i18n.changeLanguage(saved);
+      }
+    } catch {}
+  }, []);
+
   // Determine what to display: partner or user
   const isPartner = !!partnerData && (partnerData as any).roleName === "Partner";
   const displayName = isPartner
@@ -122,6 +131,39 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                   />
                 </button>
               )}
+
+              <div className="relative">
+                <button
+                  onClick={() => setShowLangDropdown((v) => !v)}
+                  className="px-2 py-1 rounded-md bg-white/10 text-white text-xs md:text-sm font-semibold hover:bg-white/20 transition-colors cursor-pointer min-w-[44px] text-center"
+                >
+                  {currentLang?.toUpperCase?.() || "EN"}
+                </button>
+                {showLangDropdown && (
+                  <div className="absolute right-0 mt-2 w-28 bg-white rounded-md shadow-lg z-50 overflow-hidden">
+                    <button
+                      onClick={() => {
+                        i18n.changeLanguage("da");
+                        localStorage.setItem("bm_lang", "da");
+                        setShowLangDropdown(false);
+                      }}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                    >
+                      Dansk
+                    </button>
+                    <button
+                      onClick={() => {
+                        i18n.changeLanguage("en");
+                        localStorage.setItem("bm_lang", "en");
+                        setShowLangDropdown(false);
+                      }}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                    >
+                      English
+                    </button>
+                  </div>
+                )}
+              </div>
 
               <button
                 onClick={() => {

@@ -294,6 +294,7 @@
   "supplierProfile": {
     "contactButton": "Kontakt Leverandør",
     "saveFavoriteButton": "Gem som Favorit",
+    "removeFromFavorites":"Fjern fra favoritter",
     "recommendation":"Anbefal os til andre",
     "conversation":"Samtaler",
     "recommendModal": {
