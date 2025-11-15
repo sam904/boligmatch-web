@@ -11,10 +11,11 @@ import Input from "../../../components/common/Input";
 import AdminToast from "../../../components/common/AdminToast";
 import type { AdminToastType } from "../../../components/common/AdminToast";
 import { useForm } from "react-hook-form";
-import type { SubmitHandler } from "react-hook-form"; // Type-only import
+import type { SubmitHandler } from "react-hook-form";
 import DeleteConfirmation from "../../../components/common/DeleteConfirmation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import ResetPasswordModal from "../../../components/common/ResetPasswordModal";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "../../../hooks/useDebounce";
 import {
@@ -53,19 +54,7 @@ const userSchema = z.object({
   status: z.enum(["All", "Active", "InActive"]),
 });
 
-// Password reset schema
-const passwordResetSchema = z
-  .object({
-    newPassword: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "Please confirm password"),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
 type UserFormData = z.infer<typeof userSchema>;
-type PasswordResetData = z.infer<typeof passwordResetSchema>;
 
 // Toast state interface
 interface ToastState {
@@ -241,23 +230,6 @@ export default function UsersListPage() {
 
   const isActiveValue = watch("isActive");
 
-  const {
-    register: registerPassword,
-    handleSubmit: handleSubmitPassword,
-    formState: { errors: passwordErrors, isValid: isPasswordValid },
-    reset: resetPassword,
-    watch: watchPasswordForm,
-  } = useForm<PasswordResetData>({
-    resolver: zodResolver(passwordResetSchema),
-    mode: "onChange",
-    defaultValues: {
-      newPassword: "",
-      confirmPassword: "",
-    },
-  });
-
-  const watchPassword = watchPasswordForm("newPassword");
-
   useEffect(() => {
     if (editingUser) {
       reset({
@@ -303,40 +275,6 @@ export default function UsersListPage() {
       });
     }
   }, [editingUser, reset]);
-
-  // Password reset mutation with error handling
-  const resetPasswordMutation = useMutation({
-    mutationFn: async (data: { user: User; newPassword: string }) => {
-      try {
-        const response = await userService.resetUserPassword({
-          email: data.user.email,
-          newPassword: data.newPassword,
-        });
-
-        if (response === true) {
-          return response;
-        } else {
-          throw new Error("Password reset failed - server returned false");
-        }
-      } catch (error) {
-        const errorMessage = getErrorMessage(error, "Password reset failed");
-        throw new Error(errorMessage);
-      }
-    },
-    onSuccess: (response, variables) => {
-      console.log("Password reset response:", response);
-      toast.success(`Password reset successfully for ${variables.user.email}`);
-      setIsPasswordModalOpen(false);
-      resetPassword();
-      setResettingUser(null);
-    },
-    onError: (error: Error, variables) => {
-      console.error("Reset password error:", error);
-      toast.error(
-        `Failed to reset password for ${variables.user.email}: ${error.message}`
-      );
-    },
-  });
 
   // Create user mutation with error handling
   const createMutation = useMutation({
@@ -763,18 +701,6 @@ export default function UsersListPage() {
     }
   };
 
-  const onSubmitPasswordReset = async (data: PasswordResetData) => {
-    if (!resettingUser) {
-      toast.error("No user selected for password reset");
-      return;
-    }
-
-    resetPasswordMutation.mutate({
-      user: resettingUser,
-      newPassword: data.newPassword,
-    });
-  };
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -845,7 +771,6 @@ export default function UsersListPage() {
   const handlePasswordModalClose = () => {
     setIsPasswordModalOpen(false);
     setResettingUser(null);
-    resetPassword();
   };
 
   const handleExportUsers = async () => {
@@ -957,7 +882,6 @@ export default function UsersListPage() {
           <button
             type="button"
             onClick={() => handleResetPassword(row.original)}
-            disabled={resetPasswordMutation.isPending}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50"
             title={t("admin.users.resetPassword") || "Reset Password"}
           >
@@ -1434,80 +1358,21 @@ export default function UsersListPage() {
       </Modal>
 
       {/* Password Reset Modal */}
-      <Modal
+      <ResetPasswordModal
         open={isPasswordModalOpen}
-        title={t("admin.users.resetPassword") || "Reset Password"}
         onClose={handlePasswordModalClose}
-      >
-        {resettingUser && (
-          <form
-            onSubmit={handleSubmitPassword(onSubmitPasswordReset)}
-            className="space-y-4"
-          >
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <p className="text-sm text-blue-800">
-                Resetting password for: <strong>{resettingUser.email}</strong>
-              </p>
-              <p className="text-xs text-blue-600 mt-1">
-                {resettingUser.firstName} {resettingUser.lastName}
-              </p>
-            </div>
-
-            <Input
-              label="New Password"
-              type="password"
-              error={passwordErrors.newPassword?.message}
-              {...registerPassword("newPassword")}
-              required
-              placeholder="Enter new password"
-              disabled={resetPasswordMutation.isPending}
-            />
-
-            <Input
-              label="Confirm Password"
-              type="password"
-              error={passwordErrors.confirmPassword?.message}
-              {...registerPassword("confirmPassword")}
-              required
-              placeholder="Confirm new password"
-              disabled={resetPasswordMutation.isPending}
-            />
-
-            {watchPassword && (
-              <div
-                className={`text-xs p-2 rounded ${
-                  watchPassword.length >= 6
-                    ? "bg-green-50 text-green-700"
-                    : "bg-yellow-50 text-yellow-700"
-                }`}
-              >
-                Password strength:{" "}
-                {watchPassword.length >= 6 ? "Strong" : "Weak"}
-                (min. 6 characters)
-              </div>
-            )}
-
-            <div className="flex gap-2 justify-end">
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={handlePasswordModalClose}
-                disabled={resetPasswordMutation.isPending}
-              >
-                {t("common.cancel") || "Cancel"}
-              </Button>
-              <Button
-                type="submit"
-                disabled={!isPasswordValid || resetPasswordMutation.isPending}
-              >
-                {resetPasswordMutation.isPending
-                  ? "Resetting..."
-                  : "Reset Password"}
-              </Button>
-            </div>
-          </form>
-        )}
-      </Modal>
+        onSuccess={() => {
+          toast.success(
+            `Password reset successfully for ${resettingUser?.email}`
+          );
+          setResettingUser(null);
+        }}
+        targetUser={{
+          email: resettingUser?.email || "",
+          firstName: resettingUser?.firstName,
+          lastName: resettingUser?.lastName,
+        }}
+      />
     </div>
   );
 }

@@ -17,6 +17,8 @@ export interface AuthUser {
   franchiseId?: number;
   admissionId?: number;
   mobileNo?: string;
+  isActive?: boolean;
+  status?: "Active" | "InActive";
 }
 
 export interface LoginResponse {
@@ -26,6 +28,7 @@ export interface LoginResponse {
     firstName: string;
     userId: number;
     lastName: string;
+    email: string;
     token: string;
     refreshToken: string;
     refreshTokenExpiryTime: string;
