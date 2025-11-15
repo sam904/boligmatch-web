@@ -4,12 +4,25 @@ import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { logout } from "../../features/auth/authSlice";
-import { IconLogout } from "../common/Icons/Index";
+import UpdateProfileModal from "../common/UpdateProfileModal";
+import ResetPasswordModal from "../common/ResetPasswordModal";
+import { IconLogout, IconKey, IconProfile } from "../common/Icons/Index";
+import AdminToast from "../common/AdminToast";
+import type { AdminToastType } from "../common/AdminToast";
 
 // Enhanced route mapping with titles and subtitles
 interface RouteInfo {
   title: string;
   subtitle?: string;
+}
+
+interface ToastState {
+  id: string;
+  type: AdminToastType;
+  message: string;
+  title?: string;
+  subtitle?: string;
+  open: boolean;
 }
 
 const routeMap: Record<string, RouteInfo> = {
@@ -52,6 +65,9 @@ export default function AdminLayout() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
+  const [toasts, setToasts] = useState<ToastState[]>([]);
 
   // Get current page info based on route
   const getCurrentPageInfo = (): RouteInfo => {
@@ -101,9 +117,69 @@ export default function AdminLayout() {
     return "U";
   };
 
+  // Toast management functions
+  const showToast = (
+    type: AdminToastType,
+    message: string,
+    title?: string,
+    subtitle?: string
+  ) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    const newToast: ToastState = {
+      id,
+      type,
+      message,
+      title,
+      subtitle,
+      open: true,
+    };
+
+    setToasts((prev) => [...prev, newToast]);
+    return id;
+  };
+
+  const hideToast = (id: string) => {
+    setToasts((prev) =>
+      prev.map((toast) => (toast.id === id ? { ...toast, open: false } : toast))
+    );
+
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    }, 300);
+  };
+
+  const toast = {
+    success: (message: string, title?: string, subtitle?: string) =>
+      showToast("success", message, title, subtitle),
+    error: (message: string, title?: string, subtitle?: string) =>
+      showToast("error", message, title, subtitle),
+    info: (message: string, title?: string, subtitle?: string) =>
+      showToast("info", message, title, subtitle),
+  };
+
   const handleLogout = () => {
     dispatch(logout());
     setShowUserDropdown(false);
+  };
+
+  const handleUpdateProfile = () => {
+    setIsProfileModalOpen(true);
+    setShowUserDropdown(false);
+  };
+
+  const handleResetPassword = () => {
+    setIsResetPasswordModalOpen(true);
+    setShowUserDropdown(false);
+  };
+
+  const handleProfileUpdateSuccess = () => {
+    toast.success(
+      t("admin.users.updateSuccess") || "Users updated successfully"
+    );
+  };
+
+  const handlePasswordResetSuccess = () => {
+    toast.success("Password reset successfully");
   };
 
   const currentPageInfo = getCurrentPageInfo();
@@ -122,6 +198,31 @@ export default function AdminLayout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
+      {/* Render Toast Banners */}
+      {toasts.map((toastItem) => (
+        <AdminToast
+          key={toastItem.id}
+          type={toastItem.type}
+          message={toastItem.message}
+          onClose={() => hideToast(toastItem.id)}
+          autoDismissMs={5000}
+        />
+      ))}
+
+      {/* Update Profile Modal */}
+      <UpdateProfileModal
+        open={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        onSuccess={handleProfileUpdateSuccess}
+      />
+
+      {/* Reset Password Modal */}
+      <ResetPasswordModal
+        open={isResetPasswordModalOpen}
+        onClose={() => setIsResetPasswordModalOpen(false)}
+        onSuccess={handlePasswordResetSuccess}
+      />
+
       {/* Sidebar - removed logout button from bottom */}
       <aside
         className={`flex-shrink-0 bg-[#01351f] text-white shadow-xl transition-all duration-300 ${
@@ -398,25 +499,43 @@ export default function AdminLayout() {
                   </svg>
                 </button>
 
-                {/* User Dropdown Menu */}
-                {showUserDropdown && (
-                  <>
-                    <div
-                      className="fixed inset-0 z-40"
-                      onClick={() => setShowUserDropdown(false)}
-                    />
-                    <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-200">
-                      {/* Logout Button */}
-                      <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors"
-                      >
-                        <IconLogout />
-                        <span>{t("auth.logout")}</span>
-                      </button>
-                    </div>
-                  </>
-                )}
+               {/* User Dropdown Menu - Updated Section */}
+      {showUserDropdown && (
+        <>
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => setShowUserDropdown(false)}
+          />
+          <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-200">
+            {/* Update Profile Button */}
+            <button
+              onClick={handleUpdateProfile}
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-100"
+            >
+              <IconProfile className="w-4 h-4" />
+              <span>{t("auth.profile")}</span>
+            </button>
+
+            {/* Reset Password Button */}
+            <button
+              onClick={handleResetPassword}
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-100"
+            >
+              <IconKey className="w-4 h-4" />
+              <span>{t("auth.resetPassword")}</span>
+            </button>
+
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors"
+            >
+              <IconLogout />
+              <span>{t("auth.logout")}</span>
+            </button>
+          </div>
+        </>
+      )}
               </div>
             </div>
           </div>

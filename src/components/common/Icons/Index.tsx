@@ -403,3 +403,33 @@ export const IconStarRating = ({ className = "w-8 h-8" }: IconProps) => (
     </defs>
   </svg>
 );
+
+export const IconProfile = ({ className = "w-5 h-5" }: IconProps) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M8.07917 8.52096C8.0325 8.5143 7.9725 8.5143 7.91917 8.52096C6.74583 8.48096 5.8125 7.52096 5.8125 6.34096C5.8125 5.1343 6.78583 4.1543 7.99917 4.1543C9.20583 4.1543 10.1858 5.1343 10.1858 6.34096C10.1792 7.52096 9.2525 8.48096 8.07917 8.52096Z"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12.4945 12.9191C11.3078 14.0057 9.73448 14.6657 8.00115 14.6657C6.26781 14.6657 4.69448 14.0057 3.50781 12.9191C3.57448 12.2924 3.97448 11.6791 4.68781 11.1991C6.51448 9.98573 9.50114 9.98573 11.3145 11.1991C12.0278 11.6791 12.4278 12.2924 12.4945 12.9191Z"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M7.9987 14.6673C11.6806 14.6673 14.6654 11.6825 14.6654 8.00065C14.6654 4.31875 11.6806 1.33398 7.9987 1.33398C4.3168 1.33398 1.33203 4.31875 1.33203 8.00065C1.33203 11.6825 4.3168 14.6673 7.9987 14.6673Z"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
