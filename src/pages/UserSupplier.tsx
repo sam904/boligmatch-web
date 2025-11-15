@@ -9,6 +9,7 @@ import { subCategoriesService } from "../services/subCategories.service";
 import { partnerService } from "../services/partner.service";
 import footerLogo from "/src/assets/userImages/footerLogo.svg";
 import subCategoryGradient from "/src/assets/userImages/subCatGradient.png";
+import nextArrow from "/src/assets/userImages/arrow_right.png";
 
 interface SubCategoryData {
   id: number;
@@ -205,6 +206,12 @@ const UserSupplier = () => {
         backgroundRepeat: "no-repeat",
       }}
     >
+      <style>{`
+        @media (max-width: 767px) {
+          .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+          .no-scrollbar::-webkit-scrollbar { display: none; }
+        }
+      `}</style>
       <UserHeader />
       {/* <div className="absolute inset-0 bg-gradient-to-b from-[rgba(22,89,51,0)] to-[#043428] pointer-events-none" /> */}
       <div className="absolute bottom-0">
@@ -215,7 +222,7 @@ const UserSupplier = () => {
           <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
             {categoryName}
           </h1>
-        </div>  
+        </div>
       )}
       {/* Mobile: horizontal scroll bar styled like the screenshot */}
       <section className="absolute top-72 md:bottom-0 left-1/2 transform -translate-x-1/2 px-4 w-full md:hidden">
@@ -230,11 +237,11 @@ const UserSupplier = () => {
               <button
                 key={sub.id}
                 onClick={() => setActive(sub.id)}
-                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent
+                className={`flex flex-col items-center gap-1 py-2 rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent
                 ${
                   active === sub.id
-                    ? "bg-[#95C11F] text-white shadow-md"
-                    : "bg-transparent text-white hover:bg-white/10 hover:text-[#b6e924]"
+                    ? "bg-[#95C11F] text-white shadow-md px-2"
+                    : "bg-transparent text-white hover:bg-white/10 hover:text-[#b6e924] px-3.5"
                 }`}
                 aria-pressed={active === sub.id}
                 title={sub.subCategory}
@@ -259,16 +266,15 @@ const UserSupplier = () => {
             <div className="text-white">No subcategories available</div>
           )}
         </div>
-        {/* Next button to scroll the list */}
         <button
           type="button"
           aria-label="Next"
-          className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-white/20 text-white flex items-center justify-center backdrop-blur hover:bg-white/30 active:scale-95"
+          className="absolute right-0 top-1/2 -translate-y-1/2 h-[32px] w-[32px] text-white flex items-center justify-center"
           onClick={() =>
             mobileScrollRef.current?.scrollBy({ left: 200, behavior: "smooth" })
           }
         >
-          <span className="text-lg leading-none">›</span>
+          <img className="h-[32px] w-[32px]" src={nextArrow} alt="" />
         </button>
       </section>
 

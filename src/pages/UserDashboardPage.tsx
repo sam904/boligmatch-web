@@ -22,7 +22,6 @@ import { toast } from "sonner";
 import footerLogo from "/src/assets/userImages/footerLogo.svg";
 import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg";
 import { partnerService } from "../services/partner.service";
-import responsiveBannerImg from "/src/assets/userImages/profileResponsiveBanner.png";
 
 interface FavouriteItem {
   id?: number;
@@ -321,7 +320,7 @@ export default function UserDashboardPage() {
                   activeView === "default"
                     ? "bg-[#145939] text-white"
                     : "bg-[#95c11f] text-white"
-                } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl rounded-xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer min-h-[48px]`}
+                } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer min-h-[48px]`}
                 type="button"
               >
                 <img
@@ -340,7 +339,7 @@ export default function UserDashboardPage() {
                   activeView === "favorites"
                     ? "bg-[#145939] text-white"
                     : "bg-[#95c11f] text-white"
-                } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl rounded-xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer min-h-[48px]`}
+                } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer min-h-[48px]`}
                 type="button"
               >
                 <img
@@ -362,7 +361,7 @@ export default function UserDashboardPage() {
                   activeView === "messages"
                     ? "bg-[#145939] text-white"
                     : "bg-[#95c11f] text-white"
-                } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl rounded-xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition font-medium cursor-pointer min-h-[48px]`}
+                } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition font-medium cursor-pointer min-h-[48px]`}
                 type="button"
               >
                 <img
@@ -479,7 +478,7 @@ export default function UserDashboardPage() {
 
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-[20PX] font-[800] text-[#000000]">
+                                <span className="text-[20px] font-[800] text-[#000000]">
                                   {favorite.partnerName ||
                                     favorite.businessName ||
                                     "N/A"}
