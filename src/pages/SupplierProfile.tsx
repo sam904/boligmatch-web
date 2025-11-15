@@ -303,19 +303,13 @@ const SupplierProfile = () => {
 
   const getServices = () => {
     if (!partnerData?.textField3) return [];
-    return partnerData.textField3
+    const raw = String(partnerData.textField3 || "");
+    const normalized = raw.replace(/<\/?br\s*\/?>(\r?\n)?/gi, "\n");
+    return normalized
       .split("\n")
       .map((s: string) => s.trim())
       .filter((s: string) => s.length > 0)
       .map((s: string) => s.replace(/^•\s*/, ""));
-  };
-
-  const stripLeadingBullet = (s: any) => {
-    try {
-      return String(s).replace(/^[\s•\-*\u2022]+/, "").trim();
-    } catch {
-      return s;
-    }
   };
 
   // Parse references from textField4
@@ -575,7 +569,10 @@ const SupplierProfile = () => {
                 <ul className="text-white list-none space-y-2 w-full">
                   {getServices().length > 0 ? (
                     getServices().map((service: string, idx: number) => (
-                      <p key={idx} className="relative pl-5">
+                      <p
+                        key={idx}
+                        className="relative pl-5 line-clamp-2 overflow-hidden"
+                      >
                         <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
                         {service}
                       </p>
@@ -651,12 +648,12 @@ const SupplierProfile = () => {
                   Fakta
                 </h2>
 
-                <div className="text-white text-sm list-none space-y-2 w-full">
+                <div className="text-white text-sm space-y-2 w-full">
                   {partnerData?.textField2 && (
-                    <p className="relative pl-5">
-                      <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-                      {stripLeadingBullet(partnerData.textField2)}
-                    </p>
+                    <div
+                      className="text-left"
+                      dangerouslySetInnerHTML={{ __html: partnerData.textField2 }}
+                    ></div>
                   )}
                 </div>
               </div>
