@@ -31,11 +31,16 @@
     "Submitting":"Indsender...",
     "address":"adresse",
     "updating":"opdaterer...",
-    "creating":"opretter..."
+    "creating":"opretter...",
+    "all": "Alle",
+    "noRecordsFound": "Ingen poster fundet"
   },
   "auth": {
     "login": "Log ind",
     "logout": "Log ud",
+    "profile": "Profil",
+    "updateProfile": "Opdater profil",
+    "resetPassword": "Nulstil adgangskode",
     "username": "Brugernavn / Email",
     "password": "Adgangskode",
     "signingIn": "Logger ind...",
@@ -189,7 +194,20 @@
       "exactly ":"Præcis",
       "preview":"forhåndsvisning",
       "open":"åbn",
-      "download":"download"
+      "download":"download",
+      "clickToUpload": "Klik for at uploade dokument",
+      "uploading": "Uploader...",
+      "uploadSuccess": "Dokument uploadet succesfuldt",
+      "uploadFailed": "Kunne ikke uploade dokument",
+      "pdfDocument": "PDF Dokument",
+      "wordDocument": "Word Dokument",
+      "powerpointPresentation": "PowerPoint Præsentation",
+      "excelSpreadsheet": "Excel Regneark",
+      "textFile": "Tekstfil",
+      "maxFileSize": "(Maks: {{size}}MB)",
+      "supportedFormats": "PDF, Word, Excel, PowerPoint, Tekst",
+      "invalidDocumentFile": "Vælg venligst en gyldig dokumentfil (PDF, Word, Excel, PowerPoint, Tekst)",
+      "documentSizeExceeded": "Dokumentstørrelsen bør være mindre end 50MB"
     },
   "testimonials": {
     "title": "Udtalelser",
@@ -242,7 +260,8 @@
       "updateSuccess": "Bruger opdateret succesfuldt",
       "createError": "Kunne ikke oprette bruger",
       "updateError": "Kunne ikke opdatere bruger",
-      "deleteError": "Kunne ikke slette bruger"
+      "deleteError": "Kunne ikke slette bruger",
+      "resetPassword": "Nulstil Adgangskode"
     },
     "partnerSubcategories": {
       "title": "Partner Underkategorier",

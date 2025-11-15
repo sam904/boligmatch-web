@@ -21,6 +21,7 @@ import type { AdminToastType } from "../../../components/common/AdminToast";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import ResetPasswordModal from "../../../components/common/ResetPasswordModal";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "../../../hooks/useDebounce";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -36,7 +37,6 @@ import type { SubCategory } from "../../../types/subcategory";
 import type { Category } from "../../../types/category";
 import SearchableSelectController from "../../../components/common/SearchableSelectController";
 import DocumentUpload from "../../../components/common/DocumentUpload";
-import Modal from "../../../components/common/Modal";
 import { userService } from "../../../services/user.service";
 import ToggleSwitch from "../../../components/common/ToggleSwitch";
 import RichTextEditor from "../../../components/common/RichTextEditor";
@@ -157,20 +157,8 @@ const partnerDocumentSchema = z.object({
   isActive: z.boolean(),
 });
 
-// Password reset schema
-const passwordResetSchema = z
-  .object({
-    newPassword: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "Please confirm password"),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-type PasswordResetData = z.infer<typeof passwordResetSchema>;
-
 // UPDATED PARTNER SCHEMA WITH EMAIL AND MOBILE VALIDATION
+// UPDATED PARTNER SCHEMA WITH EMAIL AND MOBILE VALIDATION - FIXED
 const partnerSchema = z.object({
   userId: z.number().optional(),
   categoryId: z.number().min(1, "Category is required"),
@@ -178,22 +166,20 @@ const partnerSchema = z.object({
   businessName: z.string().min(1, "Business Name is required"),
   email: z
     .string()
+    .min(1, "Email is required") // ADD THIS LINE
     .email("Invalid email address")
-    .optional()
-    .or(z.literal(""))
     .refine((email) => {
-      if (!email) return true; // Optional field
-      return true; // Custom validation handled separately
+      if (!email) return false; // Changed from true to false
+      return true;
     }),
   mobileNo: z
     .string()
+    .min(1, "Mobile number is required") // ADD THIS LINE
     .length(8, "Mobile number must be exactly 8 digits")
     .regex(/^\d+$/, "Mobile number can only contain numbers")
-    .optional()
-    .or(z.literal(""))
     .refine((mobileNo) => {
-      if (!mobileNo) return true; // Optional field
-      return true; // Custom validation handled separately
+      if (!mobileNo) return false; // Changed from true to false
+      return true;
     }),
   videoUrl: z.string().optional(),
   logoUrl: z.string().optional(),
@@ -657,12 +643,12 @@ export default function PartnersPage() {
   const emailValue = watch("email");
   const mobileNoValue = watch("mobileNo");
 
-  // Check if a step is completed
+  // Check if a step is completed - FIXED VERSION
   const isStepCompleted = async (step: number): Promise<boolean> => {
     const stepFields: Record<number, ValidFieldNames[]> = {
       1: [
         "businessName",
-        "email",
+        "email", // Make sure email is included
         "mobileNo",
         "businessUnit",
         "cvr",
@@ -708,9 +694,33 @@ export default function PartnersPage() {
       return categoryValid && subCategoryResults.every((result) => result);
     }
 
-    // For regular steps
+    // For regular steps - ADD PROPER VALIDATION
     if (stepFields[step].length > 0) {
-      return await trigger(stepFields[step] as any, { shouldFocus: false });
+      const isValid = await trigger(stepFields[step] as any, {
+        shouldFocus: false,
+      });
+
+      // Additional check for step 1 to ensure email validation passes
+      if (step === 1) {
+        const hasEmailErrors = !!errors.email?.message;
+        const hasEmailValidationErrors = emailValidation.available === false;
+        const isEmailChecking = emailValidation.checking;
+
+        // Don't allow proceeding if email validation is in progress or failed
+        if (isEmailChecking) {
+          toast.error("Please wait for email validation to complete");
+          return false;
+        }
+
+        if (hasEmailValidationErrors) {
+          toast.error("Please fix email validation errors before proceeding");
+          return false;
+        }
+
+        return isValid && !hasEmailErrors && !hasEmailValidationErrors;
+      }
+
+      return isValid;
     }
 
     return true;
@@ -1100,61 +1110,6 @@ export default function PartnersPage() {
     },
   });
 
-  // Password reset form
-  const {
-    register: registerPassword,
-    handleSubmit: handleSubmitPassword,
-    formState: { errors: passwordErrors, isValid: isPasswordValid },
-    reset: resetPassword,
-    watch: watchPassword,
-  } = useForm<PasswordResetData>({
-    resolver: zodResolver(passwordResetSchema),
-    mode: "onChange",
-    defaultValues: {
-      newPassword: "",
-      confirmPassword: "",
-    },
-  });
-
-  const watchNewPassword = watchPassword("newPassword");
-
-  // Password reset mutation
-  const resetPasswordMutation = useMutation({
-    mutationFn: async (data: { partner: Partner; newPassword: string }) => {
-      const response = await userService.resetUserPassword({
-        email: data.partner.email,
-        newPassword: data.newPassword,
-      });
-
-      if (response === true) {
-        return response;
-      } else {
-        throw new Error("Password reset failed");
-      }
-    },
-    onSuccess: (response, variables) => {
-      console.log("Password reset response:", response);
-      toast.success(
-        `Password reset successfully for ${variables.partner.businessName}`
-      );
-      setIsPasswordModalOpen(false);
-      resetPassword();
-      setResettingPartner(null);
-    },
-    onError: (error: any, variables) => {
-      console.error("Reset password error:", error);
-      if (error?.response?.data !== undefined) {
-        toast.error(
-          `Password reset failed for ${variables.partner.businessName}`
-        );
-      } else {
-        toast.error(
-          `Failed to reset password for ${variables.partner.businessName}: ${error.message}`
-        );
-      }
-    },
-  });
-
   // UPDATED: Export function with status filter
   const handleExportPartners = async () => {
     try {
@@ -1264,25 +1219,48 @@ export default function PartnersPage() {
     }
   };
 
-  // Unified handleNext function for both create and update modes
+  // Unified handleNext function for both create and update modes - FIXED VERSION
   const handleNext = async () => {
     if (isSubmitting) return;
 
-    // Check validation states for step 1
+    // Check validation states for step 1 - ENHANCED VALIDATION
     if (currentStep === 1) {
+      // Check if email or mobile validations are in progress
       if (emailValidation.checking || mobileValidation.checking) {
         toast.error("Please wait for email/mobile validation to complete");
         return;
       }
 
+      // Check if email validation failed
       if (emailValue && emailValidation.available === false) {
         toast.error("Please fix email validation errors before proceeding");
         return;
       }
 
+      // Check if mobile validation failed
       if (mobileNoValue && mobileValidation.available === false) {
         toast.error(
           "Please fix mobile number validation errors before proceeding"
+        );
+        return;
+      }
+
+      // Check if required fields are empty
+      const requiredFields = {
+        businessName: watch("businessName"),
+        email: watch("email"),
+        mobileNo: watch("mobileNo"),
+        cvr: watch("cvr"),
+        address: watch("address"),
+      };
+
+      const emptyFields = Object.entries(requiredFields)
+        .filter(([value]) => !value || value.toString().trim() === "")
+        .map(([key]) => key);
+
+      if (emptyFields.length > 0) {
+        toast.error(
+          `Please fill in all required fields: ${emptyFields.join(", ")}`
         );
         return;
       }
@@ -1408,12 +1386,22 @@ export default function PartnersPage() {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  // New function to handle step click
+  // New function to handle step click - FIXED VERSION
   const handleStepClick = async (step: number) => {
     if (isSubmitting) return;
 
     // In update mode, allow free navigation between steps
     if (editingPartner) {
+      // But still validate that we can navigate to the requested step
+      if (step > currentStep) {
+        const canNavigate = await isStepCompleted(currentStep);
+        if (!canNavigate) {
+          toast.error(
+            `Please complete step ${currentStep} before proceeding to step ${step}`
+          );
+          return;
+        }
+      }
       setCurrentStep(step);
       return;
     }
@@ -1473,16 +1461,6 @@ export default function PartnersPage() {
   const handlePasswordModalClose = () => {
     setIsPasswordModalOpen(false);
     setResettingPartner(null);
-    resetPassword();
-  };
-
-  const onSubmitPasswordReset = async (data: PasswordResetData) => {
-    if (!resettingPartner) return;
-
-    resetPasswordMutation.mutate({
-      partner: resettingPartner,
-      newPassword: data.newPassword,
-    });
   };
 
   const handleFormClose = () => {
@@ -1676,7 +1654,7 @@ export default function PartnersPage() {
           </button>
           <button
             onClick={() => handleResetPassword(row.original)}
-            disabled={showForm || resetPasswordMutation.isPending}
+            disabled={showForm}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
             title="Reset Password"
           >
@@ -2667,80 +2645,20 @@ export default function PartnersPage() {
         isOpen={previewDocument.isOpen}
         onClose={() => setPreviewDocument({ url: "", name: "", isOpen: false })}
       />
-      {/* Password Reset Modal */}
-      <Modal
+      <ResetPasswordModal
         open={isPasswordModalOpen}
-        title={t("admin.partners.resetPassword") || "Reset Password"}
         onClose={handlePasswordModalClose}
-      >
-        {resettingPartner && (
-          <form
-            onSubmit={handleSubmitPassword(onSubmitPasswordReset)}
-            className="space-y-4"
-          >
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <p className="text-sm text-blue-800">
-                Resetting password for:{" "}
-                <strong>{resettingPartner.businessName}</strong>
-              </p>
-              <p className="text-xs text-blue-600 mt-1">
-                {resettingPartner.email}
-              </p>
-            </div>
-
-            <Input
-              label="New Password"
-              type="password"
-              error={passwordErrors.newPassword?.message}
-              {...registerPassword("newPassword")}
-              required
-              placeholder="Enter new password"
-            />
-
-            <Input
-              label="Confirm Password"
-              type="password"
-              error={passwordErrors.confirmPassword?.message}
-              {...registerPassword("confirmPassword")}
-              required
-              placeholder="Confirm new password"
-            />
-
-            {watchNewPassword && (
-              <div
-                className={`text-xs p-2 rounded ${
-                  watchNewPassword.length >= 6
-                    ? "bg-green-50 text-green-700"
-                    : "bg-yellow-50 text-yellow-700"
-                }`}
-              >
-                Password strength:{" "}
-                {watchNewPassword.length >= 6 ? "Strong" : "Weak"}
-                (min. 6 characters)
-              </div>
-            )}
-
-            <div className="flex gap-2 justify-end">
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={handlePasswordModalClose}
-                disabled={resetPasswordMutation.isPending}
-              >
-                {t("common.cancel") || "Cancel"}
-              </Button>
-              <Button
-                type="submit"
-                disabled={!isPasswordValid || resetPasswordMutation.isPending}
-              >
-                {resetPasswordMutation.isPending
-                  ? "Resetting..."
-                  : "Reset Password"}
-              </Button>
-            </div>
-          </form>
-        )}
-      </Modal>
+        onSuccess={() => {
+          toast.success(
+            `Password reset successfully for ${resettingPartner?.email}`
+          );
+          setResettingPartner(null);
+        }}
+        targetUser={{
+          email: resettingPartner?.email || "",
+          businessName: resettingPartner?.businessName,
+        }}
+      />
     </div>
   );
 }
