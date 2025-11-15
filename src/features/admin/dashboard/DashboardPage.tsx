@@ -302,6 +302,89 @@ const DashboardPage = () => {
     }
   };
 
+  const getTranslatedLabels = (
+    originalLabels: string[],
+    timeFilter: string
+  ) => {
+    console.log("🔄 Translating labels:", { originalLabels, timeFilter });
+
+    if (timeFilter === "month") {
+      return originalLabels.map((label) => {
+        // Handle week numbers like "Week 1", "Week 2", etc.
+        if (label.startsWith("Week ")) {
+          const weekNumber = label.replace("Week ", "");
+          return `${t("admin.dashboard.week") || "Week"} ${weekNumber}`;
+        }
+        // Handle week abbreviations like "W1", "W2", etc.
+        if (label.startsWith("W") && /^\d+$/.test(label.substring(1))) {
+          const weekNumber = label.substring(1);
+          return `${t("admin.dashboard.week") || "Week"} ${weekNumber}`;
+        }
+
+        // Handle month abbreviations
+        const monthMap: { [key: string]: string } = {
+          Jan: t("admin.dashboard.jan") || "Jan",
+          Feb: t("admin.dashboard.feb") || "Feb",
+          Mar: t("admin.dashboard.mar") || "Mar",
+          Apr: t("admin.dashboard.apr") || "Apr",
+          May: t("admin.dashboard.may") || "May",
+          Jun: t("admin.dashboard.jun") || "Jun",
+          Jul: t("admin.dashboard.jul") || "Jul",
+          Aug: t("admin.dashboard.aug") || "Aug",
+          Sep: t("admin.dashboard.sep") || "Sep",
+          Oct: t("admin.dashboard.oct") || "Oct",
+          Nov: t("admin.dashboard.nov") || "Nov",
+          Dec: t("admin.dashboard.dec") || "Dec",
+        };
+        return monthMap[label] || label;
+      });
+    } else if (timeFilter === "week") {
+      return originalLabels.map((label) => {
+        // Handle day abbreviations
+        const dayMap: { [key: string]: string } = {
+          Sun: t("admin.dashboard.sun") || "Sun",
+          Mon: t("admin.dashboard.mon") || "Mon",
+          Tue: t("admin.dashboard.tue") || "Tue",
+          Wed: t("admin.dashboard.wed") || "Wed",
+          Thu: t("admin.dashboard.thu") || "Thu",
+          Fri: t("admin.dashboard.fri") || "Fri",
+          Sat: t("admin.dashboard.sat") || "Sat",
+        };
+        return dayMap[label] || label;
+      });
+    } else if (timeFilter === "year") {
+      return originalLabels.map((label) => {
+        // Handle month abbreviations for year view
+        const monthMap: { [key: string]: string } = {
+          Jan: t("admin.dashboard.jan") || "Jan",
+          Feb: t("admin.dashboard.feb") || "Feb",
+          Mar: t("admin.dashboard.mar") || "Mar",
+          Apr: t("admin.dashboard.apr") || "Apr",
+          May: t("admin.dashboard.may") || "May",
+          Jun: t("admin.dashboard.jun") || "Jun",
+          Jul: t("admin.dashboard.jul") || "Jul",
+          Aug: t("admin.dashboard.aug") || "Aug",
+          Sep: t("admin.dashboard.sep") || "Sep",
+          Oct: t("admin.dashboard.oct") || "Oct",
+          Nov: t("admin.dashboard.nov") || "Nov",
+          Dec: t("admin.dashboard.dec") || "Dec",
+        };
+        return monthMap[label] || label;
+      });
+    } else if (timeFilter === "all") {
+      return originalLabels.map((label) => {
+        // Handle "Total" label for All Time filter
+        if (label === "Total") {
+          return t("common.all") || "Total";
+        }
+        return label;
+      });
+    }
+
+    // For "day" filter, return as is
+    return originalLabels;
+  };
+
   // Transform All Time data - FIXED to show integer values
   const transformAllTimeData = (apiData: any[]): PartnerUserTrend[] => {
     if (!apiData || apiData.length === 0) {
@@ -381,7 +464,7 @@ const DashboardPage = () => {
     }
 
     return dayOrder.map((dayName) => ({
-      date: dayName.substring(0, 3),
+      date: dayName.substring(0, 3), // Use English abbreviations that will be translated
       partners: dataMap.get(dayName)?.partners || 0,
       users: dataMap.get(dayName)?.users || 0,
     }));
@@ -391,7 +474,7 @@ const DashboardPage = () => {
   const transformMonthData = (apiData: any[]): PartnerUserTrend[] => {
     if (!apiData || apiData.length === 0) {
       // Return empty weeks if no data
-      return ["W1", "W2", "W3", "W4", "W5"].map((week) => ({
+      return ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"].map((week) => ({
         date: week,
         partners: 0,
         users: 0,
@@ -400,7 +483,7 @@ const DashboardPage = () => {
 
     // Your API returns data in this structure for month mode
     return apiData.map((item, index) => ({
-      date: item.weekNumber || `Week ${index + 1}`,
+      date: item.weekNumber || `Week ${index + 1}`, // Use consistent "Week 1", "Week 2" format
       // FIXED: Use Math.round() to ensure integer values
       partners: Math.round(item.partnerCount || 0),
       users: Math.round(item.userCount || 0),
@@ -473,6 +556,7 @@ const DashboardPage = () => {
         }));
         break;
       case "month":
+        // Use consistent "Week 1", "Week 2" format that will be translated
         mockData = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"].map(
           (week) => ({
             date: week,
@@ -714,13 +798,17 @@ const DashboardPage = () => {
     };
   };
 
+  // Update the getPartnerUserBarData function to add debugging:
   const getPartnerUserBarData = () => {
     const labels = partnerUserTrends.map((item) => item.date);
+    const translatedLabels = getTranslatedLabels(labels, timeFilter);
     const partnersData = partnerUserTrends.map((item) => item.partners);
     const usersData = partnerUserTrends.map((item) => item.users);
 
     console.log("🎯 FINAL CHART DATA:", {
-      labels,
+      originalLabels: labels,
+      translatedLabels,
+      timeFilter,
       partnersData,
       usersData,
       hasData:
@@ -728,10 +816,10 @@ const DashboardPage = () => {
     });
 
     return {
-      labels,
+      labels: translatedLabels,
       datasets: [
         {
-          label: "Partners",
+          label: t("nav.partners") || "Partners",
           data: partnersData,
           backgroundColor: "#165933",
           borderRadius: 4,
@@ -739,7 +827,7 @@ const DashboardPage = () => {
           categoryPercentage: 0.8,
         },
         {
-          label: "Users",
+          label: t("nav.users") || "Users",
           data: usersData,
           backgroundColor: "#95C11F",
           borderRadius: 4,
@@ -807,16 +895,33 @@ const DashboardPage = () => {
     cutout: "70%",
   };
 
-  // Line Chart (User Ratio Analytics)
+  // Update the getUserAnalyticsData function for line chart:
   const getUserAnalyticsData = () => {
     const currentYear = new Date().getFullYear();
     const lastYear = currentYear - 1;
 
+    // Use translated month labels
+    const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+    const translatedMonthLabels = monthLabels.map((month) => {
+      const monthMap: { [key: string]: string } = {
+        Jan: t("admin.dashboard.jan") || "Jan",
+        Feb: t("admin.dashboard.feb") || "Feb",
+        Mar: t("admin.dashboard.mar") || "Mar",
+        Apr: t("admin.dashboard.apr") || "Apr",
+        May: t("admin.dashboard.may") || "May",
+        Jun: t("admin.dashboard.jun") || "Jun",
+        Jul: t("admin.dashboard.jul") || "Jul",
+      };
+      return monthMap[month] || month;
+    });
+
     return {
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+      labels: translatedMonthLabels,
       datasets: [
         {
-          label: `This year (${currentYear})`,
+          label: `${
+            t("admin.dashboard.thisyear") || "This Year"
+          } ${currentYear}`,
           data: userTrends,
           borderColor: "#165933",
           backgroundColor: "rgba(22, 89, 51, 0.1)",
@@ -826,7 +931,7 @@ const DashboardPage = () => {
           borderWidth: 2,
         },
         {
-          label: `Last year (${lastYear})`,
+          label: `${t("admin.dashboard.lastyear") || "Last Year"} ${lastYear}`,
           data: lastYearTrends,
           borderColor: "#95C11F",
           backgroundColor: "rgba(149, 193, 31, 0.1)",
@@ -887,7 +992,9 @@ const DashboardPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-xl">Loading dashboard...</div>
+        <div className="text-xl">
+          {t("common.loading") || "Loading dashboard..."}
+        </div>
       </div>
     );
   }
@@ -1026,7 +1133,9 @@ const DashboardPage = () => {
           <div className="h-64">
             {trendsLoading ? (
               <div className="h-full flex items-center justify-center">
-                <div className="text-gray-500">Loading trends...</div>
+                <div className="text-gray-500">
+                  {t("common.loading") || "Loading trends..."}
+                </div>
               </div>
             ) : (
               <Bar
@@ -1070,23 +1179,24 @@ const DashboardPage = () => {
             <div className="flex items-center space-x-6">
               <h3 className="text-lg font-semibold text-gray-900">
                 {t("admin.dashboard.userGrowthAnalytics") ||
-                  "User Growth Analytics"}
+                  "Bruger Vækst Analyser"}
               </h3>
               <div className="flex space-x-4 text-sm text-gray-500">
                 <span className="text-[#165933] font-medium flex items-center">
                   <span className="w-2 h-2 bg-[#165933] rounded-full mr-2"></span>
-                  This year: {formatK(stats?.TotalUsers || 0)}
+                  {t("admin.dashboard.thisyear") || "I år"}:{" "}
+                  {formatK(stats?.TotalUsers || 0)}
                 </span>
                 <span className="text-[#95C11F] font-medium flex items-center">
                   <span className="w-2 h-2 bg-[#95C11F] rounded-full mr-2"></span>
-                  Last year:{" "}
+                  {t("admin.dashboard.lastyear") || "Sidste år"}:{" "}
                   {formatK(lastYearTrends[lastYearTrends.length - 1] || 0)}
                 </span>
               </div>
             </div>
             <div className="text-right">
               <div className="text-sm font-medium text-gray-500">
-                {t("admin.dashboard.growthRate") || "Growth Rate"}
+                {t("admin.dashboard.growthRate") || "Vækstrate"}
               </div>
               <div className="text-lg font-bold text-[#165933]">
                 +{growthRate}%
