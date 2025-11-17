@@ -9,14 +9,15 @@ import { useAppSelector } from "../../../app/hooks";
 import { tokenStorage } from "../../../lib/storage";
 import { RxHamburgerMenu } from "react-icons/rx";
 import homeIcon from "/src/assets/userImages/home.png";
-import myBoligmatchIcon from "/src/assets/userImages/my-boligmatch.png";
-import manageProfileIcon from "/src/assets/userImages/gear.png";
+// import myBoligmatchIcon from "/src/assets/userImages/my-boligmatch.png";
+// import manageProfileIcon from "/src/assets/userImages/gear.png";
 // import partnerPitchIcon from "/src/assets/userImages/partnerPitch.png";
-import docsIcon from "/src/assets/userImages/docsIcon.png"
+import docsIcon from "/src/assets/userImages/docsIcon.png";
 import becomePartnerIcon from "/src/assets/userImages/becomePartner.png";
 import aboutBoligmatchIcon from "/src/assets/userImages/aboutBoligmatch.png";
 import termsConditionIcon from "/src/assets/userImages/termsAndCondi.png";
 import signOutIcon from "/src/assets/userImages/signOut.png";
+import leftArrow from "/src/assets/userImages/arrow-left.svg";
 
 function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
           }`}
         >
           <div className="flex items-center justify-between h-full">
-            <div className="">
+            <div className="flex flex-col items-start gap-1">
               <img
                 onClick={() => navigate("/")}
                 className={`duration-300 ${
@@ -110,6 +111,19 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                 />
               </button>
             </div>
+          </div>
+          <div>
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center justify-center mt-0 p-1 transition-colors cursor-pointer"
+            >
+              <img
+                src={leftArrow}
+                alt="Tilbage"
+                className="w-[51px] h-[51px]"
+              />
+            </button>
           </div>
         </div>
       </header>
@@ -189,42 +203,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       {t("sidebar.home")}
                     </span>
                   </button>
-                  {partnerData && (
-                    <button
-                      onClick={() => {
-                        setShowSidebar(false);
-                        navigate("/profile");
-                      }}
-                      className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
-                    >
-                      <span className="flex items-center gap-2">
-                        <img
-                          src={myBoligmatchIcon}
-                          alt=""
-                          className="w-[30px] h-[30px]"
-                        />
-                        {t("sidebar.mitBoligmatch")}
-                      </span>
-                    </button>
-                  )}
-                  {partnerData && (
-                    <button
-                      onClick={() => {
-                        setShowSidebar(false);
-                        // navigate("");
-                      }}
-                      className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
-                    >
-                      <span className="flex items-center gap-2">
-                        <img
-                          src={manageProfileIcon}
-                          alt=""
-                          className="w-[30px] h-[30px]"
-                        />
-                        {t("sidebar.manageProfile")}
-                      </span>
-                    </button>
-                  )}
+                  {/* My Boligmatch+ and Manage Profile are intentionally hidden for partners in this header */}
                   {partnerData && (
                     <button
                       onClick={() => {

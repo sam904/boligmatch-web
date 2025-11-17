@@ -15,13 +15,13 @@ import { conversationService } from "../services/conversation.service";
 import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
 import {
-  showRecommendationSuccessToast,
   showRecommendationErrorToast,
   showContactSuccessToast,
   showContactErrorToast,
   showFavouriteSuccessToast,
   showFavouriteErrorToast,
 } from "../components/common/ToastBanner";
+import { toast } from "react-toastify";
 import { FaPlayCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { partnerService } from "../services/partner.service";
@@ -287,7 +287,7 @@ const SupplierProfile = () => {
       };
 
       await recommendationService.add(payload);
-      showRecommendationSuccessToast("Recommandation Sent Succesfully!!");
+      toast.success("Recommandation Sent Succesfully!!");
       setActiveModal(null);
       setRecommendEmail("");
       setRecommendComment("");
@@ -321,23 +321,13 @@ const SupplierProfile = () => {
       .filter((s: string) => s.length > 0);
   };
 
-  // Helper: render a 5-icon rating row.
-  // When rating === 5 -> show 4 x ratingImg + 1 x fullRatingImg as requested.
-  // Otherwise: for i < rating use ratingImg else fullRatingImg.
   const renderRating = (
     rating: number,
     sizeClass: string,
     gapClass = "gap-1"
   ) => {
     const items = Array.from({ length: 5 }, (_, i) => {
-      const src =
-        rating === 5
-          ? i < 4
-            ? ratingImg
-            : fullRatingImg
-          : i < rating
-          ? ratingImg
-          : fullRatingImg;
+      const src = i < rating ? ratingImg : fullRatingImg;
       return (
         <img
           key={i}
@@ -480,7 +470,7 @@ const SupplierProfile = () => {
                           <div className="flex justify-center mb-3">
                             {renderRating(r, "w-[45px] h-[42px]", "gap-2")}
                           </div>
-                          <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6">
+                          <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6 line-clamp-3">
                             ”{rev?.test}”
                           </p>
                           <p className="text-sm font-bold text-black mt-3 text-start px-6">
