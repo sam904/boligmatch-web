@@ -38,9 +38,7 @@ export default function Stepper({
 
           return (
             <React.Fragment key={label}>
-              {/* Step Circle + Label */}
               <div className="flex flex-col items-center">
-                {/* Circle */}
                 <button
                   type="button"
                   onClick={() => handleClick(step)}

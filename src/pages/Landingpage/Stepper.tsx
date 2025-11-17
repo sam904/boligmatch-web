@@ -9,7 +9,7 @@ import icon6 from "../../assets/userImages/06.png";
 import icon7 from "../../assets/userImages/07.png";
 import icon8 from "../../assets/userImages/08.png";
 import circlebg from "../../assets/userImages/circle-bg.png";
-import stepperBg from "../../assets/userImages/stepper-bg.png";
+import stepperBg from "/src/assets/userImages/stepper2.png";
 import jurneyImg from "/src/assets/userImages/jurneyImg.png";
 
 interface StepperProps {
@@ -83,7 +83,7 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
       }}
     >
       <div
-        className="flex items-start w-full overflow-x-auto scrollbar-hide md:w-[full] md:overflow-visible"
+        className="flex items-start w-full overflow-x-auto scrollbar-hide md:w-full md:overflow-visible"
       >
         {steps.map((step, index) => (
           <React.Fragment key={step.number}>
@@ -94,7 +94,7 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
             >
               {/* ✅ Tick mark (kept from your logic) */}
               {currentStep >= index + 1 && (
-                <div className="absolute -top-3 -right-0.5 z-20">
+                <div className="absolute top-5 right-4.5 z-20">
                   <div className="rounded-full p-1 flex items-center justify-center">
                     <svg
                       className="w-8 h-8 text-white"
@@ -114,20 +114,18 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
                 </div>
               )}
 
-              {/* Step Button */}
               <div className="relative flex items-center justify-center">
-                {/* Background circle image */}
                 <img
                   src={circlebg}
                   alt=""
                   className={`transition-opacity duration-200 ${
-                    hoveredStep === index ? "opacity-100" : "opacity-0"
+                    hoveredStep === index ? "opacity-100 z-[999]" : "opacity-0"
                   }`}
                 />
                 {/* Overlapping button centered on the image */}
                 <button
                   onClick={() => onStepClick?.(index + 1)}
-                  className={`absolute flex items-center justify-center w-[80px] h-[80px] rounded-full transition-all duration-200 ${
+                  className={`absolute flex items-center justify-center w-[100px] h-[100px] rounded-full transition-all duration-200 ${
                     currentStep >= index + 1
                       ? "bg-[#01351f] text-white"
                       : "bg-[#01351f] text-gray-500"
@@ -141,9 +139,18 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
                 </button>
               </div>
 
+              {/* Step Number (visible under icon) */}
+              <span
+                className={`mt-0 text-3xl font-extrabold text-center tracking-tight ${
+                  currentStep >= index + 1 ? "text-white" : "text-gray-500"
+                }`}
+              >
+                {step.number}
+              </span>
+
               {/* Step Label */}
               <span
-                className={`mt-2 text-sm font-medium text-center w-[120px] ${
+                className={`mt-1 text-sm font-medium text-center w-[140px] ${
                   currentStep >= index + 1 ? "text-white" : "text-gray-500"
                 }`}
               >
@@ -152,10 +159,10 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
 
               {hoveredStep === index && (
                 <div
-                  className="absolute top-[90px] left-1/2 transform -translate-x-1/2 w-[220px] bg-[#01351f]  text-white rounded-2xl 
-      shadow-xl overflow-hidden transition-all duration-300 z-50
+                  className="absolute top-[80px] left-1/2 transform -translate-x-1/2 w-[220px] bg-[#01351f] text-white rounded-2xl 
+      shadow-[0_20px_45px_rgba(0,0,0,0.65)] transition-all duration-300 z-50 overflow-hidden
       md:w-[150px]       /* Desktop original size */
-      md:top-[80px]
+      md:top-[130px]
 
       /* ✅ Make it float above scroll on small screens */
        md:absolute  "
@@ -180,7 +187,7 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
 
             {/* Connector Line */}
             {index < steps.length - 1 && (
-              <div className="flex-1 h-0.5 mt-11 relative min-w-[20px] max-w-[120px] border-t-2 border-dotted border-gray-300"></div>
+              <div className="flex-1 h-0.5 mt-14 relative min-w-[20px] max-w-[120px] border-t-2 border-dotted border-gray-300"></div>
             )}
           </React.Fragment>
         ))}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userLogo from "/src/assets/userImages/boligmatchLogo.png";
+import leftArrow from "/src/assets/userImages/arrow-left.svg";
 import userHeader from "/src/assets/userImages/userHeader.png";
 import UserModal from "../../../components/common/UserModal";
 import LoginChoiceModal from "../../../components/common/LoginChoiceModal";
@@ -8,15 +9,14 @@ import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../app/hooks";
 import { tokenStorage } from "../../../lib/storage";
 import { RxHamburgerMenu } from "react-icons/rx";
-import homeIcon from "/src/assets/userImages/home.png"
-import myBoligmatchIcon from "/src/assets/userImages/my-boligmatch.png"
-import manageProfileIcon from "/src/assets/userImages/gear.png"
+import homeIcon from "/src/assets/userImages/home.png";
+import myBoligmatchIcon from "/src/assets/userImages/my-boligmatch.png";
+import manageProfileIcon from "/src/assets/userImages/gear.png";
 // import partnerPitchIcon from "/src/assets/userImages/partnerPitch.png"
-import becomePartnerIcon from "/src/assets/userImages/becomePartner.png"
-import aboutBoligmatchIcon from "/src/assets/userImages/aboutBoligmatch.png"
-import termsConditionIcon from "/src/assets/userImages/termsAndCondi.png"
-import signOutIcon from "/src/assets/userImages/signOut.png"
-
+import becomePartnerIcon from "/src/assets/userImages/becomePartner.png";
+import aboutBoligmatchIcon from "/src/assets/userImages/aboutBoligmatch.png";
+import termsConditionIcon from "/src/assets/userImages/termsAndCondi.png";
+import signOutIcon from "/src/assets/userImages/signOut.png";
 
 function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   const navigate = useNavigate();
@@ -30,12 +30,12 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   const [partnerData, setPartnerData] = useState<any | null>(null);
   const { i18n, t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
-  console.log(isMobile)
+  console.log(isMobile);
 
   const userData = useAppSelector((state) => state.auth.user);
 
   const currentLang = i18n.language || "en";
-  console.log(currentLang)
+  console.log(currentLang);
 
   // Check for partner data in localStorage
   useEffect(() => {
@@ -84,26 +84,31 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   }, []);
 
   // Determine what to display: partner or user
-  const isPartner = !!partnerData && (partnerData as any).roleName === "Partner";
+  const isPartner =
+    !!partnerData && (partnerData as any).roleName === "Partner";
   const displayName = isPartner
     ? partnerData?.firstName
     : userData
-      ? `${userData.firstName} ${userData.lastName}`
-      : null;
+    ? `${userData.firstName} ${userData.lastName}`
+    : null;
 
   return (
     <>
-      <header className={`${fullHeight ? "md:h-[100vh] h-[366px]" : "h-20"} relative`}>
+      <header
+        className={`${fullHeight ? "md:h-[100vh] h-[366px]" : "h-20"} relative`}
+      >
         <div
-          className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-4 z-50 transition-colors duration-300 ${isScrolled ? "bg-[#06351E]" : "bg-transparent"
-            }`}
+          className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-4 z-50 transition-colors duration-300 ${
+            isScrolled ? "bg-[#06351E]" : "bg-transparent"
+          }`}
         >
           <div className="flex items-center justify-between h-full">
-            <div className="">
+            <div className="flex flex-col items-start gap-1">
               <img
                 onClick={() => navigate("/")}
-                className={`duration-300 ${isScrolled ? "h-10" : "h-12"
-                  } cursor-pointer`}
+                className={`duration-300 ${
+                  isScrolled ? "h-10" : "h-12"
+                } cursor-pointer`}
                 src={userLogo}
                 alt=""
               />
@@ -126,8 +131,9 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                   <img
                     src={userHeader}
                     alt=""
-                    className={`duration-300 ${isScrolled ? "h-8" : "h-10"
-                      } cursor-pointer`}
+                    className={`duration-300 ${
+                      isScrolled ? "h-8" : "h-10"
+                    } cursor-pointer`}
                   />
                 </button>
               )}
@@ -178,6 +184,19 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                 />
               </button>
             </div>
+          </div>
+          <div>
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center justify-center mt-0 p-1 transition-colors cursor-pointer"
+            >
+              <img
+                src={leftArrow}
+                alt="Tilbage"
+                className="w-[51px] h-[51px]"
+              />
+            </button>
           </div>
         </div>
       </header>
@@ -254,7 +273,11 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
                     <span className="flex items-center gap-2">
-                      <img src={homeIcon} alt="" className="w-[30px] h-[30px]" />
+                      <img
+                        src={homeIcon}
+                        alt=""
+                        className="w-[30px] h-[30px]"
+                      />
                       {t("sidebar.home")}
                     </span>
                   </button>
@@ -268,7 +291,11 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                         className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                       >
                         <span className="flex items-center gap-2">
-                          <img src={myBoligmatchIcon} alt="" className="w-[30px] h-[30px]" />
+                          <img
+                            src={myBoligmatchIcon}
+                            alt=""
+                            className="w-[30px] h-[30px]"
+                          />
                           {t("sidebar.mitBoligmatch")}
                         </span>
                       </button>
@@ -280,7 +307,11 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                         className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                       >
                         <span className="flex items-center gap-2">
-                          <img src={manageProfileIcon} alt="" className="w-[30px] h-[30px]" />
+                          <img
+                            src={manageProfileIcon}
+                            alt=""
+                            className="w-[30px] h-[30px]"
+                          />
                           {t("sidebar.manageProfile")}
                         </span>
                       </button>
@@ -311,7 +342,11 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
                     <span className="flex items-center gap-2">
-                      <img src={becomePartnerIcon} alt="" className="w-[30px] h-[30px]" />
+                      <img
+                        src={becomePartnerIcon}
+                        alt=""
+                        className="w-[30px] h-[30px]"
+                      />
                       {t("sidebar.becomePartner")}
                     </span>
                   </button>
@@ -323,7 +358,11 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
                     <span className="flex items-center gap-2">
-                      <img src={aboutBoligmatchIcon} alt="" className="w-[30px] h-[30px]" />
+                      <img
+                        src={aboutBoligmatchIcon}
+                        alt=""
+                        className="w-[30px] h-[30px]"
+                      />
                       {t("sidebar.about")}
                     </span>
                   </button>
@@ -359,7 +398,11 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
                     <span className="flex items-center gap-2">
-                      <img src={termsConditionIcon} alt="" className="w-[30px] h-[30px]" />
+                      <img
+                        src={termsConditionIcon}
+                        alt=""
+                        className="w-[30px] h-[30px]"
+                      />
                       {t("sidebar.terms")}
                     </span>
                   </button>
@@ -379,7 +422,11 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     }}
                     className="w-full text-left px-3 py-2.5 text-white hover:bg-[#95C11F]/20 rounded-lg transition-colors flex items-center gap-2"
                   >
-                    <img src={signOutIcon} alt="" className="w-[30px] h-[30px]" />
+                    <img
+                      src={signOutIcon}
+                      alt=""
+                      className="w-[30px] h-[30px]"
+                    />
                     <span className="font-medium text-[#95C11F]">
                       {t("sidebar.signOut")}
                     </span>
