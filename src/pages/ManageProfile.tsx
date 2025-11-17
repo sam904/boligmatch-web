@@ -14,6 +14,8 @@ export default function ManageProfile() {
     const [isEmailVerify, setIsEmailVerify] = useState<boolean>(false);
     const [isActive, setIsActive] = useState<boolean>(true);
     const [userId, setUserId] = useState<number | null>(null);
+    const [passwordEmail, setPasswordEmail] = useState("");
+    const [newPassword, setNewPassword] = useState("");
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -158,6 +160,53 @@ export default function ManageProfile() {
                                 className="w-full bg-[#95C11F] text-white font-semibold rounded-full py-2.5 cursor-pointer"
                             >
                                 Gem ændringer
+                            </button>
+                        </div>
+                    </form>
+
+                    <form
+                        className="mt-8 space-y-4"
+                        onSubmit={async (e) => {
+                            e.preventDefault();
+                            try {
+                                await userService.resetUserPassword({
+                                    email: passwordEmail || email,
+                                    newPassword: newPassword,
+                                });
+                                showSignupSuccessToast("Adgangskode opdateret");
+                                setNewPassword("");
+                            } catch (err) {
+                                console.error("Failed to reset password", err);
+                                showSignupErrorToast("Kunne ikke opdatere adgangskoden");
+                            }
+                        }}
+                    >
+                        <h2 className="text-white text-[14px] font-[700]">Skift adgangskode</h2>
+                        <div>
+                            <label className="block text-white text-sm mb-1">Email</label>
+                            <input
+                                type="email"
+                                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                value={passwordEmail || email}
+                                onChange={(e) => setPasswordEmail(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-white text-sm mb-1">Ny adgangskode</label>
+                            <input
+                                type="password"
+                                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="pt-2">
+                            <button
+                                type="submit"
+                                className="w-full bg-[#95C11F] text-white font-semibold rounded-full py-2.5 cursor-pointer"
+                            >
+                                Skift adgangskode
                             </button>
                         </div>
                     </form>
