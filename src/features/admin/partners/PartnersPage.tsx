@@ -63,7 +63,7 @@ interface ToastState {
   open: boolean;
 }
 
-// Image Preview Modal Component
+// In the ImagePreviewModal component, replace hardcoded text:
 function ImagePreviewModal({
   imageUrl,
   isOpen,
@@ -73,13 +73,17 @@ function ImagePreviewModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const { t } = useTranslation();
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center bg-black/50 z-50 p-4">
       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
         <div className="flex justify-between items-center p-4 border-b">
-          <h3 className="text-lg font-semibold">Image Preview</h3>
+          <h3 className="text-lg font-semibold">
+            {t("common.imagePreview") || "Image Preview"}
+          </h3>
           <button
             onClick={onClose}
             className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
@@ -99,9 +103,9 @@ function ImagePreviewModal({
             href={imageUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 underline "
+            className="text-blue-600 hover:text-blue-800 underline"
           >
-            Open in new tab
+            {t("common.openInNewTab") || "Open in new tab"}
           </a>
         </div>
       </div>
@@ -394,15 +398,18 @@ export default function PartnersPage() {
       setEmailValidation({
         checking: false,
         available: false,
-        message: "Please enter a valid email address",
+        message:
+          t("validation.emailInvalidFormat") ||
+          "Please enter a valid email address",
       });
       return;
     }
 
     setEmailValidation({
-      checking: true,
+      checking: false,
       available: null,
-      message: "Checking email availability...",
+      message:
+        t("validation.emailCheckError") || "Error checking email availability",
     });
 
     try {
@@ -419,7 +426,10 @@ export default function PartnersPage() {
         setEmailValidation({
           checking: false,
           available: false,
-          message: response.failureReason || "Email already registered",
+          message:
+            response.failureReason ||
+            t("validation.emailAlreadyRegistered") ||
+            "Email already registered",
         });
       }
     } catch (error: any) {
@@ -462,7 +472,9 @@ export default function PartnersPage() {
       setMobileValidation({
         checking: false,
         available: false,
-        message: "Mobile number must be exactly 8 digits",
+        message:
+          t("validation.mobileInvalidLength") ||
+          "Mobile number must be exactly 8 digits",
       });
       return;
     }
@@ -472,7 +484,9 @@ export default function PartnersPage() {
       setMobileValidation({
         checking: false,
         available: false,
-        message: "Mobile number can only contain numbers",
+        message:
+          t("validation.mobileNumbersOnly") ||
+          "Mobile number can only contain numbers",
       });
       return;
     }
@@ -480,7 +494,9 @@ export default function PartnersPage() {
     setMobileValidation({
       checking: true,
       available: null,
-      message: "Checking mobile number availability...",
+      message:
+        t("admin.partners.mobileChecking") ||
+        "Checking mobile number availability...",
     });
 
     try {
@@ -499,7 +515,10 @@ export default function PartnersPage() {
         setMobileValidation({
           checking: false,
           available: false,
-          message: response.failureReason || "Mobile number already registered",
+          message:
+            response.failureReason ||
+            t("validation.mobileAlreadyRegistered") ||
+            "Mobile number already registered",
         });
       }
     } catch (error: any) {
@@ -518,7 +537,9 @@ export default function PartnersPage() {
         setMobileValidation({
           checking: false,
           available: null,
-          message: "Error checking mobile number availability",
+          message:
+            t("validation.mobileCheckError") ||
+            "Error checking mobile number availability",
         });
       }
     }
@@ -708,12 +729,18 @@ export default function PartnersPage() {
 
         // Don't allow proceeding if email validation is in progress or failed
         if (isEmailChecking) {
-          toast.error("Please wait for email validation to complete");
+          toast.error(
+            t("admin.partners.waitEmailValidation") ||
+              "Please wait for email validation to complete"
+          );
           return false;
         }
 
         if (hasEmailValidationErrors) {
-          toast.error("Please fix email validation errors before proceeding");
+          toast.error(
+            t("admin.partners.fixEmailErrors") ||
+              "Please fix email validation errors before proceeding"
+          );
           return false;
         }
 
@@ -779,7 +806,10 @@ export default function PartnersPage() {
     index: number
   ) => {
     if (!editingPartner?.id) {
-      toast.error("Please save partner basic information first");
+      toast.error(
+        t("admin.partners.savePartnerFirst") ||
+          "Please save partner basic information first"
+      );
       return;
     }
 
@@ -805,7 +835,9 @@ export default function PartnersPage() {
       // FIX: Remove .data since response is directly ApiResponse<PartnerDocument>
       if (response.isSuccess) {
         toast.success(
-          `Document "${documentData.documentName}" saved successfully`
+          t("admin.partners.documentSaved", {
+            name: documentData.documentName,
+          }) || `Document "${documentData.documentName}" saved successfully`
         );
 
         // Update the local form state with the returned document (which includes the ID)
@@ -828,7 +860,10 @@ export default function PartnersPage() {
       }
     } catch (error: any) {
       console.error("Document save error:", error);
-      toast.error(`Failed to save document: ${error.message}`);
+      toast.error(
+        t("admin.partners.documentSaveError", { error: error.message }) ||
+          `Failed to save document: ${error.message}`
+      );
     } finally {
       // Remove from saving documents array
       setSavingDocuments((prev) => prev.filter((i) => i !== index));
@@ -1127,7 +1162,9 @@ export default function PartnersPage() {
       }
       console.log("Exporting partners with params:", exportParams);
       await exportToExcel("Partner", exportParams);
-      toast.success("Partners exported successfully");
+      toast.success(
+        t("admin.partners.partnersExported") || "Partners exported successfully"
+      );
     } catch (error) {
       console.error("Export failed:", error);
       const errorMessage = getErrorMessage(error, "Failed to export partners");
@@ -1143,7 +1180,10 @@ export default function PartnersPage() {
 
     // Check if email or mobile validations are in progress
     if (emailValidation.checking || mobileValidation.checking) {
-      toast.error("Please wait for email/mobile validation to complete");
+      toast.error(
+        t("admin.partners.waitEmailValidation") ||
+          "Please wait for email/mobile validation to complete"
+      );
       return;
     }
 
@@ -1233,14 +1273,18 @@ export default function PartnersPage() {
 
       // Check if email validation failed
       if (emailValue && emailValidation.available === false) {
-        toast.error("Please fix email validation errors before proceeding");
+        toast.error(
+          t("admin.partners.fixEmailErrors") ||
+            "Please fix email validation errors before proceeding"
+        );
         return;
       }
 
       // Check if mobile validation failed
       if (mobileNoValue && mobileValidation.available === false) {
         toast.error(
-          "Please fix mobile number validation errors before proceeding"
+          t("admin.partners.fixMobileErrors") ||
+            "Please fix mobile number validation errors before proceeding"
         );
         return;
       }
@@ -1260,7 +1304,8 @@ export default function PartnersPage() {
 
       if (emptyFields.length > 0) {
         toast.error(
-          `Please fill in all required fields: ${emptyFields.join(", ")}`
+          t("admin.partners.fillRequiredFields") ||
+            `Please fill in all required fields: ${emptyFields.join(", ")}`
         );
         return;
       }
@@ -1329,7 +1374,10 @@ export default function PartnersPage() {
 
     if (!isValid) {
       console.log("Validation errors:", errors);
-      toast.error("Please fix all form errors in this step before proceeding");
+      toast.error(
+        t("admin.partners.fixStepErrors") ||
+          "Please fix all form errors in this step before proceeding"
+      );
       return;
     }
 
@@ -1363,8 +1411,10 @@ export default function PartnersPage() {
         };
 
         await updateMutation.mutateAsync(payload as any);
-        toast.success(`Step ${currentStep} updated successfully`);
-
+        toast.success(
+          t("admin.partners.stepUpdated", { step: currentStep }) ||
+            `Step ${currentStep} updated successfully`
+        );
         // Move to next step after successful update
         setCurrentStep((prev) => prev + 1);
       } catch (error) {
@@ -1397,7 +1447,8 @@ export default function PartnersPage() {
         const canNavigate = await isStepCompleted(currentStep);
         if (!canNavigate) {
           toast.error(
-            `Please complete step ${currentStep} before proceeding to step ${step}`
+            t("admin.partners.completeStepBefore", { currentStep, step }) ||
+              `Please complete step ${currentStep} before proceeding to step ${step}`
           );
           return;
         }
@@ -1610,11 +1661,14 @@ export default function PartnersPage() {
         return address.length > 50 ? `${address.substring(0, 50)}...` : address;
       },
     },
-    { accessorKey: "cvr", header: "CVR" },
-    { accessorKey: "mobileNo", header: "Mobile Number" },
+    { accessorKey: "cvr", header: t("admin.partners.cvr") || "CVR" },
+    {
+      accessorKey: "mobileNo",
+      header: t("admin.partners.mobileNo") || "Mobile Number",
+    },
     {
       accessorKey: "isActive",
-      header: "Status",
+      header: t("admin.partners.status") || "Status",
       enableSorting: false,
       cell: ({ row }) => (
         <span
@@ -1640,7 +1694,7 @@ export default function PartnersPage() {
             onClick={() => handleAddTestimonial(row.original)}
             disabled={showForm}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
-            title="Add Testimonial"
+            title={t("admin.partners.addTestimonial") || "Add Testimonial"}
           >
             <IconTestimonial />
           </button>
@@ -1648,7 +1702,7 @@ export default function PartnersPage() {
             onClick={() => handleEditPartner(row.original)}
             disabled={showForm}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
-            title="Edit partner"
+            title={t("admin.partners.editPartner") || "Edit partner"}
           >
             <IconPencil />
           </button>
@@ -1656,7 +1710,7 @@ export default function PartnersPage() {
             onClick={() => handleResetPassword(row.original)}
             disabled={showForm}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
-            title="Reset Password"
+            title={t("admin.partners.resetPassword") || "Reset Password"}
           >
             <IconKey />
           </button>
@@ -1664,7 +1718,7 @@ export default function PartnersPage() {
             onClick={() => handleDeletePartner(row.original)}
             disabled={showForm}
             className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
-            title="Delete partner"
+            title={t("admin.partners.deletePartner") || "Delete partner"}
           >
             <IconTrash />
           </button>
@@ -1689,11 +1743,14 @@ export default function PartnersPage() {
                     <span className="text-red-500 ml-1">*</span>
                   </>
                 }
-                error={errors.businessName?.message}
+                error={
+                  errors.businessName?.message &&
+                  t("validation.businessNameRequired")
+                }
                 {...register("businessName")}
               />
 
-              {/* Updated Email Field with Validation - FIXED DUPLICATE MESSAGE */}
+              {/* Email Field */}
               <div className="space-y-1">
                 <Input
                   label={
@@ -1703,11 +1760,11 @@ export default function PartnersPage() {
                     </>
                   }
                   type="email"
-                  // REMOVE error prop here to avoid duplicate message
                   value={emailValue || ""}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  placeholder="Enter email address"
-                  // Add red border when validation fails
+                  placeholder={
+                    t("common.enterEmailAddress") || "Enter email address"
+                  } // Add this line
                   className={
                     emailValidation.available === false ? "border-red-500" : ""
                   }
@@ -1715,7 +1772,8 @@ export default function PartnersPage() {
                 {emailValidation.checking && (
                   <div className="flex items-center gap-2 text-blue-600 text-sm">
                     <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
-                    Checking availability...
+                    {t("admin.partners.emailChecking") ||
+                      "Checking email availability..."}
                   </div>
                 )}
                 {emailValidation.available === true &&
@@ -1732,7 +1790,8 @@ export default function PartnersPage() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      {emailValidation.message}
+                      {t("admin.partners.emailAvailable") ||
+                        "Email is available"}
                     </div>
                   )}
                 {emailValidation.available === false &&
@@ -1749,10 +1808,10 @@ export default function PartnersPage() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      {emailValidation.message}
+                      {t("admin.partners.emailNotAvailable") ||
+                        "Email already registered"}
                     </div>
                   )}
-                {/* Show Zod validation errors only if custom validation hasn't already shown an error */}
                 {errors.email?.message &&
                   emailValidation.available !== false && (
                     <div className="text-red-600 text-sm flex items-center gap-1">
@@ -1767,35 +1826,36 @@ export default function PartnersPage() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      {errors.email.message}
+                      {t("validation.emailRequired") || "Email is required"}
                     </div>
                   )}
               </div>
 
-              {/* Updated Mobile Number Field with 8-digit Validation */}
+              {/* Mobile Field */}
               <div className="space-y-1">
                 <Input
                   label={
                     <>
-                      {t("admin.partners.phone") || "Mobile Number"}
+                      {t("admin.partners.mobileNumber") || "Mobile Number"}
                       <span className="text-red-500 ml-1">*</span>
                     </>
                   }
-                  // REMOVE error prop here to avoid duplicate message
                   value={mobileNoValue || ""}
                   onChange={(e) => handleMobileChange(e.target.value)}
-                  placeholder="Enter 8-digit mobile number"
-                  // Add red border when validation fails
+                  placeholder={
+                    t("common.mobilePlaceholder") ||
+                    "Enter 8-digit mobile number"
+                  }
                   className={
                     mobileValidation.available === false ? "border-red-500" : ""
                   }
-                  // Add maxLength to prevent more than 8 digits
                   maxLength={8}
                 />
                 {mobileValidation.checking && (
                   <div className="flex items-center gap-2 text-blue-600 text-sm">
                     <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
-                    Checking availability...
+                    {t("admin.partners.mobileChecking") ||
+                      "Checking mobile number availability..."}
                   </div>
                 )}
                 {mobileValidation.available === true &&
@@ -1812,7 +1872,8 @@ export default function PartnersPage() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      {mobileValidation.message}
+                      {t("admin.partners.mobileAvailable") ||
+                        "Mobile number is available"}
                     </div>
                   )}
                 {mobileValidation.available === false &&
@@ -1832,7 +1893,6 @@ export default function PartnersPage() {
                       {mobileValidation.message}
                     </div>
                   )}
-                {/* Show Zod validation errors only if custom validation hasn't already shown an error */}
                 {errors.mobileNo?.message &&
                   mobileValidation.available !== false && (
                     <div className="text-red-600 text-sm flex items-center gap-1">
@@ -1847,7 +1907,8 @@ export default function PartnersPage() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      {errors.mobileNo.message}
+                      {t("validation.mobileRequired") ||
+                        "Mobile number is required"}
                     </div>
                   )}
               </div>
@@ -1855,7 +1916,7 @@ export default function PartnersPage() {
               <Input
                 label="CVR"
                 type="number"
-                error={errors.cvr?.message}
+                error={errors.cvr?.message && t("validation.cvrRequired")}
                 {...register("cvr", { valueAsNumber: true })}
               />
             </div>
@@ -1866,17 +1927,23 @@ export default function PartnersPage() {
                   <span className="text-red-500 ml-1">*</span>
                 </>
               }
-              error={errors.address?.message}
+              error={errors.address?.message && t("validation.addressRequired")}
               rows={3}
-              placeholder="Enter full address"
+              placeholder={t("common.enterFullAddress") || "Enter full address"} // Add this line
               {...register("address")}
             />
             <Input
-              label="TrustPilot URL"
+              label={t("admin.partners.trustPilotUrl") || "TrustPilot URL"}
               type="url"
-              error={errors.trustPilotUrl?.message}
+              error={
+                errors.trustPilotUrl?.message &&
+                t("validation.trustPilotUrlInvalid")
+              }
               {...register("trustPilotUrl")}
-              placeholder="https://www.trustpilot.com/review/your-business"
+              placeholder={
+                t("common.trustPilotPlaceholder") ||
+                "https://www.trustpilot.com/review/your-business"
+              }
             />
           </div>
         );
@@ -2042,13 +2109,12 @@ export default function PartnersPage() {
         return (
           <div className="space-y-6">
             <h3 className="text-lg font-bold text-gray-900 mt-6">
-              {" "}
               {t("admin.partners.Documents") || "Documents"}
             </h3>
             <div className="bg-gray-50 p-4 rounded-lg">
-              {/* <h4 className="font-medium text-gray-700 mb-3">
-                Partner Documents
-              </h4> */}
+              <h4 className="font-medium text-gray-700 mb-3">
+                {t("admin.partners.partnerDocuments") || "Partner Documents"}
+              </h4>
               {documentFields.map((field, index) => (
                 <div
                   key={field.id}
@@ -2061,7 +2127,10 @@ export default function PartnersPage() {
                         {index + 1} <span className="text-red-500">*</span>
                       </label>
                       <Input
-                        error={errors.parDoclst?.[index]?.documentName?.message}
+                        error={
+                          errors.parDoclst?.[index]?.documentName?.message &&
+                          t("validation.documentNameRequired")
+                        }
                         value={watch(`parDoclst.${index}.documentName`)}
                         onChange={(e) =>
                           handleDocumentChange(
@@ -2070,7 +2139,10 @@ export default function PartnersPage() {
                             index
                           )
                         }
-                        placeholder="Enter document name (e.g., Business License, Contract, Certificate)"
+                        placeholder={
+                          t("admin.partners.documentPlaceholder") ||
+                          "Enter document name (e.g., Business License, Contract, Certificate)"
+                        }
                         required
                         disabled={savingDocuments.includes(index)}
                       />
@@ -2093,16 +2165,18 @@ export default function PartnersPage() {
                           )
                         }
                         folder="partners/documents"
-                        error={errors.parDoclst?.[index]?.documentUrl?.message}
+                        error={
+                          errors.parDoclst?.[index]?.documentUrl?.message &&
+                          t("validation.documentUrlRequired")
+                        }
                         required
                       />
                     </div>
 
-                    {/* Saving indicator */}
                     {savingDocuments.includes(index) && (
                       <div className="flex items-center gap-2 text-blue-600 text-sm">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                        Saving document...
+                        {t("common.savingDocument") || "Saving document..."}
                       </div>
                     )}
                   </div>
@@ -2113,19 +2187,20 @@ export default function PartnersPage() {
                         type="button"
                         variant="danger"
                         onClick={() => {
-                          // If document has been saved to server, delete it
                           const documentId = watch(`parDoclst.${index}.id`);
                           if (editingPartner?.id && documentId) {
                             if (
                               confirm(
-                                "Are you sure you want to delete this document?"
+                                t("admin.partners.confirmDeleteDocument") ||
+                                  "Are you sure you want to delete this document?"
                               )
                             ) {
                               partnerDocumentService
                                 .deleteDocument(documentId)
                                 .then(() => {
                                   toast.success(
-                                    "Document deleted successfully"
+                                    t("admin.partners.documentDeleted") ||
+                                      "Document deleted successfully"
                                   );
                                   removeDocumentField(index);
                                   queryClient.invalidateQueries({
@@ -2146,7 +2221,7 @@ export default function PartnersPage() {
                         }}
                         disabled={savingDocuments.includes(index)}
                       >
-                        Remove Document
+                        {t("common.removeDocument") || "Remove Document"}
                       </Button>
                     )}
                   </div>
@@ -2172,7 +2247,8 @@ export default function PartnersPage() {
               </Button>
               {errors.parDoclst && !errors.parDoclst.root && (
                 <p className="text-red-500 text-sm mt-2">
-                  {errors.parDoclst.message}
+                  {t("validation.atLeastOneDocument") ||
+                    "At least one document is required"}
                 </p>
               )}
             </div>
@@ -2193,7 +2269,7 @@ export default function PartnersPage() {
                 <div className="text-center py-2">
                   <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
                   <p className="mt-1 text-gray-600 text-sm">
-                    Loading categories...
+                    {t("common.loadingCategories") || "Loading categories..."}
                   </p>
                 </div>
               ) : (
@@ -2201,7 +2277,10 @@ export default function PartnersPage() {
                   name="categoryId"
                   control={control}
                   label={t("admin.categories.title") || "Category"}
-                  error={errors.categoryId?.message}
+                  error={
+                    errors.categoryId?.message &&
+                    t("validation.categoryRequired")
+                  }
                   options={categories
                     .filter((cat) => cat.isActive)
                     .map((cat) => ({
@@ -2210,10 +2289,11 @@ export default function PartnersPage() {
                     }))}
                   placeholder={
                     isLoadingCategories
-                      ? "Loading categories..."
+                      ? t("common.loadingCategories") || "Loading categories..."
                       : categories.filter((cat) => cat.isActive).length === 0
-                      ? "No active categories available"
-                      : "Select Category"
+                      ? t("admin.partners.noActiveCategoriesWarning") ||
+                        "No active categories available"
+                      : t("common.selectCategory") || "Select Category"
                   }
                   disabled={
                     isLoadingCategories ||
@@ -2241,12 +2321,13 @@ export default function PartnersPage() {
                         />
                       </svg>
                       <span className="text-sm font-medium">
-                        No Active Categories Available
+                        {t("admin.partners.noActiveCategoriesWarning") ||
+                          "No Active Categories Available"}
                       </span>
                     </div>
                     <p className="text-yellow-700 text-sm mt-1">
-                      You need to create active categories before adding
-                      partners.
+                      {t("admin.partners.noActiveCategoriesMessage") ||
+                        "You need to create active categories before adding partners."}
                     </p>
                   </div>
                 )}
@@ -2254,17 +2335,18 @@ export default function PartnersPage() {
             {selectedCategoryId > 0 && (
               <div className="bg-[#F0F2EA] p-4 rounded-lg">
                 <h4 className="font-medium text-gray-700 mb-3">
-                  Sub Categories
+                  {t("admin.subcategories.title") || "Sub Categories"}
                 </h4>
                 <p className="text-sm text-gray-600 mb-4">
-                  Add one or more sub categories for this partner under the
-                  selected category
+                  {t("admin.partners.addSubCategories") ||
+                    "Add one or more sub categories for this partner under the selected category"}
                 </p>
                 {isLoadingSubCategories ? (
                   <div className="text-center py-4">
                     <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
                     <p className="mt-2 text-gray-600">
-                      Loading sub categories...
+                      {t("admin.partners.loadingSubCategories") ||
+                        "Loading sub categories..."}
                     </p>
                   </div>
                 ) : (
@@ -2283,7 +2365,7 @@ export default function PartnersPage() {
                             } ${index + 1}`}
                             error={
                               errors.parSubCatlst?.[index]?.subCategoryId
-                                ?.message
+                                ?.message && t("validation.subCategoryRequired")
                             }
                             options={subCategories
                               .filter((subCat) => subCat.isActive)
@@ -2293,12 +2375,17 @@ export default function PartnersPage() {
                               }))}
                             placeholder={
                               isLoadingSubCategories
-                                ? "Loading sub categories..."
+                                ? t("admin.partners.loadingSubCategories") ||
+                                  "Loading sub categories..."
                                 : subCategories.filter(
                                     (subCat) => subCat.isActive
                                   ).length === 0
-                                ? "No active sub categories available for this category"
-                                : "Select Sub Category"
+                                ? t(
+                                    "admin.partners.noSubCategoriesAvailable"
+                                  ) ||
+                                  "No active sub categories available for this category"
+                                : t("admin.subcategories.selectSubcategory") ||
+                                  "Select Sub Category"
                             }
                             disabled={
                               isLoadingSubCategories ||
@@ -2315,7 +2402,7 @@ export default function PartnersPage() {
                             onClick={() => removeSubCategoryField(index)}
                             className="mb-1"
                           >
-                            Remove
+                            {t("common.remove") || "Remove"}
                           </Button>
                         )}
                       </div>
@@ -2354,12 +2441,14 @@ export default function PartnersPage() {
                               />
                             </svg>
                             <span className="text-sm font-medium">
-                              No Active Sub Categories Available
+                              {t(
+                                "admin.partners.noActiveSubCategoriesWarning"
+                              ) || "No Active Sub Categories Available"}
                             </span>
                           </div>
                           <p className="text-yellow-700 text-sm mt-1">
-                            There are no active subcategories available for the
-                            selected category.
+                            {t("admin.partners.noActiveSubCategoriesMessage") ||
+                              "There are no active subcategories available for the selected category."}
                           </p>
                         </div>
                       )}
@@ -2367,7 +2456,8 @@ export default function PartnersPage() {
                 )}
                 {errors.parSubCatlst && !errors.parSubCatlst.root && (
                   <p className="text-red-500 text-sm mt-2">
-                    {errors.parSubCatlst.message}
+                    {t("validation.atLeastOneSubCategory") ||
+                      "At least one sub category is required"}
                   </p>
                 )}
               </div>
@@ -2388,10 +2478,14 @@ export default function PartnersPage() {
                       d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  <span className="font-medium">Select a Category First</span>
+                  <span className="font-medium">
+                    {t("admin.partners.selectCategoryFirst") ||
+                      "Select a Category First"}
+                  </span>
                 </div>
                 <p className="text-blue-700 text-sm mt-1">
-                  Please select a category above to see available subcategories.
+                  {t("admin.partners.selectCategoryFirstMessage") ||
+                    "Please select a category above to see available subcategories."}
                 </p>
               </div>
             )}
@@ -2473,7 +2567,11 @@ export default function PartnersPage() {
         onConfirm={handleConfirmDelete}
         itemName={
           deleteConfirmation.partner
-            ? `Partner: ${deleteConfirmation.partner.businessName} (CVR: ${deleteConfirmation.partner.cvr})`
+            ? t("admin.partners.deletePartnerItem", {
+                businessName: deleteConfirmation.partner.businessName,
+                cvr: deleteConfirmation.partner.cvr,
+              }) ||
+              `Partner: ${deleteConfirmation.partner.businessName} (CVR: ${deleteConfirmation.partner.cvr})`
             : undefined
         }
         confirmationMessage={
@@ -2607,8 +2705,10 @@ export default function PartnersPage() {
                     </h3>
                     <p className="text-gray-500 text-sm mb-4">
                       {searchTerm || statusFilter !== "All"
-                        ? "Try adjusting your search or filter criteria"
-                        : "No partners have been created yet"}
+                        ? t("admin.partners.adjustSearch") ||
+                          "Try adjusting your search or filter criteria"
+                        : t("admin.partners.noPartnersCreated") ||
+                          "No partners have been created yet"}
                     </p>
                     {!searchTerm && statusFilter === "All" && (
                       <Button
@@ -2650,7 +2750,9 @@ export default function PartnersPage() {
         onClose={handlePasswordModalClose}
         onSuccess={() => {
           toast.success(
-            `Password reset successfully for ${resettingPartner?.email}`
+            t("admin.partners.passwordResetSuccess", {
+              email: resettingPartner?.email,
+            }) || `Password reset successfully for ${resettingPartner?.email}`
           );
           setResettingPartner(null);
         }}
