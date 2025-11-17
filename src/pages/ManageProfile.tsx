@@ -3,9 +3,13 @@ import profileIcon from "/src/assets/userImages/profileIcon.png";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import { userService } from "../services/user.service";
 import { showSignupSuccessToast, showSignupErrorToast } from "../components/common/ToastBanner";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { setUser } from "../features/auth/authSlice";
 
 
 export default function ManageProfile() {
+    const dispatch = useAppDispatch();
+    const authUser = useAppSelector((state) => state.auth.user);
     const [firstName, setFirstName] = useState("");
     const [middleName, setMiddleName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -16,6 +20,7 @@ export default function ManageProfile() {
     const [userId, setUserId] = useState<number | null>(null);
     const [passwordEmail, setPasswordEmail] = useState("");
     const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -89,6 +94,10 @@ export default function ManageProfile() {
                         className="mt-6 space-y-4"
                         onSubmit={async (e) => {
                             e.preventDefault();
+                            if (!/^[0-9]{8}$/.test(phone)) {
+                                showSignupErrorToast("Mobilnummer skal være på 8 cifre");
+                                return;
+                            }
                             if (userId == null) return;
                             const fullName = [firstName, middleName, lastName].filter(Boolean).join(" ");
                             const payload = {
@@ -105,6 +114,16 @@ export default function ManageProfile() {
                             } as any;
                             try {
                                 await userService.update(payload);
+                                if (authUser) {
+                                    dispatch(
+                                        setUser({
+                                            ...authUser,
+                                            firstName: firstName,
+                                            lastName: lastName,
+                                            mobileNo: phone,
+                                        })
+                                    );
+                                }
                                 showSignupSuccessToast("Profil opdateret");
                             } catch (err) {
                                 console.error("Failed to update profile", err);
@@ -141,7 +160,11 @@ export default function ManageProfile() {
                             <input
                                 className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
                                 value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
+                                maxLength={8}
+                                onChange={(e) => {
+                                    const onlyDigits = e.target.value.replace(/[^0-9]/g, "");
+                                    setPhone(onlyDigits);
+                                }}
                             />
                         </div>
                         <div>
@@ -150,7 +173,7 @@ export default function ManageProfile() {
                                 type="email"
                                 className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                disabled
                             />
                         </div>
 
@@ -168,13 +191,22 @@ export default function ManageProfile() {
                         className="mt-8 space-y-4"
                         onSubmit={async (e) => {
                             e.preventDefault();
+                            if (!newPassword) {
+                                showSignupErrorToast("Ny adgangskode er påkrævet");
+                                return;
+                            }
+                            if (newPassword !== confirmPassword) {
+                                showSignupErrorToast("Adgangskoderne matcher ikke");
+                                return;
+                            }
                             try {
                                 await userService.resetUserPassword({
-                                    email: passwordEmail || email,
+                                    email: email,
                                     newPassword: newPassword,
                                 });
                                 showSignupSuccessToast("Adgangskode opdateret");
                                 setNewPassword("");
+                                setConfirmPassword("");
                             } catch (err) {
                                 console.error("Failed to reset password", err);
                                 showSignupErrorToast("Kunne ikke opdatere adgangskoden");
@@ -187,8 +219,8 @@ export default function ManageProfile() {
                             <input
                                 type="email"
                                 className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
-                                value={passwordEmail || email}
-                                onChange={(e) => setPasswordEmail(e.target.value)}
+                                value={email}
+                                disabled
                             />
                         </div>
                         <div>
@@ -198,6 +230,15 @@ export default function ManageProfile() {
                                 className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-white text-sm mb-1">Bekræft adgangskode</label>
+                            <input
+                                type="password"
+                                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
                             />
                         </div>
 
