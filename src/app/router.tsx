@@ -1,5 +1,4 @@
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
-import { useAppSelector } from "./hooks";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "../components/layout/AppLayout";
 import AdminLayout from "../components/layout/AdminLayout";
 import PartnerLayout from "../components/layout/PartnerLayout";
@@ -29,48 +28,6 @@ import TermsAndConditions from "../pages/TermsAndConditions";
 import RecommendUser from "../pages/RecommendUser";
 import ManageProfile from "../pages/ManageProfile";
 
-function BlockPartner({ children }: { children: React.ReactNode }) {
-  let partner: any = null;
-  try {
-    const raw = typeof window !== "undefined" ? localStorage.getItem("bm_partner") : null;
-    if (raw) partner = JSON.parse(raw);
-  } catch {}
-  if (partner) {
-    return <Navigate to="/partner" replace />;
-  }
-  return <>{children}</>;
-}
-
-function RedirectIfAuthed({ children }: { children: React.ReactNode }) {
-  const storeUser = useAppSelector((s) => s.auth.user);
-  const token = useAppSelector((s) => s.auth.accessToken);
-
-  let bmUser: any = null;
-  let bmPartner: any = null;
-  try {
-    const rawUser = typeof window !== "undefined" ? localStorage.getItem("bm_user") : null;
-    const rawPartner = typeof window !== "undefined" ? localStorage.getItem("bm_partner") : null;
-    if (rawUser) bmUser = JSON.parse(rawUser);
-    if (rawPartner) bmPartner = JSON.parse(rawPartner);
-  } catch {}
-
-  const roleName = (storeUser as any)?.roleName?.toLowerCase?.() ?? "";
-
-  if (token && storeUser && roleName === "admin") {
-    return <Navigate to="/admin" replace />;
-  }
-
-  if (bmPartner) {
-    return <Navigate to="/partner" replace />;
-  }
-
-  if (bmUser) {
-    return <Navigate to="/profile" replace />;
-  }
-
-  return <>{children}</>;
-}
-
 const router = createBrowserRouter([
   // 🔹 User Routes (Main Site)
   {
@@ -79,49 +36,26 @@ const router = createBrowserRouter([
     children: [
       // { index: true, element: <HomePage /> },
       { path: "home-page", element: <HomePage /> },
-      { index: true, element: (
-        <BlockPartner>
-          <LandingPage />
-        </BlockPartner>
-      ) },
+      { index: true, element: <LandingPage /> },
       { path: "about", element: <AboutBoligmatch /> },
       { path: "terms", element: <TermsAndConditions /> },
-      { path: "profile", element: (
-        <AuthGuard>
-          <RoleGuard roles={["User"]}>
-            <UserDashboardPage />
-          </RoleGuard>
-        </AuthGuard>
-      ) },
-      { path: "manage-profile", element: (
-        <AuthGuard>
-          <RoleGuard roles={["User"]}>
-            <ManageProfile />
-          </RoleGuard>
-        </AuthGuard>
-      ) },
+      { path: "profile", element: <UserDashboardPage /> },
+      { path: "manage-profile", element: <ManageProfile /> },
       { path: "user-supplier", element: <UserSupplier /> },
       { path: "supplier-profile", element: <SupplierProfile /> },
-      { path: "login", element: (
-        <RedirectIfAuthed>
-          <LoginPage />
-        </RedirectIfAuthed>
-      ) },
+      { path: "login", element: <LoginPage /> },
       { path: "*", element: <NotFound /> },
-      { path: "user/recommenduser/:recommendationKey", element: <RecommendUser /> },
+      {
+        path: "user/recommenduser/:recommendationKey",
+        element: <RecommendUser />,
+      },
     ],
   },
 
   // 🔹 Partner Routes
   {
     path: "/partner",
-    element: (
-      <AuthGuard>
-        <RoleGuard roles={["partner"]}>
-          <PartnerLayout />
-        </RoleGuard>
-      </AuthGuard>
-    ),
+    element: <PartnerLayout />,
     children: [
       { index: true, element: <PartnerDashboard /> },
       { path: "dashboard", element: <PartnerDashboard /> },

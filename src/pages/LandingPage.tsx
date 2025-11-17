@@ -1,5 +1,5 @@
 import ServiceCarousel from "./Landingpage/ServiceCarousel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Stepper from "./Landingpage/Stepper";
 import landingImg from "/src/assets/userImages/landingImgg.png";
 import UserHeader from "../features/users/UserPages/UserHeader";
@@ -10,11 +10,27 @@ import landingPageIcons4 from "/src/assets/userImages/4.svg";
 import { useTranslation } from "react-i18next";
 import SignUpModal from "../components/common/SignUpModal";
 import footerLogo from "/src/assets/userImages/footerLogo.svg";
+import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    try {
+      const rawPartner = typeof window !== "undefined" ? localStorage.getItem("bm_partner") : null;
+      if (rawPartner) {
+        const partner = JSON.parse(rawPartner);
+        if (partner && partner.roleName === "Partner") {
+          navigate("/partner/statistics", { replace: true });
+        }
+      }
+    } catch (error) {
+      console.error("Error reading bm_partner from localStorage:", error);
+    }
+  }, [navigate]);
   return (
     <div
       className={`

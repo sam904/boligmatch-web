@@ -90,18 +90,18 @@ function SearchForPartner() {
                     <div
                       key={category.id}
                       onClick={() => handleCategoryClick(category)}
-                      className="w-[374px] mx-auto rounded-lg sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
+                      className="w-[374px] h-[394px] sm:w-auto sm:h-auto mx-auto rounded-[18px] sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
                     >
-                      <div className="relative w-full h-48 sm:h-56 md:h-64 lg:h-72 rounded-t-lg sm:rounded-t-xl overflow-hidden">
+                      <div className="relative w-full h-[222px] sm:h-56 md:h-64 lg:h-72 rounded-t-[18px] sm:rounded-t-xl overflow-hidden">
                         <img
                           src={category.imageUrl || assets.image}
                           alt={category.name}
-                          className="w-full h-[340px] object-fill"
+                          className="w-full h-full object-cover"
                           onError={(e) => {
                             e.currentTarget.src = assets.image;
                           }}
                         />
-                        <div className="absolute bottom-0 left-0 right-0 h-[50px] bg-gradient-to-t from-white to-transparent"></div>
+                        <div className="absolute bottom-0 left-0 right-0 h-[120px] sm:h-[50px] bg-gradient-to-t from-white to-transparent"></div>
                         <div className="absolute bottom-0 left-0 right-0">
                           <img src={categoryGradientImg} alt="" />
                         </div>

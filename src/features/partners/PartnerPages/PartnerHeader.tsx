@@ -33,6 +33,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   console.log("isMobile", isMobile);
 
   const partnerData = useAppSelector((state) => state.auth.user);
+  const [partnerLocalData, setPartnerLocalData] = useState<any | null>(null);
   console.log("partnerData", partnerData);
 
   const currentLang = i18n.language || "en";
@@ -53,6 +54,21 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
+
+  useEffect(() => {
+    // Load partner from localStorage (bm_partner) so header/sidebar stay logged-in after reload
+    try {
+      const storedPartner = typeof window !== "undefined" ? localStorage.getItem("bm_partner") : null;
+      if (storedPartner) {
+        const parsed = JSON.parse(storedPartner);
+        setPartnerLocalData(parsed);
+      }
+    } catch (error) {
+      console.error("Error parsing bm_partner from localStorage:", error);
+    }
+  }, []);
+
+  const activePartner = partnerData || partnerLocalData;
 
   return (
     <>
@@ -75,11 +91,11 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
             </div>
 
             <div className="flex items-center md:gap-4 gap-2">
-              {partnerData ? (
+              {activePartner ? (
                 <div className="relative">
                   <div className="flex items-center gap-3 cursor-pointer">
                     <span className="text-white text-sm font-medium">
-                      {partnerData.firstName} {partnerData.lastName}
+                      {activePartner.firstName} {activePartner.lastName}
                     </span>
                   </div>
                 </div>
@@ -144,7 +160,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
               <div className="flex items-center justify-between p-6 border-b border-white/10">
                 <div className="flex items-center gap-3">
                   {/* Partner Profile in Sidebar */}
-                  {partnerData ? (
+                  {activePartner ? (
                     <div className="flex items-center gap-3">
                       <span className="text-white text-sm font-medium">
                         {/* {partnerData.firstName} {partnerData.lastName} */}
@@ -204,7 +220,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     </span>
                   </button>
                   {/* My Boligmatch+ and Manage Profile are intentionally hidden for partners in this header */}
-                  {partnerData && (
+                  {activePartner && (
                     <button
                       onClick={() => {
                         setShowSidebar(false);
@@ -297,7 +313,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                 </nav>
               </div>
               <div className="mt-auto p-6 border-t border-white/10">
-                {partnerData ? (
+                {activePartner ? (
                   <button
                     onClick={() => {
                       setShowSidebar(false);
