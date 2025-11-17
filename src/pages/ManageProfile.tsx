@@ -18,7 +18,7 @@ export default function ManageProfile() {
     const [isEmailVerify, setIsEmailVerify] = useState<boolean>(false);
     const [isActive, setIsActive] = useState<boolean>(true);
     const [userId, setUserId] = useState<number | null>(null);
-    const [passwordEmail, setPasswordEmail] = useState("");
+    // const [passwordEmail, setPasswordEmail] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
