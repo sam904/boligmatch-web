@@ -141,7 +141,7 @@ export default function ServiceCarousel() {
       <div className="relative h-[600px] md:h-[600px] flex items-center justify-center">
         {/* Cards */}
         <div className="relative w-full max-w-[1600px] h-full flex items-center justify-center px-4">
-          {getVisibleCards().map((service, idx) => {
+          {getVisibleCards().map((service) => {
             const position = service.position;
             const isCurrent = position === 0;
             const absPosition = Math.abs(position);
