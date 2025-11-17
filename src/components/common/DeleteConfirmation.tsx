@@ -1,6 +1,7 @@
 // src/components/common/DeleteConfirmation.tsx
 import Button from "./Button";
 import Modal from "./Modal";
+import { useTranslation } from "react-i18next";
 
 interface DeleteConfirmationProps {
   open: boolean;
@@ -18,29 +19,42 @@ export default function DeleteConfirmation({
   open,
   onClose,
   onConfirm,
-  title = "Confirm Deletion",
+  title,
   itemName,
-  confirmationMessage = "Are you sure you want to delete this item?",
+  confirmationMessage,
   isLoading = false,
-  confirmButtonText = "Delete",
-  cancelButtonText = "Cancel"
+  confirmButtonText,
+  cancelButtonText,
 }: DeleteConfirmationProps) {
+  const { t } = useTranslation();
+
+  // Use translations with fallbacks to existing defaults
+  const resolvedTitle =
+    title || t("deleteConfirmation.title") || "Confirm Deletion";
+  const resolvedConfirmationMessage =
+    confirmationMessage ||
+    t("deleteConfirmation.defaultMessage") ||
+    "Are you sure you want to delete this item?";
+  const resolvedConfirmButtonText =
+    confirmButtonText || t("deleteConfirmation.confirmButton") || "Delete";
+  const resolvedCancelButtonText =
+    cancelButtonText || t("deleteConfirmation.cancelButton") || "Cancel";
+  const deletingText = t("deleteConfirmation.deleting") || "Deleting...";
+  const cannotUndoneText =
+    t("deleteConfirmation.cannotUndone") || "This action cannot be undone.";
+
   return (
     <Modal
       open={open}
-      title={title}
+      title={resolvedTitle}
       onClose={onClose}
       maxWidth="max-w-md"
     >
       <div className="space-y-4">
         <div className="text-gray-600">
-          <p className="mb-2">{confirmationMessage}</p>
-          {itemName && (
-            <p className="font-semibold">{itemName}</p>
-          )}
-          <p className="text-sm text-red-600 mt-2">
-            This action cannot be undone.
-          </p>
+          <p className="mb-2">{resolvedConfirmationMessage}</p>
+          {itemName && <p className="font-semibold">{itemName}</p>}
+          <p className="text-sm text-red-600 mt-2">{cannotUndoneText}</p>
         </div>
         <div className="flex gap-3">
           <Button
@@ -50,7 +64,7 @@ export default function DeleteConfirmation({
             className="flex-1"
             disabled={isLoading}
           >
-            {cancelButtonText}
+            {resolvedCancelButtonText}
           </Button>
           <Button
             type="button"
@@ -59,7 +73,7 @@ export default function DeleteConfirmation({
             disabled={isLoading}
             className="flex-1"
           >
-            {isLoading ? "Deleting..." : confirmButtonText}
+            {isLoading ? deletingText : resolvedConfirmButtonText}
           </Button>
         </div>
       </div>

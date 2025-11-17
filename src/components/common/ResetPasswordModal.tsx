@@ -6,11 +6,11 @@ import { useTranslation } from "react-i18next";
 import Modal from "./Modal";
 import Button from "./Button";
 import Input from "./Input";
-import { useAppSelector } from "../../app/hooks"; // Add this back for profile context
+import { useAppSelector } from "../../app/hooks";
 import { userService } from "../../services/user.service";
 import { useMutation } from "@tanstack/react-query";
 
-// Password reset schema - simplified since we're using admin reset
+// Password reset schema
 const passwordResetSchema = z
   .object({
     newPassword: z.string().min(6, "Password must be at least 6 characters"),
@@ -27,7 +27,6 @@ interface ResetPasswordModalProps {
   open: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  // Make targetUser optional - if not provided, use logged-in user
   targetUser?: {
     email: string;
     firstName?: string;
@@ -40,10 +39,10 @@ export default function ResetPasswordModal({
   open,
   onClose,
   onSuccess,
-  targetUser, // Optional prop
+  targetUser,
 }: ResetPasswordModalProps) {
   const { t } = useTranslation();
-  const currentUser = useAppSelector((s) => s.auth.user); // Get logged-in user
+  const currentUser = useAppSelector((s) => s.auth.user);
 
   // Determine which user to reset password for
   const userToReset = targetUser || currentUser;
@@ -61,7 +60,6 @@ export default function ResetPasswordModal({
 
   const newPasswordValue = watch("newPassword");
 
-  // Use the appropriate user email
   const resetPasswordMutation = useMutation({
     mutationFn: async (data: { newPassword: string }) => {
       if (!userToReset?.email) throw new Error("User email not found");
@@ -100,20 +98,20 @@ export default function ResetPasswordModal({
     if (targetUser) {
       // Admin resetting someone else's password
       return {
-        title: "Reset password for:",
+        title: t("auth.resetPasswordFor") || "Reset password for:",
         email: targetUser.email,
         additionalInfo: targetUser.businessName 
-          ? `Business Name: ${targetUser.businessName}`
-          : `User Name: ${targetUser.firstName} ${targetUser.lastName}`,
-        note: "This will reset the password immediately. They'll need to use the new password to login."
+          ? t("auth.businessName", { name: targetUser.businessName }) || `Business Name: ${targetUser.businessName}`
+          : t("auth.userName", { name: `${targetUser.firstName} ${targetUser.lastName}` }) || `User Name: ${targetUser.firstName} ${targetUser.lastName}`,
+        note: t("auth.resetNote") || "This will reset the password immediately. They'll need to use the new password to login."
       };
     } else {
       // User resetting their own password
       return {
-        title: "Reset your password:",
+        title: t("auth.resetPasswordFor") || "Reset your password:",
         email: userToReset?.email || "",
-        additionalInfo: `User Name: ${userToReset?.firstName} ${userToReset?.lastName}`,
-        note: "This will reset your password immediately. You'll need to use the new password to login."
+        additionalInfo: t("auth.userName", { name: `${userToReset?.firstName} ${userToReset?.lastName}` }) || `User Name: ${userToReset?.firstName} ${userToReset?.lastName}`,
+        note: t("auth.resetNote") || "This will reset your password immediately. You'll need to use the new password to login."
       };
     }
   };
@@ -143,22 +141,22 @@ export default function ResetPasswordModal({
         </div>
 
         <Input
-          label="New Password"
+          label={t("auth.newPassword") || "New Password"}
           type="password"
           error={errors.newPassword?.message}
           {...register("newPassword")}
           required
-          placeholder="Enter new password"
+          placeholder={t("auth.enterNewPassword") || "Enter new password"}
           disabled={isSubmitting}
         />
 
         <Input
-          label="Confirm New Password"
+          label={t("auth.confirmNewPassword") || "Confirm New Password"}
           type="password"
           error={errors.confirmPassword?.message}
           {...register("confirmPassword")}
           required
-          placeholder="Confirm new password"
+          placeholder={t("auth.confirmNewPasswordPlaceholder") || "Confirm new password"}
           disabled={isSubmitting}
         />
 
@@ -170,9 +168,11 @@ export default function ResetPasswordModal({
                 : "bg-yellow-50 text-yellow-700"
             }`}
           >
-            Password strength:{" "}
-            {newPasswordValue.length >= 6 ? "Strong" : "Weak"}
-            (min. 6 characters)
+            {t("common.passwordStrength") || "Password strength"}:{" "}
+            {newPasswordValue.length >= 6 
+              ? t("common.strong") || "Strong" 
+              : t("common.weak") || "Weak"}
+            {t("common.minCharacters") || "(min. 6 characters)"}
           </div>
         )}
 

@@ -32,30 +32,6 @@ import { exportToExcel } from "../../../utils/export.utils";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
 import ToggleSwitch from "../../../components/common/ToggleSwitch";
 
-// Fixed schema with proper required status
-const userSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email address"),
-  mobileNo: z
-    .string()
-    .min(1, "Mobile number is required")
-    .refine(
-      (value) => {
-        if (!value) return false;
-        // Allow exactly 8 digits
-        return /^\d{8}$/.test(value);
-      },
-      {
-        message: "Mobile number must be exactly 8 digits",
-      }
-    ),
-  isActive: z.boolean(),
-  status: z.enum(["All", "Active", "InActive"]),
-});
-
-type UserFormData = z.infer<typeof userSchema>;
-
 // Toast state interface
 interface ToastState {
   id: string;
@@ -68,6 +44,31 @@ interface ToastState {
 
 export default function UsersListPage() {
   const { t } = useTranslation();
+
+  // Create schema inside component to access translation function
+  const userSchema = z.object({
+    firstName: z.string().min(1, t("validation.nameRequired") || "First name is required"),
+    lastName: z.string().min(1, t("validation.nameRequired") || "Last name is required"),
+    email: z.string().email(t("validation.emailInvalid") || "Invalid email address"),
+    mobileNo: z
+      .string()
+      .min(1, t("validation.mobileRequired") || "Mobile number is required")
+      .refine(
+        (value) => {
+          if (!value) return false;
+          // Allow exactly 8 digits
+          return /^\d{8}$/.test(value);
+        },
+        {
+          message: t("validation.mobileInvalidLength") || "Mobile number must be exactly 8 digits",
+        }
+      ),
+    isActive: z.boolean(),
+    status: z.enum(["All", "Active", "InActive"]),
+  });
+
+  type UserFormData = z.infer<typeof userSchema>;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -200,10 +201,10 @@ export default function UsersListPage() {
   // Show fetch error toast
   useEffect(() => {
     if (isFetchError && fetchError) {
-      const errorMessage = getErrorMessage(fetchError, "Failed to load users");
+      const errorMessage = getErrorMessage(fetchError, t("admin.users.createError") || "Failed to load users");
       toast.error(errorMessage);
     }
-  }, [isFetchError, fetchError]);
+  }, [isFetchError, fetchError, t]);
 
   // Fixed useForm with proper typing
   const {
@@ -282,7 +283,7 @@ export default function UsersListPage() {
       try {
         return await userService.add(data);
       } catch (error) {
-        const errorMessage = getErrorMessage(error, "Failed to create user");
+        const errorMessage = getErrorMessage(error, t("admin.users.createError") || "Failed to create user");
         throw new Error(errorMessage);
       }
     },
@@ -296,7 +297,7 @@ export default function UsersListPage() {
       setEditingUser(null);
     },
     onError: (error: Error) => {
-      const errorMessage = getErrorMessage(error, "Failed to create user");
+      const errorMessage = getErrorMessage(error, t("admin.users.createError") || "Failed to create user");
       toast.error(errorMessage);
 
       // Handle backend validation errors
@@ -326,7 +327,7 @@ export default function UsersListPage() {
       try {
         return await userService.update(data);
       } catch (error) {
-        const errorMessage = getErrorMessage(error, "Failed to update user");
+        const errorMessage = getErrorMessage(error, t("admin.users.updateError") || "Failed to update user");
         throw new Error(errorMessage);
       }
     },
@@ -340,7 +341,7 @@ export default function UsersListPage() {
       reset();
     },
     onError: (error: Error) => {
-      const errorMessage = getErrorMessage(error, "Failed to update user");
+      const errorMessage = getErrorMessage(error, t("admin.users.updateError") || "Failed to update user");
       toast.error(errorMessage);
 
       // Handle backend validation errors
@@ -370,7 +371,7 @@ export default function UsersListPage() {
       try {
         return await userService.remove(id);
       } catch (error) {
-        const errorMessage = getErrorMessage(error, "Failed to delete user");
+        const errorMessage = getErrorMessage(error, t("admin.users.deleteError") || "Failed to delete user");
         throw new Error(errorMessage);
       }
     },
@@ -382,7 +383,7 @@ export default function UsersListPage() {
       setDeleteConfirmation({ isOpen: false, user: null });
     },
     onError: (error: Error) => {
-      const errorMessage = getErrorMessage(error, "Failed to delete user");
+      const errorMessage = getErrorMessage(error, t("admin.users.deleteError") || "Failed to delete user");
       toast.error(errorMessage);
       setDeleteConfirmation({ isOpen: false, user: null });
     },
@@ -405,7 +406,7 @@ export default function UsersListPage() {
       setEmailValidation({
         checking: false,
         available: false,
-        message: "Please enter a valid email address",
+        message: t("validation.emailInvalid") || "Please enter a valid email address",
       });
       return;
     }
@@ -415,7 +416,7 @@ export default function UsersListPage() {
       setEmailValidation({
         checking: false,
         available: true,
-        message: "Email unchanged",
+        message: t("validation.emailUnchanged") || "Email unchanged",
       });
       return;
     }
@@ -431,7 +432,7 @@ export default function UsersListPage() {
     setEmailValidation({
       checking: true,
       available: null,
-      message: "Checking email availability...",
+      message: t("validation.emailChecking") || "Checking email availability...",
     });
 
     try {
@@ -441,13 +442,13 @@ export default function UsersListPage() {
         setEmailValidation({
           checking: false,
           available: true,
-          message: "Email is available",
+          message: t("validation.emailAvailable") || "Email is available",
         });
       } else {
         setEmailValidation({
           checking: false,
           available: false,
-          message: response.failureReason || "Email already registered",
+          message: response.failureReason || t("validation.emailAlreadyRegistered") || "Email already registered",
         });
       }
     } catch (error: any) {
@@ -458,13 +459,13 @@ export default function UsersListPage() {
           checking: false,
           available: false,
           message:
-            error.response.data?.failureReason || "Email already registered",
+            error.response.data?.failureReason || t("validation.emailAlreadyRegistered") || "Email already registered",
         });
       } else {
         setEmailValidation({
           checking: false,
           available: null,
-          message: "Error checking email availability",
+          message: t("validation.emailCheckError") || "Error checking email availability",
         });
       }
     }
@@ -489,7 +490,7 @@ export default function UsersListPage() {
       setMobileValidation({
         checking: false,
         available: false,
-        message: "Mobile number must be exactly 8 digits",
+        message: t("validation.mobileInvalidLength") || "Mobile number must be exactly 8 digits",
       });
       return;
     }
@@ -499,7 +500,7 @@ export default function UsersListPage() {
       setMobileValidation({
         checking: false,
         available: false,
-        message: "Mobile number can only contain numbers",
+        message: t("validation.mobileNumbersOnly") || "Mobile number can only contain numbers",
       });
       return;
     }
@@ -509,7 +510,7 @@ export default function UsersListPage() {
       setMobileValidation({
         checking: false,
         available: true,
-        message: "Mobile number unchanged",
+        message: t("validation.mobileUnchanged") || "Mobile number unchanged",
       });
       return;
     }
@@ -525,7 +526,7 @@ export default function UsersListPage() {
     setMobileValidation({
       checking: true,
       available: null,
-      message: "Checking mobile number availability...",
+      message: t("validation.mobileChecking") || "Checking mobile number availability...",
     });
 
     try {
@@ -537,13 +538,13 @@ export default function UsersListPage() {
         setMobileValidation({
           checking: false,
           available: true,
-          message: "Mobile number is available",
+          message: t("validation.mobileAvailable") || "Mobile number is available",
         });
       } else {
         setMobileValidation({
           checking: false,
           available: false,
-          message: response.failureReason || "Mobile number already registered",
+          message: response.failureReason || t("validation.mobileAlreadyRegistered") || "Mobile number already registered",
         });
       }
     } catch (error: any) {
@@ -555,13 +556,13 @@ export default function UsersListPage() {
           available: false,
           message:
             error.response.data?.failureReason ||
-            "Mobile number already registered",
+            t("validation.mobileAlreadyRegistered") || "Mobile number already registered",
         });
       } else {
         setMobileValidation({
           checking: false,
           available: null,
-          message: "Error checking mobile number availability",
+          message: t("validation.mobileCheckError") || "Error checking mobile number availability",
         });
       }
     }
@@ -640,13 +641,13 @@ export default function UsersListPage() {
     try {
       // Check if mutations are in progress
       if (createMutation.isPending || updateMutation.isPending) {
-        toast.error("Please wait for the current operation to complete");
+        toast.error(t("common.pleaseWait") || "Please wait for the current operation to complete");
         return;
       }
 
       // Check if email or mobile validations are in progress
       if (emailValidation.checking || mobileValidation.checking) {
-        toast.error("Please wait for email/mobile validation to complete");
+        toast.error(t("common.pleaseWait") || "Please wait for email/mobile validation to complete");
         return;
       }
 
@@ -656,14 +657,14 @@ export default function UsersListPage() {
 
       // Email validation - only check if validation explicitly failed
       if (emailValidation.available === false) {
-        toast.error("Please fix email validation errors before submitting");
+        toast.error(t("validation.fixEmailErrors") || "Please fix email validation errors before submitting");
         return;
       }
 
       // Mobile validation - only check if validation explicitly failed
       if (mobileValidation.available === false) {
         toast.error(
-          "Please fix mobile number validation errors before submitting"
+          t("validation.fixMobileErrors") || "Please fix mobile number validation errors before submitting"
         );
         return;
       }
@@ -674,7 +675,7 @@ export default function UsersListPage() {
           // Trigger validation and wait briefly
           await validateEmailAvailability(currentEmail);
           if (emailValidation.checking) {
-            toast.error("Please wait for email validation to complete");
+            toast.error(t("validation.waitEmailValidation") || "Please wait for email validation to complete");
             return;
           }
         }
@@ -683,7 +684,7 @@ export default function UsersListPage() {
           // Trigger validation and wait briefly
           await validateMobileAvailability(currentMobile);
           if (mobileValidation.checking) {
-            toast.error("Please wait for mobile number validation to complete");
+            toast.error(t("validation.waitMobileValidation") || "Please wait for mobile number validation to complete");
             return;
           }
         }
@@ -717,7 +718,7 @@ export default function UsersListPage() {
 
   const handleDeleteUser = (user: User) => {
     if (!user.id) {
-      toast.error("Cannot delete user: Invalid user ID");
+      toast.error(t("admin.users.cannotDeleteInvalidId") || "Cannot delete user: Invalid user ID");
       return;
     }
 
@@ -731,7 +732,7 @@ export default function UsersListPage() {
     if (deleteConfirmation.user?.id) {
       deleteMutation.mutate(deleteConfirmation.user.id);
     } else {
-      toast.error("Cannot delete user: Invalid user ID");
+      toast.error(t("admin.users.cannotDeleteInvalidId") || "Cannot delete user: Invalid user ID");
       setDeleteConfirmation({ isOpen: false, user: null });
     }
   };
@@ -742,7 +743,7 @@ export default function UsersListPage() {
 
   const handleResetPassword = (user: User) => {
     if (!user.email) {
-      toast.error("Cannot reset password: User email is missing");
+      toast.error(t("admin.users.cannotResetPassword") || "Cannot reset password: User email is missing");
       return;
     }
     setResettingUser(user);
@@ -795,10 +796,10 @@ export default function UsersListPage() {
       console.log("Exporting users with params:", exportParams);
       await exportToExcel("User", exportParams);
 
-      toast.success("Users exported successfully");
+      toast.success(t("admin.users.exportSuccess") || "Users exported successfully");
     } catch (error) {
       console.error("Export failed:", error);
-      const errorMessage = getErrorMessage(error, "Failed to export users");
+      const errorMessage = getErrorMessage(error, t("admin.users.exportError") || "Failed to export users");
       toast.error(errorMessage);
     } finally {
       setIsExporting(false);
@@ -920,7 +921,7 @@ export default function UsersListPage() {
         onConfirm={handleConfirmDelete}
         itemName={
           deleteConfirmation.user
-            ? `User: ${deleteConfirmation.user.firstName} ${deleteConfirmation.user.lastName} (${deleteConfirmation.user.email})`
+            ? `${t("admin.users.user")}: ${deleteConfirmation.user.firstName} ${deleteConfirmation.user.lastName} (${deleteConfirmation.user.email})`
             : undefined
         }
         confirmationMessage={
@@ -998,10 +999,10 @@ export default function UsersListPage() {
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
               />
             </svg>
-            <span className="font-medium">Failed to load users</span>
+            <span className="font-medium">{t("common.errorLoading") || "Failed to load users"}</span>
           </div>
           <p className="text-red-700 text-sm mt-1">
-            {getErrorMessage(fetchError, "Please try again later")}
+            {getErrorMessage(fetchError, t("common.retry") || "Please try again later")}
           </p>
           <Button
             variant="outline"
@@ -1009,7 +1010,7 @@ export default function UsersListPage() {
             onClick={() => queryClient.refetchQueries({ queryKey: ["users"] })}
             className="mt-2"
           >
-            Retry
+            {t("common.retry") || "Retry"}
           </Button>
         </div>
       )}
@@ -1054,8 +1055,8 @@ export default function UsersListPage() {
                 </h3>
                 <p className="text-gray-500 text-sm mb-4">
                   {searchTerm || statusFilter !== "All"
-                    ? "Try adjusting your search or filter criteria"
-                    : "No users have been created yet"}
+                    ? t("common.adjustSearch") || "Try adjusting your search or filter criteria"
+                    : t("admin.users.noUsersCreated") || "No users have been created yet"}
                 </p>
                 {!searchTerm && statusFilter === "All" && (
                   <Button
@@ -1069,7 +1070,7 @@ export default function UsersListPage() {
                     iconPosition="left"
                     iconSize="w-5 h-5"
                   >
-                    {t("admin.users.addUser") || "Add Your First User"}
+                    {t("admin.users.addFirstUser") || "Add Your First User"}
                   </Button>
                 )}
               </div>
@@ -1126,7 +1127,7 @@ export default function UsersListPage() {
                 </>
               }
               type="email"
-              {...register("email")} // Add this back
+              {...register("email")}
               value={watch("email") || ""}
               onChange={(e) => handleEmailChange(e.target.value)}
               placeholder={
@@ -1140,7 +1141,7 @@ export default function UsersListPage() {
             {emailValidation.checking && (
               <div className="flex items-center gap-2 text-blue-600 text-sm">
                 <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
-                Checking availability...
+                {t("validation.emailChecking") || "Checking availability..."}
               </div>
             )}
             {emailValidation.available === true &&
@@ -1205,7 +1206,7 @@ export default function UsersListPage() {
                   <span className="text-red-500 ml-1">*</span>
                 </>
               }
-              {...register("mobileNo")} // Add this back
+              {...register("mobileNo")}
               value={watch("mobileNo") || ""}
               onChange={(e) => handleMobileChange(e.target.value)}
               placeholder={t("admin.users.EntermobileNo") || "Mobile Number"}
@@ -1218,7 +1219,7 @@ export default function UsersListPage() {
             {mobileValidation.checking && (
               <div className="flex items-center gap-2 text-blue-600 text-sm">
                 <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
-                Checking availability...
+                {t("validation.mobileChecking") || "Checking availability..."}
               </div>
             )}
             {mobileValidation.available === true &&
@@ -1275,26 +1276,6 @@ export default function UsersListPage() {
               )}
           </div>
 
-          {/* Status Dropdown */}
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Status *
-            </label>
-            <select
-              {...register("status")}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200"
-              disabled={createMutation.isPending || updateMutation.isPending}
-            >
-              <option value="Active">Active</option>
-              <option value="InActive">InActive</option>
-            </select>
-            {errors.status && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.status.message}
-              </p>
-            )}
-          </div> */}
-
           {/* Toggle Switch for Active Status */}
           <ToggleSwitch
             label={t("common.active") || "Active"}
@@ -1319,7 +1300,7 @@ export default function UsersListPage() {
                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
                   />
                 </svg>
-                Please fix the following errors:
+                {t("common.pleaseFixErrors") || "Please fix the following errors:"}
               </div>
               <ul className="text-red-700 text-sm mt-1 list-disc list-inside">
                 {errors.firstName && <li>{errors.firstName.message}</li>}
@@ -1363,7 +1344,7 @@ export default function UsersListPage() {
         onClose={handlePasswordModalClose}
         onSuccess={() => {
           toast.success(
-            `Password reset successfully for ${resettingUser?.email}`
+            t("admin.users.passwordResetSuccess", { email: resettingUser?.email }) || `Password reset successfully for ${resettingUser?.email}`
           );
           setResettingUser(null);
         }}

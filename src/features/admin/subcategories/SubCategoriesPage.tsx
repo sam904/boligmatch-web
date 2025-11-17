@@ -32,21 +32,21 @@ import {
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
 import ToggleSwitch from "../../../components/common/ToggleSwitch";
 
-// Fixed validation schema
+// Fixed validation schema with translation keys
 const subCategorySchema = z.object({
-  categoryId: z.number().min(1, "Category is required"),
+  categoryId: z.number().min(1, "validation.categoryRequired"),
   name: z
     .string()
-    .min(1, "Subcategory name is required")
-    .max(100, "Subcategory name must be less than 100 characters"),
+    .min(1, "validation.subcategoryNameRequired")
+    .max(100, "validation.subcategoryNameMaxLength"),
   imageUrl: z
     .string()
-    .min(1, "Image is required")
-    .url("Please provide a valid image URL"),
+    .min(1, "validation.imageRequired")
+    .url("validation.invalidImageUrl"),
   iconUrl: z
     .string()
-    .min(1, "Icon is required")
-    .url("Please provide a valid icon URL"),
+    .min(1, "validation.iconRequired")
+    .url("validation.invalidIconUrl"),
   isActive: z.boolean(),
   status: z.enum(["Active", "InActive"]),
 });
@@ -63,7 +63,7 @@ interface ToastState {
   open: boolean;
 }
 
-// Simplified Image Preview Modal Component
+// Simplified Image Preview Modal Component with translations
 function ImagePreviewModal({
   imageUrl,
   isOpen,
@@ -73,6 +73,7 @@ function ImagePreviewModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -95,7 +96,9 @@ function ImagePreviewModal({
     <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center bg-black/50 z-50 p-4">
       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
         <div className="flex justify-between items-center p-4 border-b">
-          <h3 className="text-lg font-semibold">Image Preview</h3>
+          <h3 className="text-lg font-semibold">
+            {t("common.imagePreview") || "Image Preview"}
+          </h3>
           <button
             onClick={onClose}
             className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
@@ -107,7 +110,9 @@ function ImagePreviewModal({
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span className="ml-2 text-gray-600">Loading image...</span>
+              <span className="ml-2 text-gray-600">
+                {t("common.loadingImage") || "Loading image..."}
+              </span>
             </div>
           ) : (
             <img
@@ -124,7 +129,7 @@ function ImagePreviewModal({
             rel="noopener noreferrer"
             className="text-blue-600 hover:text-blue-800 underline text-sm"
           >
-            Open in new tab
+            {t("common.openInNewTab") || "Open in new tab"}
           </a>
         </div>
       </div>
@@ -302,7 +307,7 @@ export default function SubCategoriesPage() {
     if (isFetchError && fetchError) {
       const errorMessage = getErrorMessage(
         fetchError,
-        "Failed to load subcategories"
+        t("admin.subcategories.createError") || "Failed to load subcategories"
       );
       toast.error(errorMessage);
     }
@@ -313,7 +318,7 @@ export default function SubCategoriesPage() {
     if (categoriesError) {
       const errorMessage = getErrorMessage(
         categoriesError,
-        "Failed to load categories"
+        t("admin.categories.createError") || "Failed to load categories"
       );
       toast.error(errorMessage);
     }
@@ -458,7 +463,10 @@ export default function SubCategoriesPage() {
     try {
       // Check if mutations are in progress
       if (createMutation.isPending || updateMutation.isPending) {
-        toast.error("Please wait for the current operation to complete");
+        toast.error(
+          t("common.currentOperation") ||
+            "Please wait for the current operation to complete"
+        );
         return;
       }
 
@@ -478,7 +486,10 @@ export default function SubCategoriesPage() {
         (cat) => cat.id === data.categoryId
       );
       if (!selectedCategory) {
-        toast.error("Please select an active category");
+        toast.error(
+          t("admin.subcategories.noActiveCategoriesWarning") ||
+            "Please select an active category"
+        );
         return;
       }
 
@@ -494,10 +505,15 @@ export default function SubCategoriesPage() {
             710
           );
           if (!isImageValid) {
-            toast.error("Main image must be exactly 1440 × 710 pixels");
+            const errorMessage =
+              t("admin.subcategories.imageMustBeDimensions", {
+                width: 1440,
+                height: 710,
+              }) || "Main image must be exactly 1440 × 710 pixels";
+            toast.error(errorMessage);
             setError("imageUrl", {
               type: "manual",
-              message: "Image must be exactly 1440 × 710 pixels",
+              message: errorMessage,
             });
             return;
           }
@@ -516,10 +532,15 @@ export default function SubCategoriesPage() {
             512
           );
           if (!isIconValid) {
-            toast.error("Icon must be exactly 512 × 512 pixels");
+            const errorMessage =
+              t("admin.subcategories.iconMustBeDimensions", {
+                width: 512,
+                height: 512,
+              }) || "Icon must be exactly 512 × 512 pixels";
+            toast.error(errorMessage);
             setError("iconUrl", {
               type: "manual",
-              message: "Icon must be exactly 512 × 512 pixels",
+              message: errorMessage,
             });
             return;
           }
@@ -534,7 +555,10 @@ export default function SubCategoriesPage() {
       }
     } catch (error) {
       console.error("Form submission error:", error);
-      toast.error("An unexpected error occurred");
+      toast.error(
+        t("admin.subcategories.unexpectedError") ||
+          "An unexpected error occurred"
+      );
     }
   };
 
@@ -554,7 +578,10 @@ export default function SubCategoriesPage() {
 
   const handleDeleteSubCategory = (subCategory: SubCategory) => {
     if (!subCategory.id) {
-      toast.error("Cannot delete subcategory: Invalid ID");
+      toast.error(
+        t("admin.subcategories.cannotDeleteInvalidId") ||
+          "Cannot delete subcategory: Invalid ID"
+      );
       return;
     }
 
@@ -569,7 +596,10 @@ export default function SubCategoriesPage() {
     if (deleteConfirmation.subCategory?.id) {
       deleteMutation.mutate(deleteConfirmation.subCategory.id);
     } else {
-      toast.error("Cannot delete subcategory: Invalid ID");
+      toast.error(
+        t("admin.subcategories.cannotDeleteInvalidId") ||
+          "Cannot delete subcategory: Invalid ID"
+      );
       setDeleteConfirmation({ isOpen: false, subCategory: null });
     }
   };
@@ -588,7 +618,8 @@ export default function SubCategoriesPage() {
   const handleModalOpen = () => {
     if (activeCategories.length === 0 && !categoriesLoading) {
       toast.error(
-        "No active categories available. Please create an active category first."
+        t("admin.subcategories.noActiveCategoriesMessage") ||
+          "No active categories available. Please create an active category first."
       );
       return;
     }
@@ -624,7 +655,7 @@ export default function SubCategoriesPage() {
     },
     {
       accessorKey: "imageUrl",
-      header: t("admin.subcategories.image") || "Image",
+      header: t("common.image") || "Image",
       enableSorting: false,
       cell: ({ row }) => {
         const imageUrl = row.original.imageUrl;
@@ -635,14 +666,14 @@ export default function SubCategoriesPage() {
             onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
             className="underline text-sm font-medium"
           >
-            {t("admin.subcategories.image") || "Image"}
+            {t("common.image") || "Image"}
           </button>
         );
       },
     },
     {
       accessorKey: "iconUrl",
-      header: t("admin.subcategories.icon") || "Icon",
+      header: t("common.icon") || "Icon",
       enableSorting: false,
       cell: ({ row }) => {
         const iconUrl = row.original.iconUrl;
@@ -653,7 +684,7 @@ export default function SubCategoriesPage() {
             onClick={() => setPreviewImage({ url: iconUrl, isOpen: true })}
             className="underline text-sm font-medium"
           >
-            {t("admin.subcategories.icon") || "Icon"}
+            {t("common.icon") || "Icon"}
           </button>
         );
       },
@@ -729,9 +760,9 @@ export default function SubCategoriesPage() {
         onConfirm={handleConfirmDelete}
         itemName={
           deleteConfirmation.subCategory
-            ? `Subcategory: ${translateSubCategory(
-                deleteConfirmation.subCategory.name
-              )}`
+            ? `${
+                t("nav.subcategories") || "Subcategory"
+              }: ${translateSubCategory(deleteConfirmation.subCategory.name)}`
             : undefined
         }
         confirmationMessage={
@@ -739,6 +770,9 @@ export default function SubCategoriesPage() {
           "Are you sure you want to delete this subcategory?"
         }
         isLoading={deleteMutation.isPending}
+        title={t("deleteConfirmation.title") || "Confirm Deletion"}
+        confirmButtonText={t("deleteConfirmation.confirmButton") || "Delete"}
+        cancelButtonText={t("deleteConfirmation.cancelButton") || "Cancel"}
       />
 
       {/* Header Section */}
@@ -799,7 +833,10 @@ export default function SubCategoriesPage() {
             <span className="font-medium">Failed to load subcategories</span>
           </div>
           <p className="text-red-700 text-sm mt-1">
-            {getErrorMessage(fetchError, "Please try again later")}
+            {getErrorMessage(
+              fetchError,
+              t("common.pleaseWait") || "Please try again later"
+            )}
           </p>
           <Button
             variant="outline"
@@ -809,7 +846,7 @@ export default function SubCategoriesPage() {
             }
             className="mt-2"
           >
-            Retry
+            {t("common.retry") || "Retry"}
           </Button>
         </div>
       )}
@@ -901,14 +938,15 @@ export default function SubCategoriesPage() {
                 <span className="text-red-500 ml-1">*</span>
               </>
             }
-            error={errors.categoryId?.message}
+            error={errors.categoryId?.message && t(errors.categoryId.message)}
             options={categoryOptions}
             placeholder={
               categoriesLoading
-                ? "Loading categories..."
+                ? t("common.loadingCategories") || "Loading categories..."
                 : activeCategories.length === 0
-                ? "No active categories available"
-                : "Select Category"
+                ? t("common.noActiveCategories") ||
+                  "No active categories available"
+                : t("common.selectCategory") || "Select Category"
             }
             disabled={
               categoriesLoading ||
@@ -936,12 +974,13 @@ export default function SubCategoriesPage() {
                   />
                 </svg>
                 <span className="text-sm font-medium">
-                  No Active Categories Available
+                  {t("admin.subcategories.noActiveCategoriesWarning") ||
+                    "No Active Categories Available"}
                 </span>
               </div>
               <p className="text-yellow-700 text-sm mt-1">
-                You need to create an active category before adding
-                subcategories.
+                {t("admin.subcategories.noActiveCategoriesMessage") ||
+                  "You need to create an active category before adding subcategories."}
               </p>
             </div>
           )}
@@ -954,11 +993,14 @@ export default function SubCategoriesPage() {
                 <span className="text-red-500 ml-1">*</span>
               </>
             }
-            error={errors.name?.message}
+            error={errors.name?.message && t(errors.name.message)}
             {...register("name")}
             required
             maxLength={100}
-            placeholder="Enter subcategory name"
+            placeholder={
+              t("admin.subcategories.enterSubcategoryName") ||
+              "Enter subcategory name"
+            }
             disabled={
               activeCategories.length === 0 ||
               createMutation.isPending ||
@@ -968,7 +1010,8 @@ export default function SubCategoriesPage() {
 
           {/* Character count */}
           <div className="text-xs text-gray-500 -mt-2">
-            {nameValue?.length || 0}/100 characters
+            {nameValue?.length || 0}/100{" "}
+            {t("common.characters") || "characters"}
           </div>
 
           {/* Image Upload for Subcategory Image */}
@@ -993,7 +1036,7 @@ export default function SubCategoriesPage() {
               }}
               onPreview={(url) => setPreviewImage({ url, isOpen: true })}
               folder="subcategories/images"
-              error={errors.imageUrl?.message}
+              error={errors.imageUrl?.message && t(errors.imageUrl.message)}
               exactDimensions={{ width: 1440, height: 710 }}
               showDimensionValidation={true}
             />
@@ -1021,7 +1064,7 @@ export default function SubCategoriesPage() {
               }}
               onPreview={(url) => setPreviewImage({ url, isOpen: true })}
               folder="subcategories/icons"
-              error={errors.iconUrl?.message}
+              error={errors.iconUrl?.message && t(errors.iconUrl.message)}
               exactDimensions={{ width: 512, height: 512 }}
               showDimensionValidation={true}
             />
@@ -1056,13 +1099,16 @@ export default function SubCategoriesPage() {
                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
                   />
                 </svg>
-                Please fix the following errors:
+                {t("common.pleaseFixErrors") ||
+                  "Please fix the following errors:"}
               </div>
               <ul className="text-red-700 text-sm mt-1 list-disc list-inside">
-                {errors.categoryId && <li>{errors.categoryId.message}</li>}
-                {errors.name && <li>{errors.name.message}</li>}
-                {errors.imageUrl && <li>{errors.imageUrl.message}</li>}
-                {errors.iconUrl && <li>{errors.iconUrl.message}</li>}
+                {errors.categoryId && (
+                  <li>{t(errors.categoryId.message || "")}</li>
+                )}
+                {errors.name && <li>{t(errors.name.message || "")}</li>}
+                {errors.imageUrl && <li>{t(errors.imageUrl.message || "")}</li>}
+                {errors.iconUrl && <li>{t(errors.iconUrl.message || "")}</li>}
                 {errors.status && <li>{errors.status.message}</li>}
               </ul>
             </div>

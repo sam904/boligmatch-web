@@ -317,9 +317,10 @@ export default function TestimonialFormPage() {
   const onSubmit: SubmitHandler<TestimonialFormData> = async (data) => {
     // Check if there are validation errors
     if (hasValidationErrors) {
-      // Show validation errors and prevent submission
       setShowValidation(true);
-      toast.error("Please fill all required fields");
+      toast.error(
+        t("validation.fillRequiredFields") || "Please fill all required fields"
+      );
       return;
     }
 
@@ -425,7 +426,12 @@ export default function TestimonialFormPage() {
         onConfirm={handleConfirmDelete}
         itemName={
           deleteConfirmation.testimonial
-            ? `Testimonial from: ${deleteConfirmation.testimonial.customerName}`
+            ? `${
+                t("admin.testimonials.testimonialFrom", {
+                  name: deleteConfirmation.testimonial.customerName,
+                }) ||
+                `Testimonial from: ${deleteConfirmation.testimonial.customerName}`
+              }`
             : undefined
         }
         confirmationMessage={
@@ -494,16 +500,17 @@ export default function TestimonialFormPage() {
                   </>
                 }
                 {...register("customerName")}
-                placeholder={
-                  t("admin.testimonials.enterCustomerName") ||
-                  "Enter customer name"
-                }
+                 placeholder={
+    t("admin.testimonials.enterCustomerName") ||
+    "Enter customer name"
+  }
                 disabled={isSubmitting}
               />
               {showValidation &&
                 (!customerNameValue || customerNameValue.trim() === "") && (
                   <p className="text-red-500 text-sm mt-1">
-                    Customer name is required
+                    {t("validation.customerNameRequired") ||
+                      "Customer name is required"}
                   </p>
                 )}
             </div>
@@ -566,13 +573,14 @@ export default function TestimonialFormPage() {
                 }`}
                 placeholder={
                   t("admin.testimonials.shareDetailsofyourExperience") ||
-                  "Share details of your Experience..."
+                  "Share details of your experience..."
                 }
                 disabled={isSubmitting}
               />
               {showValidation && (!testValue || testValue.trim() === "") && (
                 <p className="text-red-500 text-sm mt-1">
-                  Share Your Opinion is required
+                  {t("validation.shareYourOpinionRequired") ||
+                    "Share Your Opinion is required"}
                 </p>
               )}
             </div>
@@ -587,7 +595,7 @@ export default function TestimonialFormPage() {
                 rows={2}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200 resize-none"
                 placeholder={
-                  t("admin.testimonials.enteranyadditionalNotes") ||
+                 t("admin.testimonials.enteranyadditionalNotes") ||
                   "Enter any additional notes..."
                 }
                 disabled={isSubmitting}
@@ -630,17 +638,27 @@ export default function TestimonialFormPage() {
                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
                   />
                 </svg>
-                Please fix the following errors:
+                {t("common.pleaseFixErrors") ||
+                  "Please fix the following errors:"}
               </div>
               <ul className="text-red-700 text-sm mt-2 list-disc list-inside space-y-1">
                 {(!customerNameValue || customerNameValue.trim() === "") && (
-                  <li>Customer name is required</li>
+                  <li>
+                    {t("validation.customerNameRequired") ||
+                      "Customer name is required"}
+                  </li>
                 )}
                 {(!testValue || testValue.trim() === "") && (
-                  <li>Share Your Opinion is required</li>
+                  <li>
+                    {t("validation.testimonialTextRequired") ||
+                      "Testimonial text is required"}
+                  </li>
                 )}
                 {(!partnerIdValue || partnerIdValue <= 0) && (
-                  <li>Partner ID is required</li>
+                  <li>
+                    {t("validation.partnerIdRequired") ||
+                      "Partner ID is required"}
+                  </li>
                 )}
               </ul>
             </div>
@@ -708,16 +726,23 @@ export default function TestimonialFormPage() {
         {isLoadingTestimonials ? (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#91C73D] mx-auto"></div>
-            <p className="text-gray-500 mt-2">Loading testimonials...</p>
+            <p className="text-gray-500 mt-2">
+              {t("admin.testimonials.loadingTestimonials") ||
+                "Loading testimonials..."}
+            </p>
           </div>
         ) : testimonialsError ? (
           <div className="text-center py-8 text-red-500">
-            Failed to load testimonials:{" "}
-            {getErrorMessage(testimonialsError, "Unknown error")}
+            {t("common.errorLoading") || "Failed to load testimonials:"}{" "}
+            {getErrorMessage(
+              testimonialsError,
+              t("common.unknownError") || "Unknown error"
+            )}
           </div>
         ) : previousTestimonials.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            No testimonials found for this partner.
+            {t("admin.testimonials.noTestimonialsFound") ||
+              "No testimonials found for this partner."}
           </div>
         ) : (
           <div className="space-y-4">
@@ -756,11 +781,11 @@ export default function TestimonialFormPage() {
                     )}
 
                     {/* <div className="text-xs text-gray-400">
-  Created: {new Date(testimonial.createdDate).toLocaleDateString()}
-  {testimonial.modifiedDate && (
-    <> | Modified: {new Date(testimonial.modifiedDate).toLocaleDateString()}</>
-  )}
-</div> */}
+                      Created: {new Date(testimonial.createdDate).toLocaleDateString()}
+                      {testimonial.modifiedDate && (
+                        <> | Modified: {new Date(testimonial.modifiedDate).toLocaleDateString()}</>
+                      )}
+                    </div> */}
                   </div>
 
                   <div className="flex items-center gap-2 ml-4">
