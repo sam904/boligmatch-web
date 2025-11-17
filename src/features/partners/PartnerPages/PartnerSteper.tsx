@@ -12,16 +12,16 @@ function PartnerSteper() {
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center">
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-10px)] px-4 sm:px-6 text-center mt-24 sm:mt-32 md:mt-48">
+      <div className="absolute inset-0 bg-cover bg-center md:top-0 -top-52">
+        <div className="z-10 flex flex-col items-center justify-center min-h-[calc(100vh-10px)] px-4 sm:px-6 text-center mt-24 sm:mt-32 md:mt-48">
           <button
             onClick={openModal}
-            className="mb-6 sm:mb-8 px-6 sm:px-8 py-3 bg-[#91C73D] text-white rounded-xl font-[600] transition-colors text-[16px] sm:text-[18px] md:text-[20px]  hover:bg-[#7FB333]"
+            className="md:mb-8 px-6 sm:px-8 py-3 bg-[#91C73D] text-white rounded-xl font-[600] transition-colors text-[12px] md:text-[20px]  hover:bg-[#7FB333]"
           >
             {t("partnerStepper.cta")}
           </button>
 
-          <h1 className="text-[32px] sm:text-3xl md:text-[64px] lg:text-[64px] xl:text-6xl font-[800] text-white max-w-4xl  tracking-tight leading-tight sm:leading-14 px-2">
+          <h1 className="text-[18px] md:text-[64px] lg:text-[64px] xl:text-6xl font-[800] text-white max-w-4xl  md:tracking-tight md:leading-tight sm:leading-14 px-2">
             {t("partnerStepper.heroTitle")}
           </h1>
         </div>

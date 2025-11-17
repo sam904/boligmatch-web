@@ -281,7 +281,8 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       {t("sidebar.home")}
                     </span>
                   </button>
-                  {displayName && (
+                  {/* Hide user-only links when logged in as partner */}
+                  {displayName && !isPartner && (
                     <>
                       <button
                         onClick={() => {

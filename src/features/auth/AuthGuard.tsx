@@ -5,13 +5,16 @@ import { useAppSelector } from '../../app/hooks';
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const token = useAppSelector(s => s.auth.accessToken);
   const loc = useLocation();
-  // Support authentication via localStorage bm_user as well as Redux token
+  // Support authentication via localStorage bm_user / bm_partner as well as Redux token
   let bmUser: any = null;
+  let bmPartner: any = null;
   try {
-    const raw = typeof window !== 'undefined' ? localStorage.getItem('bm_user') : null;
-    if (raw) bmUser = JSON.parse(raw);
+    const rawUser = typeof window !== 'undefined' ? localStorage.getItem('bm_user') : null;
+    const rawPartner = typeof window !== 'undefined' ? localStorage.getItem('bm_partner') : null;
+    if (rawUser) bmUser = JSON.parse(rawUser);
+    if (rawPartner) bmPartner = JSON.parse(rawPartner);
   } catch {}
-  const isAuthed = !!token || !!bmUser;
+  const isAuthed = !!token || !!bmUser || !!bmPartner;
   if (!isAuthed) return <Navigate to="/login" state={{ from: loc }} replace />;
   return <>{children}</>;
 }
