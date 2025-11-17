@@ -33,16 +33,16 @@ import { FilterDropdown } from "../../../components/common/FilterDropdown";
 
 // Enhanced validation schema with dimension validation
 const categorySchema = z.object({
-  name: z.string().min(1, "Category name is required"),
+  name: z.string().min(1, "validation.categoryNameRequired"),
   description: z.string().optional(),
   imageUrl: z
     .string()
-    .min(1, "Image is required")
-    .url("Please provide a valid image URL"),
+    .min(1, "validation.imageRequired")
+    .url("validation.invalidImageUrl"),
   iconUrl: z
     .string()
-    .min(1, "Icon is required")
-    .url("Please provide a valid icon URL"),
+    .min(1, "validation.iconRequired")
+    .url("validation.invalidIconUrl"),
   isActive: z.boolean(),
   status: z.enum(["Active", "InActive"]),
 });
@@ -69,6 +69,7 @@ function ImagePreviewModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -91,7 +92,9 @@ function ImagePreviewModal({
     <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center bg-black/50 z-50 p-4">
       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
         <div className="flex justify-between items-center p-4 border-b">
-          <h3 className="text-lg font-semibold">Image Preview</h3>
+          <h3 className="text-lg font-semibold">
+            {t("common.imagePreview") || "Image Preview"}
+          </h3>
           <button
             onClick={onClose}
             className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
@@ -103,7 +106,9 @@ function ImagePreviewModal({
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span className="ml-2 text-gray-600">Loading image...</span>
+              <span className="ml-2 text-gray-600">
+                {t("common.loadingImage") || "Loading image..."}
+              </span>
             </div>
           ) : (
             <img
@@ -120,7 +125,7 @@ function ImagePreviewModal({
             rel="noopener noreferrer"
             className="text-blue-600 hover:text-blue-800 underline text-sm"
           >
-            Open in new tab
+            {t("common.openInNewTab") || "Open in new tab"}
           </a>
         </div>
       </div>
@@ -251,7 +256,7 @@ export default function CategoriesPage() {
     if (isFetchError && fetchError) {
       const errorMessage = getErrorMessage(
         fetchError,
-        "Failed to load categories"
+        t("admin.categories.createError") || "Failed to load categories"
       );
       toast.error(errorMessage);
     }
@@ -415,7 +420,10 @@ export default function CategoriesPage() {
     try {
       // Check if mutations are in progress
       if (createMutation.isPending || updateMutation.isPending) {
-        toast.error("Please wait for the current operation to complete");
+        toast.error(
+          t("common.currentOperation") ||
+            "Please wait for the current operation to complete"
+        );
         return;
       }
 
@@ -442,10 +450,15 @@ export default function CategoriesPage() {
             340
           );
           if (!isImageValid) {
-            toast.error("Main image must be exactly 374 × 340 pixels");
+            const errorMessage =
+              t("admin.categories.imageMustBeDimensions", {
+                width: 374,
+                height: 340,
+              }) || "Main image must be exactly 374 × 340 pixels";
+            toast.error(errorMessage);
             setError("imageUrl", {
               type: "manual",
-              message: "Image must be exactly 374 × 340 pixels",
+              message: errorMessage,
             });
             return;
           }
@@ -464,10 +477,15 @@ export default function CategoriesPage() {
             512
           );
           if (!isIconValid) {
-            toast.error("Icon must be exactly 512 × 512 pixels");
+            const errorMessage =
+              t("admin.categories.iconMustBeDimensions", {
+                width: 512,
+                height: 512,
+              }) || "Icon must be exactly 512 × 512 pixels";
+            toast.error(errorMessage);
             setError("iconUrl", {
               type: "manual",
-              message: "Icon must be exactly 512 × 512 pixels",
+              message: errorMessage,
             });
             return;
           }
@@ -482,7 +500,9 @@ export default function CategoriesPage() {
       }
     } catch (error) {
       console.error("Form submission error:", error);
-      toast.error("An unexpected error occurred");
+      toast.error(
+        t("admin.categories.unexpectedError") || "An unexpected error occurred"
+      );
     }
   };
 
@@ -502,7 +522,10 @@ export default function CategoriesPage() {
 
   const handleDeleteCategory = (category: Category) => {
     if (!category.id) {
-      toast.error("Cannot delete category: Invalid ID");
+      toast.error(
+        t("admin.categories.cannotDeleteInvalidId") ||
+          "Cannot delete category: Invalid ID"
+      );
       return;
     }
 
@@ -517,7 +540,10 @@ export default function CategoriesPage() {
     if (deleteConfirmation.category?.id) {
       deleteMutation.mutate(deleteConfirmation.category.id);
     } else {
-      toast.error("Cannot delete category: Invalid ID");
+      toast.error(
+        t("admin.categories.cannotDeleteInvalidId") ||
+          "Cannot delete category: Invalid ID"
+      );
       setDeleteConfirmation({ isOpen: false, category: null });
     }
   };
@@ -557,7 +583,7 @@ export default function CategoriesPage() {
     },
     {
       accessorKey: "imageUrl",
-      header: t("admin.categories.image") || "Image",
+      header: t("common.image") || "Image",
       enableSorting: false,
       cell: ({ row }) => {
         const imageUrl = row.original.imageUrl;
@@ -569,7 +595,7 @@ export default function CategoriesPage() {
               onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
               className="underline text-sm font-medium text-left"
             >
-              {t("admin.categories.image") || "Image"}
+              {t("common.image") || "Image"}
             </button>
           </div>
         );
@@ -577,7 +603,7 @@ export default function CategoriesPage() {
     },
     {
       accessorKey: "iconUrl",
-      header: t("admin.categories.icon") || "Icon",
+      header: t("common.icon") || "Icon",
       enableSorting: false,
       cell: ({ row }) => {
         const iconUrl = row.original.iconUrl;
@@ -589,7 +615,7 @@ export default function CategoriesPage() {
               onClick={() => setPreviewImage({ url: iconUrl, isOpen: true })}
               className="underline text-sm font-medium text-left"
             >
-              {t("admin.categories.icon") || "Icon"}
+              {t("common.icon") || "Icon"}
             </button>
           </div>
         );
@@ -659,13 +685,16 @@ export default function CategoriesPage() {
       ))}
 
       {/* Delete Confirmation Modal using common component */}
+      {/* Delete Confirmation Modal using common component */}
       <DeleteConfirmation
         open={deleteConfirmation.isOpen}
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
         itemName={
           deleteConfirmation.category
-            ? `Category: ${translateCategory(deleteConfirmation.category.name)}`
+            ? `${t("nav.categories") || "Category"}: ${translateCategory(
+                deleteConfirmation.category.name
+              )}`
             : undefined
         }
         confirmationMessage={
@@ -673,6 +702,9 @@ export default function CategoriesPage() {
           "Are you sure you want to delete this category?"
         }
         isLoading={deleteMutation.isPending}
+        title={t("deleteConfirmation.title") || "Confirm Deletion"}
+        confirmButtonText={t("deleteConfirmation.confirmButton") || "Delete"}
+        cancelButtonText={t("deleteConfirmation.cancelButton") || "Cancel"}
       />
 
       {/* Header Section */}
@@ -733,7 +765,10 @@ export default function CategoriesPage() {
             <span className="font-medium">Failed to load categories</span>
           </div>
           <p className="text-red-700 text-sm mt-1">
-            {getErrorMessage(fetchError, "Please try again later")}
+            {getErrorMessage(
+              fetchError,
+              t("common.pleaseWait") || "Please try again later"
+            )}
           </p>
           <Button
             variant="outline"
@@ -743,7 +778,7 @@ export default function CategoriesPage() {
             }
             className="mt-2"
           >
-            Retry
+            {t("common.retry") || "Retry"}
           </Button>
         </div>
       )}
@@ -832,11 +867,13 @@ export default function CategoriesPage() {
                 <span className="text-red-500 ml-1">*</span>
               </>
             }
-            error={errors.name?.message}
+            error={errors.name?.message && t(errors.name.message)}
             {...register("name")}
             required
             maxLength={100}
-            placeholder="Enter category name"
+            placeholder={
+              t("admin.categories.enterCategoryName") || "Enter category name"
+            }
             disabled={createMutation.isPending || updateMutation.isPending}
           />
 
@@ -846,7 +883,10 @@ export default function CategoriesPage() {
             error={errors.description?.message}
             {...register("description")}
             maxLength={500}
-            placeholder="Enter category description"
+            placeholder={
+              t("admin.categories.enterCategoryDescription") ||
+              "Enter category description"
+            }
             rows={4}
             disabled={createMutation.isPending || updateMutation.isPending}
           />
@@ -874,7 +914,7 @@ export default function CategoriesPage() {
               }}
               onPreview={(url) => setPreviewImage({ url, isOpen: true })}
               folder="categories/images"
-              error={errors.imageUrl?.message}
+              error={errors.imageUrl?.message && t(errors.imageUrl.message)}
               exactDimensions={{ width: 374, height: 340 }}
               showDimensionValidation={true}
             />
@@ -903,7 +943,7 @@ export default function CategoriesPage() {
               }}
               onPreview={(url) => setPreviewImage({ url, isOpen: true })}
               folder="categories/icons"
-              error={errors.iconUrl?.message}
+              error={errors.iconUrl?.message && t(errors.iconUrl.message)}
               exactDimensions={{ width: 512, height: 512 }}
               showDimensionValidation={true}
             />
@@ -938,13 +978,14 @@ export default function CategoriesPage() {
                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
                   />
                 </svg>
-                Please fix the following errors:
+                {t("common.pleaseFixErrors") ||
+                  "Please fix the following errors:"}
               </div>
               <ul className="text-red-700 text-sm mt-1 list-disc list-inside">
-                {errors.name && <li>{errors.name.message}</li>}
+                {errors.name && <li>{t(errors.name.message || "")}</li>}
                 {errors.description && <li>{errors.description.message}</li>}
-                {errors.imageUrl && <li>{errors.imageUrl.message}</li>}
-                {errors.iconUrl && <li>{errors.iconUrl.message}</li>}
+                {errors.imageUrl && <li>{t(errors.imageUrl.message || "")}</li>}
+                {errors.iconUrl && <li>{t(errors.iconUrl.message || "")}</li>}
                 {errors.isActive && <li>{errors.isActive.message}</li>}
                 {errors.status && <li>{errors.status.message}</li>}
               </ul>

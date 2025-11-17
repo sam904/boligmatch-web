@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { uploadService } from "../../services/uploadS3.service";
 import { toast } from "sonner";
 import { ImageUp, Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ImageUploadProps {
   label: React.ReactNode;
@@ -29,6 +30,7 @@ export default function ImageUpload({
   showDimensionValidation = false,
   exactDimensions,
 }: ImageUploadProps) {
+  const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
   const [validating, setValidating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -64,9 +66,20 @@ export default function ImageUpload({
 
   const getDimensionMessage = () => {
     if (exactDimensions) {
-      return `exactly ${exactDimensions.width}x${exactDimensions.height} pixels`;
+      return (
+        t("common.exactlyPixels", {
+          width: exactDimensions.width,
+          height: exactDimensions.height,
+        }) ||
+        `exactly ${exactDimensions.width}x${exactDimensions.height} pixels`
+      );
     } else {
-      return `max ${maxWidth}x${maxHeight} pixels`;
+      return (
+        t("common.maxPixels", {
+          width: maxWidth,
+          height: maxHeight,
+        }) || `max ${maxWidth}x${maxHeight} pixels`
+      );
     }
   };
 
@@ -76,14 +89,19 @@ export default function ImageUpload({
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select a valid image file (JPEG, PNG, etc.)");
+      toast.error(
+        t("common.invalidImageFile") ||
+          "Please select a valid image file (JPEG, PNG, etc.)"
+      );
       return;
     }
 
     // Validate file size (2MB max)
     const maxSize = 2 * 1024 * 1024;
     if (file.size > maxSize) {
-      toast.error("Image size should be less than 2MB");
+      toast.error(
+        t("common.imageSizeExceeded") || "Image size should be less than 2MB"
+      );
       return;
     }
 
@@ -93,21 +111,41 @@ export default function ImageUpload({
       try {
         const { isValid, width, height } = await validateImageDimensions(file);
         if (!isValid) {
+          const currentDimensions =
+            t("common.currentDimensions", { width, height }) ||
+            `Current: ${width}x${height}px`;
+
           if (exactDimensions) {
-            toast.error(
-              `Image must be exactly ${exactDimensions.width}x${exactDimensions.height}px. Current: ${width}x${height}px`
-            );
+            const errorMessage =
+              t("validation.imageDimensionsExact", {
+                width: exactDimensions.width,
+                height: exactDimensions.height,
+                current: currentDimensions,
+              }) ||
+              `Image must be exactly ${exactDimensions.width}x${exactDimensions.height}px. ${currentDimensions}`;
+            toast.error(errorMessage);
           } else {
-            toast.error(
-              `Image must be ${maxWidth}x${maxHeight}px or smaller. Current: ${width}x${height}px`
-            );
+            const errorMessage =
+              t("validation.imageDimensionsMax", {
+                width: maxWidth,
+                height: maxHeight,
+                current: currentDimensions,
+              }) ||
+              `Image must be ${maxWidth}x${maxHeight}px or smaller. ${currentDimensions}`;
+            toast.error(errorMessage);
           }
           if (fileInputRef.current) fileInputRef.current.value = "";
           return;
         }
-        toast.success(`Image dimensions OK (${width}x${height}px)`);
+        toast.success(
+          t("common.dimensionsOK", { width, height }) ||
+            `Image dimensions OK (${width}x${height}px)`
+        );
       } catch (error) {
-        toast.error("Failed to validate image dimensions");
+        toast.error(
+          t("common.dimensionValidationFailed") ||
+            "Failed to validate image dimensions"
+        );
         if (fileInputRef.current) fileInputRef.current.value = "";
         return;
       } finally {
@@ -120,7 +158,7 @@ export default function ImageUpload({
     try {
       const url = await uploadService.uploadImage(file, folder);
       onChange(url);
-      toast.success("Image uploaded successfully");
+      toast.success(t("common.uploadSuccess") || "Image uploaded successfully");
     } catch (error) {
       console.error("Image upload error:", error);
       toast.error("Failed to upload image");
@@ -145,18 +183,21 @@ export default function ImageUpload({
 
   const getFileNameFromUrl = (url: string) => {
     try {
-      return decodeURIComponent(url.split("/").pop() || "Image");
+      return decodeURIComponent(
+        url.split("/").pop() || t("common.imageFile") || "Image"
+      );
     } catch {
-      return "Image";
+      return t("common.imageFile") || "Image";
     }
   };
 
   const getImageTypeText = (url: string) => {
-    if (url.includes(".png")) return "PNG Image";
-    if (url.includes(".jpg") || url.includes(".jpeg")) return "JPEG Image";
-    if (url.includes(".gif")) return "GIF Image";
-    if (url.includes(".webp")) return "WebP Image";
-    return "Image File";
+    if (url.includes(".png")) return t("imageTypes.pngImage") || "PNG Image";
+    if (url.includes(".jpg") || url.includes(".jpeg"))
+      return t("imageTypes.jpegImage") || "JPEG Image";
+    if (url.includes(".gif")) return t("imageTypes.gifImage") || "GIF Image";
+    if (url.includes(".webp")) return t("imageTypes.webpImage") || "WebP Image";
+    return t("common.imageFile") || "Image File";
   };
 
   const isProcessing = uploading || validating;
@@ -200,7 +241,9 @@ export default function ImageUpload({
           <div className="flex flex-col items-center gap-2 text-gray-500">
             <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
             <p className="text-sm">
-              {uploading ? "Uploading..." : "Validating..."}
+              {uploading
+                ? t("common.uploading") || "Uploading..."
+                : t("common.validating") || "Validating..."}
             </p>
           </div>
         ) : value ? (
@@ -225,10 +268,10 @@ export default function ImageUpload({
           <div className="flex flex-col items-center text-gray-600">
             <ImageUp className="w-6 h-6 text-[#91C73D] mb-1" />
             <p className="text-sm text-[#91C73D] font-medium">
-              Click to upload image
+              {t("common.clickToUpload") || "Click to upload image"}
             </p>
             <p className="text-xs text-gray-400 mt-1">
-              PNG, JPG, JPEG, WebP
+              {t("common.supportedFormats") || "PNG, JPG, JPEG, WebP"}
               {showDimensionValidation && ` • ${getDimensionMessage()}`}
             </p>
           </div>
