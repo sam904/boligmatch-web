@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { subCategoriesService } from "../services/subCategories.service";
 import { partnerService } from "../services/partner.service";
-import footerLogo from "/src/assets/userImages/footerLogo.svg";
+// import footerLogo from "/src/assets/userImages/footerLogo.svg";
 import subCategoryGradient from "/src/assets/userImages/subCatGradient.png";
 import nextArrow from "/src/assets/userImages/arrow_right.png";
 import Footer from "./Footer";
