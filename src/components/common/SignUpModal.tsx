@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { userService } from "../../services/user.service";
 import type { CreateUserRequest } from "../../types/user";
 import logo from "/src/assets/userImages/boligmatchLogo2.png";
@@ -18,6 +18,15 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, [open]);
 
   const schema = z.object({
     firstName: z.string().min(1, t("signup.nameRequired")),
@@ -89,7 +98,7 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl rounded-lg shadow-xl mx-4 bg-[#EFEFEF]"
+        className="w-full max-w-2xl rounded-lg shadow-xl mx-4 my-16 bg-[#EFEFEF]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-center items-center p-4 pb-2 relative">
@@ -306,7 +315,7 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-[#91C73D] hover:bg-[#7fb32d] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+                className="w-full cursor-pointer bg-[#91C73D] hover:bg-[#7fb32d] disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
               >
                 {isLoading ? (
                   <span className="flex items-center justify-center">

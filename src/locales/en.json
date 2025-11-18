@@ -532,12 +532,35 @@
     "passwordRequired": "Password is required",
     "passwordMinLength": "Password must be at least 6 characters"
   },
+  "manageProfile": {
+    "title": "Manage Profile",
+    "firstName": "First Name",
+    "middleName": "Middle Name",
+    "lastName": "Last Name",
+    "phone": "Mobile Number",
+    "email": "Email",
+    "saveChanges": "Save changes",
+    "changePasswordTitle": "Change password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "updatePassword": "Update password"
+  },
   "userDashboard": {
     "buttons": {
       "partners": "Partners",
       "favorites": "Saved as favorite",
       "messages": "Messages"
-    }
+    },
+    "favoritesTitle": "My Favorites",
+    "conversationsTitle": "My Conversations",
+    "loading": "Loading...",
+    "loadingFavorites": "Loading favorites...",
+    "loadingConversations": "Loading conversations...",
+    "noFavorites": "No favorites found",
+    "readMore": "Read more",
+    "moreInfo": "More info",
+    "partnerLabel": "Partner",
+    "subjectLabel": "Subject"
   },
   "supplierProfile": {
     "contactButton": "Contact Supplier",
@@ -545,6 +568,7 @@
     "removeFromFavorites": "Remove from favorites",
     "recommendation": "Recommend us to others",
     "conversation": "Conversations",
+    "reviewsTitle": "Reviews",
     "recommendModal": {
       "title": "Recommend us to others",
       "description": "Do you think a friend could use our service? Send them a message here",

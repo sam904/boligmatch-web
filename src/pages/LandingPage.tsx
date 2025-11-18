@@ -9,8 +9,8 @@ import landingPageIcons3 from "/src/assets/userImages/3.svg";
 import landingPageIcons4 from "/src/assets/userImages/4.svg";
 import { useTranslation } from "react-i18next";
 import SignUpModal from "../components/common/SignUpModal";
-import footerLogo from "/src/assets/userImages/footerLogo.svg";
 import { useNavigate } from "react-router-dom";
+import Footer from "./Footer";
 
 export default function LandingPage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -20,7 +20,10 @@ export default function LandingPage() {
 
   useEffect(() => {
     try {
-      const rawPartner = typeof window !== "undefined" ? localStorage.getItem("bm_partner") : null;
+      const rawPartner =
+        typeof window !== "undefined"
+          ? localStorage.getItem("bm_partner")
+          : null;
       if (rawPartner) {
         const partner = JSON.parse(rawPartner);
         if (partner && partner.roleName === "Partner") {
@@ -115,24 +118,7 @@ export default function LandingPage() {
         </p>
       </div>
       <Stepper currentStep={currentStep} onStepClick={setCurrentStep} />
-      <footer className="bg-[#01351f] text-white text-center p-4 pt-32">
-        <div className="flex flex-col items-center">
-          <div className="text-center">
-            <div className="mb-8">
-              <div className="w-[199px] h-[45px] mx-auto">
-                <img
-                  src={footerLogo}
-                  alt="Boligmatch Logo"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
-          </div>
-          <p className="text-white text-sm figtree font-[400] text-[18px]">
-            {t("landing.contactInfo")}
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

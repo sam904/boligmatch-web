@@ -138,7 +138,7 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                 </button>
               )}
 
-              {/* <div className="relative">
+              <div className="relative">
                 <button
                   onClick={() => setShowLangDropdown((v) => !v)}
                   className="px-2 py-1 rounded-md bg-white/10 text-white text-xs md:text-sm font-semibold hover:bg-white/20 transition-colors cursor-pointer min-w-[44px] text-center"
@@ -169,7 +169,7 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     </button>
                   </div>
                 )}
-              </div> */}
+              </div>
 
               <button
                 onClick={() => {
@@ -211,7 +211,7 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
           />
 
           {/* Sidebar */}
-          <div className="absolute right-0 top-0 h-full w-64 md:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out translate-x-0">
+          <div className="absolute right-0 top-0 h-full w-full md:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out translate-x-0">
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/10">
