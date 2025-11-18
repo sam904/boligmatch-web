@@ -424,6 +424,7 @@
       "stars": "stars",
       "star": "star",
       "id": "ID",
+      "previousTestimonials": "Previous Testimonials",
       "deleteConfirm": "Are you sure you want to delete this testimonial?",
       "createSuccess": "Testimonial created successfully",
       "updateSuccess": "Testimonial updated successfully",
@@ -434,8 +435,6 @@
       "noTestimonialsFound": "No testimonials found for this partner.",
       "loadingTestimonials": "Loading testimonials...",
       "testimonialFrom": "Testimonial from: {{name}}",
-      "fillRequiredFields": "Please fill in all required fields",
-      "shareYourOpinionRequired": "Share Your Opinion is required",
       "enterCustomerName": "Enter customer name",
       "shareDetailsofyourExperience": "Share details of your experience...", 
       "enteranyadditionalNotes": "Enter any additional notes..."
@@ -491,15 +490,18 @@
     "ratingRequired": "Rating is required",
     "partnerIdRequired": "Partner ID is required",
     "emailUnchanged": "Email unchanged",
+    "fillRequiredFields": "Please fill in all required fields",
     "emailChecking": "Checking email availability...",
     "emailAvailable": "Email is available",
     "mobileUnchanged": "Mobile number unchanged",
+    "previousTestimonials": "Previous Testimonials",
     "mobileChecking": "Checking mobile number availability...",
     "mobileAvailable": "Mobile number is available",
     "fixEmailErrors": "Please fix email validation errors before proceeding",
     "fixMobileErrors": "Please fix mobile number validation errors before proceeding",
     "waitEmailValidation": "Please wait for email validation to complete",
-    "waitMobileValidation": "Please wait for mobile number validation to complete"
+    "waitMobileValidation": "Please wait for mobile number validation to complete",
+    "shareYourOpinionRequired": "Share Your Opinion is required"
   },
   "deleteConfirmation": {
     "title": "Confirm Deletion",
