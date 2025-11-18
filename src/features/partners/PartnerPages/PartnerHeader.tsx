@@ -154,7 +154,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
           />
 
           {/* Sidebar */}
-          <div className="absolute right-0 top-0 h-full w-64 sm:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out translate-x-0">
+          <div className="absolute right-0 top-0 h-full w-full md:w-64 sm:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out translate-x-0">
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/10">
@@ -210,7 +210,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 cursor-pointer">
                       <img
                         src={homeIcon}
                         alt=""
@@ -228,7 +228,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       }}
                       className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                     >
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center gap-2 cursor-pointer">
                         <img
                           src={docsIcon}
                           alt=""
@@ -245,7 +245,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2  cursor-pointer">
                       <img
                         src={becomePartnerIcon}
                         alt=""
@@ -261,7 +261,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 cursor-pointer">
                       <img
                         src={aboutBoligmatchIcon}
                         alt=""
@@ -301,7 +301,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 cursor-pointer">
                       <img
                         src={termsConditionIcon}
                         alt=""
@@ -324,7 +324,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       localStorage.removeItem("bm_partner");
                       window.location.href = "/";
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white hover:bg-[#95C11F]/20 rounded-lg transition-colors flex items-center gap-2"
+                    className="w-full text-left px-3 py-2.5 text-white hover:bg-[#95C11F]/20 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                   >
                     <img
                       src={signOutIcon}

@@ -601,6 +601,20 @@
     "partnerLabel": "Partner",
     "subjectLabel": "Emne"
   },
+  "userSupplier": {
+    "loadingSubcategories": "Indlæser underkategorier...",
+    "noSubcategories": "Ingen underkategorier tilgængelige",
+    "loadingPartners": "Indlæser partnere...",
+    "noPartners": "Ingen partnere fundet for denne underkategori"
+  },
+  "partnerStatistics": {
+    "title": "Partner Dashboard",
+    "tabs": {
+      "statistics": "Statistik",
+      "profile": "Min profil",
+      "partners": "Partnere"
+    }
+  },
   "supplierProfile": {
     "contactButton": "Kontakt Leverandør",
     "saveFavoriteButton": "Gem som Favorit",

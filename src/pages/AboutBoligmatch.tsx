@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import aboutLogo from "/src/assets/userImages/about.png";
+import Footer from "./Footer";
 
 export default function AboutBoligmatch() {
   const navigate = useNavigate();
@@ -72,6 +73,7 @@ export default function AboutBoligmatch() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

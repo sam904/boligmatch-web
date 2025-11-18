@@ -12,6 +12,7 @@ import dashboardIcon3 from "/src/assets/userImages/userDashboardicon1.svg";
 import { useNavigate } from "react-router-dom";
 import { subCategoriesService } from "../../../services/subCategories.service";
 import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg";
+import Footer from "../../../pages/Footer";
 
 function SearchForPartner() {
   const [loading, setLoading] = useState(true);
@@ -136,6 +137,7 @@ function SearchForPartner() {
           )}
         </div>
       </div>
+      <Footer />
     </>
   );
 }

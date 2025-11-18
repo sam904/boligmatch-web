@@ -1,3 +1,4 @@
+import Footer from "../../../pages/Footer";
 import { partnerDocumentService } from "../../../services/partnerdocument.service";
 import PartnerHeader from "./PartnerHeader";
 import documentImg from "/src/assets/userImages/document.png";
@@ -108,6 +109,7 @@ export default function PartnerDocuments() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

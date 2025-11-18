@@ -8,6 +8,8 @@
 // import commentImg from "/src/assets/userImages/comment.svg";
 // import shareIconsImg from "/src/assets/userImages/share.svg";
 
+import Footer from "../../../pages/Footer";
+
 function PartnerProfileShortcut({ partnerData }: { partnerData: any }) {
   return (
     <>
@@ -72,6 +74,7 @@ function PartnerProfileShortcut({ partnerData }: { partnerData: any }) {
           </p>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
