@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import termsandCondition from "/src/assets/userImages/termaCondition.png";
+import Footer from "./Footer";
 
 export default function TermsAndConditions() {
   const navigate = useNavigate();
@@ -75,6 +76,7 @@ export default function TermsAndConditions() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

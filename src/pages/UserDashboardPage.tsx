@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg";
 import { partnerService } from "../services/partner.service";
 import Footer from "./Footer";
+import closeImg from "/src/assets/userImages/close.svg"
 
 interface FavouriteItem {
   id?: number;
@@ -684,7 +685,7 @@ export default function UserDashboardPage() {
               aria-label="Close"
               onClick={() => setOpenConversation(null)}
             >
-              ×
+              <img src={closeImg} alt="" />
             </button>
 
             <div className="flex flex-col items-center gap-2 mb-4">

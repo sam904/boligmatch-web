@@ -272,7 +272,7 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 cursor-pointer">
                       <img
                         src={homeIcon}
                         alt=""
@@ -291,7 +291,7 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                         }}
                         className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                       >
-                        <span className="flex items-center gap-2">
+                        <span className="flex items-center gap-2 cursor-pointer">
                           <img
                             src={myBoligmatchIcon}
                             alt=""
@@ -307,7 +307,7 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                         }}
                         className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                       >
-                        <span className="flex items-center gap-2">
+                        <span className="flex items-center gap-2 cursor-pointer">
                           <img
                             src={manageProfileIcon}
                             alt=""
@@ -342,7 +342,7 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 cursor-pointer">
                       <img
                         src={becomePartnerIcon}
                         alt=""
@@ -358,7 +358,7 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 cursor-pointer">
                       <img
                         src={aboutBoligmatchIcon}
                         alt=""
@@ -398,7 +398,7 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 cursor-pointer">
                       <img
                         src={termsConditionIcon}
                         alt=""
@@ -421,7 +421,7 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       localStorage.removeItem("bm_partner");
                       window.location.href = "/";
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white hover:bg-[#95C11F]/20 rounded-lg transition-colors flex items-center gap-2"
+                    className="w-full text-left px-3 py-2.5 text-white hover:bg-[#95C11F]/20 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                   >
                     <img
                       src={signOutIcon}

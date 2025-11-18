@@ -11,6 +11,7 @@ import { partnerService } from "../services/partner.service";
 import subCategoryGradient from "/src/assets/userImages/subCatGradient.png";
 import nextArrow from "/src/assets/userImages/arrow_right.png";
 import Footer from "./Footer";
+import { useTranslation } from "react-i18next";
 
 interface SubCategoryData {
   id: number;
@@ -100,6 +101,7 @@ const UserSupplier = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   console.log("isScrolled", isScrolled);
+  const { t } = useTranslation();
   const [active, setActive] = useState<number | null>(null);
   const [subCategories, setSubCategories] = useState<SubCategoryData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -231,7 +233,9 @@ const UserSupplier = () => {
           className="flex items-center gap-3 overflow-x-auto no-scrollbar py-2"
         >
           {loading ? (
-            <div className="text-white">Loading subcategories...</div>
+            <div className="text-white">
+              {t("userSupplier.loadingSubcategories")}
+            </div>
           ) : subCategories.length > 0 ? (
             subCategories.map((sub) => (
               <button
@@ -262,7 +266,9 @@ const UserSupplier = () => {
               </button>
             ))
           ) : (
-            <div className="text-white">No subcategories available</div>
+            <div className="text-white">
+              {t("userSupplier.noSubcategories")}
+            </div>
           )}
         </div>
         <button
@@ -280,7 +286,9 @@ const UserSupplier = () => {
       {/* Desktop: keep existing layout and styling unchanged */}
       <section className="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex md:flex-nowrap items-center justify-center gap-4 w-full p-2">
         {loading ? (
-          <div className="text-white">Loading subcategories...</div>
+          <div className="text-white">
+            {t("userSupplier.loadingSubcategories")}
+          </div>
         ) : subCategories.length > 0 ? (
           subCategories.map((sub) => (
             <button
@@ -312,7 +320,9 @@ const UserSupplier = () => {
             </button>
           ))
         ) : (
-          <div className="text-white">No subcategories available</div>
+          <div className="text-white">
+            {t("userSupplier.noSubcategories")}
+          </div>
         )}
       </section>
 
@@ -320,7 +330,9 @@ const UserSupplier = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl px-12 w-full">
           {partnersLoading ? (
             <div className="col-span-3 flex justify-center items-center h-64">
-              <div className="text-white text-lg">Loading partners...</div>
+              <div className="text-white text-lg">
+                {t("userSupplier.loadingPartners")}
+              </div>
             </div>
           ) : partners.length > 0 ? (
             <>
@@ -347,7 +359,7 @@ const UserSupplier = () => {
           ) : (
             <div className="col-span-3 flex justify-center items-center h-64">
               <div className="text-white text-lg">
-                No partners found for this subcategory
+                {t("userSupplier.noPartners")}
               </div>
             </div>
           )}

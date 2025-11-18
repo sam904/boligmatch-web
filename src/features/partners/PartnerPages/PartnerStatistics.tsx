@@ -8,8 +8,10 @@ import PartnerProfileShortcut from "./PartnerProfileShortcut";
 import SearchForPartner from "./SearchForPartner";
 import { useEffect, useRef, useState } from "react";
 import { partnerService } from "../../../services/partner.service";
+import { useTranslation } from "react-i18next";
 
 function ParentStatistics() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<
     "statistik" | "profil" | "partnere"
   >("statistik");
@@ -82,7 +84,7 @@ function ParentStatistics() {
           <div className="flex items-center md:justify-start px-4 pb-4 md:px-12 md:pt-6 md:pb-6 absolute left-18 top-54 md:top-24 md:left-12">
             <div className="mx-auto text-white text-center md:text-left">
               <h1 className="text-[24px] md:text-[64px] font-[800] tracking-tight leading-tight mb-1 md:mb-3">
-                Partner Dashboard
+                {t("partnerStatistics.title")}
               </h1>
               <h2 className="text-[24px] md:text-[64px] font-[500] tracking-tight">
                 {partnerData?.businessName || "Business Name"}
@@ -93,49 +95,46 @@ function ParentStatistics() {
             <div className="flex flex-row flex-nowrap items-center justify-center md:justify-center gap-2 md:gap-0 md:space-x-8">
               <button
                 onClick={() => setActiveTab("statistik")}
-                className={`whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 text-white rounded-lg transition-colors ${
-                  activeTab === "statistik"
+                className={`whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 text-white rounded-lg transition-colors cursor-pointer ${activeTab === "statistik"
                     ? "bg-[#07583A]"
                     : "bg-[#91C73D] hover:bg-[#7FB333]"
-                }`}
+                  }`}
               >
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
                   <img src={Statistik} alt="" />
                 </div>
                 <span className="text-[13px] md:text-[20px] font-medium">
-                  Statistik
+                  {t("partnerStatistics.tabs.statistics")}
                 </span>
               </button>
 
               <button
                 onClick={() => setActiveTab("profil")}
-                className={`whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 text-white rounded-lg transition-colors ${
-                  activeTab === "profil"
+                className={`whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 text-white rounded-lg transition-colors cursor-pointer ${activeTab === "profil"
                     ? "bg-[#07583A]"
                     : "bg-[#91C73D] hover:bg-[#7FB333]"
-                }`}
+                  }`}
               >
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
                   <img src={MinProfil} alt="" />
                 </div>
                 <span className="text-[13px] md:text-[20px] font-medium">
-                  Min profil
+                  {t("partnerStatistics.tabs.profile")}
                 </span>
               </button>
 
               <button
                 onClick={() => setActiveTab("partnere")}
-                className={`whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 text-white rounded-lg transition-colors ${
-                  activeTab === "partnere"
+                className={`whitespace-nowrap flex items-center justify-center space-x-2 px-3 md:px-8 lg:px-12 py-1.5 md:py-3 lg:py-4 text-white rounded-lg transition-colors cursor-pointer ${activeTab === "partnere"
                     ? "bg-[#07583A]"
                     : "bg-[#91C73D] hover:bg-[#7FB333]"
-                }`}
+                  }`}
               >
                 <div className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 flex items-center justify-center">
                   <img src={Partnere} alt="" />
                 </div>
                 <span className="text-[13px] md:text-[20px] font-medium">
-                  Partnere
+                  {t("partnerStatistics.tabs.partners")}
                 </span>
               </button>
             </div>
