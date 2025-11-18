@@ -1,5 +1,5 @@
 import partnerCartImg from "/src/assets/userImages/partnerCardImg.svg";
-import sampleImg from "/src/assets/userImages/footerLogo.svg";
+// import sampleImg from "/src/assets/userImages/footerLogo.svg";
 import { useTranslation } from "react-i18next";
 import Footer from "../../../pages/Footer";
 

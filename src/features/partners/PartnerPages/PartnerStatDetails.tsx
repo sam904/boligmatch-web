@@ -1,5 +1,5 @@
 import partnerRingImg from "/src/assets/userImages/partnerringImg.png";
-import sampleImg from "/src/assets/userImages/footerLogo.svg";
+// import sampleImg from "/src/assets/userImages/footerLogo.svg";
 import { partnerService } from "../../../services/partner.service";
 import { useEffect, useRef, useState } from "react";
 import Footer from "../../../pages/Footer";
