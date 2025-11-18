@@ -202,7 +202,7 @@ export default function ResetPasswordModal({
             type="button"
             variant="outline"
             onClick={handleClose}
-            className="flex-1"
+            className="flex-1 cursor-pointer"
             disabled={isSubmitting}
           >
             {t("common.cancel") || "Cancel"}
@@ -211,7 +211,7 @@ export default function ResetPasswordModal({
             type="submit"
             variant="secondary"
             disabled={isSubmitting}
-            className="flex-1"
+            className="flex-1 cursor-pointer"
           >
             {isSubmitting
               ? t("common.resetting") || "Resetting..."

@@ -97,7 +97,7 @@ function ImagePreviewModal({
           </h3>
           <button
             onClick={onClose}
-            className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
+            className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors cursor-pointer"
           >
             ✕
           </button>
@@ -123,7 +123,7 @@ function ImagePreviewModal({
             href={imageUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 underline text-sm"
+            className="text-blue-600 hover:text-blue-800 underline text-sm cursor-pointer"
           >
             {t("common.openInNewTab") || "Open in new tab"}
           </a>
@@ -593,7 +593,7 @@ export default function CategoriesPage() {
           <div className="flex flex-col gap-1">
             <button
               onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
-              className="underline text-sm font-medium text-left"
+              className="underline text-sm font-medium text-left cursor-pointer"
             >
               {t("common.image") || "Image"}
             </button>
@@ -613,7 +613,7 @@ export default function CategoriesPage() {
           <div className="flex flex-col gap-1">
             <button
               onClick={() => setPreviewImage({ url: iconUrl, isOpen: true })}
-              className="underline text-sm font-medium text-left"
+              className="underline text-sm font-medium text-left cursor-pointer"
             >
               {t("common.icon") || "Icon"}
             </button>
@@ -651,7 +651,7 @@ export default function CategoriesPage() {
               setEditingCategory(row.original);
               setIsModalOpen(true);
             }}
-            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
             title={t("common.edit") || "Edit category"}
             disabled={updateMutation.isPending}
           >
@@ -660,7 +660,7 @@ export default function CategoriesPage() {
           <button
             type="button"
             onClick={() => handleDeleteCategory(row.original)}
-            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
             title={t("common.delete") || "Delete category"}
             disabled={deleteMutation.isPending}
           >
@@ -684,7 +684,6 @@ export default function CategoriesPage() {
         />
       ))}
 
-      {/* Delete Confirmation Modal using common component */}
       {/* Delete Confirmation Modal using common component */}
       <DeleteConfirmation
         open={deleteConfirmation.isOpen}
@@ -722,6 +721,7 @@ export default function CategoriesPage() {
               iconPosition="left"
               iconSize="w-5 h-5"
               disabled={createMutation.isPending}
+              className="cursor-pointer"
             >
               {t("admin.categories.addCategory") || "Add Category"}
             </Button>
@@ -776,7 +776,7 @@ export default function CategoriesPage() {
             onClick={() =>
               queryClient.refetchQueries({ queryKey: ["categories"] })
             }
-            className="mt-2"
+            className="mt-2 cursor-pointer"
           >
             {t("common.retry") || "Retry"}
           </Button>
@@ -997,7 +997,7 @@ export default function CategoriesPage() {
               type="button"
               variant="outline"
               onClick={handleModalClose}
-              className="flex-1"
+              className="flex-1 cursor-pointer"
               disabled={createMutation.isPending || updateMutation.isPending}
             >
               {t("common.cancel") || "Cancel"}
@@ -1006,7 +1006,7 @@ export default function CategoriesPage() {
               type="submit"
               variant="secondary"
               disabled={createMutation.isPending || updateMutation.isPending}
-              className="flex-1"
+              className="flex-1 cursor-pointer"
             >
               {createMutation.isPending || updateMutation.isPending
                 ? t("common.Submitting") || "Submitting..."

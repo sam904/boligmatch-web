@@ -78,7 +78,7 @@ function ImagePreviewModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center bg-black/50 z-50 p-4">
+    <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center bg-black/50 z-50 p-4 cursor-pointer">
       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
         <div className="flex justify-between items-center p-4 border-b">
           <h3 className="text-lg font-semibold">
@@ -86,7 +86,7 @@ function ImagePreviewModal({
           </h3>
           <button
             onClick={onClose}
-            className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
+            className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors cursor-pointer"
           >
             ✕
           </button>
@@ -95,7 +95,7 @@ function ImagePreviewModal({
           <img
             src={imageUrl}
             alt="Preview"
-            className="max-w-full max-h-full object-contain"
+            className="max-w-full max-h-full object-contain cursor-pointer"
           />
         </div>
         <div className="p-4 border-t text-left">
@@ -103,7 +103,7 @@ function ImagePreviewModal({
             href={imageUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 underline"
+            className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
           >
             {t("common.openInNewTab") || "Open in new tab"}
           </a>
@@ -161,8 +161,7 @@ const partnerDocumentSchema = z.object({
   isActive: z.boolean(),
 });
 
-// UPDATED PARTNER SCHEMA WITH EMAIL AND MOBILE VALIDATION
-// UPDATED PARTNER SCHEMA WITH EMAIL AND MOBILE VALIDATION - FIXED
+// UPDATED PARTNER SCHEMA WITH STATUS FIELD
 const partnerSchema = z.object({
   userId: z.number().optional(),
   categoryId: z.number().min(1, "Category is required"),
@@ -170,19 +169,19 @@ const partnerSchema = z.object({
   businessName: z.string().min(1, "Business Name is required"),
   email: z
     .string()
-    .min(1, "Email is required") // ADD THIS LINE
+    .min(1, "Email is required")
     .email("Invalid email address")
     .refine((email) => {
-      if (!email) return false; // Changed from true to false
+      if (!email) return false;
       return true;
     }),
   mobileNo: z
     .string()
-    .min(1, "Mobile number is required") // ADD THIS LINE
+    .min(1, "Mobile number is required")
     .length(8, "Mobile number must be exactly 8 digits")
     .regex(/^\d+$/, "Mobile number can only contain numbers")
     .refine((mobileNo) => {
-      if (!mobileNo) return false; // Changed from true to false
+      if (!mobileNo) return false;
       return true;
     }),
   videoUrl: z.string().optional(),
@@ -206,7 +205,7 @@ const partnerSchema = z.object({
   imageUrl5: z.string().optional(),
   thumbnail: z.string().optional(),
   isActive: z.boolean(),
-  status: z.enum(["All", "Active", "InActive"]),
+  status: z.enum(["Active", "InActive"]).default("Active"), // CHANGED: Remove "All" and add default
   parSubCatlst: z
     .array(partnerSubCategorySchema)
     .min(1, "At least one sub category is required"),
@@ -1642,7 +1641,7 @@ export default function PartnersPage() {
             {uniqueSubCategories.map((subCatName, index) => (
               <span
                 key={index}
-                className="inline-block text-black text-xs px-2 py-1  mr-1 mb-1"
+                className="inline-block text-black text-xs px-2 py-1  mr-1 mb-1 cursor-pointer"
               >
                 {subCatName}
               </span>
@@ -1693,7 +1692,7 @@ export default function PartnersPage() {
           <button
             onClick={() => handleAddTestimonial(row.original)}
             disabled={showForm}
-            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
             title={t("admin.partners.addTestimonial") || "Add Testimonial"}
           >
             <IconTestimonial />
@@ -1701,7 +1700,7 @@ export default function PartnersPage() {
           <button
             onClick={() => handleEditPartner(row.original)}
             disabled={showForm}
-            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
             title={t("admin.partners.editPartner") || "Edit partner"}
           >
             <IconPencil />
@@ -1709,7 +1708,7 @@ export default function PartnersPage() {
           <button
             onClick={() => handleResetPassword(row.original)}
             disabled={showForm}
-            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
             title={t("admin.partners.resetPassword") || "Reset Password"}
           >
             <IconKey />
@@ -1717,7 +1716,7 @@ export default function PartnersPage() {
           <button
             onClick={() => handleDeletePartner(row.original)}
             disabled={showForm}
-            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
             title={t("admin.partners.deletePartner") || "Delete partner"}
           >
             <IconTrash />
@@ -1771,7 +1770,7 @@ export default function PartnersPage() {
                 />
                 {emailValidation.checking && (
                   <div className="flex items-center gap-2 text-blue-600 text-sm">
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600 cursor-pointer"></div>
                     {t("admin.partners.emailChecking") ||
                       "Checking email availability..."}
                   </div>
@@ -1780,7 +1779,7 @@ export default function PartnersPage() {
                   !emailValidation.checking && (
                     <div className="text-green-600 text-sm flex items-center gap-1">
                       <svg
-                        className="w-4 h-4"
+                        className="w-4 h-4 cursor-pointer"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -1798,7 +1797,7 @@ export default function PartnersPage() {
                   !emailValidation.checking && (
                     <div className="text-red-600 text-sm flex items-center gap-1">
                       <svg
-                        className="w-4 h-4"
+                        className="w-4 h-4 cursor-pointer"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -1816,7 +1815,7 @@ export default function PartnersPage() {
                   emailValidation.available !== false && (
                     <div className="text-red-600 text-sm flex items-center gap-1">
                       <svg
-                        className="w-4 h-4"
+                        className="w-4 h-4 cursor-pointer"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -1853,7 +1852,7 @@ export default function PartnersPage() {
                 />
                 {mobileValidation.checking && (
                   <div className="flex items-center gap-2 text-blue-600 text-sm">
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600 cursor-pointer"></div>
                     {t("admin.partners.mobileChecking") ||
                       "Checking mobile number availability..."}
                   </div>
@@ -1862,7 +1861,7 @@ export default function PartnersPage() {
                   !mobileValidation.checking && (
                     <div className="text-green-600 text-sm flex items-center gap-1">
                       <svg
-                        className="w-4 h-4"
+                        className="w-4 h-4 cursor-pointer"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -1880,7 +1879,7 @@ export default function PartnersPage() {
                   !mobileValidation.checking && (
                     <div className="text-red-600 text-sm flex items-center gap-1">
                       <svg
-                        className="w-4 h-4"
+                        className="w-4 h-4 cursor-pointer"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -1897,7 +1896,7 @@ export default function PartnersPage() {
                   mobileValidation.available !== false && (
                     <div className="text-red-600 text-sm flex items-center gap-1">
                       <svg
-                        className="w-4 h-4"
+                        className="w-4 h-4 cursor-pointer"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -2175,7 +2174,7 @@ export default function PartnersPage() {
 
                     {savingDocuments.includes(index) && (
                       <div className="flex items-center gap-2 text-blue-600 text-sm">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 cursor-pointer"></div>
                         {t("common.savingDocument") || "Saving document..."}
                       </div>
                     )}
@@ -2220,6 +2219,7 @@ export default function PartnersPage() {
                           }
                         }}
                         disabled={savingDocuments.includes(index)}
+                        className="cursor-pointer"
                       >
                         {t("common.removeDocument") || "Remove Document"}
                       </Button>
@@ -2241,7 +2241,7 @@ export default function PartnersPage() {
                   borderColor: "#95C11F",
                   color: "white",
                 }}
-                className="hover:bg-[#85B11F] hover:border-[#85B11F]"
+                className="hover:bg-[#85B11F] hover:border-[#85B11F] cursor-pointer"
               >
                 {t("admin.partners.AddDocument") || "Add Document"} +
               </Button>
@@ -2267,7 +2267,7 @@ export default function PartnersPage() {
               </h4>
               {isLoadingCategories ? (
                 <div className="text-center py-2">
-                  <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                  <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 cursor-pointer"></div>
                   <p className="mt-1 text-gray-600 text-sm">
                     {t("common.loadingCategories") || "Loading categories..."}
                   </p>
@@ -2308,7 +2308,7 @@ export default function PartnersPage() {
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
                     <div className="flex items-center gap-2 text-yellow-800">
                       <svg
-                        className="w-4 h-4"
+                        className="w-4 h-4 cursor-pointer"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -2343,7 +2343,7 @@ export default function PartnersPage() {
                 </p>
                 {isLoadingSubCategories ? (
                   <div className="text-center py-4">
-                    <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                    <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 cursor-pointer"></div>
                     <p className="mt-2 text-gray-600">
                       {t("admin.partners.loadingSubCategories") ||
                         "Loading sub categories..."}
@@ -2400,7 +2400,7 @@ export default function PartnersPage() {
                             type="button"
                             variant="danger"
                             onClick={() => removeSubCategoryField(index)}
-                            className="mb-1"
+                            className="mb-1 cursor-pointer"
                           >
                             {t("common.remove") || "Remove"}
                           </Button>
@@ -2416,7 +2416,7 @@ export default function PartnersPage() {
                         borderColor: "#95C11F",
                         color: "white",
                       }}
-                      className="hover:bg-[#85B11F] hover:border-[#85B11F]"
+                      className="hover:bg-[#85B11F] hover:border-[#85B11F] cursor-pointer"
                     >
                       {t("admin.partners.AddsubCategory") ||
                         "Add Sub Categories"}{" "}
@@ -2428,7 +2428,7 @@ export default function PartnersPage() {
                         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
                           <div className="flex items-center gap-2 text-yellow-800">
                             <svg
-                              className="w-4 h-4"
+                              className="w-4 h-4 cursor-pointer"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -2466,7 +2466,7 @@ export default function PartnersPage() {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
                 <div className="flex items-center justify-center gap-2 text-blue-800">
                   <svg
-                    className="w-5 h-5"
+                    className="w-5 h-5 cursor-pointer"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -2507,6 +2507,7 @@ export default function PartnersPage() {
             size="lg"
             onClick={handleBack}
             disabled={isSubmitting}
+            className="cursor-pointer"
           >
             {t("common.Previous") || "Previous"}
           </Button>
@@ -2521,6 +2522,7 @@ export default function PartnersPage() {
             size="lg"
             onClick={handleNext}
             disabled={isSubmitting}
+            className="cursor-pointer"
           >
             {isSubmitting
               ? t("common.updating") || "Updating..."
@@ -2536,6 +2538,7 @@ export default function PartnersPage() {
               createMutation.isPending ||
               updateMutation.isPending
             }
+            className="cursor-pointer"
           >
             {isSubmitting
               ? t("common.Submitting") || "Submitting..."
@@ -2593,6 +2596,7 @@ export default function PartnersPage() {
                 icon={IconPlus}
                 iconPosition="left"
                 iconSize="w-5 h-5"
+                className="cursor-pointer"
               >
                 {t("admin.partners.addPartner")}
               </Button>
@@ -2620,6 +2624,7 @@ export default function PartnersPage() {
                 icon={IconUpload}
                 iconPosition="left"
                 iconSize="w-5 h-5"
+                className="cursor-pointer"
               >
                 {isExporting
                   ? t("common.exporting") || "Exporting..."
@@ -2636,7 +2641,7 @@ export default function PartnersPage() {
             <button
               onClick={handleFormClose}
               disabled={isSubmitting}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-[#165933] text-white"
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-[#165933] text-white cursor-pointer"
               title="Go back"
             >
               <IconArrowLeft className="w-4 h-4" />
@@ -2671,7 +2676,7 @@ export default function PartnersPage() {
           {isLoading ? (
             <div className="bg-white rounded-lg shadow-lg p-8 text-center">
               <div
-                className="inline-block animate-spin rounded-full h-8 w-8 border-b-2"
+                className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 cursor-pointer"
                 style={{ borderColor: "var(--color-primary)" }}
               ></div>
               <p className="mt-4 text-gray-600">{t("common.loading")}</p>
@@ -2699,7 +2704,7 @@ export default function PartnersPage() {
                 /* No Records Found Message */
                 <div className="p-8 text-center">
                   <div className="flex flex-col items-center justify-center">
-                    <IconNoRecords className="w-16 h-16 text-gray-400 mb-4" />
+                    <IconNoRecords className="w-16 h-16 text-gray-400 mb-4 cursor-pointer" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
                       {t("common.noRecordsFound") || "No records found"}
                     </h3>
@@ -2718,6 +2723,7 @@ export default function PartnersPage() {
                         icon={IconPlus}
                         iconPosition="left"
                         iconSize="w-5 h-5"
+                        className="cursor-pointer"
                       >
                         {t("admin.partners.addPartner") || "Add Partner"}
                       </Button>
