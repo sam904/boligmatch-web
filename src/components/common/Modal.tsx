@@ -30,7 +30,7 @@ export default function Modal({
           {title && <h2 className="text-xl font-semibold">{title}</h2>}
           <button
             onClick={onClose}
-            className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
+            className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors cursor-pointer"
           >
             ✕
           </button>

@@ -47,9 +47,15 @@ export default function UsersListPage() {
 
   // Create schema inside component to access translation function
   const userSchema = z.object({
-    firstName: z.string().min(1, t("validation.nameRequired") || "First name is required"),
-    lastName: z.string().min(1, t("validation.nameRequired") || "Last name is required"),
-    email: z.string().email(t("validation.emailInvalid") || "Invalid email address"),
+    firstName: z
+      .string()
+      .min(1, t("validation.nameRequired") || "First name is required"),
+    lastName: z
+      .string()
+      .min(1, t("validation.nameRequired") || "Last name is required"),
+    email: z
+      .string()
+      .email(t("validation.emailInvalid") || "Invalid email address"),
     mobileNo: z
       .string()
       .min(1, t("validation.mobileRequired") || "Mobile number is required")
@@ -60,7 +66,9 @@ export default function UsersListPage() {
           return /^\d{8}$/.test(value);
         },
         {
-          message: t("validation.mobileInvalidLength") || "Mobile number must be exactly 8 digits",
+          message:
+            t("validation.mobileInvalidLength") ||
+            "Mobile number must be exactly 8 digits",
         }
       ),
     isActive: z.boolean(),
@@ -201,7 +209,10 @@ export default function UsersListPage() {
   // Show fetch error toast
   useEffect(() => {
     if (isFetchError && fetchError) {
-      const errorMessage = getErrorMessage(fetchError, t("admin.users.createError") || "Failed to load users");
+      const errorMessage = getErrorMessage(
+        fetchError,
+        t("admin.users.createError") || "Failed to load users"
+      );
       toast.error(errorMessage);
     }
   }, [isFetchError, fetchError, t]);
@@ -283,7 +294,10 @@ export default function UsersListPage() {
       try {
         return await userService.add(data);
       } catch (error) {
-        const errorMessage = getErrorMessage(error, t("admin.users.createError") || "Failed to create user");
+        const errorMessage = getErrorMessage(
+          error,
+          t("admin.users.createError") || "Failed to create user"
+        );
         throw new Error(errorMessage);
       }
     },
@@ -297,7 +311,10 @@ export default function UsersListPage() {
       setEditingUser(null);
     },
     onError: (error: Error) => {
-      const errorMessage = getErrorMessage(error, t("admin.users.createError") || "Failed to create user");
+      const errorMessage = getErrorMessage(
+        error,
+        t("admin.users.createError") || "Failed to create user"
+      );
       toast.error(errorMessage);
 
       // Handle backend validation errors
@@ -327,7 +344,10 @@ export default function UsersListPage() {
       try {
         return await userService.update(data);
       } catch (error) {
-        const errorMessage = getErrorMessage(error, t("admin.users.updateError") || "Failed to update user");
+        const errorMessage = getErrorMessage(
+          error,
+          t("admin.users.updateError") || "Failed to update user"
+        );
         throw new Error(errorMessage);
       }
     },
@@ -341,7 +361,10 @@ export default function UsersListPage() {
       reset();
     },
     onError: (error: Error) => {
-      const errorMessage = getErrorMessage(error, t("admin.users.updateError") || "Failed to update user");
+      const errorMessage = getErrorMessage(
+        error,
+        t("admin.users.updateError") || "Failed to update user"
+      );
       toast.error(errorMessage);
 
       // Handle backend validation errors
@@ -371,7 +394,10 @@ export default function UsersListPage() {
       try {
         return await userService.remove(id);
       } catch (error) {
-        const errorMessage = getErrorMessage(error, t("admin.users.deleteError") || "Failed to delete user");
+        const errorMessage = getErrorMessage(
+          error,
+          t("admin.users.deleteError") || "Failed to delete user"
+        );
         throw new Error(errorMessage);
       }
     },
@@ -383,7 +409,10 @@ export default function UsersListPage() {
       setDeleteConfirmation({ isOpen: false, user: null });
     },
     onError: (error: Error) => {
-      const errorMessage = getErrorMessage(error, t("admin.users.deleteError") || "Failed to delete user");
+      const errorMessage = getErrorMessage(
+        error,
+        t("admin.users.deleteError") || "Failed to delete user"
+      );
       toast.error(errorMessage);
       setDeleteConfirmation({ isOpen: false, user: null });
     },
@@ -406,7 +435,8 @@ export default function UsersListPage() {
       setEmailValidation({
         checking: false,
         available: false,
-        message: t("validation.emailInvalid") || "Please enter a valid email address",
+        message:
+          t("validation.emailInvalid") || "Please enter a valid email address",
       });
       return;
     }
@@ -432,7 +462,8 @@ export default function UsersListPage() {
     setEmailValidation({
       checking: true,
       available: null,
-      message: t("validation.emailChecking") || "Checking email availability...",
+      message:
+        t("validation.emailChecking") || "Checking email availability...",
     });
 
     try {
@@ -448,7 +479,10 @@ export default function UsersListPage() {
         setEmailValidation({
           checking: false,
           available: false,
-          message: response.failureReason || t("validation.emailAlreadyRegistered") || "Email already registered",
+          message:
+            response.failureReason ||
+            t("validation.emailAlreadyRegistered") ||
+            "Email already registered",
         });
       }
     } catch (error: any) {
@@ -459,13 +493,17 @@ export default function UsersListPage() {
           checking: false,
           available: false,
           message:
-            error.response.data?.failureReason || t("validation.emailAlreadyRegistered") || "Email already registered",
+            error.response.data?.failureReason ||
+            t("validation.emailAlreadyRegistered") ||
+            "Email already registered",
         });
       } else {
         setEmailValidation({
           checking: false,
           available: null,
-          message: t("validation.emailCheckError") || "Error checking email availability",
+          message:
+            t("validation.emailCheckError") ||
+            "Error checking email availability",
         });
       }
     }
@@ -490,7 +528,9 @@ export default function UsersListPage() {
       setMobileValidation({
         checking: false,
         available: false,
-        message: t("validation.mobileInvalidLength") || "Mobile number must be exactly 8 digits",
+        message:
+          t("validation.mobileInvalidLength") ||
+          "Mobile number must be exactly 8 digits",
       });
       return;
     }
@@ -500,7 +540,9 @@ export default function UsersListPage() {
       setMobileValidation({
         checking: false,
         available: false,
-        message: t("validation.mobileNumbersOnly") || "Mobile number can only contain numbers",
+        message:
+          t("validation.mobileNumbersOnly") ||
+          "Mobile number can only contain numbers",
       });
       return;
     }
@@ -526,7 +568,9 @@ export default function UsersListPage() {
     setMobileValidation({
       checking: true,
       available: null,
-      message: t("validation.mobileChecking") || "Checking mobile number availability...",
+      message:
+        t("validation.mobileChecking") ||
+        "Checking mobile number availability...",
     });
 
     try {
@@ -538,13 +582,17 @@ export default function UsersListPage() {
         setMobileValidation({
           checking: false,
           available: true,
-          message: t("validation.mobileAvailable") || "Mobile number is available",
+          message:
+            t("validation.mobileAvailable") || "Mobile number is available",
         });
       } else {
         setMobileValidation({
           checking: false,
           available: false,
-          message: response.failureReason || t("validation.mobileAlreadyRegistered") || "Mobile number already registered",
+          message:
+            response.failureReason ||
+            t("validation.mobileAlreadyRegistered") ||
+            "Mobile number already registered",
         });
       }
     } catch (error: any) {
@@ -556,13 +604,16 @@ export default function UsersListPage() {
           available: false,
           message:
             error.response.data?.failureReason ||
-            t("validation.mobileAlreadyRegistered") || "Mobile number already registered",
+            t("validation.mobileAlreadyRegistered") ||
+            "Mobile number already registered",
         });
       } else {
         setMobileValidation({
           checking: false,
           available: null,
-          message: t("validation.mobileCheckError") || "Error checking mobile number availability",
+          message:
+            t("validation.mobileCheckError") ||
+            "Error checking mobile number availability",
         });
       }
     }
@@ -641,13 +692,19 @@ export default function UsersListPage() {
     try {
       // Check if mutations are in progress
       if (createMutation.isPending || updateMutation.isPending) {
-        toast.error(t("common.pleaseWait") || "Please wait for the current operation to complete");
+        toast.error(
+          t("common.pleaseWait") ||
+            "Please wait for the current operation to complete"
+        );
         return;
       }
 
       // Check if email or mobile validations are in progress
       if (emailValidation.checking || mobileValidation.checking) {
-        toast.error(t("common.pleaseWait") || "Please wait for email/mobile validation to complete");
+        toast.error(
+          t("common.pleaseWait") ||
+            "Please wait for email/mobile validation to complete"
+        );
         return;
       }
 
@@ -657,14 +714,18 @@ export default function UsersListPage() {
 
       // Email validation - only check if validation explicitly failed
       if (emailValidation.available === false) {
-        toast.error(t("validation.fixEmailErrors") || "Please fix email validation errors before submitting");
+        toast.error(
+          t("validation.fixEmailErrors") ||
+            "Please fix email validation errors before submitting"
+        );
         return;
       }
 
       // Mobile validation - only check if validation explicitly failed
       if (mobileValidation.available === false) {
         toast.error(
-          t("validation.fixMobileErrors") || "Please fix mobile number validation errors before submitting"
+          t("validation.fixMobileErrors") ||
+            "Please fix mobile number validation errors before submitting"
         );
         return;
       }
@@ -675,7 +736,10 @@ export default function UsersListPage() {
           // Trigger validation and wait briefly
           await validateEmailAvailability(currentEmail);
           if (emailValidation.checking) {
-            toast.error(t("validation.waitEmailValidation") || "Please wait for email validation to complete");
+            toast.error(
+              t("validation.waitEmailValidation") ||
+                "Please wait for email validation to complete"
+            );
             return;
           }
         }
@@ -684,7 +748,10 @@ export default function UsersListPage() {
           // Trigger validation and wait briefly
           await validateMobileAvailability(currentMobile);
           if (mobileValidation.checking) {
-            toast.error(t("validation.waitMobileValidation") || "Please wait for mobile number validation to complete");
+            toast.error(
+              t("validation.waitMobileValidation") ||
+                "Please wait for mobile number validation to complete"
+            );
             return;
           }
         }
@@ -718,7 +785,10 @@ export default function UsersListPage() {
 
   const handleDeleteUser = (user: User) => {
     if (!user.id) {
-      toast.error(t("admin.users.cannotDeleteInvalidId") || "Cannot delete user: Invalid user ID");
+      toast.error(
+        t("admin.users.cannotDeleteInvalidId") ||
+          "Cannot delete user: Invalid user ID"
+      );
       return;
     }
 
@@ -732,7 +802,10 @@ export default function UsersListPage() {
     if (deleteConfirmation.user?.id) {
       deleteMutation.mutate(deleteConfirmation.user.id);
     } else {
-      toast.error(t("admin.users.cannotDeleteInvalidId") || "Cannot delete user: Invalid user ID");
+      toast.error(
+        t("admin.users.cannotDeleteInvalidId") ||
+          "Cannot delete user: Invalid user ID"
+      );
       setDeleteConfirmation({ isOpen: false, user: null });
     }
   };
@@ -743,7 +816,10 @@ export default function UsersListPage() {
 
   const handleResetPassword = (user: User) => {
     if (!user.email) {
-      toast.error(t("admin.users.cannotResetPassword") || "Cannot reset password: User email is missing");
+      toast.error(
+        t("admin.users.cannotResetPassword") ||
+          "Cannot reset password: User email is missing"
+      );
       return;
     }
     setResettingUser(user);
@@ -796,10 +872,15 @@ export default function UsersListPage() {
       console.log("Exporting users with params:", exportParams);
       await exportToExcel("User", exportParams);
 
-      toast.success(t("admin.users.exportSuccess") || "Users exported successfully");
+      toast.success(
+        t("admin.users.exportSuccess") || "Users exported successfully"
+      );
     } catch (error) {
       console.error("Export failed:", error);
-      const errorMessage = getErrorMessage(error, t("admin.users.exportError") || "Failed to export users");
+      const errorMessage = getErrorMessage(
+        error,
+        t("admin.users.exportError") || "Failed to export users"
+      );
       toast.error(errorMessage);
     } finally {
       setIsExporting(false);
@@ -874,7 +955,7 @@ export default function UsersListPage() {
               setEditingUser(row.original);
               setIsModalOpen(true);
             }}
-            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
             title={t("common.edit") || "Edit user"}
             disabled={updateMutation.isPending}
           >
@@ -883,7 +964,7 @@ export default function UsersListPage() {
           <button
             type="button"
             onClick={() => handleResetPassword(row.original)}
-            className="p-2 text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50 cursor-pointer"
             title={t("admin.users.resetPassword") || "Reset Password"}
           >
             <IconKey />
@@ -891,7 +972,7 @@ export default function UsersListPage() {
           <button
             type="button"
             onClick={() => handleDeleteUser(row.original)}
-            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+            className="p-2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
             title={t("common.delete") || "Delete user"}
             disabled={deleteMutation.isPending}
           >
@@ -921,7 +1002,9 @@ export default function UsersListPage() {
         onConfirm={handleConfirmDelete}
         itemName={
           deleteConfirmation.user
-            ? `${t("admin.users.user")}: ${deleteConfirmation.user.firstName} ${deleteConfirmation.user.lastName} (${deleteConfirmation.user.email})`
+            ? `${t("admin.users.user")}: ${deleteConfirmation.user.firstName} ${
+                deleteConfirmation.user.lastName
+              } (${deleteConfirmation.user.email})`
             : undefined
         }
         confirmationMessage={
@@ -945,6 +1028,7 @@ export default function UsersListPage() {
               icon={IconPlus}
               iconPosition="left"
               iconSize="w-5 h-5"
+              className="cursor-pointer"
               disabled={createMutation.isPending}
             >
               {t("admin.users.addUser") || "Add User"}
@@ -973,6 +1057,7 @@ export default function UsersListPage() {
               icon={IconUpload}
               iconPosition="left"
               iconSize="w-5 h-5"
+              className="cursor-pointer"
             >
               {isExporting
                 ? t("common.exporting") || "Exporting..."
@@ -999,16 +1084,21 @@ export default function UsersListPage() {
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
               />
             </svg>
-            <span className="font-medium">{t("common.errorLoading") || "Failed to load users"}</span>
+            <span className="font-medium">
+              {t("common.errorLoading") || "Failed to load users"}
+            </span>
           </div>
           <p className="text-red-700 text-sm mt-1">
-            {getErrorMessage(fetchError, t("common.retry") || "Please try again later")}
+            {getErrorMessage(
+              fetchError,
+              t("common.retry") || "Please try again later"
+            )}
           </p>
           <Button
             variant="outline"
             size="sm"
             onClick={() => queryClient.refetchQueries({ queryKey: ["users"] })}
-            className="mt-2"
+            className="mt-2 cursor-pointer"
           >
             {t("common.retry") || "Retry"}
           </Button>
@@ -1019,7 +1109,7 @@ export default function UsersListPage() {
       {isLoading ? (
         <div className="bg-white rounded-lg shadow p-8 text-center">
           <div
-            className="inline-block animate-spin rounded-full h-8 w-8 border-b-2"
+            className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 cursor-pointer"
             style={{ borderColor: "var(--color-primary)" }}
           ></div>
           <p className="mt-3 text-sm text-gray-600">
@@ -1049,14 +1139,16 @@ export default function UsersListPage() {
             /* No Records Found Message */
             <div className="p-8 text-center">
               <div className="flex flex-col items-center justify-center">
-                <IconNoRecords className="w-16 h-16 text-gray-400 mb-4" />
+                <IconNoRecords className="w-16 h-16 text-gray-400 mb-4 cursor-pointer" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
                   {t("common.noRecordsFound") || "No records found"}
                 </h3>
                 <p className="text-gray-500 text-sm mb-4">
                   {searchTerm || statusFilter !== "All"
-                    ? t("admin.partners.adjustSearch") || "Try adjusting your search or filter criteria"
-                    : t("admin.users.noUsersCreated") || "No users have been created yet"}
+                    ? t("admin.partners.adjustSearch") ||
+                      "Try adjusting your search or filter criteria"
+                    : t("admin.users.noUsersCreated") ||
+                      "No users have been created yet"}
                 </p>
                 {!searchTerm && statusFilter === "All" && (
                   <Button
@@ -1139,14 +1231,14 @@ export default function UsersListPage() {
               disabled={createMutation.isPending || updateMutation.isPending}
             />
             {emailValidation.checking && (
-              <div className="flex items-center gap-2 text-blue-600 text-sm">
+              <div className="flex items-center gap-2 text-blue-600 text-sm cursor-pointer">
                 <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
                 {t("validation.emailChecking") || "Checking availability..."}
               </div>
             )}
             {emailValidation.available === true &&
               !emailValidation.checking && (
-                <div className="text-green-600 text-sm flex items-center gap-1">
+                <div className="text-green-600 text-sm flex items-center gap-1 cursor-pointer">
                   <svg
                     className="w-4 h-4"
                     fill="currentColor"
@@ -1163,7 +1255,7 @@ export default function UsersListPage() {
               )}
             {emailValidation.available === false &&
               !emailValidation.checking && (
-                <div className="text-red-600 text-sm flex items-center gap-1">
+                <div className="text-red-600 text-sm flex items-center gap-1 cursor-pointer">
                   <svg
                     className="w-4 h-4"
                     fill="currentColor"
@@ -1180,7 +1272,7 @@ export default function UsersListPage() {
               )}
             {/* Show Zod validation errors only if custom validation hasn't already shown an error */}
             {errors.email?.message && emailValidation.available !== false && (
-              <div className="text-red-600 text-sm flex items-center gap-1">
+              <div className="text-red-600 text-sm flex items-center gap-1 cursor-pointer">
                 <svg
                   className="w-4 h-4"
                   fill="currentColor"
@@ -1217,14 +1309,14 @@ export default function UsersListPage() {
               disabled={createMutation.isPending || updateMutation.isPending}
             />
             {mobileValidation.checking && (
-              <div className="flex items-center gap-2 text-blue-600 text-sm">
+              <div className="flex items-center gap-2 text-blue-600 text-sm cursor-pointer">
                 <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
                 {t("validation.mobileChecking") || "Checking availability..."}
               </div>
             )}
             {mobileValidation.available === true &&
               !mobileValidation.checking && (
-                <div className="text-green-600 text-sm flex items-center gap-1">
+                <div className="text-green-600 text-sm flex items-center gap-1 cursor-pointer">
                   <svg
                     className="w-4 h-4"
                     fill="currentColor"
@@ -1241,7 +1333,7 @@ export default function UsersListPage() {
               )}
             {mobileValidation.available === false &&
               !mobileValidation.checking && (
-                <div className="text-red-600 text-sm flex items-center gap-1">
+                <div className="text-red-600 text-sm flex items-center gap-1 cursor-pointer">
                   <svg
                     className="w-4 h-4"
                     fill="currentColor"
@@ -1259,7 +1351,7 @@ export default function UsersListPage() {
             {/* Show Zod validation errors only if custom validation hasn't already shown an error */}
             {errors.mobileNo?.message &&
               mobileValidation.available !== false && (
-                <div className="text-red-600 text-sm flex items-center gap-1">
+                <div className="text-red-600 text-sm flex items-center gap-1 cursor-pointer">
                   <svg
                     className="w-4 h-4"
                     fill="currentColor"
@@ -1286,7 +1378,7 @@ export default function UsersListPage() {
           {/* Improved Form validation summary */}
           {Object.keys(errors).length > 0 && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <div className="flex items-center gap-2 text-red-800 text-sm font-medium">
+              <div className="flex items-center gap-2 text-red-800 text-sm font-medium cursor-pointer">
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -1300,9 +1392,10 @@ export default function UsersListPage() {
                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
                   />
                 </svg>
-                {t("common.pleaseFixErrors") || "Please fix the following errors:"}
+                {t("common.pleaseFixErrors") ||
+                  "Please fix the following errors:"}
               </div>
-              <ul className="text-red-700 text-sm mt-1 list-disc list-inside">
+              <ul className="text-red-700 text-sm mt-1 list-disc list-inside cursor-pointer">
                 {errors.firstName && <li>{errors.firstName.message}</li>}
                 {errors.lastName && <li>{errors.lastName.message}</li>}
                 {errors.email?.message && <li>{errors.email.message}</li>}
@@ -1317,7 +1410,7 @@ export default function UsersListPage() {
               type="button"
               variant="outline"
               onClick={handleModalClose}
-              className="flex-1"
+              className="flex-1 cursor-pointer"
               disabled={createMutation.isPending || updateMutation.isPending}
             >
               {t("common.cancel") || "Cancel"}
@@ -1326,7 +1419,7 @@ export default function UsersListPage() {
               type="submit"
               variant="secondary"
               disabled={createMutation.isPending || updateMutation.isPending}
-              className="flex-1"
+              className="flex-1 cursor-pointer"
             >
               {createMutation.isPending || updateMutation.isPending
                 ? t("common.Submitting") || "Submitting..."
@@ -1344,7 +1437,9 @@ export default function UsersListPage() {
         onClose={handlePasswordModalClose}
         onSuccess={() => {
           toast.success(
-            t("admin.users.passwordResetSuccess", { email: resettingUser?.email }) || `Password reset successfully for ${resettingUser?.email}`
+            t("admin.users.passwordResetSuccess", {
+              email: resettingUser?.email,
+            }) || `Password reset successfully for ${resettingUser?.email}`
           );
           setResettingUser(null);
         }}
