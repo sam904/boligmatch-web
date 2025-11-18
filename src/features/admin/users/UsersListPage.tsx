@@ -1055,7 +1055,7 @@ export default function UsersListPage() {
                 </h3>
                 <p className="text-gray-500 text-sm mb-4">
                   {searchTerm || statusFilter !== "All"
-                    ? t("common.adjustSearch") || "Try adjusting your search or filter criteria"
+                    ? t("admin.partners.adjustSearch") || "Try adjusting your search or filter criteria"
                     : t("admin.users.noUsersCreated") || "No users have been created yet"}
                 </p>
                 {!searchTerm && statusFilter === "All" && (
