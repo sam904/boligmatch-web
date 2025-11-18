@@ -10,6 +10,7 @@ import { partnerService } from "../services/partner.service";
 import footerLogo from "/src/assets/userImages/footerLogo.svg";
 import subCategoryGradient from "/src/assets/userImages/subCatGradient.png";
 import nextArrow from "/src/assets/userImages/arrow_right.png";
+import Footer from "./Footer";
 
 interface SubCategoryData {
   id: number;
@@ -83,9 +84,8 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
     <button
       onClick={onMoreInfo}
       disabled={isLoading}
-      className={`font-bold text-[14px] md:text-[16px] hover:underline cursor-pointer ${
-        isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
-      }`}
+      className={`font-bold text-[14px] md:text-[16px] hover:underline cursor-pointer ${isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
+        }`}
     >
       {isLoading ? "Loading..." : "More info"}
     </button>
@@ -238,11 +238,10 @@ const UserSupplier = () => {
                 key={sub.id}
                 onClick={() => setActive(sub.id)}
                 className={`flex flex-col items-center gap-1 py-2 rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent
-                ${
-                  active === sub.id
+                ${active === sub.id
                     ? "bg-[#95C11F] text-white shadow-md px-2"
                     : "bg-transparent text-white hover:bg-white/10 hover:text-[#b6e924] px-3.5"
-                }`}
+                  }`}
                 aria-pressed={active === sub.id}
                 title={sub.subCategory}
               >
@@ -288,11 +287,10 @@ const UserSupplier = () => {
               key={sub.id}
               onClick={() => setActive(sub.id)}
               className={`flex items-center gap-1 md:gap-[8px] px-3 md:px-2 py-2 rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
-              ${
-                active === sub.id
+              ${active === sub.id
                   ? "bg-[#95C11F] text-black shadow-md"
                   : "bg-transparent hover:bg-white/10 hover:text-[#b6e924]"
-              }`}
+                }`}
               aria-pressed={active === sub.id}
               title={sub.subCategory}
             >
@@ -300,9 +298,8 @@ const UserSupplier = () => {
                 <img
                   src={sub.subCategoryIconUrl}
                   alt={sub.subCategory}
-                  className={`w-[24px] h-[24px] md:w-[28px] md:h-[28px] relative opacity-100 rounded object-contain ${
-                    active === sub.id ? "" : "brightness-0 invert"
-                  }`}
+                  className={`w-[24px] h-[24px] md:w-[28px] md:h-[28px] relative opacity-100 rounded object-contain ${active === sub.id ? "" : "brightness-0 invert"
+                    }`}
                   onError={(e) => {
                     (e.currentTarget as HTMLImageElement).style.display =
                       "none";
@@ -357,7 +354,7 @@ const UserSupplier = () => {
         </div>
       </section>
 
-      <footer className="bg-[#01351f] text-white text-center p-4">
+      {/* <footer className="bg-[#01351f] text-white text-center p-4">
         <div className="flex flex-col items-center">
           <div className="text-center">
             <div className="mb-8">
@@ -375,7 +372,8 @@ const UserSupplier = () => {
             33160437
           </p>
         </div>
-      </footer>
+      </footer> */}
+      <Footer />
     </div>
   );
 };

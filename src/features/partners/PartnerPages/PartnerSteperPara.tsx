@@ -1,6 +1,7 @@
 import partnerCartImg from "/src/assets/userImages/partnerCardImg.svg";
 import sampleImg from "/src/assets/userImages/footerLogo.svg";
 import { useTranslation } from "react-i18next";
+import Footer from "../../../pages/Footer";
 
 function ParentSteperPara() {
   const { t } = useTranslation();
@@ -80,7 +81,7 @@ function ParentSteperPara() {
           </div>
         </div>
       </div>
-      <div className="bg-[#01351f] flex flex-col justify-center items-center py-8 sm:py-12 md:py-16 lg:py-22 space-y-2 px-4">
+      {/* <div className="bg-[#01351f] flex flex-col justify-center items-center py-8 sm:py-12 md:py-16 lg:py-22 space-y-2 px-4">
         <div className="text-center">
           <div className="mb-3 sm:mb-4">
             <img
@@ -108,7 +109,8 @@ function ParentSteperPara() {
           <br className="sm:hidden" />
           <span className="hidden sm:inline"> </span>CVR 33160437
         </p>
-      </div>
+      </div> */}
+      <Footer />
     </div>
   );
 }

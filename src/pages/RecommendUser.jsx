@@ -141,6 +141,7 @@ function RecommendUser() {
                 redirectTo={location.pathname}
                 roleTarget={modalRole}
                 showSignUp={true}
+                hideCloseIcon={true}
             />
             {/* Hero Section with Video/Image */}
             <div

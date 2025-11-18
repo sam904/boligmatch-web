@@ -3,6 +3,7 @@ import chooseUserImg from "/src/assets/userImages/choose_userImg.svg";
 import choosePartnerImg from "/src/assets/userImages/choose_partnerImg.svg";
 import { useTranslation } from "react-i18next";
 import ReactDOM from "react-dom";
+import { useEffect } from "react";
 
 type Props = {
   open: boolean;
@@ -13,6 +14,15 @@ type Props = {
 
 export default function LoginChoiceModal({ open, onClose, onSelect, closable = true }: Props) {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!open) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, [open]);
 
   const goToLogin = (role: "user" | "partner") => {
     try {

@@ -31,6 +31,7 @@ import trustPilotLogo from "/src/assets/userImages/boligmatchLogo2.png";
 import startImg from "/src/assets/userImages/star.png";
 import servicesImg from "/src/assets/supplierProfile/services.png";
 import factsImg from "/src/assets/userImages/faktaLogo.svg";
+import Footer from "./Footer";
 
 const SupplierProfile = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -382,7 +383,7 @@ const SupplierProfile = () => {
             <img src={gradient} alt="" />
           </div> */}
             <div
-              className="flex md:gap-10 gap-3 justify-center absolute md:bottom-0 w-full md:py-8 pb-0"
+              className="flex md:gap-10 gap-5 justify-center absolute md:bottom-0 w-full md:py-8 pb-0"
               style={{
                 background:
                   "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
@@ -456,7 +457,7 @@ const SupplierProfile = () => {
                   />
                 </div>
                 <h3 className="text-[32px] font-[800] mb-5 text-center">
-                  Anmeldelser
+                  {t("supplierProfile.reviewsTitle")}
                 </h3>
                 <div className="space-y-10">
                   {reviews.length > 0 ? (
@@ -642,7 +643,9 @@ const SupplierProfile = () => {
                   {partnerData?.textField2 && (
                     <div
                       className="text-left"
-                      dangerouslySetInnerHTML={{ __html: partnerData.textField2 }}
+                      dangerouslySetInnerHTML={{
+                        __html: partnerData.textField2,
+                      }}
                     ></div>
                   )}
                 </div>
@@ -661,6 +664,7 @@ const SupplierProfile = () => {
             </div>
           </div>
         </div>
+        <Footer />
 
         {/* Modals */}
         {activeModal && (

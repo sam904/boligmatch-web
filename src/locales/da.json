@@ -569,6 +569,19 @@
     "emailInvalid": "Ugyldig email adresse",
     "passwordRequired": "Adgangskode er påkrævet",
     "passwordMinLength": "Adgangskode skal være mindst 6 tegn"
+  },
+  "manageProfile": {
+    "title": "Administrér profil",
+    "firstName": "Fornavn",
+    "middleName": "Mellemnavn",
+    "lastName": "Efternavn",
+    "phone": "Mobilnr.",
+    "email": "Email",
+    "saveChanges": "Gem ændringer",
+    "changePasswordTitle": "Skift adgangskode",
+    "newPassword": "Ny adgangskode",
+    "confirmPassword": "Bekræft adgangskode",
+    "updatePassword": "Skift adgangskode"
   }
   ,
   "userDashboard": {
@@ -576,7 +589,17 @@
       "partners": "Partnere",
       "favorites": "Favoritter",
       "messages": "Beskeder"
-    }
+    },
+    "favoritesTitle": "Mine Favoritter",
+    "conversationsTitle": "Mine Samtaler",
+    "loading": "Indlæser...",
+    "loadingFavorites": "Indlæser favoritter...",
+    "loadingConversations": "Indlæser samtaler...",
+    "noFavorites": "Ingen favoritter fundet",
+    "readMore": "Læs mere",
+    "moreInfo": "Læs mere",
+    "partnerLabel": "Partner",
+    "subjectLabel": "Emne"
   },
   "supplierProfile": {
     "contactButton": "Kontakt Leverandør",
@@ -584,6 +607,7 @@
     "removeFromFavorites":"Fjern fra favoritter",
     "recommendation":"Anbefal os til andre",
     "conversation":"Samtaler",
+    "reviewsTitle": "Anmeldelser",
     "recommendModal": {
       "title": "Anbefal os til andre",
       "description": "Teanker du at en ven kunne gøre brug af vores service, så send en besked til vedkommende her",

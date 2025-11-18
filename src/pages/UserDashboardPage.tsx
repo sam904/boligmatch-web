@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import userDashboard from "/src/assets/userImages/profileboligmatchImg.png";
+import userDashboard from "/src/assets/userImages/profileboligmatchIm2.jpeg";
 import dashboard1 from "/src/assets/userImages/dashboard1.png";
 import dashboard2 from "/src/assets/userImages/dashboard1.png";
 import dashboard3 from "/src/assets/userImages/dashboard1.png";
@@ -19,9 +19,9 @@ import chatModelImg from "/src/assets/userImages/chatModelImg.svg";
 import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { toast } from "sonner";
-import footerLogo from "/src/assets/userImages/footerLogo.svg";
 import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg";
 import { partnerService } from "../services/partner.service";
+import Footer from "./Footer";
 
 interface FavouriteItem {
   id?: number;
@@ -316,11 +316,10 @@ export default function UserDashboardPage() {
             <div className="flex flex-row sm:flex-row items-center justify-between sm:justify-center gap-2 sm:gap-4 md:gap-6 max-w-4xl mx-auto px-2">
               <button
                 onClick={handlePartnersClick}
-                className={`${
-                  activeView === "default"
-                    ? "bg-[#145939] text-white"
-                    : "bg-[#95c11f] text-white"
-                } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer min-h-[48px]`}
+                className={`${activeView === "default"
+                  ? "bg-[#145939] text-white"
+                  : "bg-[#95c11f] text-white"
+                  } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer min-h-[48px]`}
                 type="button"
               >
                 <img
@@ -335,11 +334,10 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={handleFavoritesClick}
-                className={`${
-                  activeView === "favorites"
-                    ? "bg-[#145939] text-white"
-                    : "bg-[#95c11f] text-white"
-                } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer min-h-[48px]`}
+                className={`${activeView === "favorites"
+                  ? "bg-[#145939] text-white"
+                  : "bg-[#95c11f] text-white"
+                  } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer min-h-[48px]`}
                 type="button"
               >
                 <img
@@ -357,11 +355,10 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={handleMessagesClick}
-                className={`${
-                  activeView === "messages"
-                    ? "bg-[#145939] text-white"
-                    : "bg-[#95c11f] text-white"
-                } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition font-medium cursor-pointer min-h-[48px]`}
+                className={`${activeView === "messages"
+                  ? "bg-[#145939] text-white"
+                  : "bg-[#95c11f] text-white"
+                  } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition font-medium cursor-pointer min-h-[48px]`}
                 type="button"
               >
                 <img
@@ -381,7 +378,7 @@ export default function UserDashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
           {loading && activeView === "default" ? (
             <div className="flex justify-center items-center h-64">
-              <div className="text-white text-lg">Loading...</div>
+              <div className="text-white text-lg">{t("userDashboard.loading")}</div>
             </div>
           ) : (
             <>
@@ -442,12 +439,12 @@ export default function UserDashboardPage() {
               {activeView === "favorites" && (
                 <div className="space-y-4">
                   <h2 className="text-white text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-                    Mine Favoritter
+                    {t("userDashboard.favoritesTitle")}
                   </h2>
                   {favoritesLoading ? (
                     <div className="flex justify-center items-center h-64">
                       <div className="text-white text-base sm:text-lg">
-                        Loading favorites...
+                        {t("userDashboard.loadingFavorites")}
                       </div>
                     </div>
                   ) : favorites.length > 0 ? (
@@ -457,7 +454,7 @@ export default function UserDashboardPage() {
                         {favorites.map((favorite) => (
                           <div
                             key={favorite.id}
-                            className="bg-white rounded-lg p-4 flex items-center gap-3 border border-gray-100 cursor-pointer"
+                            className="bg-white rounded-lg p-3 flex items-center gap-3 border border-gray-100 cursor-pointer"
                             onClick={() => handleFavoriteMoreInfo(favorite)}
                             role="button"
                             tabIndex={0}
@@ -468,30 +465,29 @@ export default function UserDashboardPage() {
                               }
                             }}
                           >
-                            <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
-                              <img
-                                className="w-[70px]"
-                                src={favorite.logoUrl}
-                                alt=""
-                              />
+                            <div className="w-12 h-12 flex items-center justify-center flex-shrink-0 bg-white rounded">
+                              {favorite.logoUrl && (
+                                <img
+                                  className="w-12 h-12 object-contain"
+                                  src={favorite.logoUrl}
+                                  alt=""
+                                />
+                              )}
                             </div>
 
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-[20px] font-[800] text-[#000000]">
+                              <div className="flex flex-col gap-1">
+                                <span className="text-sm font-extrabold text-[#000000] truncate">
                                   {favorite.partnerName ||
                                     favorite.businessName ||
                                     "N/A"}
                                 </span>
-                              </div>
-                            
-                            </div>
-                            <div className="ml-auto text-right">
-                              <div className="text-[12px] text-[#6b7280]">
-                                {getFavouriteCategory(favorite)}
-                              </div>
-                              <div className="text-[14px] font-[800] text-[#000000]">
-                                {getFavouriteSubCategory(favorite)}
+                                <span className="text-[11px] text-[#6b7280] truncate">
+                                  {getFavouriteCategory(favorite)}
+                                </span>
+                                <span className="text-[12px] font-semibold text-[#000000] truncate">
+                                  {getFavouriteSubCategory(favorite)}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -549,7 +545,7 @@ export default function UserDashboardPage() {
                                 onClick={() => handleFavoriteMoreInfo(favorite)}
                                 className="mt-auto text-sm font-semibold text-[#01351f] hover:text-[#145939] transition cursor-pointer"
                               >
-                                More info
+                                {t("userDashboard.moreInfo")}
                               </button>
                             </div>
                           </div>
@@ -558,7 +554,7 @@ export default function UserDashboardPage() {
                     </>
                   ) : (
                     <div className="text-white text-base sm:text-lg text-center py-8">
-                      No favorites found
+                      {t("userDashboard.noFavorites")}
                     </div>
                   )}
                 </div>
@@ -568,12 +564,12 @@ export default function UserDashboardPage() {
               {activeView === "messages" && (
                 <div className="space-y-4">
                   <h2 className="text-white text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-                    Mine Samtaler
+                    {t("userDashboard.conversationsTitle")}
                   </h2>
                   {conversationsLoading ? (
                     <div className="flex justify-center items-center h-64">
                       <div className="text-white text-base sm:text-lg">
-                        Loading conversations...
+                        {t("userDashboard.loadingConversations")}
                       </div>
                     </div>
                   ) : conversations.length > 0 ? (
@@ -588,7 +584,7 @@ export default function UserDashboardPage() {
                             <div className="flex items-start justify-between mb-3">
                               <div>
                                 <div className="text-sm font-extrabold text-[#052011]">
-                                  Partner
+                                  {t("userDashboard.partnerLabel")}
                                 </div>
                                 <div className="text-sm text-[#052011]">
                                   {conversation.receiverName || "-"}
@@ -601,7 +597,7 @@ export default function UserDashboardPage() {
                                 }
                               >
                                 <span className="text-sm font-semibold">
-                                  Læs mere
+                                  {t("userDashboard.readMore")}
                                 </span>
                                 <img
                                   src={chatModelImg}
@@ -612,7 +608,7 @@ export default function UserDashboardPage() {
                             </div>
                             <div className="mt-1">
                               <div className="text-sm font-extrabold text-[#052011] mb-1">
-                                Emne
+                                {t("userDashboard.subjectLabel")}
                               </div>
                               <div className="text-sm text-[#052011] line-clamp-2">
                                 {conversation.messageSubject || "-"}
@@ -632,7 +628,7 @@ export default function UserDashboardPage() {
                             <div className="flex items-start justify-between mb-4">
                               <div>
                                 <div className="text-base font-extrabold text-[#052011]">
-                                  Partner
+                                  {t("userDashboard.partnerLabel")}
                                 </div>
                                 <div className="text-sm text-[#052011]">
                                   {conversation.receiverName || "-"}
@@ -656,7 +652,7 @@ export default function UserDashboardPage() {
                             </div>
                             <div>
                               <div className="text-base font-extrabold text-[#052011] mb-1">
-                                Emne
+                                {t("userDashboard.subjectLabel")}
                               </div>
                               <div className="text-sm text-[#052011] line-clamp-2">
                                 {conversation.messageSubject || "-"}
@@ -734,7 +730,7 @@ export default function UserDashboardPage() {
       )}
 
       {/* Footer */}
-      <footer className="bg-[#01351f] text-white text-center p-4 sm:p-6">
+      {/* <footer className="bg-[#01351f] text-white text-center p-4 sm:p-6">
         <div className="flex flex-col items-center">
           <div className="mb-6 sm:mb-8">
             <div className="w-40 sm:w-48 md:w-52 h-10 sm:h-11 mx-auto">
@@ -750,7 +746,8 @@ export default function UserDashboardPage() {
             33160437
           </p>
         </div>
-      </footer>
+      </footer> */}
+      <Footer />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import partnerRingImg from "/src/assets/userImages/partnerringImg.png";
 import sampleImg from "/src/assets/userImages/footerLogo.svg";
 import { partnerService } from "../../../services/partner.service";
 import { useEffect, useRef, useState } from "react";
+import Footer from "../../../pages/Footer";
 
 function PartnerStatDetails({ partnerData }: { partnerData: any }) {
   const [partnerCount, setPartnerCount] = useState<{
@@ -102,14 +103,15 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
         </div>
       </div>
 
-      <div className="bg-[#01351f] flex flex-col justify-center items-center py-2 space-y-2">
+      {/* <div className="bg-[#01351f] flex flex-col justify-center items-center py-2 space-y-2">
         <div className="text-center">
           <img src={sampleImg} alt="" />
         </div>
         <p className="text-white text-sm text-center">
           Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
         </p>
-      </div>
+      </div> */}
+      <Footer />
     </>
   );
 }

@@ -5,9 +5,12 @@ import { userService } from "../services/user.service";
 import { showSignupSuccessToast, showSignupErrorToast } from "../components/common/ToastBanner";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { setUser } from "../features/auth/authSlice";
+import Footer from "./Footer";
+import { useTranslation } from "react-i18next";
 
 
 export default function ManageProfile() {
+    const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const authUser = useAppSelector((state) => state.auth.user);
     const [firstName, setFirstName] = useState("");
@@ -86,7 +89,7 @@ export default function ManageProfile() {
                     <div className="flex flex-col items-center">
                         <img src={profileIcon} alt="" className="w-[40px] h-[78px] mb-3" />
                         <h1 className="text-white text-[16px] font-[800]">
-                            Administrér profil
+                            {t("manageProfile.title")}
                         </h1>
                     </div>
 
@@ -131,50 +134,52 @@ export default function ManageProfile() {
                             }
                         }}
                     >
-                        <div>
-                            <label className="block text-white text-sm mb-1">Fornavn</label>
-                            <input
-                                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-white text-sm mb-1">Mellemnavn</label>
-                            <input
-                                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
-                                value={middleName}
-                                onChange={(e) => setMiddleName(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-white text-sm mb-1">Efternavn</label>
-                            <input
-                                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-white text-sm mb-1">Mobilnr.</label>
-                            <input
-                                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
-                                value={phone}
-                                maxLength={8}
-                                onChange={(e) => {
-                                    const onlyDigits = e.target.value.replace(/[^0-9]/g, "");
-                                    setPhone(onlyDigits);
-                                }}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-white text-sm mb-1">Email</label>
-                            <input
-                                type="email"
-                                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
-                                value={email}
-                                disabled
-                            />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-white text-sm mb-1">{t("manageProfile.firstName")}</label>
+                                <input
+                                    className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                    value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-white text-sm mb-1">{t("manageProfile.middleName")}</label>
+                                <input
+                                    className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                    value={middleName}
+                                    onChange={(e) => setMiddleName(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-white text-sm mb-1">{t("manageProfile.lastName")}</label>
+                                <input
+                                    className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-white text-sm mb-1">{t("manageProfile.phone")}</label>
+                                <input
+                                    className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                    value={phone}
+                                    maxLength={8}
+                                    onChange={(e) => {
+                                        const onlyDigits = e.target.value.replace(/[^0-9]/g, "");
+                                        setPhone(onlyDigits);
+                                    }}
+                                />
+                            </div>
+                            <div className="md:col-span-2">
+                                <label className="block text-white text-sm mb-1">{t("manageProfile.email")}</label>
+                                <input
+                                    type="email"
+                                    className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                    value={email}
+                                    disabled
+                                />
+                            </div>
                         </div>
 
                         <div className="pt-2">
@@ -182,7 +187,7 @@ export default function ManageProfile() {
                                 type="submit"
                                 className="w-full bg-[#95C11F] text-white font-semibold rounded-full py-2.5 cursor-pointer"
                             >
-                                Gem ændringer
+                                {t("manageProfile.saveChanges")}
                             </button>
                         </div>
                     </form>
@@ -213,33 +218,35 @@ export default function ManageProfile() {
                             }
                         }}
                     >
-                        <h2 className="text-white text-[14px] font-[700]">Skift adgangskode</h2>
-                        <div>
-                            <label className="block text-white text-sm mb-1">Email</label>
-                            <input
-                                type="email"
-                                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
-                                value={email}
-                                disabled
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-white text-sm mb-1">Ny adgangskode</label>
-                            <input
-                                type="password"
-                                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-white text-sm mb-1">Bekræft adgangskode</label>
-                            <input
-                                type="password"
-                                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                            />
+                        <h2 className="text-white text-[14px] font-[700]">{t("manageProfile.changePasswordTitle")}</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="md:col-span-2">
+                                <label className="block text-white text-sm mb-1">Email</label>
+                                <input
+                                    type="email"
+                                    className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                    value={email}
+                                    disabled
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-white text-sm mb-1">{t("manageProfile.newPassword")}</label>
+                                <input
+                                    type="password"
+                                    className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-white text-sm mb-1">{t("manageProfile.confirmPassword")}</label>
+                                <input
+                                    type="password"
+                                    className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                />
+                            </div>
                         </div>
 
                         <div className="pt-2">
@@ -247,11 +254,12 @@ export default function ManageProfile() {
                                 type="submit"
                                 className="w-full bg-[#95C11F] text-white font-semibold rounded-full py-2.5 cursor-pointer"
                             >
-                                Skift adgangskode
+                                {t("manageProfile.updatePassword")}
                             </button>
                         </div>
                     </form>
                 </div>
+                <Footer />
             </div>
         </>
     );

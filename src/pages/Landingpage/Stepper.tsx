@@ -9,7 +9,7 @@ import icon6 from "../../assets/userImages/06.png";
 import icon7 from "../../assets/userImages/07.png";
 import icon8 from "../../assets/userImages/08.png";
 import circlebg from "../../assets/userImages/circle-bg.png";
-import stepperBg from "/src/assets/userImages/stepper2.png";
+import stepperBg from "/src/assets/userImages/stepper.jpeg";
 import jurneyImg from "/src/assets/userImages/jurneyImg.png";
 
 interface StepperProps {
