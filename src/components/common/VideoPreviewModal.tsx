@@ -29,7 +29,7 @@ function VideoPreviewModal({ videoUrl, isOpen, onClose }: { videoUrl: string; is
             href={videoUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 underline"
+            className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
           >
             Open video in new tab
           </a>

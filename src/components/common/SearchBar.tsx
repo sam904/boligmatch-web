@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 interface SearchBarProps {
   searchTerm: string;
   onSearchChange: (term: string) => void;
-  //pageSize?: number;
-  //onPageSizeChange?: (size: number) => void;
+  pageSize?: number;
+  onPageSizeChange?: (size: number) => void;
 }
 
 export default function SearchBar({
@@ -21,7 +21,7 @@ export default function SearchBar({
       <div className="relative flex-1 max-w-md">
         <div className="relative">
           <svg
-            className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -40,11 +40,11 @@ export default function SearchBar({
 
       {/* {onPageSizeChange && pageSize && (
         <div className="flex items-center gap-3">
-          <label className="text-sm font-medium text-gray-700">{t('common.itemsPerPage')}:</label>
+          <label className="text-sm font-medium text-gray-700 cursor-pointer">{t('common.itemsPerPage')}:</label>
           <select
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value))}
-            className="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200"
+            className="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200 cursor-pointer"
           >
             <option value={10}>10</option>
             <option value={25}>25</option>

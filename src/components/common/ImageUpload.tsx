@@ -248,11 +248,11 @@ export default function ImageUpload({
           </div>
         ) : value ? (
           <div className="flex flex-col items-center gap-3 text-center py-1">
-            <div className="w-20 h-20 bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-center overflow-hidden">
+            <div className="w-20 h-20 bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-center overflow-hidden cursor-pointer">
               <img
                 src={value}
                 alt="Uploaded preview"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover cursor-pointer"
               />
             </div>
             <div>
@@ -266,8 +266,8 @@ export default function ImageUpload({
           </div>
         ) : (
           <div className="flex flex-col items-center text-gray-600">
-            <ImageUp className="w-6 h-6 text-[#91C73D] mb-1" />
-            <p className="text-sm text-[#91C73D] font-medium">
+            <ImageUp className="w-6 h-6 text-[#91C73D] mb-1 cursor-pointer" />
+            <p className="text-sm text-[#91C73D] font-medium cursor-pointer">
               {t("common.clickToUpload") || "Click to upload image"}
             </p>
             <p className="text-xs text-gray-400 mt-1">
@@ -287,11 +287,11 @@ export default function ImageUpload({
               className="flex-shrink-0 cursor-pointer"
               onClick={handleImageClick}
             >
-              <div className="w-16 h-16 bg-white rounded border flex items-center justify-center overflow-hidden">
+              <div className="w-16 h-16 bg-white rounded border flex items-center justify-center overflow-hidden cursor-pointer">
                 <img
                   src={value}
                   alt="Uploaded preview"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover cursor-pointer"
                 />
               </div>
             </div>

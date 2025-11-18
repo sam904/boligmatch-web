@@ -4,7 +4,7 @@ import { uploadService } from "../../services/uploadS3.service";
 import AdminToast from "./AdminToast";
 import type { AdminToastType } from "./AdminToast";
 import { FileText } from "lucide-react";
-import { useTranslation } from "react-i18next"; // Add this import
+import { useTranslation } from "react-i18next";
 
 // Toast state interface
 interface ToastState {
@@ -37,7 +37,7 @@ export default function DocumentUpload({
   required = false,
   accept = ".pdf,.doc,.docx,.txt,.xlsx,.xls,.xlsm,.ppt,.pptx,.rtf",
 }: DocumentUploadProps) {
-  const { t } = useTranslation(); // Add this hook
+  const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
   const [toasts, setToasts] = useState<ToastState[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -198,13 +198,13 @@ export default function DocumentUpload({
       ))}
 
       {/* Section Title */}
-      <label className="block text-base font-semibold text-gray-900 mb-2">
+      <label className="block text-base font-semibold text-gray-900 mb-2 cursor-pointer">
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
 
-      {/* Sub Label - FIXED: Now using the t function */}
-      <p className="text-sm text-gray-500 mb-2">
+      {/* Sub Label */}
+      <p className="text-sm text-gray-500 mb-2 cursor-pointer">
         {t("admin.partners.UploadDocument") || "Upload Document"}{" "}
         <span className="text-gray-400">
           {t("admin.partners.maxFileSize", { size: 50 }) || "(Max: 50MB)"}
@@ -234,7 +234,7 @@ export default function DocumentUpload({
         {uploading ? (
           <div className="flex flex-col items-center gap-2 text-gray-500">
             <svg
-              className="w-6 h-6 animate-spin text-gray-400"
+              className="w-6 h-6 animate-spin text-gray-400 cursor-pointer"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -260,7 +260,7 @@ export default function DocumentUpload({
           </div>
         ) : value ? (
           <div className="flex flex-col items-center gap-3 text-center">
-            <div className="w-16 h-20 bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-center">
+            <div className="w-16 h-20 bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-center cursor-pointer">
               <span className="text-2xl">{getFileIcon(value)}</span>
             </div>
             <div>
@@ -274,8 +274,8 @@ export default function DocumentUpload({
           </div>
         ) : (
           <div className="flex flex-col items-center text-gray-600">
-            <FileText className="w-6 h-6 text-[#91C73D] mb-1" />
-            <p className="text-sm text-[#91C73D] font-medium">
+            <FileText className="w-6 h-6 text-[#91C73D] mb-1 cursor-pointer" />
+            <p className="text-sm text-[#91C73D] font-medium cursor-pointer">
               {t("admin.partners.clickToUpload") || "Click to upload document"}
             </p>
             <p className="text-xs text-gray-400 mt-1">
@@ -292,7 +292,7 @@ export default function DocumentUpload({
           <div className="flex items-start gap-3">
             {/* Document Icon */}
             <div className="flex-shrink-0">
-              <div className="w-16 h-16 bg-white rounded border flex items-center justify-center">
+              <div className="w-16 h-16 bg-white rounded border flex items-center justify-center cursor-pointer">
                 <span className="text-2xl">{getFileIcon(value)}</span>
               </div>
             </div>
@@ -309,10 +309,11 @@ export default function DocumentUpload({
                 <button
                   type="button"
                   onClick={handlePreview}
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1"
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1 cursor-pointer"
+                  title="Preview document"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-4 h-4 cursor-pointer"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -330,10 +331,11 @@ export default function DocumentUpload({
                   href={value}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-green-600 hover:text-green-800 text-sm font-medium flex items-center gap-1"
+                  className="text-green-600 hover:text-green-800 text-sm font-medium flex items-center gap-1 cursor-pointer"
+                  title="Open document in new tab"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-4 h-4 cursor-pointer"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -350,10 +352,11 @@ export default function DocumentUpload({
                 <a
                   href={value}
                   download
-                  className="text-gray-600 hover:text-gray-800 text-sm font-medium flex items-center gap-1"
+                  className="text-gray-600 hover:text-gray-800 text-sm font-medium flex items-center gap-1 cursor-pointer"
+                  title="Download document"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-4 h-4 cursor-pointer"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

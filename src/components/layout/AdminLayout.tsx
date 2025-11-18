@@ -66,7 +66,8 @@ export default function AdminLayout() {
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
+    useState(false);
   const [toasts, setToasts] = useState<ToastState[]>([]);
 
   // Get current page info based on route
@@ -190,7 +191,7 @@ export default function AdminLayout() {
   const currentLang = i18n.language || "en";
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-2 p-3 transition-all duration-200 text-sm relative ${
+    `flex items-center gap-2 p-3 transition-all duration-200 text-sm relative cursor-pointer ${
       isActive
         ? "text-white bg-white/10 shadow-inner backdrop-blur-sm border-l-4 border-[#95C11F]"
         : "text-gray-200 hover:bg-white/5 hover:text-white border-l-4 border-transparent"
@@ -231,11 +232,15 @@ export default function AdminLayout() {
       >
         <div className="p-4 flex items-center">
           {!isCollapsed && (
-            <img src="/logo.svg" alt="BoligMatch" className="h-10 ml-4" />
+            <img
+              src="/logo.svg"
+              alt="BoligMatch"
+              className="h-10 ml-4 cursor-pointer"
+            />
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 text-gray-200 hover:bg-white/5 hover:text-white rounded-lg transition-colors ml-auto"
+            className="p-2 text-gray-200 hover:bg-white/5 hover:text-white rounded-lg transition-colors ml-auto cursor-pointer"
           >
             <svg
               className="w-4 h-4"
@@ -263,7 +268,6 @@ export default function AdminLayout() {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto">
-          {/* Navigation links */}
           <NavLink
             to="/admin/dashboard"
             className={navLinkClass}
@@ -398,7 +402,7 @@ export default function AdminLayout() {
               <div className="relative">
                 <button
                   onClick={() => setShowLangDropdown(!showLangDropdown)}
-                  className="flex items-center gap-2 px-3 py-1.5 text-[#043428] hover:bg-gray-100 rounded-lg transition-colors text-sm"
+                  className="flex items-center gap-2 px-3 py-1.5 text-[#043428] hover:bg-gray-100 rounded-lg transition-colors text-sm cursor-pointer"
                 >
                   <svg
                     className="w-4 h-4"
@@ -431,7 +435,7 @@ export default function AdminLayout() {
                 {showLangDropdown && (
                   <>
                     <div
-                      className="fixed inset-0 z-40"
+                      className="fixed inset-0 z-40 cursor-pointer"
                       onClick={() => setShowLangDropdown(false)}
                     />
                     <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-200">
@@ -440,7 +444,7 @@ export default function AdminLayout() {
                           i18n.changeLanguage("en");
                           setShowLangDropdown(false);
                         }}
-                        className="w-full px-4 py-2 text-left text-sm text-[#043428] hover:bg-gray-100 transition-colors"
+                        className="w-full px-4 py-2 text-left text-sm text-[#043428] hover:bg-gray-100 transition-colors cursor-pointer"
                       >
                         English (EN)
                       </button>
@@ -449,7 +453,7 @@ export default function AdminLayout() {
                           i18n.changeLanguage("da");
                           setShowLangDropdown(false);
                         }}
-                        className="w-full px-4 py-2 text-left text-sm text-[#043428] hover:bg-gray-100 transition-colors"
+                        className="w-full px-4 py-2 text-left text-sm text-[#043428] hover:bg-gray-100 transition-colors cursor-pointer"
                       >
                         Dansk (DA)
                       </button>
@@ -462,10 +466,10 @@ export default function AdminLayout() {
               <div className="relative">
                 <button
                   onClick={() => setShowUserDropdown(!showUserDropdown)}
-                  className="flex items-center gap-3 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="flex items-center gap-3 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   {/* Profile Circle with Initials */}
-                  <div className="w-10 h-10 bg-[#064c3a] text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  <div className="w-10 h-10 bg-[#064c3a] text-white rounded-full flex items-center justify-center text-sm font-bold cursor-pointer">
                     {getUserInitials()}
                   </div>
 
@@ -483,7 +487,7 @@ export default function AdminLayout() {
 
                   {/* Dropdown arrow */}
                   <svg
-                    className={`w-4 h-4 text-gray-500 transition-transform ${
+                    className={`w-4 h-4 text-gray-500 transition-transform cursor-pointer ${
                       showUserDropdown ? "rotate-180" : ""
                     }`}
                     fill="none"
@@ -499,43 +503,39 @@ export default function AdminLayout() {
                   </svg>
                 </button>
 
-               {/* User Dropdown Menu - Updated Section */}
-      {showUserDropdown && (
-        <>
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setShowUserDropdown(false)}
-          />
-          <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-200">
-            {/* Update Profile Button */}
-            <button
-              onClick={handleUpdateProfile}
-              className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-100"
-            >
-              <IconProfile className="w-4 h-4" />
-              <span>{t("auth.profile")}</span>
-            </button>
+                {/* User Dropdown Menu - Updated Section */}
+                {showUserDropdown && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40 cursor-pointer"
+                      onClick={() => setShowUserDropdown(false)}
+                    />
+                    <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-200">
+                      <button
+                        onClick={handleUpdateProfile}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-100 cursor-pointer"
+                      >
+                        <IconProfile className="w-4 h-4" />
+                        <span>{t("auth.profile")}</span>
+                      </button>
 
-            {/* Reset Password Button */}
-            <button
-              onClick={handleResetPassword}
-              className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-100"
-            >
-              <IconKey className="w-4 h-4" />
-              <span>{t("auth.resetPassword")}</span>
-            </button>
-
-            {/* Logout Button */}
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors"
-            >
-              <IconLogout />
-              <span>{t("auth.logout")}</span>
-            </button>
-          </div>
-        </>
-      )}
+                      <button
+                        onClick={handleResetPassword}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-100 cursor-pointer"
+                      >
+                        <IconKey className="w-4 h-4" />
+                        <span>{t("auth.resetPassword")}</span>
+                      </button>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer"
+                      >
+                        <IconLogout />
+                        <span>{t("auth.logout")}</span>
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

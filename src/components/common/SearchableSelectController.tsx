@@ -1,6 +1,11 @@
 // src/components/common/SearchableSelectController.tsx
-import { Controller, type Control, type FieldValues, type Path } from 'react-hook-form';
-import Select, { type StylesConfig } from 'react-select';
+import {
+  Controller,
+  type Control,
+  type FieldValues,
+  type Path,
+} from "react-hook-form";
+import Select, { type StylesConfig } from "react-select";
 
 interface Option {
   value: number | string;
@@ -26,7 +31,7 @@ export default function SearchableSelectController<T extends FieldValues>({
   label,
   error,
   options,
-  placeholder = 'Select...',
+  placeholder = "Select...",
   disabled = false,
   isClearable = false,
   required = false,
@@ -35,31 +40,31 @@ export default function SearchableSelectController<T extends FieldValues>({
   const customStyles: StylesConfig<Option, false> = {
     control: (base, state) => ({
       ...base,
-      borderColor: error ? '#ef4444' : state.isFocused ? '#043428' : '#d1d5db',
-      boxShadow: state.isFocused ? '0 0 0 1px #043428' : 'none',
-      '&:hover': {
-        borderColor: error ? '#ef4444' : '#043428',
+      borderColor: error ? "#ef4444" : state.isFocused ? "#043428" : "#d1d5db",
+      boxShadow: state.isFocused ? "0 0 0 1px #043428" : "none",
+      "&:hover": {
+        borderColor: error ? "#ef4444" : "#043428",
       },
-      minHeight: '38px',
-      backgroundColor: disabled ? '#f3f4f6' : 'white',
+      minHeight: "38px",
+      backgroundColor: disabled ? "#f3f4f6" : "white",
+      cursor: disabled ? "not-allowed" : "pointer", // Add cursor pointer
     }),
     option: (base, state) => ({
       ...base,
       backgroundColor: state.isSelected
-        ? '#043428'
+        ? "#043428"
         : state.isFocused
-        ? '#91C73D20'
-        : 'white',
-      // FIXED: Ensure text is always visible
-      color: state.isSelected ? 'white' : '#1f2937',
-      // FIXED: Add hover state for better UX
-      '&:hover': {
-        backgroundColor: state.isSelected ? '#043428' : '#91C73D20',
-        color: state.isSelected ? 'white' : '#1f2937',
+        ? "#91C73D20"
+        : "white",
+      color: state.isSelected ? "white" : "#1f2937",
+      cursor: "pointer",
+      "&:hover": {
+        backgroundColor: state.isSelected ? "#043428" : "#91C73D20",
+        color: state.isSelected ? "white" : "#1f2937",
       },
-      '&:active': {
-        backgroundColor: '#043428',
-        color: 'white',
+      "&:active": {
+        backgroundColor: "#043428",
+        color: "white",
       },
     }),
     menu: (base) => ({
@@ -68,23 +73,41 @@ export default function SearchableSelectController<T extends FieldValues>({
     }),
     placeholder: (base) => ({
       ...base,
-      color: '#9ca3af',
-      fontSize: '0.875rem',
+      color: "#9ca3af",
+      fontSize: "0.875rem",
     }),
-    // FIXED: Add singleValue styles to ensure selected value is visible in the control
     singleValue: (base) => ({
       ...base,
-      color: '#1f2937',
+      color: "#1f2937",
     }),
-    // FIXED: Add input styles to ensure search text is visible
     input: (base) => ({
       ...base,
-      color: '#1f2937',
+      color: "#1f2937",
     }),
-    // FIXED: Add valueContainer styles
     valueContainer: (base) => ({
       ...base,
-      color: '#1f2937',
+      color: "#1f2937",
+      cursor: disabled ? "not-allowed" : "pointer", // Add cursor pointer
+    }),
+    dropdownIndicator: (base) => ({
+      ...base,
+      color: "#6b7280",
+      "&:hover": {
+        color: "#374151",
+      },
+      cursor: "pointer",
+    }),
+    clearIndicator: (base) => ({
+      ...base,
+      color: "#6b7280",
+      "&:hover": {
+        color: "#ef4444",
+      },
+      cursor: "pointer",
+    }),
+    indicatorSeparator: (base) => ({
+      ...base,
+      backgroundColor: disabled ? "#d1d5db" : "#e5e7eb",
     }),
   };
 
@@ -92,17 +115,19 @@ export default function SearchableSelectController<T extends FieldValues>({
     <div className="w-full">
       {label && (
         <label className="block text-sm font-medium text-gray-700 mb-1">
+          {" "}
+          {/* Add cursor-pointer */}
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
-    
+
       <Controller
         name={name}
         control={control}
         render={({ field }) => {
           // Find the selected option based on field value
-          const selectedOption = options.find(option => 
-            option.value === field.value
+          const selectedOption = options.find(
+            (option) => option.value === field.value
           );
 
           return (
@@ -124,18 +149,18 @@ export default function SearchableSelectController<T extends FieldValues>({
               isClearable={isClearable}
               isSearchable={true}
               noOptionsMessage={({ inputValue }) =>
-                inputValue ? 'No options found' : 'No options available'
+                inputValue ? "No options found" : "No options available"
               }
               // FIXED: Convert value to string for getOptionValue
               getOptionValue={(option) => String(option.value)}
               getOptionLabel={(option) => option.label}
+              className="react-select-container"
+              classNamePrefix="react-select"
             />
           );
         }}
       />
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
-      )}
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
 }

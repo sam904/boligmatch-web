@@ -18,6 +18,10 @@ import {
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import ToggleSwitch from "../../../components/common/ToggleSwitch";
 import type { TestimonialDto, Testimonial } from "../../../types/testimonial";
+import Pagination from "../../../components/common/Pagination";
+import SearchBar from "../../../components/common/SearchBar";
+import { FilterDropdown } from "../../../components/common/FilterDropdown";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 // Form data type
 type TestimonialFormData = {
@@ -62,21 +66,57 @@ export default function TestimonialFormPage() {
     testimonial: null,
   });
 
+  // Pagination states - CHANGED: Default pageSize to 5
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5); // CHANGED: Default to 5 records
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<
+    "All" | "Active" | "InActive"
+  >("All");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   // Get businessName from location state
   const locationState = location.state as LocationState;
   const businessName = locationState?.businessName || "";
 
-  // Fetch previous testimonials for this partner
+  // Fetch paginated testimonials for this partner
   const {
-    data: previousTestimonials = [],
+    data: paginatedData,
     isLoading: isLoadingTestimonials,
     error: testimonialsError,
     refetch: refetchTestimonials,
   } = useQuery({
-    queryKey: ["testimonials", "partner", partnerId],
+    queryKey: [
+      "testimonials",
+      "partner",
+      partnerId,
+      currentPage,
+      pageSize,
+      debouncedSearchTerm,
+      statusFilter,
+    ],
     queryFn: () => {
-      if (!partnerId) return Promise.resolve([]);
-      return testimonialService.getByPartnerIdList(parseInt(partnerId));
+      if (!partnerId) {
+        return Promise.resolve({
+          items: [],
+          total: 0,
+        });
+      }
+
+      const queryParams = {
+        page: currentPage,
+        pageSize: pageSize,
+        searchTerm: debouncedSearchTerm || undefined,
+        status: statusFilter === "All" ? "All" : statusFilter,
+        sortDirection: "desc" as const,
+        sortField: "id" as const,
+        userId: 0,
+        partnerId: parseInt(partnerId),
+        pageNumber: 0,
+        rowsPerPage: 0,
+      };
+
+      return testimonialService.getPaginated(queryParams);
     },
     enabled: !!partnerId,
   });
@@ -387,6 +427,29 @@ export default function TestimonialFormPage() {
     navigate(-1);
   };
 
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Handle search change
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
+    setCurrentPage(1);
+  };
+
+  // Handle status filter change
+  const handleStatusFilterChange = (filter: "All" | "Active" | "InActive") => {
+    setStatusFilter(filter);
+    setCurrentPage(1);
+  };
+
+  // Handle page size change
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1);
+  };
+
   // Render star rating display
   const renderStars = (rating: number) => {
     return (
@@ -394,7 +457,7 @@ export default function TestimonialFormPage() {
         {[1, 2, 3, 4, 5].map((star) => (
           <IconStarRating
             key={star}
-            className={`w-4 h-4 ${
+            className={`w-4 h-4 cursor-pointer ${
               rating >= star ? "text-[#91C73D]" : "text-gray-300"
             }`}
           />
@@ -405,6 +468,12 @@ export default function TestimonialFormPage() {
   };
 
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
+
+  // Get data from API response
+  const previousTestimonials = paginatedData?.items || [];
+  const totalItems = paginatedData?.total || 0;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const hasRecords = previousTestimonials.length > 0;
 
   return (
     <div className="p-6">
@@ -449,7 +518,7 @@ export default function TestimonialFormPage() {
             <button
               onClick={handleFormClose}
               disabled={isSubmitting}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-[#165933] text-white"
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-[#165933] text-white cursor-pointer"
               title="Go back"
             >
               <IconArrowLeft className="w-4 h-4" />
@@ -500,10 +569,10 @@ export default function TestimonialFormPage() {
                   </>
                 }
                 {...register("customerName")}
-                 placeholder={
-    t("admin.testimonials.enterCustomerName") ||
-    "Enter customer name"
-  }
+                placeholder={
+                  t("admin.testimonials.enterCustomerName") ||
+                  "Enter customer name"
+                }
                 disabled={isSubmitting}
               />
               {showValidation &&
@@ -533,9 +602,10 @@ export default function TestimonialFormPage() {
                       setValue("rating", level);
                     }}
                     disabled={isSubmitting}
+                    className="cursor-pointer"
                   >
                     <IconStarRating
-                      className={`w-8 h-8 transition-transform transform hover:scale-105 ${
+                      className={`w-8 h-8 transition-transform transform hover:scale-105 cursor-pointer ${
                         ratingValue >= level
                           ? "text-[#91C73D]"
                           : "text-[#165933]"
@@ -595,7 +665,7 @@ export default function TestimonialFormPage() {
                 rows={2}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#91C73D]/20 focus:border-[#91C73D] transition-colors duration-200 resize-none"
                 placeholder={
-                 t("admin.testimonials.enteranyadditionalNotes") ||
+                  t("admin.testimonials.enteranyadditionalNotes") ||
                   "Enter any additional notes..."
                 }
                 disabled={isSubmitting}
@@ -673,6 +743,7 @@ export default function TestimonialFormPage() {
                   variant="outline"
                   onClick={handleCancelEdit}
                   disabled={isSubmitting}
+                  className="cursor-pointer"
                 >
                   {t("common.cancel") || "Cancel"}
                 </Button>
@@ -680,6 +751,7 @@ export default function TestimonialFormPage() {
                   type="submit"
                   variant="secondary"
                   disabled={isSubmitting}
+                  className="cursor-pointer"
                 >
                   {isSubmitting
                     ? t("common.updating") || "Updating..."
@@ -693,6 +765,7 @@ export default function TestimonialFormPage() {
                   variant="outline"
                   onClick={handleFormClose}
                   disabled={isSubmitting}
+                  className="cursor-pointer"
                 >
                   {t("common.cancel") || "Cancel"}
                 </Button>
@@ -700,6 +773,7 @@ export default function TestimonialFormPage() {
                   type="submit"
                   variant="secondary"
                   disabled={isSubmitting}
+                  className="cursor-pointer"
                 >
                   {isSubmitting
                     ? t("common.creating") || "Creating..."
@@ -711,21 +785,39 @@ export default function TestimonialFormPage() {
         </form>
       </div>
 
-      {/* Previous Testimonials Section */}
+      {/* Testimonials Section */}
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">
-            {t("admin.testimonials.previousTestimonials") ||
-              "Previous Testimonials"}
+            {t("admin.testimonials.title") || "Previous Testimonials"}
           </h2>
-          {/* <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-            {previousTestimonials.length} testimonial(s)
-          </span> */}
+          <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full cursor-pointer">
+            {totalItems} testimonial(s)
+          </span>
+        </div>
+
+        {/* Search and Filter Controls - MOVED TO RIGHT SIDE */}
+        <div className="flex items-center justify-between mb-6">
+          <div></div> {/* Empty div to push controls to right */}
+          <div className="flex items-center gap-4">
+            <FilterDropdown
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
+            />
+            <div className="w-64">
+              <SearchBar
+                searchTerm={searchTerm}
+                onSearchChange={handleSearchChange}
+                pageSize={pageSize}
+                onPageSizeChange={handlePageSizeChange}
+              />
+            </div>
+          </div>
         </div>
 
         {isLoadingTestimonials ? (
           <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#91C73D] mx-auto"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#91C73D] mx-auto cursor-pointer"></div>
             <p className="text-gray-500 mt-2">
               {t("admin.testimonials.loadingTestimonials") ||
                 "Loading testimonials..."}
@@ -739,78 +831,95 @@ export default function TestimonialFormPage() {
               t("common.unknownError") || "Unknown error"
             )}
           </div>
-        ) : previousTestimonials.length === 0 ? (
+        ) : !hasRecords ? (
           <div className="text-center py-8 text-gray-500">
-            {t("admin.testimonials.noTestimonialsFound") ||
-              "No testimonials found for this partner."}
+            {searchTerm || statusFilter !== "All"
+              ? t("admin.testimonials.noTestimonialsMatch") ||
+                "No testimonials match your search criteria."
+              : t("admin.testimonials.noTestimonialsFound") ||
+                "No testimonials found for this partner."}
           </div>
         ) : (
-          <div className="space-y-4">
-            {previousTestimonials.map((testimonial) => (
-              <div
-                key={testimonial.id}
-                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-4 mb-2">
-                      <h3 className="font-semibold text-gray-900">
-                        {testimonial.customerName}
-                      </h3>
-                      {renderStars(testimonial.rating)}
-                      {/* <div className="flex items-center gap-2">
-                        {testimonial.isDisplayed && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Displayed
-                          </span>
+          <>
+            <div className="space-y-4 mb-6">
+              {previousTestimonials.map((testimonial) => (
+                <div
+                  key={testimonial.id}
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-4 mb-2">
+                        <h3 className="font-semibold text-gray-900">
+                          {testimonial.customerName}
+                        </h3>
+                        {renderStars(testimonial.rating)}
+                        <div className="flex items-center gap-2">
+                          {testimonial.isDisplayed && (
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 cursor-pointer">
+                              {t("common.displayed") || "Displayed"}
+                            </span>
+                          )}
+                          {!testimonial.isActive && (
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 cursor-pointer">
+                              {t("common.inactive") || "Inactive"}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <p className="text-gray-700 mb-2">{testimonial.test}</p>
+
+                      {testimonial.note && (
+                        <p className="text-sm text-gray-500 mb-2">
+                          <strong>{t("common.note") || "Note"}:</strong> {testimonial.note}
+                        </p>
+                      )}
+
+                      <div className="text-xs text-gray-400 cursor-pointer">
+                        {t("common.created") || "Created"}: {testimonial.createdDate ? new Date(testimonial.createdDate).toLocaleDateString() : 'N/A'}
+                        {testimonial.modifiedDate && (
+                          <> | {t("common.modified") || "Modified"}: {testimonial.modifiedDate ? new Date(testimonial.modifiedDate).toLocaleDateString() : 'N/A'}</>
                         )}
-                        {!testimonial.isActive && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                            Inactive
-                          </span>
-                        )}
-                      </div> */}
+                      </div>
                     </div>
 
-                    <p className="text-gray-700 mb-2">{testimonial.test}</p>
-
-                    {testimonial.note && (
-                      <p className="text-sm text-gray-500 mb-2">
-                        <strong>Note:</strong> {testimonial.note}
-                      </p>
-                    )}
-
-                    {/* <div className="text-xs text-gray-400">
-                      Created: {new Date(testimonial.createdDate).toLocaleDateString()}
-                      {testimonial.modifiedDate && (
-                        <> | Modified: {new Date(testimonial.modifiedDate).toLocaleDateString()}</>
-                      )}
-                    </div> */}
-                  </div>
-
-                  <div className="flex items-center gap-2 ml-4">
-                    <button
-                      onClick={() => handleEditTestimonial(testimonial)}
-                      disabled={isSubmitting || deleteMutation.isPending}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="Edit testimonial"
-                    >
-                      <IconPencil className="w-4 h-4" />
-                    </button>
-
-                    <button
-                      onClick={() => handleDeleteTestimonial(testimonial)}
-                      disabled={isSubmitting || deleteMutation.isPending}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete testimonial"
-                    >
-                      <IconTrash className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-2 ml-4">
+                      <button
+                        onClick={() => handleEditTestimonial(testimonial)}
+                        disabled={isSubmitting || deleteMutation.isPending}
+                        className="p-2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+                        title={t("common.edit") || "Edit testimonial"}
+                      >
+                        <IconPencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTestimonial(testimonial)}
+                        disabled={isSubmitting || deleteMutation.isPending}
+                        className="p-2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+                        title={t("common.delete") || "Delete testimonial"}
+                      >
+                        <IconTrash className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {hasRecords && totalPages > 1 && (
+              <div className="mt-6">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  pageSize={pageSize}
+                  onPageChange={handlePageChange}
+                />
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
     </div>

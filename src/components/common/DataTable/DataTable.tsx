@@ -73,7 +73,7 @@ export default function DataTable<T>({ data, columns }: Props<T>) {
                       <button
                         type="button"
                         onClick={h.column.getToggleSortingHandler()}
-                        className="flex items-center gap-1 hover:text-gray-700 transition-colors focus:outline-none group w-full text-left"
+                        className="flex items-center gap-1 hover:text-gray-700 transition-colors cursor-pointer focus:outline-none group w-full text-left"
                       >
                         <span className="flex-1">
                           {flexRender(h.column.columnDef.header, h.getContext())}

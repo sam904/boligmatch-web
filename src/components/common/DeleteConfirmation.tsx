@@ -61,7 +61,7 @@ export default function DeleteConfirmation({
             type="button"
             variant="outline"
             onClick={onClose}
-            className="flex-1"
+            className="flex-1 cursor-pointer"
             disabled={isLoading}
           >
             {resolvedCancelButtonText}
@@ -71,7 +71,7 @@ export default function DeleteConfirmation({
             variant="danger"
             onClick={onConfirm}
             disabled={isLoading}
-            className="flex-1"
+            className="flex-1 cursor-pointer"
           >
             {isLoading ? deletingText : resolvedConfirmButtonText}
           </Button>
