@@ -18,7 +18,13 @@ import aboutBoligmatchIcon from "/src/assets/userImages/aboutBoligmatch.png";
 import termsConditionIcon from "/src/assets/userImages/termsAndCondi.png";
 import signOutIcon from "/src/assets/userImages/signOut.png";
 
-function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
+function UserHeader({
+  fullHeight = true,
+  showBackButton = true,
+}: {
+  fullHeight?: boolean;
+  showBackButton?: boolean;
+}) {
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -185,19 +191,21 @@ function UserHeader({ fullHeight = true }: { fullHeight?: boolean }) {
               </button>
             </div>
           </div>
-          <div>
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="inline-flex items-center justify-center mt-0 p-1 transition-colors cursor-pointer"
-            >
-              <img
-                src={leftArrow}
-                alt="Tilbage"
-                className="w-[51px] h-[51px]"
-              />
-            </button>
-          </div>
+          {showBackButton && (
+            <div>
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="inline-flex items-center justify-center mt-0 p-1 transition-colors cursor-pointer"
+              >
+                <img
+                  src={leftArrow}
+                  alt="Tilbage"
+                  className="w-[51px] h-[51px]"
+                />
+              </button>
+            </div>
+          )}
         </div>
       </header>
 

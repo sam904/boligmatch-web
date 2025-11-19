@@ -32,6 +32,7 @@ import startImg from "/src/assets/userImages/star.png";
 import servicesImg from "/src/assets/supplierProfile/services.png";
 import factsImg from "/src/assets/userImages/faktaLogo.svg";
 import Footer from "./Footer";
+import closeModel from "/src/assets/userImages/close.svg"
 
 const SupplierProfile = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -669,17 +670,14 @@ const SupplierProfile = () => {
         {/* Modals */}
         {activeModal && (
           <div className="fixed inset-0 z-40 flex items-center justify-center">
-            <div
-              className="absolute inset-0 bg-black/50"
-              onClick={() => setActiveModal(null)}
-            />
+            <div className="absolute inset-0 bg-black/50" />
             <div className="relative z-50 w-[320px] sm:w-[360px] md:w-[420px] bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-[#1F7A58]/10">
               <button
                 className="absolute right-4 top-3 text-black text-xl cursor-pointer hover:text-gray-700"
                 aria-label="Close"
                 onClick={() => setActiveModal(null)}
               >
-                ×
+                <img className="w-[31px] h-[31px] cursor-pointer" src={closeModel} alt="" />
               </button>
 
               {activeModal === "recommend" && (

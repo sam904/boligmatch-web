@@ -51,7 +51,7 @@ export default function LandingPage() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <UserHeader />
+      <UserHeader showBackButton={false} />
       <SignUpModal
         open={showSignUpModal}
         onClose={() => setShowSignUpModal(false)}

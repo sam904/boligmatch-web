@@ -34,6 +34,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
 
   const partnerData = useAppSelector((state) => state.auth.user);
   const [partnerLocalData, setPartnerLocalData] = useState<any | null>(null);
+  const [userLocalData, setUserLocalData] = useState<any | null>(null);
   console.log("partnerData", partnerData);
 
   const currentLang = i18n.language || "en";
@@ -58,7 +59,8 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   useEffect(() => {
     // Load partner from localStorage (bm_partner) so header/sidebar stay logged-in after reload
     try {
-      const storedPartner = typeof window !== "undefined" ? localStorage.getItem("bm_partner") : null;
+      const storedPartner =
+        typeof window !== "undefined" ? localStorage.getItem("bm_partner") : null;
       if (storedPartner) {
         const parsed = JSON.parse(storedPartner);
         setPartnerLocalData(parsed);
@@ -68,7 +70,24 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
     }
   }, []);
 
-  const activePartner = partnerData || partnerLocalData;
+  useEffect(() => {
+    // Load end-user from localStorage (bm_user) for correct label on partner pages
+    try {
+      const storedUser =
+        typeof window !== "undefined" ? localStorage.getItem("bm_user") : null;
+      if (storedUser) {
+        const parsed = JSON.parse(storedUser);
+        setUserLocalData(parsed);
+      }
+    } catch (error) {
+      console.error("Error parsing bm_user from localStorage:", error);
+    }
+  }, []);
+
+  const activePartner =
+    partnerLocalData && !userLocalData ? partnerLocalData : null;
+
+  const activeUser = !activePartner ? userLocalData || partnerData : null;
 
   return (
     <>
@@ -158,13 +177,18 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/10">
-                <div className="flex items-center gap-3">
-                  {/* Partner Profile in Sidebar */}
+                    <div className="flex items-center gap-3">
+                  {/* Partner/User Profile in Sidebar for partner pages */}
                   {activePartner ? (
                     <div className="flex items-center gap-3">
                       <span className="text-white text-sm font-medium">
-                        {/* {partnerData.firstName} {partnerData.lastName} */}
                         {t("sidebar.logInPartner")}
+                      </span>
+                    </div>
+                  ) : activeUser ? (
+                    <div className="flex items-center gap-3">
+                      <span className="text-white text-sm font-medium">
+                        {t("sidebar.logINUser")}
                       </span>
                     </div>
                   ) : (
