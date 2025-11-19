@@ -173,7 +173,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
           />
 
           {/* Sidebar */}
-          <div className="absolute right-0 top-0 h-full w-full md:w-64 sm:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out translate-x-0">
+          <div className="absolute right-0 top-0 h-full w-full md:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out translate-x-0">
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/10">
