@@ -35,6 +35,7 @@ export interface ReportQueryResponse {
 export interface DashboardStats {
   TotalUsers: number;
   TotalPartners: number;
+  TotalConversations: number;
   TotalRecommendations: number;
   TotalCategorys: number;
   TotalSubCategories: number;
@@ -47,6 +48,7 @@ export interface DashboardStats {
   TodaysFavourites: number;
   totalUsers?: number;
   totalPartners?: number;
+  totalConversations?: number;
   totalRecommendations?: number;
   totalCategorys?: number;
   TotalFalseCategorys?: number;

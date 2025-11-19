@@ -692,6 +692,7 @@ const DashboardPage = () => {
         const dashboardStats = {
           TotalUsers: statsData.totalUsers || 0,
           TotalPartners: statsData.totalPartners || 0,
+          TotalConversations: statsData.totalConversations || 0,
           TotalRecommendations: statsData.totalRecommendations || 0,
           TotalCategorys: statsData.totalCategorys || 0,
           TotalSubCategories: statsData.totalSubCategories || 0,
@@ -712,6 +713,7 @@ const DashboardPage = () => {
         const emptyStats = {
           TotalUsers: 0,
           TotalPartners: 0,
+          TotalConversations: 0,
           TotalSubCategories: 0,
           TotalRecommendations: 0,
           TotalCategorys: 0,
@@ -919,9 +921,8 @@ const DashboardPage = () => {
       labels: translatedMonthLabels,
       datasets: [
         {
-          label: `${
-            t("admin.dashboard.thisyear") || "This Year"
-          } ${currentYear}`,
+          label: `${t("admin.dashboard.thisyear") || "This Year"
+            } ${currentYear}`,
           data: userTrends,
           borderColor: "#165933",
           backgroundColor: "rgba(22, 89, 51, 0.1)",
@@ -1015,6 +1016,10 @@ const DashboardPage = () => {
     {
       title: t("admin.dashboard.TotalPartners") || "Total Partners",
       value: formatK(stats?.TotalPartners || 0),
+    },
+    {
+      title: "Total Messages",
+      value: formatK(stats?.TotalConversations || 0),
     },
     {
       title: t("admin.dashboard.TotalSubCategories") || "Total Sub Categories",

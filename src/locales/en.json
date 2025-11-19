@@ -608,6 +608,12 @@
     "partnerLabel": "Partner",
     "subjectLabel": "Subject"
   },
+  "userSupplier": {
+    "loadingSubcategories": "Loading subcategories...",
+    "noSubcategories": "No subcategories available",
+    "loadingPartners": "Loading partners...",
+    "noPartners": "No partners found for this subcategory"
+  },
   "partnerStatistics": {
     "title": "Partner Statistics",
     "tabs": {
