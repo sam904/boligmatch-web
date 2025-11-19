@@ -341,11 +341,6 @@ function UserHeader({
                   <button
                     onClick={() => {
                       setShowSidebar(false);
-                      if (!displayName) {
-                        setModalRole("partner");
-                        setIsModalOpen(true);
-                        return;
-                      }
                       navigate("/partner");
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
