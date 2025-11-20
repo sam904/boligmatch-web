@@ -9,15 +9,24 @@ import SearchForPartner from "./SearchForPartner";
 import { useEffect, useRef, useState } from "react";
 import { partnerService } from "../../../services/partner.service";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 function ParentStatistics() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<
     "statistik" | "profil" | "partnere"
   >("statistik");
   const [partnerData, setPartnerData] = useState<any>("");
   const calledRef = useRef(false);
   console.log("Partner Data:", partnerData);
+
+  useEffect(() => {
+    const storedPartner = localStorage.getItem("bm_partner");
+    if (!storedPartner) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   useEffect(() => {
     if (calledRef.current) return;

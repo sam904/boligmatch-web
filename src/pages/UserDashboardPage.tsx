@@ -104,11 +104,10 @@ export default function UserDashboardPage() {
 
   useEffect(() => {
     const userData = localStorage.getItem("bm_user");
-    const partnerData = localStorage.getItem("bm_partner");
-    if (!partnerData && !userData) {
+    if (!userData) {
       navigate("/");
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 768);
@@ -295,7 +294,7 @@ export default function UserDashboardPage() {
 
         {/* Welcome Text */}
         {userData && (
-          <div className="absolute md:top-60 top-32 z-10 px-4 sm:px-6 md:px-8 lg:px-24 mt-auto mb-32 sm:mb-36 md:mb-40 lg:mb-44">
+          <div className="absolute top-40 sm:top-48 md:top-52 lg:top-60 z-10 px-4 sm:px-6 md:px-8 lg:px-24 mt-auto mb-32 sm:mb-36 md:mb-40 lg:mb-44">
             <div className="text-white">
               <div className="max-w-[722px]">
                 <h1 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-0 md:mb-0.5 leading-tight">
@@ -328,7 +327,7 @@ export default function UserDashboardPage() {
                   alt=""
                   className="md:h-6 md:w-6 h-[18px] w-[18px]"
                 />
-                <span className="font-semibold md:text-lg text-[14px] whitespace-nowrap figtree">
+                <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap figtree">
                   {t("userDashboard.buttons.partners")}
                 </span>
               </button>
@@ -346,11 +345,11 @@ export default function UserDashboardPage() {
                   alt=""
                   className="md:h-6 md:w-6 h-[18px] w-[18px]"
                 />
-                <span className="font-semibold md:text-lg text-[14px] whitespace-nowrap figtree hidden sm:inline">
+                <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap figtree hidden sm:inline">
                   {t("userDashboard.buttons.favorites")}
                 </span>
-                <span className="font-semibold md:text-lg text-[14px] whitespace-nowrap figtree sm:hidden">
-                  Favoritter
+                <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap figtree sm:hidden">
+                  {t("userDashboard.buttons.favoritesMobile")}
                 </span>
               </button>
 
@@ -367,7 +366,7 @@ export default function UserDashboardPage() {
                   alt=""
                   className="md:h-6 md:w-6 h-[18px] w-[18px]"
                 />
-                <span className="font-semibold md:text-lg text-[14px] whitespace-nowrap">
+                <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap">
                   {t("userDashboard.buttons.messages")}
                 </span>
               </button>
@@ -392,7 +391,7 @@ export default function UserDashboardPage() {
                       <div
                         key={category.id}
                         onClick={() => handleCategoryClick(category)}
-                        className="w-[374px] h-[394px] sm:w-auto sm:h-auto mx-auto rounded-[18px] sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
+                        className="w-full h-[394px] sm:w-auto sm:h-auto mx-auto rounded-[18px] sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
                       >
                         <div className="relative w-full h-[222px] sm:h-56 md:h-64 lg:h-72 rounded-t-[18px] sm:rounded-t-xl overflow-hidden">
                           <img

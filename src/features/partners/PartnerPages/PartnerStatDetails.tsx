@@ -2,9 +2,11 @@ import partnerRingImg from "/src/assets/userImages/partnerringImg.png";
 // import sampleImg from "/src/assets/userImages/footerLogo.svg";
 import { partnerService } from "../../../services/partner.service";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Footer from "../../../pages/Footer";
 
 function PartnerStatDetails({ partnerData }: { partnerData: any }) {
+  const { t } = useTranslation();
   const [partnerCount, setPartnerCount] = useState<{
     totalPartnerIdPageVisit?: number;
     totalFavourites?: number;
@@ -16,19 +18,19 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
   const statistics = [
     {
       number: partnerCount?.totalPartnerIdPageVisit ?? 0,
-      label: "Besøg på min profil",
+      label: t("partnerStatistics.stats.profileVisits"),
     },
     {
       number: partnerCount?.totalFavourites ?? 0,
-      label: "i alt Favoritter",
+      label: t("partnerStatistics.stats.totalFavorites"),
     },
     {
       number: partnerCount?.totalPartners ?? 0,
-      label: "samlede partnere",
+      label: t("partnerStatistics.stats.totalPartners"),
     },
     {
       number: partnerCount?.totalRecommendations ?? 0,
-      label: "samlede anbefalinger",
+      label: t("partnerStatistics.stats.totalRecommendations"),
     },
   ];
 
@@ -83,8 +85,8 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
                   <div className="text-[64px] font-[800] text-white figtree md:-mt-2">
                     {stat.number}
                   </div>
-                  <div className="text-center px-2">
-                    <p className="text-white text-[15px] leading-tight text-center max-w-[95px]">
+                  <div className="text-center px-2 -mt-4 md:mt-0">
+                    <p className="text-white text-[12px] md:text-[15px] leading-tight text-center max-w-[95px]">
                       {stat.label}
                     </p>
                   </div>

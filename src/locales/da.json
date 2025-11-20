@@ -23,15 +23,15 @@
     "to": "til",
     "of": "af",
     "items": "elementer",
-    "ExportCSV":"Eksporter CSV",
-    "Filters":"Filtre",
-    "exporting":" Eksporterer...",
-    "Next":"Næste",
-    "Previous":"Forrige",
-    "Submitting":"Indsender...",
-    "address":"adresse",
-    "updating":"opdaterer...",
-    "creating":"opretter...",
+    "ExportCSV": "Eksporter CSV",
+    "Filters": "Filtre",
+    "exporting": " Eksporterer...",
+    "Next": "Næste",
+    "Previous": "Forrige",
+    "Submitting": "Indsender...",
+    "address": "adresse",
+    "updating": "opdaterer...",
+    "creating": "opretter...",
     "all": "Alle",
     "noRecordsFound": "Ingen poster fundet",
     "resetting": "Nulstiller...",
@@ -106,7 +106,7 @@
   },
   "imageTypes": {
     "pngImage": "PNG Billede",
-    "jpegImage": "JPEG Billede", 
+    "jpegImage": "JPEG Billede",
     "gifImage": "GIF Billede",
     "webpImage": "WebP Billede"
   },
@@ -124,7 +124,7 @@
     "loginTitle": "BoligMatch Login",
     "welcomeBack": "Velkommen tilbage",
     "pleaseLogin": "Log venligst ind for at få adgang til systemet",
-    "userRole":"Bruger",
+    "userRole": "Bruger",
     "newPassword": "Ny adgangskode",
     "confirmNewPassword": "Bekræft ny adgangskode",
     "enterNewPassword": "Indtast ny adgangskode",
@@ -196,24 +196,24 @@
     "dashboard": {
       "title": "Dashboard",
       "subtitle": "Realtidsindsigt og systemoversigt",
-      "TotalUsers":"Totalt antal brugere",
-      "TotalPartners":"Totalt antal partnere",
-      "TotalSubCategories":"Totalt antal underkategorier",
+      "TotalUsers": "Totalt antal brugere",
+      "TotalPartners": "Totalt antal partnere",
+      "TotalSubCategories": "Totalt antal underkategorier",
       "TotalCategories": "Totalt antal kategorier",
       "TotalFavourites": "Totalt antal favoritter",
       "TotalRecommendations": "Totalt antal anbefalinger",
       "TotalPartners&Users": "Totalt antal partnere og brugere",
-      "today":"i dag",
-      "thisweek":"denne uge",
-      "thisyear":"dette år",
-      "lastyear":"Sidste år",
+      "today": "i dag",
+      "thisweek": "denne uge",
+      "thisyear": "dette år",
+      "lastyear": "Sidste år",
       "thismonth": "denne måned",
-      "alltime":"hele tiden",
+      "alltime": "hele tiden",
       "total": "Total",
-      "userGrowthAnalytics":"Bruger Vækst Analyser",
-      "growthRate":"Vækstrate",
+      "userGrowthAnalytics": "Bruger Vækst Analyser",
+      "growthRate": "Vækstrate",
       "jan": "Jan",
-      "feb": "Feb", 
+      "feb": "Feb",
       "mar": "Mar",
       "apr": "Apr",
       "may": "Maj",
@@ -227,12 +227,12 @@
       "sun": "Søn",
       "mon": "Man",
       "tue": "Tir",
-      "wed": "Ons", 
+      "wed": "Ons",
       "thu": "Tor",
       "fri": "Fre",
       "sat": "Lør",
       "week": "Uge",
-      "weeks": "Uger", 
+      "weeks": "Uger",
       "month": "Måned",
       "months": "Måneder",
       "year": "År",
@@ -245,7 +245,7 @@
       "editCategory": "Rediger Kategori",
       "name": "Navn",
       "icon": "Ikon",
-      "status":"Status",
+      "status": "Status",
       "description": "Beskrivelse",
       "image": "Billede",
       "id": "ID",
@@ -275,7 +275,7 @@
       "name": "Navn",
       "category": "Kategori",
       "icon": "Ikon",
-      "status":"Status",
+      "status": "Status",
       "description": "Beskrivelse",
       "image": "Billede",
       "id": "ID",
@@ -286,7 +286,7 @@
       "createError": "Kunne ikke oprette underkategori",
       "updateError": "Kunne ikke opdatere underkategori",
       "deleteError": "Kunne ikke slette underkategori",
-       "imageUrl": "Billede Upload",
+      "imageUrl": "Billede Upload",
       "iconUrl": "Ikon Upload",
       "imageMustBeDimensions": "Billede skal være præcis {{width}} × {{height}} pixels",
       "iconMustBeDimensions": "Ikon skal være præcis {{width}} × {{height}} pixels",
@@ -297,14 +297,14 @@
       "noActiveCategoriesMessage": "Du skal oprette en aktiv kategori før du kan tilføje underkategorier.",
       "addTestimonial": "Tilføj udtalelse",
       "editPartner": "Rediger partner",
-      "resetPassword": "Nulstil adgangskode", 
+      "resetPassword": "Nulstil adgangskode",
       "deletePartner": "Slet partner"
     },
     "partners": {
       "title": "Partnere",
-      "subtitle":"Administrer dine partnere",
+      "subtitle": "Administrer dine partnere",
       "addPartner": "Tilføj Partner",
-      "BusinessName":"Virksomhedsnavn",
+      "BusinessName": "Virksomhedsnavn",
       "editPartner": "Rediger Partner",
       "name": "Navn",
       "city": "By",
@@ -320,7 +320,7 @@
       "updateError": "Kunne ikke opdatere partner",
       "deleteError": "Kunne ikke slette partner",
       "BasicInformation": "Grundlæggende Information",
-      "Media&Description": "Medier & Beskrivelse", 
+      "Media&Description": "Medier & Beskrivelse",
       "TextFields": "Tekstfelter",
       "TextField1": "Tekstfelt 1",
       "TextField2": "Tekstfelt 2",
@@ -329,27 +329,27 @@
       "TextField5": "Tekstfelt 5",
       "TextField6": "Tekstfelt 6",
       "Images&Status": "Billeder & Status",
-      "ImageUpload1":"Billede upload 1",
-      "ImageUpload2":"Billede upload 2",
-      "ImageUpload3":"Billede upload 3",
-      "ImageUpload4":"Billede upload 4",
-      "ImageUpload5":"Billede upload 5",
+      "ImageUpload1": "Billede upload 1",
+      "ImageUpload2": "Billede upload 2",
+      "ImageUpload3": "Billede upload 3",
+      "ImageUpload4": "Billede upload 4",
+      "ImageUpload5": "Billede upload 5",
       "Documents": "Dokumenter",
       "DocumentFile": "Dokument fil ",
-      "DocumentName":"Dokument Navn",
-      "UploadDocument":"Upload dokument",
+      "DocumentName": "Dokument Navn",
+      "UploadDocument": "Upload dokument",
       "Categories&SubCategories": "Kategorier & Underkategorier",
       "thumbnailUpload": "Upload miniaturebillede",
       "uploadVideo": "Upload video",
       "AddDocument": "Tilføj dokument",
-      "logoUpload" : "Upload logo",
+      "logoUpload": "Upload logo",
       "shortDescription": "Kort beskrivelse",
       "SelectCategory": "Vælg kategori",
       "AddsubCategory": "Tilføj underkategori",
-      "exactly ":"Præcis",
-      "preview":"forhåndsvisning",
-      "open":"åbn",
-      "download":"Download",
+      "exactly ": "Præcis",
+      "preview": "forhåndsvisning",
+      "open": "åbn",
+      "download": "Download",
       "clickToUpload": "Klik for at uploade dokument",
       "uploading": "Uploader...",
       "uploadSuccess": "Dokument uploadet succesfuldt",
@@ -466,10 +466,10 @@
       "name": "Navn",
       "email": "Email",
       "mobileNo": "Mobil",
-      "Enteremailaddress":"Indtast e-mailadresse",
-      "EnterfirstName":"Indtast fornavn",
-      "EnterlastName":"Indtast efternavn",
-      "EntermobileNo":"Indtast mobilnummer",
+      "Enteremailaddress": "Indtast e-mailadresse",
+      "EnterfirstName": "Indtast fornavn",
+      "EnterlastName": "Indtast efternavn",
+      "EntermobileNo": "Indtast mobilnummer",
       "role": "Rolle",
       "id": "ID",
       "createSuccess": "Bruger oprettet succesfuldt",
@@ -628,13 +628,13 @@
     "newPassword": "Ny adgangskode",
     "confirmPassword": "Bekræft adgangskode",
     "updatePassword": "Skift adgangskode"
-  }
-  ,
+  },
   "userDashboard": {
     "buttons": {
       "partners": "Partnere",
       "favorites": "Favoritter",
-      "messages": "Beskeder"
+      "messages": "Beskeder",
+      "favoritesMobile": "Favoritter"
     },
     "favoritesTitle": "Mine Favoritter",
     "conversationsTitle": "Mine Samtaler",
@@ -659,14 +659,20 @@
       "statistics": "Statistik",
       "profile": "Min profil",
       "partners": "Partnere"
+    },
+    "stats": {
+      "profileVisits": "Besøg på min profil",
+      "totalFavorites": "i alt Favoritter",
+      "totalPartners": "samlede partnere",
+      "totalRecommendations": "samlede anbefalinger"
     }
   },
   "supplierProfile": {
     "contactButton": "Kontakt Leverandør",
     "saveFavoriteButton": "Gem som Favorit",
-    "removeFromFavorites":"Fjern fra favoritter",
-    "recommendation":"Anbefal os til andre",
-    "conversation":"Samtaler",
+    "removeFromFavorites": "Fjern fra favoritter",
+    "recommendation": "Anbefal os til andre",
+    "conversation": "Samtaler",
     "reviewsTitle": "Anmeldelser",
     "recommendModal": {
       "title": "Anbefal os til andre",
@@ -683,122 +689,121 @@
       "send": "Send",
       "contactInfo": "Kontaktinformation"
     }
-   
   },
- "sidebar": {
-  "home": "Hjem",
-  "dashboard": "Betjeningspanel",
-  "favourites": "Favoritter",
-  "partners": "Partnere",
-  "messages": "Beskeder",
-  "profileSettings": "Profilindstillinger",
-  "privacyPolicy": "Privatlivspolitik",
-  "termsOfService": "Vilkår for brug",
-  "signOut": "Log ud",
-  "mitBoligmatch": "Mit Boligmatch+",
-  "manageProfile": "Administrér profil",
-  "becomePartner": "Bliv partner",
-  "about": "Om Boligmatch",
-  "terms": "Vilkår og betingelser",
-  "logINUser": "Logget ind som slutbruger",
-  "notLogIn":"Ikke logget ind",
-  "logInPartner":"Logget ind som partner"
-},
-"services": {
-  "moving": {
-    "title": "Flytning og opbevaring",
-    "description": "Professionelle flytningstjenester og opbevaring for dit hjem"
+  "sidebar": {
+    "home": "Hjem",
+    "dashboard": "Betjeningspanel",
+    "favourites": "Favoritter",
+    "partners": "Partnere",
+    "messages": "Beskeder",
+    "profileSettings": "Profilindstillinger",
+    "privacyPolicy": "Privatlivspolitik",
+    "termsOfService": "Vilkår for brug",
+    "signOut": "Log ud",
+    "mitBoligmatch": "Mit Boligmatch+",
+    "manageProfile": "Administrér profil",
+    "becomePartner": "Bliv partner",
+    "about": "Om Boligmatch",
+    "terms": "Vilkår og betingelser",
+    "logINUser": "Logget ind som slutbruger",
+    "notLogIn": "Ikke logget ind",
+    "logInPartner": "Logget ind som partner"
   },
-  "construction": {
-    "title": "Byg og anlæg",
-    "description": "Eksperter i byggeri og anlægsarbejde til dine byggebehov"
-  },
-  "craftsmen": {
-    "title": "Håndværkere",
-    "description": "Tømrer, murer, elektriker, VVS, maler, glarmester, handyman, fugemand"
-  },
-  "interior": {
-    "title": "Indretning",
-    "description": "Smukke indretningsløsninger og design services til dit hjem"
-  },
-  "consulting": {
-    "title": "Rådgivning",
-    "description": "Ekspertrådgivning og professionelle konsulenttjenester"
-  }
-},
-"stepper": {
-  "physical": {
-    "label": "Fysisk vurdering og dokumentation",
-    "description": "Vores team foretager en grundig evaluering af din ejendom og dokumenterer alle detaljer til forberedelse af salget."
-  },
-  "photography": {
-    "label": "Fotografering og beskrivelse",
-    "description": "Professionelle billeder og detaljerede beskrivelser præsenterer din ejendom fra den bedste side."
-  },
-  "viewing": {
-    "label": "Til salg, åbent hus og fremvisninger",
-    "description": "Vi organiserer og administrerer ejendomsfremvisninger og åbent hus arrangementer for at tiltrække potentielle købere."
-  },
-  "negotiation": {
-    "label": "Bud og forhandling",
-    "description": "Eksperthåndtering af bud og forhandlinger for at sikre den bedst mulige aftale for dig."
-  },
-  "signing": {
-    "label": "Underskrift af køber og sælger",
-    "description": "Gennemførelse af aftalen med alle parter underskriver de nødvendige dokumenter."
-  },
-  "approval": {
-    "label": "Godkendelse af bank og rådgiver",
-    "description": "Sikring af nødvendige godkendelser fra finansielle institutioner og juridiske rådgivere."
-  },
-  "final": {
-    "label": "Endelig handel og tinglysning",
-    "description": "Gennemførelse af den juridiske transaktion og registrering af ejendomsoverdragelsen."
-  },
-  "transfer": {
-    "label": "Overdragelse og opfølgning",
-    "description": "Overdragelse af ejendommen til den nye ejer og sikring af, at alle detaljer er afsluttet."
-  }
-},
-"partnerStepper": {
-  "cta": "Bliv Boligmatch+ partner",
-  "heroTitle": "Vil du være en del af et innovativt koncept, hvor vi har hinandens ryg?",
-  "modalTitle": "Forespørg om partnerskab",
-  "p1": "Vi har brug for stærke og dygtige partnere. Vi har allerede indgået partnerskab med en række forskellige virksomheder, og inviterer jer til at tage del i denne spændende rejse og blive en del af et visionært fællesskab.",
-  "p2_before": "Er du interesseret i at høre mere om mulighederne, så tøv ikke med at kontakte vores partneransvarlige {{name}} på tlf.",
-  "p2_after": ".",
-  "p3": "Vi glæder os til at høre fra dig!",
-  "contactName": "Klaus Rasmussen"
-},
-"partnerSteperPara": {
-  "intro1": "Velkommen til Boligmatch+ partnerskaber. Vi er godt i gang med at skabe et netværk af dygtige og troværdige leverandører til hjemmet, så boliginteresserede nemt og trygt kan søge efter produkter og services ét samlet sted. Platformen kalder vi Boligmatch+, og det bliver i fremtiden også stedet, hvor vores boligkunder kan følge deres købs- eller salgsproces. Ved at samle disse aktiviteter under samme tag gør vi det nemt for de besøgende at opfylde deres behov, og øger samtidig chancen for at de vælger én eller flere af vores partnere fremfor konkurrerende virksomheder.",
-  "intro2": "Vi tror på, at et stærkt samarbejde skal gå begge veje, hvor vi fungerer som hinandens ambassadører og støtter hinanden i at skabe værdi. Som partner hos Boligmatch får I adgang til en række eksklusive fordele, der styrker jeres forretning og åbner nye muligheder. Vi inviterer jer til at tage del i denne spændende rejse og blive en del af et visionært fællesskab.",
-  "heading": "Hvilke fordele får du som Boligmatch+ partner?",
-  "benefits": {
-    "1": {
-      "title": "Adgang til vores platform",
-      "description": "Boligmatch+ giver dig eksklusiv adgang til en platform fyldt med købsparate kunder med et behov for produkter og services relateret til bolig og fritid."
+  "services": {
+    "moving": {
+      "title": "Flytning og opbevaring",
+      "description": "Professionelle flytningstjenester og opbevaring for dit hjem"
     },
-    "2": {
-      "title": "Synlighed og markedsføring",
-      "description": "På Boligmatch+ får jeres virksomhed synlighed døgnet rundt, hele året. I får egen mini-hjemmeside med en professionelt produceret profilfilm, en beskrivelse af virksomheden og dens kompetencer samt visning af Trustpilot-anmeldelser. Aktiviteterne kan følges på jeres eget dashboard."
+    "construction": {
+      "title": "Byg og anlæg",
+      "description": "Eksperter i byggeri og anlægsarbejde til dine byggebehov"
     },
-    "3": {
-      "title": "Fokus ved fremvisninger",
-      "description": "Vi bringer partnerne i spil ved åbne huse og fremvisninger ved at fokusere på udviklingsmulighederne i den enkelte bolig, og fremhæve hvilke partnere der kan hjælpe køberne. Dette giver jer et væsentlig forspring ifht. konkurrenterne."
+    "craftsmen": {
+      "title": "Håndværkere",
+      "description": "Tømrer, murer, elektriker, VVS, maler, glarmester, handyman, fugemand"
     },
-    "4": {
-      "title": "Gratis deltagelse i vores netværksgruppe",
-      "description": "Som partner bliver du også en del af vores B2B-netværk. Her kan du bygge stærke relationer, dele viden og skabe nye forretningsmuligheder i et dynamisk og inspirerende miljø, og få adgang til spændende fordele og events."
+    "interior": {
+      "title": "Indretning",
+      "description": "Smukke indretningsløsninger og design services til dit hjem"
     },
-    "5": {
-      "title": "Rabat hos Boligmatch til jeres ansatte",
-      "description": "Alle de af jeres ansatte, som melder sig ind i Boligmatch+ får 20% i rabat hos Boligmatch."
+    "consulting": {
+      "title": "Rådgivning",
+      "description": "Ekspertrådgivning og professionelle konsulenttjenester"
+    }
+  },
+  "stepper": {
+    "physical": {
+      "label": "Fysisk vurdering og dokumentation",
+      "description": "Vores team foretager en grundig evaluering af din ejendom og dokumenterer alle detaljer til forberedelse af salget."
     },
-    "6": {
-      "title": "Kick-back ved henvisning af kunder",
-      "description": "Skaffer du en ny boligkunde til Boligmatch kvitterer vi med 10% af salæret, som overføres til din konto i Boligmatch+ fordelsprogrammet."
+    "photography": {
+      "label": "Fotografering og beskrivelse",
+      "description": "Professionelle billeder og detaljerede beskrivelser præsenterer din ejendom fra den bedste side."
+    },
+    "viewing": {
+      "label": "Til salg, åbent hus og fremvisninger",
+      "description": "Vi organiserer og administrerer ejendomsfremvisninger og åbent hus arrangementer for at tiltrække potentielle købere."
+    },
+    "negotiation": {
+      "label": "Bud og forhandling",
+      "description": "Eksperthåndtering af bud og forhandlinger for at sikre den bedst mulige aftale for dig."
+    },
+    "signing": {
+      "label": "Underskrift af køber og sælger",
+      "description": "Gennemførelse af aftalen med alle parter underskriver de nødvendige dokumenter."
+    },
+    "approval": {
+      "label": "Godkendelse af bank og rådgiver",
+      "description": "Sikring af nødvendige godkendelser fra finansielle institutioner og juridiske rådgivere."
+    },
+    "final": {
+      "label": "Endelig handel og tinglysning",
+      "description": "Gennemførelse af den juridiske transaktion og registrering af ejendomsoverdragelsen."
+    },
+    "transfer": {
+      "label": "Overdragelse og opfølgning",
+      "description": "Overdragelse af ejendommen til den nye ejer og sikring af, at alle detaljer er afsluttet."
+    }
+  },
+  "partnerStepper": {
+    "cta": "Bliv Boligmatch+ partner",
+    "heroTitle": "Vil du være en del af et innovativt koncept, hvor vi har hinandens ryg?",
+    "modalTitle": "Forespørg om partnerskab",
+    "p1": "Vi har brug for stærke og dygtige partnere. Vi har allerede indgået partnerskab med en række forskellige virksomheder, og inviterer jer til at tage del i denne spændende rejse og blive en del af et visionært fællesskab.",
+    "p2_before": "Er du interesseret i at høre mere om mulighederne, så tøv ikke med at kontakte vores partneransvarlige {{name}} på tlf.",
+    "p2_after": ".",
+    "p3": "Vi glæder os til at høre fra dig!",
+    "contactName": "Klaus Rasmussen"
+  },
+  "partnerSteperPara": {
+    "intro1": "Velkommen til Boligmatch+ partnerskaber. Vi er godt i gang med at skabe et netværk af dygtige og troværdige leverandører til hjemmet, så boliginteresserede nemt og trygt kan søge efter produkter og services ét samlet sted. Platformen kalder vi Boligmatch+, og det bliver i fremtiden også stedet, hvor vores boligkunder kan følge deres købs- eller salgsproces. Ved at samle disse aktiviteter under samme tag gør vi det nemt for de besøgende at opfylde deres behov, og øger samtidig chancen for at de vælger én eller flere af vores partnere fremfor konkurrerende virksomheder.",
+    "intro2": "Vi tror på, at et stærkt samarbejde skal gå begge veje, hvor vi fungerer som hinandens ambassadører og støtter hinanden i at skabe værdi. Som partner hos Boligmatch får I adgang til en række eksklusive fordele, der styrker jeres forretning og åbner nye muligheder. Vi inviterer jer til at tage del i denne spændende rejse og blive en del af et visionært fællesskab.",
+    "heading": "Hvilke fordele får du som Boligmatch+ partner?",
+    "benefits": {
+      "1": {
+        "title": "Adgang til vores platform",
+        "description": "Boligmatch+ giver dig eksklusiv adgang til en platform fyldt med købsparate kunder med et behov for produkter og services relateret til bolig og fritid."
+      },
+      "2": {
+        "title": "Synlighed og markedsføring",
+        "description": "På Boligmatch+ får jeres virksomhed synlighed døgnet rundt, hele året. I får egen mini-hjemmeside med en professionelt produceret profilfilm, en beskrivelse af virksomheden og dens kompetencer samt visning af Trustpilot-anmeldelser. Aktiviteterne kan følges på jeres eget dashboard."
+      },
+      "3": {
+        "title": "Fokus ved fremvisninger",
+        "description": "Vi bringer partnerne i spil ved åbne huse og fremvisninger ved at fokusere på udviklingsmulighederne i den enkelte bolig, og fremhæve hvilke partnere der kan hjælpe køberne. Dette giver jer et væsentlig forspring ifht. konkurrenterne."
+      },
+      "4": {
+        "title": "Gratis deltagelse i vores netværksgruppe",
+        "description": "Som partner bliver du også en del af vores B2B-netværk. Her kan du bygge stærke relationer, dele viden og skabe nye forretningsmuligheder i et dynamisk og inspirerende miljø, og få adgang til spændende fordele og events."
+      },
+      "5": {
+        "title": "Rabat hos Boligmatch til jeres ansatte",
+        "description": "Alle de af jeres ansatte, som melder sig ind i Boligmatch+ får 20% i rabat hos Boligmatch."
+      },
+      "6": {
+        "title": "Kick-back ved henvisning af kunder",
+        "description": "Skaffer du en ny boligkunde til Boligmatch kvitterer vi med 10% af salæret, som overføres til din konto i Boligmatch+ fordelsprogrammet."
+      }
     }
   }
-}
 }

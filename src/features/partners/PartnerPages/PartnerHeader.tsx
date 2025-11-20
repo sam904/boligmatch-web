@@ -84,6 +84,15 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
     }
   }, []);
 
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("bm_lang");
+      if (saved && saved !== i18n.language) {
+        i18n.changeLanguage(saved);
+      }
+    } catch {}
+  }, []);
+
   const activePartner =
     partnerLocalData && !userLocalData ? partnerLocalData : null;
 
@@ -110,28 +119,64 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
             </div>
 
             <div className="flex items-center md:gap-4 gap-2">
-              {activePartner ? (
-                <div className="relative">
-                  <div className="flex items-center gap-3 cursor-pointer">
-                    <span className="text-white text-sm font-medium">
-                      {activePartner.firstName} {activePartner.lastName}
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  className="p-2 text-white transition-colors"
-                  onClick={() => setIsChoiceModalOpen(true)}
-                >
-                  <img
-                    src={userHeader}
-                    alt=""
-                    className={`duration-300 ${
-                      isScrolled ? "h-8" : "h-10"
-                    } cursor-pointer`}
-                  />
-                </button>
+              {!isMobile && (
+                <>
+                  {activePartner ? (
+                    <div className="relative">
+                      <div className="flex items-center gap-3 cursor-pointer">
+                        <span className="text-white text-sm font-medium">
+                          {activePartner.firstName} {activePartner.lastName}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      className="p-2 text-white transition-colors"
+                      onClick={() => setIsChoiceModalOpen(true)}
+                    >
+                      <img
+                        src={userHeader}
+                        alt=""
+                        className={`duration-300 ${
+                          isScrolled ? "h-8" : "h-10"
+                        } cursor-pointer`}
+                      />
+                    </button>
+                  )}
+                </>
               )}
+              <div className="relative">
+                <button
+                  onClick={() => setShowLangDropdown((v) => !v)}
+                  className="px-2 py-1 rounded-md bg-white/10 text-white text-xs md:text-sm font-semibold hover:bg-white/20 transition-colors cursor-pointer min-w-[44px] text-center"
+                >
+                  {currentLang?.toUpperCase?.() || "EN"}
+                </button>
+                {showLangDropdown && (
+                  <div className="absolute right-0 mt-2 w-28 bg-white rounded-md shadow-lg z-50 overflow-hidden">
+                    <button
+                      onClick={() => {
+                        i18n.changeLanguage("da");
+                        localStorage.setItem("bm_lang", "da");
+                        setShowLangDropdown(false);
+                      }}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                    >
+                      Dansk
+                    </button>
+                    <button
+                      onClick={() => {
+                        i18n.changeLanguage("en");
+                        localStorage.setItem("bm_lang", "en");
+                        setShowLangDropdown(false);
+                      }}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                    >
+                      English
+                    </button>
+                  </div>
+                )}
+              </div>
 
               <button
                 onClick={() => {
@@ -177,18 +222,19 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/10">
-                    <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3">
                   {/* Partner/User Profile in Sidebar for partner pages */}
-                  {activePartner ? (
-                    <div className="flex items-center gap-3">
+                  {activePartner || activeUser ? (
+                    <div className="flex flex-col">
                       <span className="text-white text-sm font-medium">
-                        {t("sidebar.logInPartner")}
+                        {activePartner
+                          ? `${activePartner.firstName} ${activePartner.lastName}`
+                          : `${activeUser.firstName} ${activeUser.lastName}`}
                       </span>
-                    </div>
-                  ) : activeUser ? (
-                    <div className="flex items-center gap-3">
-                      <span className="text-white text-sm font-medium">
-                        {t("sidebar.logINUser")}
+                      <span className="text-white text-xs opacity-70">
+                        {activePartner
+                          ? t("sidebar.logInPartner")
+                          : t("sidebar.logINUser")}
                       </span>
                     </div>
                   ) : (
@@ -258,7 +304,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                           alt=""
                           className="w-[30px] h-[30px]"
                         />
-                        Document
+                        {t("admin.partners.Documents")}
                       </span>
                     </button>
                   )}
@@ -380,7 +426,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                         d="M5 12h14M12 5l7 7-7 7"
                       />
                     </svg>
-                    <span className="font-medium">Sign In</span>
+                    <span className="font-medium">{t("auth.signIn")}</span>
                   </button>
                 )}
               </div>

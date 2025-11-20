@@ -121,29 +121,32 @@ function UserHeader({
             </div>
 
             <div className="flex items-center md:gap-4 gap-2">
-              {displayName ? (
-                <div className="relative">
-                  <div className="flex items-center gap-3 cursor-pointer">
-                    <span className="text-white text-sm font-medium">
-                      {displayName}
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  className="p-2 text-white transition-colors"
-                  onClick={() => setIsChoiceModalOpen(true)}
-                >
-                  <img
-                    src={userHeader}
-                    alt=""
-                    className={`duration-300 ${
-                      isScrolled ? "h-8" : "h-10"
-                    } cursor-pointer`}
-                  />
-                </button>
+              {!isMobile && (
+                <>
+                  {displayName ? (
+                    <div className="relative">
+                      <div className="flex items-center gap-3 cursor-pointer">
+                        <span className="text-white text-sm font-medium">
+                          {displayName}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      className="p-2 text-white transition-colors"
+                      onClick={() => setIsChoiceModalOpen(true)}
+                    >
+                      <img
+                        src={userHeader}
+                        alt=""
+                        className={`duration-300 ${
+                          isScrolled ? "h-8" : "h-10"
+                        } cursor-pointer`}
+                      />
+                    </button>
+                  )}
+                </>
               )}
-
               <div className="relative">
                 <button
                   onClick={() => setShowLangDropdown((v) => !v)}
@@ -225,16 +228,15 @@ function UserHeader({
               <div className="flex items-center justify-between p-6 border-b border-white/10">
                 <div className="flex items-center gap-3">
                   {/* Partner/User Profile in Sidebar */}
-                  {isPartner ? (
-                    <div className="flex items-center gap-3">
+                  {displayName ? (
+                    <div className="flex flex-col">
                       <span className="text-white text-sm font-medium">
-                        {t("sidebar.logInPartner")}
+                        {displayName}
                       </span>
-                    </div>
-                  ) : userData ? (
-                    <div className="flex items-center gap-3">
-                      <span className="text-white text-sm font-medium">
-                        {t("sidebar.logINUser")}
+                      <span className="text-white text-xs opacity-70">
+                        {isPartner
+                          ? t("sidebar.logInPartner")
+                          : t("sidebar.logINUser")}
                       </span>
                     </div>
                   ) : (

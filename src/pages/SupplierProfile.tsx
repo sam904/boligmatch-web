@@ -32,7 +32,9 @@ import startImg from "/src/assets/userImages/star.png";
 import servicesImg from "/src/assets/supplierProfile/services.png";
 import factsImg from "/src/assets/userImages/faktaLogo.svg";
 import Footer from "./Footer";
-import closeModel from "/src/assets/userImages/close.svg"
+// import closeModel from "/src/assets/userImages/close.svg"
+import { IoClose } from "react-icons/io5";
+
 
 const SupplierProfile = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -125,7 +127,7 @@ const SupplierProfile = () => {
         const normalized = parsed?.output ?? parsed;
         return normalized?.id ?? null;
       }
-    } catch {}
+    } catch { }
     return null;
   };
 
@@ -445,8 +447,8 @@ const SupplierProfile = () => {
           </div>
         </div>
 
-        <div className="bg-[#012F2B] min-h-screen flex justify-center items-center p-8">
-          <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-7xl bg-[#012F2B]">
+        <div className="bg-[#01351f] min-h-screen flex justify-center items-center p-8">
+          <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-7xl bg-[#01351f]">
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
               <div className="md:w-[403px] w-full md:h-[859px] h-auto rounded-[10px] bg-white p-6 flex flex-col relative">
@@ -670,14 +672,18 @@ const SupplierProfile = () => {
         {/* Modals */}
         {activeModal && (
           <div className="fixed inset-0 z-40 flex items-center justify-center">
-            <div className="absolute inset-0 bg-black/50" />
+            <div
+              className="absolute inset-0 bg-black/50 cursor-pointer"
+              onClick={() => setActiveModal(null)}
+            />
             <div className="relative z-50 w-[320px] sm:w-[360px] md:w-[420px] bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-[#1F7A58]/10">
               <button
                 className="absolute right-4 top-3 text-black text-xl cursor-pointer hover:text-gray-700"
                 aria-label="Close"
                 onClick={() => setActiveModal(null)}
               >
-                <img className="w-[31px] h-[31px] cursor-pointer" src={closeModel} alt="" />
+                {/* <img className="w-[31px] h-[31px] cursor-pointer z-[9999]" src={closeModel} alt="" /> */}
+                <IoClose className="w-[30px] h-[30px] cursor-pointer" />
               </button>
 
               {activeModal === "recommend" && (
