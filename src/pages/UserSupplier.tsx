@@ -200,7 +200,7 @@ const UserSupplier = () => {
 
   return (
     <div
-      className="relative md:h-[100vh]"
+      className="relative h-[100vh]"
       style={{
         backgroundImage: `url(${getBackgroundImage()})`,
         backgroundSize: "cover",

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   categoryService,
   type Category,
@@ -15,6 +16,7 @@ import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg";
 import Footer from "../../../pages/Footer";
 
 function SearchForPartner() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<Category[]>([]);
   const calledRef = useRef(false);
@@ -80,7 +82,9 @@ function SearchForPartner() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="text-white text-lg">Loading...</div>
+              <div className="text-white text-lg">
+                {t("common.loading")}
+              </div>
             </div>
           ) : (
             <>
@@ -91,9 +95,9 @@ function SearchForPartner() {
                     <div
                       key={category.id}
                       onClick={() => handleCategoryClick(category)}
-                      className="w-[374px] h-[394px] sm:w-auto sm:h-auto mx-auto rounded-[18px] sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
+                      className="w-[374px] h-[394px] md:w-auto md:h-auto mx-auto rounded-[18px] md:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
                     >
-                      <div className="relative w-full h-[222px] sm:h-56 md:h-64 lg:h-72 rounded-t-[18px] sm:rounded-t-xl overflow-hidden">
+                      <div className="relative w-full h-[222px] md:h-56 lg:h-64 xl:h-72 rounded-t-[18px] md:rounded-t-xl overflow-hidden">
                         <img
                           src={category.imageUrl || assets.image}
                           alt={category.name}

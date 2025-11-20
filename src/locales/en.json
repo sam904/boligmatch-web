@@ -595,7 +595,8 @@
     "buttons": {
       "partners": "Partners",
       "favorites": "Saved as favorite",
-      "messages": "Messages"
+      "messages": "Messages",
+      "favoritesMobile": "Favorite"
     },
     "favoritesTitle": "My Favorites",
     "conversationsTitle": "My Conversations",
@@ -620,6 +621,12 @@
       "statistics": "Statistics",
       "profile": "Profile",
       "partners": "Partners"
+    },
+    "stats": {
+      "profileVisits": "Profile visits",
+      "totalFavorites": "Total favorites",
+      "totalPartners": "Total partners",
+      "totalRecommendations": "Total recommendations"
     }
   },
   "supplierProfile": {

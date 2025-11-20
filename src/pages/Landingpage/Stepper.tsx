@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import icon1 from "../../assets/userImages/01.png";
 import icon2 from "../../assets/userImages/02.png";
@@ -11,6 +11,7 @@ import icon8 from "../../assets/userImages/08.png";
 import circlebg from "../../assets/userImages/circle-bg.png";
 import stepperBg from "/src/assets/userImages/stepper.jpeg";
 import jurneyImg from "/src/assets/userImages/jurneyImg.png";
+import steperBgMobile from "/src/assets/userImages/steper-mobile.png";
 
 interface StepperProps {
   currentStep: number;
@@ -20,6 +21,20 @@ interface StepperProps {
 const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
   const { t } = useTranslation();
   const [hoveredStep, setHoveredStep] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const steps = [
     {
@@ -76,16 +91,23 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
     <div
       className="flex items-center justify-center w-full h-[100vh] mx-auto md:p-14"
       style={{
-        backgroundImage: `url(${stepperBg})`,
+        backgroundImage: `url(${isMobile ? steperBgMobile : stepperBg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div
-        className="flex items-start w-full overflow-x-auto scrollbar-hide md:w-full md:overflow-visible"
-      >
-        {steps.map((step, index) => (
+      <style>{`
+        @media (max-width: 767px) {
+          .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
+          .scrollbar-hide::-webkit-scrollbar { display: none; }
+        }
+      `}</style>
+      <div className="flex items-center justify-center w-full h-full">
+        <div
+          className="flex items-start justify-center w-full overflow-x-auto scrollbar-hide md:w-full md:overflow-visible"
+        >
+          {steps.map((step, index) => (
           <React.Fragment key={step.number}>
             <div
               className="flex flex-col items-center flex-1 w-[200px] z-10 relative"
@@ -157,15 +179,30 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
                 {step.label}
               </span>
 
+              {/* Mobile detail card: tall pill design, based on current step */}
+              {currentStep === index + 1 && (
+                <div className="-mt-22 w-[165px] bg-[#01351f] text-white rounded-[32px] shadow-[0_20px_45px_rgba(0,0,0,0.65)] transition-all duration-300 z-40 overflow-hidden min-h-[380px] md:hidden">
+                  <div className="relative">
+                    <img
+                      src={jurneyImg}
+                      alt="step visual"
+                      className="w-full h-[210px] object-cover"
+                    />
+                  </div>
+                  <div className="p-5 text-center">
+                    <h3 className="text-4xl font-extrabold">{step.number}</h3>
+                    <h4 className="text-base font-semibold mt-1">{step.label}</h4>
+                    <p className="text-sm mt-3 text-gray-200">
+                      {step.description}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Desktop / laptop hover popup: keep original behaviour */}
               {hoveredStep === index && (
                 <div
-                  className="absolute top-[80px] left-1/2 transform -translate-x-1/2 w-[220px] bg-[#01351f] text-white rounded-2xl 
-      shadow-[0_20px_45px_rgba(0,0,0,0.65)] transition-all duration-300 z-50 overflow-hidden
-      md:w-[150px]       /* Desktop original size */
-      md:top-[130px]
-
-      /* ✅ Make it float above scroll on small screens */
-       md:absolute  "
+                  className="hidden md:block absolute top-[130px] left-1/2 transform -translate-x-1/2 w-[150px] bg-[#01351f] text-white rounded-2xl shadow-[0_20px_45px_rgba(0,0,0,0.65)] transition-all duration-300 z-50 overflow-hidden"
                 >
                   <div className="relative">
                     <img
@@ -191,6 +228,7 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
             )}
           </React.Fragment>
         ))}
+        </div>
       </div>
     </div>
   );
