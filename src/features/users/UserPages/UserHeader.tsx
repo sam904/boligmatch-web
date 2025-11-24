@@ -13,6 +13,7 @@ import homeIcon from "/src/assets/userImages/home.png";
 import myBoligmatchIcon from "/src/assets/userImages/my-boligmatch.png";
 import manageProfileIcon from "/src/assets/userImages/gear.png";
 // import partnerPitchIcon from "/src/assets/userImages/partnerPitch.png"
+import docsIcon from "/src/assets/userImages/docsIcon.png";
 import becomePartnerIcon from "/src/assets/userImages/becomePartner.png";
 import aboutBoligmatchIcon from "/src/assets/userImages/aboutBoligmatch.png";
 import termsConditionIcon from "/src/assets/userImages/termsAndCondi.png";
@@ -34,6 +35,7 @@ function UserHeader({
   console.log(showLangDropdown);
   const [showSidebar, setShowSidebar] = useState(false);
   const [partnerData, setPartnerData] = useState<any | null>(null);
+  const [userLocalData, setUserLocalData] = useState<any | null>(null);
   const { i18n, t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
   console.log(isMobile);
@@ -64,6 +66,20 @@ function UserHeader({
     return () => window.removeEventListener("storage", checkPartnerData);
   }, []);
 
+  // Check for user data in localStorage
+  useEffect(() => {
+    try {
+      const storedUser =
+        typeof window !== "undefined" ? localStorage.getItem("bm_user") : null;
+      if (storedUser) {
+        const parsed = JSON.parse(storedUser);
+        setUserLocalData(parsed);
+      }
+    } catch (error) {
+      console.error("Error parsing bm_user from localStorage:", error);
+    }
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -92,10 +108,14 @@ function UserHeader({
   // Determine what to display: partner or user
   const isPartner =
     !!partnerData && (partnerData as any).roleName === "Partner";
+  
+  // Prioritize partner if exists, otherwise use user data (from localStorage or Redux)
+  const activeUser = !isPartner ? (userLocalData || userData) : null;
+  
   const displayName = isPartner
-    ? partnerData?.firstName
-    : userData
-    ? `${userData.firstName} ${userData.lastName}`
+    ? `${partnerData?.firstName} ${partnerData?.lastName}`
+    : activeUser
+    ? `${activeUser.firstName} ${activeUser.lastName}`
     : null;
 
   return (
@@ -195,7 +215,7 @@ function UserHeader({
             </div>
           </div>
           {showBackButton && (
-            <div>
+            <span>
               <button
                 type="button"
                 onClick={() => navigate(-1)}
@@ -207,7 +227,7 @@ function UserHeader({
                   className="w-[51px] h-[51px]"
                 />
               </button>
-            </div>
+            </span>
           )}
         </div>
       </header>
@@ -291,7 +311,7 @@ function UserHeader({
                       {t("sidebar.home")}
                     </span>
                   </button>
-                  {/* Hide user-only links when logged in as partner */}
+                  {/* Show user-only links when logged in as user */}
                   {displayName && !isPartner && (
                     <>
                       <button
@@ -338,6 +358,43 @@ function UserHeader({
                           Partner Pitch
                         </span>
                       </button> */}
+                    </>
+                  )}
+                  {/* Show partner-only links when logged in as partner */}
+                  {displayName && isPartner && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setShowSidebar(false);
+                          navigate("/partner/documents");
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                      >
+                        <span className="flex items-center gap-2 cursor-pointer">
+                          <img
+                            src={docsIcon}
+                            alt=""
+                            className="w-[30px] h-[30px]"
+                          />
+                          {t("admin.partners.Documents")}
+                        </span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowSidebar(false);
+                          navigate("/partner/manage-profile");
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                      >
+                        <span className="flex items-center gap-2 cursor-pointer">
+                          <img
+                            src={manageProfileIcon}
+                            alt=""
+                            className="w-[30px] h-[30px]"
+                          />
+                          {t("sidebar.manageProfile")}
+                        </span>
+                      </button>
                     </>
                   )}
                   <button
@@ -424,6 +481,7 @@ function UserHeader({
                       localStorage.removeItem("bm_subcategories");
                       localStorage.removeItem("bm_currentSubCategory");
                       localStorage.removeItem("bm_partner");
+                      localStorage.removeItem("bm_user");
                       window.location.href = "/";
                     }}
                     className="w-full text-left px-3 py-2.5 text-white hover:bg-[#95C11F]/20 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"

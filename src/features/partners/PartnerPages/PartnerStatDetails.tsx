@@ -10,7 +10,7 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
   const [partnerCount, setPartnerCount] = useState<{
     totalPartnerIdPageVisit?: number;
     totalFavourites?: number;
-    totalPartners?: number;
+    totalConversations?: number;
     totalRecommendations?: number;
   } | null>(null);
   const calledRef = useRef(false);
@@ -25,8 +25,8 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
       label: t("partnerStatistics.stats.totalFavorites"),
     },
     {
-      number: partnerCount?.totalPartners ?? 0,
-      label: t("partnerStatistics.stats.totalPartners"),
+      number: partnerCount?.totalConversations ?? 0,
+      label: t("partnerStatistics.stats.totalMessages"),
     },
     {
       number: partnerCount?.totalRecommendations ?? 0,

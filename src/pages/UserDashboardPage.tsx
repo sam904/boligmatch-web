@@ -319,7 +319,7 @@ export default function UserDashboardPage() {
                 className={`${activeView === "default"
                   ? "bg-[#145939] text-white"
                   : "bg-[#95c11f] text-white"
-                  } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer min-h-[48px]`}
+                  } flex items-center justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer w-[240px] h-[55px]`}
                 type="button"
               >
                 <img
@@ -337,7 +337,7 @@ export default function UserDashboardPage() {
                 className={`${activeView === "favorites"
                   ? "bg-[#145939] text-white"
                   : "bg-[#95c11f] text-white"
-                  } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer min-h-[48px]`}
+                  } flex items-center justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer w-[272.38px] h-[55px]`}
                 type="button"
               >
                 <img
@@ -358,7 +358,7 @@ export default function UserDashboardPage() {
                 className={`${activeView === "messages"
                   ? "bg-[#145939] text-white"
                   : "bg-[#95c11f] text-white"
-                  } flex-1 sm:flex-initial w-auto sm:w-auto min-w-0 flex items-center justify-start sm:justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition font-medium cursor-pointer min-h-[48px]`}
+                  } flex items-center justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition font-medium cursor-pointer w-[272.38px] h-[55px]`}
                 type="button"
               >
                 <img
@@ -677,8 +677,14 @@ export default function UserDashboardPage() {
       {/* Conversation Detail Modal */}
       {openConversation && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="relative z-[1001] w-[90%] max-w-md bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-[#1F7A58]/10">
+          <div 
+            className="absolute inset-0 bg-black/50 cursor-pointer" 
+            onClick={() => setOpenConversation(null)}
+          />
+          <div 
+            className="relative z-[1001] w-[90%] max-w-md bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-[#1F7A58]/10"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               className="absolute right-4 top-3 text-black text-xl cursor-pointer hover:text-gray-700"
               aria-label="Close"
@@ -693,7 +699,7 @@ export default function UserDashboardPage() {
                 alt="chat"
                 className="w-[64px] h-[64px]"
               />
-              <h3 className="text-center font-extrabold text-lg">Besked</h3>
+              <h3 className="text-center font-extrabold text-lg">{t("userDashboard.messageTitle")}</h3>
             </div>
 
             <div className="space-y-4 text-[#052011]">

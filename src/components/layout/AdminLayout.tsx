@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { logout } from "../../features/auth/authSlice";
 import UpdateProfileModal from "../common/UpdateProfileModal";
 import ResetPasswordModal from "../common/ResetPasswordModal";
+import ScrollToTop from "../common/ScrollToTop";
 import { IconLogout, IconKey, IconProfile } from "../common/Icons/Index";
 import AdminToast from "../common/AdminToast";
 import type { AdminToastType } from "../common/AdminToast";
@@ -199,6 +200,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
+      <ScrollToTop />
       {/* Render Toast Banners */}
       {toasts.map((toastItem) => (
         <AdminToast

@@ -118,7 +118,7 @@ function PartnerProfileShortcut({
         </div>
 
         <div className="  min-h-screen flex justify-center items-center p-8">
-          <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-7xl">
+          <div className="grid md:grid-cols-3 grid-cols-1 gap-4 max-w-7xl">
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
               <div className="md:w-[403px] w-full md:h-[859px] h-auto rounded-[10px] bg-white p-6 flex flex-col relative">

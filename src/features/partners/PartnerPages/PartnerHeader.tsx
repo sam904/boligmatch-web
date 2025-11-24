@@ -9,8 +9,7 @@ import { useAppSelector } from "../../../app/hooks";
 import { tokenStorage } from "../../../lib/storage";
 import { RxHamburgerMenu } from "react-icons/rx";
 import homeIcon from "/src/assets/userImages/home.png";
-// import myBoligmatchIcon from "/src/assets/userImages/my-boligmatch.png";
-// import manageProfileIcon from "/src/assets/userImages/gear.png";
+import myBoligmatchIcon from "/src/assets/userImages/my-boligmatch.png";
 // import partnerPitchIcon from "/src/assets/userImages/partnerPitch.png";
 import docsIcon from "/src/assets/userImages/docsIcon.png";
 import becomePartnerIcon from "/src/assets/userImages/becomePartner.png";
@@ -18,6 +17,7 @@ import aboutBoligmatchIcon from "/src/assets/userImages/aboutBoligmatch.png";
 import termsConditionIcon from "/src/assets/userImages/termsAndCondi.png";
 import signOutIcon from "/src/assets/userImages/signOut.png";
 import leftArrow from "/src/assets/userImages/arrow-left.svg";
+import manageProfileIcon from "/src/assets/userImages/gear.png";
 
 function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   const navigate = useNavigate();
@@ -98,6 +98,12 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
 
   const activeUser = !activePartner ? userLocalData || partnerData : null;
 
+  const displayName = activePartner
+    ? `${activePartner.firstName} ${activePartner.lastName}`
+    : activeUser
+    ? `${activeUser.firstName} ${activeUser.lastName}`
+    : null;
+
   return (
     <>
       <header className={`${fullHeight ? "h-[100vh]" : "h-20"} relative`}>
@@ -121,11 +127,11 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
             <div className="flex items-center md:gap-4 gap-2">
               {!isMobile && (
                 <>
-                  {activePartner ? (
+                  {displayName ? (
                     <div className="relative">
                       <div className="flex items-center gap-3 cursor-pointer">
                         <span className="text-white text-sm font-medium">
-                          {activePartner.firstName} {activePartner.lastName}
+                          {displayName}
                         </span>
                       </div>
                     </div>
@@ -289,24 +295,79 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       {t("sidebar.home")}
                     </span>
                   </button>
-                  {/* My Boligmatch+ and Manage Profile are intentionally hidden for partners in this header */}
+                  {/* Show user-only links when logged in as user */}
+                  {activeUser && !activePartner && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setShowSidebar(false);
+                          navigate("/profile");
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                      >
+                        <span className="flex items-center gap-2 cursor-pointer">
+                          <img
+                            src={myBoligmatchIcon}
+                            alt=""
+                            className="w-[30px] h-[30px]"
+                          />
+                          {t("sidebar.mitBoligmatch")}
+                        </span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowSidebar(false);
+                          navigate("/manage-profile");
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                      >
+                        <span className="flex items-center gap-2 cursor-pointer">
+                          <img
+                            src={manageProfileIcon}
+                            alt=""
+                            className="w-[30px] h-[30px]"
+                          />
+                          {t("sidebar.manageProfile")}
+                        </span>
+                      </button>
+                    </>
+                  )}
+                  {/* Show partner-only links when logged in as partner */}
                   {activePartner && (
-                    <button
-                      onClick={() => {
-                        setShowSidebar(false);
-                        navigate("/partner/documents");
-                      }}
-                      className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
-                    >
-                      <span className="flex items-center gap-2 cursor-pointer">
-                        <img
-                          src={docsIcon}
-                          alt=""
-                          className="w-[30px] h-[30px]"
-                        />
-                        {t("admin.partners.Documents")}
-                      </span>
-                    </button>
+                    <>
+                      <button
+                        onClick={() => {
+                          setShowSidebar(false);
+                          navigate("/partner/documents");
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                      >
+                        <span className="flex items-center gap-2 cursor-pointer">
+                          <img
+                            src={docsIcon}
+                            alt=""
+                            className="w-[30px] h-[30px]"
+                          />
+                          {t("admin.partners.Documents")}
+                        </span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowSidebar(false);
+                          navigate("/partner/manage-profile");
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                      >
+                        <span className="flex items-center gap-2 cursor-pointer">
+                          <img
+                            src={manageProfileIcon}
+                            alt=""
+                            className="w-[30px] h-[30px]"
+                          />
+                          {t("sidebar.manageProfile")}
+                        </span>
+                      </button>
+                    </>
                   )}
                   <button
                     onClick={() => {
@@ -383,7 +444,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                 </nav>
               </div>
               <div className="mt-auto p-6 border-t border-white/10">
-                {activePartner ? (
+                {activePartner || activeUser ? (
                   <button
                     onClick={() => {
                       setShowSidebar(false);
@@ -392,6 +453,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       localStorage.removeItem("bm_subcategories");
                       localStorage.removeItem("bm_currentSubCategory");
                       localStorage.removeItem("bm_partner");
+                      localStorage.removeItem("bm_user");
                       window.location.href = "/";
                     }}
                     className="w-full text-left px-3 py-2.5 text-white hover:bg-[#95C11F]/20 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"

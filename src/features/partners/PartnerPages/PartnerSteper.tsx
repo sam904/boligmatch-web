@@ -27,8 +27,14 @@ function PartnerSteper() {
         </div>
 
         {isModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-[999] p-4">
-            <div className="bg-[#ECECEC] rounded-[22px] sm:rounded-[26px] relative w-full max-w-[620px] max-h-[90vh] overflow-y-auto shadow-xl border border-gray-200">
+          <div
+            className="fixed inset-0 flex items-center justify-center bg-black/50 z-[999] p-4 cursor-pointer"
+            onClick={closeModal}
+          >
+            <div
+              className="bg-[#ECECEC] rounded-[22px] sm:rounded-[26px] relative w-full max-w-[620px] max-h-[90vh] overflow-y-auto shadow-xl border border-gray-200 cursor-default"
+              onClick={(e) => e.stopPropagation()}
+            >
               <button
                 onClick={closeModal}
                 className="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-700 text-2xl font-bold hover:text-gray-500 transition-colors cursor-pointer z-10"

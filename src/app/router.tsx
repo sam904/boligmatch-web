@@ -17,6 +17,7 @@ import UserDashboardPage from "../pages/UserDashboardPage";
 import PartnerDashboard from "../features/partners/PartnerDashboard";
 import ParentStatistics from "../features/partners/PartnerPages/PartnerStatistics";
 import PartnerDocuments from "../features/partners/PartnerPages/PartnerDocuments";
+import PartnerManageProfile from "../features/partners/PartnerPages/PartnerManageProfile";
 // import PartnerProfileShortcut from "../features/partners/PartnerPages/PartnerProfileShortcut";
 // import SearchForPartner from "../features/partners/PartnerPages/SearchForPartner";
 import UserSupplier from "../pages/UserSupplier";
@@ -61,6 +62,7 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <PartnerDashboard /> },
       { path: "statistics", element: <ParentStatistics /> },
       { path: "documents", element: <PartnerDocuments /> },
+      { path: "manage-profile", element: <PartnerManageProfile /> },
       // { path: "profile-shortcut", element: <PartnerProfileShortcut /> },
       // { path: "search", element: <SearchForPartner /> },
     ],

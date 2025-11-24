@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { subCategoriesService } from "../services/subCategories.service";
 import { partnerService } from "../services/partner.service";
 // import footerLogo from "/src/assets/userImages/footerLogo.svg";
-import subCategoryGradient from "/src/assets/userImages/subCatGradient.png";
 import nextArrow from "/src/assets/userImages/arrow_right.png";
 import Footer from "./Footer";
 import { useTranslation } from "react-i18next";
@@ -85,8 +84,9 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
     <button
       onClick={onMoreInfo}
       disabled={isLoading}
-      className={`font-bold text-[14px] md:text-[16px] hover:underline cursor-pointer ${isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
-        }`}
+      className={`font-bold text-[14px] md:text-[16px] hover:underline cursor-pointer ${
+        isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
+      }`}
     >
       {isLoading ? "Loading..." : "More info"}
     </button>
@@ -216,9 +216,14 @@ const UserSupplier = () => {
       `}</style>
       <UserHeader />
       {/* <div className="absolute inset-0 bg-gradient-to-b from-[rgba(22,89,51,0)] to-[#043428] pointer-events-none" /> */}
-      <div className="absolute bottom-0">
-        <img src={subCategoryGradient} alt="" />
-      </div>
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0"
+        style={{
+          height: "400px",
+          background:
+            "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
+        }}
+      />
       {categoryName && (
         <div className="absolute z-10 pointer-events-none px-4 inset-x-0 top-44 md:inset-0 md:flex md:items-center md:justify-center">
           <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
@@ -242,10 +247,11 @@ const UserSupplier = () => {
                 key={sub.id}
                 onClick={() => setActive(sub.id)}
                 className={`flex flex-col items-center gap-1 py-2 rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent
-                ${active === sub.id
+                ${
+                  active === sub.id
                     ? "bg-[#95C11F] text-white shadow-md px-2"
                     : "bg-transparent text-white hover:bg-white/10 hover:text-[#b6e924] px-3.5"
-                  }`}
+                }`}
                 aria-pressed={active === sub.id}
                 title={sub.subCategory}
               >
@@ -253,7 +259,7 @@ const UserSupplier = () => {
                   <img
                     src={sub.subCategoryIconUrl}
                     alt={sub.subCategory}
-                    className={`w-[24px] h-[24px] object-contain brightness-0 invert`}
+                    className={`w-[20px] h-[20px] object-contain brightness-0 invert`}
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).style.display =
                         "none";
@@ -294,11 +300,12 @@ const UserSupplier = () => {
             <button
               key={sub.id}
               onClick={() => setActive(sub.id)}
-              className={`flex items-center gap-1 md:gap-[8px] px-3 md:px-2 py-2 rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
-              ${active === sub.id
-                  ? "bg-[#95C11F] text-black shadow-md"
-                  : "bg-transparent hover:bg-white/10 hover:text-[#b6e924]"
-                }`}
+              className={`flex items-center gap-1 md:gap-[2px] px-[18px] py-[9px] rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
+    ${
+      active === sub.id
+        ? "bg-[#95C11F] text-black shadow-md"
+        : "bg-transparent hover:bg-white/10 hover:text-[#b6e924]"
+    }`}
               aria-pressed={active === sub.id}
               title={sub.subCategory}
             >
@@ -306,8 +313,8 @@ const UserSupplier = () => {
                 <img
                   src={sub.subCategoryIconUrl}
                   alt={sub.subCategory}
-                  className={`w-[24px] h-[24px] md:w-[28px] md:h-[28px] relative opacity-100 rounded object-contain ${active === sub.id ? "" : "brightness-0 invert"
-                    }`}
+                  className={`w-[32px] h-[32px] md:w-[40px] md:h-[40px] relative opacity-100 rounded object-contain
+        ${active === sub.id ? "" : "brightness-0 invert"}`}
                   onError={(e) => {
                     (e.currentTarget as HTMLImageElement).style.display =
                       "none";
@@ -320,9 +327,7 @@ const UserSupplier = () => {
             </button>
           ))
         ) : (
-          <div className="text-white">
-            {t("userSupplier.noSubcategories")}
-          </div>
+          <div className="text-white">{t("userSupplier.noSubcategories")}</div>
         )}
       </section>
 
