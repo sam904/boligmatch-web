@@ -1,5 +1,5 @@
 import PartnerHeader from "./PartnerHeader";
-import parentStatisticsImg from "/src/assets/userImages/parentStasts.png";
+import parentStatisticsImg from "/src/assets/userSupplier/partnerDashboard.png";
 import Statistik from "/src/assets/userImages/Statistik.svg";
 import MinProfil from "/src/assets/userImages/Minprofil.svg";
 import Partnere from "/src/assets/userImages/Search.svg";

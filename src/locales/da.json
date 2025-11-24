@@ -629,6 +629,11 @@
     "confirmPassword": "Bekræft adgangskode",
     "updatePassword": "Skift adgangskode"
   },
+  "partnerDetails": {
+    "fullName": "Fuldt navn",
+    "businessName": "Virksomhedsnavn",
+    "address": "Adresse"
+  },
   "userDashboard": {
     "buttons": {
       "partners": "Partnere",
@@ -645,7 +650,8 @@
     "readMore": "Læs mere",
     "moreInfo": "Læs mere",
     "partnerLabel": "Partner",
-    "subjectLabel": "Emne"
+    "subjectLabel": "Emne",
+    "messageTitle": "Besked"
   },
   "userSupplier": {
     "loadingSubcategories": "Indlæser underkategorier...",
@@ -663,7 +669,7 @@
     "stats": {
       "profileVisits": "Besøg på min profil",
       "totalFavorites": "i alt Favoritter",
-      "totalPartners": "samlede partnere",
+      "totalMessages": "antal beskeder",
       "totalRecommendations": "samlede anbefalinger"
     }
   },
@@ -671,9 +677,18 @@
     "contactButton": "Kontakt Leverandør",
     "saveFavoriteButton": "Gem som Favorit",
     "removeFromFavorites": "Fjern fra favoritter",
+    "removeFavoriteSuccess": "Fjernet fra favoritter",
+    "favoriteNotFound": "Favorit blev ikke fundet.",
+    "removeFavoriteError": "Kunne ikke fjerne fra favoritter. Prøv venligst igen.",
+    "addFavoriteSuccess": "Tilføjet til favoritter",
+    "addFavoriteError": "Kunne ikke tilføje til favoritter. Prøv venligst igen.",
+    "contactUserNotFound": "Bruger blev ikke fundet. Log venligst ind igen.",
+    "contactSendError": "Kunne ikke sende besked. Prøv venligst igen.",
+    "recommendationError": "Kunne ikke sende anbefaling. Prøv venligst igen.",
     "recommendation": "Anbefal os til andre",
-    "conversation": "Samtaler",
+    "conversation": "Kontakt os",
     "reviewsTitle": "Anmeldelser",
+    "noReviewsYet": "Ingen anmeldelser endnu.",
     "recommendModal": {
       "title": "Anbefal os til andre",
       "description": "Teanker du at en ven kunne gøre brug af vores service, så send en besked til vedkommende her",
@@ -688,7 +703,13 @@
       "body": "Beskrivelse",
       "send": "Send",
       "contactInfo": "Kontaktinformation"
-    }
+    },
+    "servicesFallback": {
+      "fixingIssues": "Løsning af fejl og fejlfinding",
+      "smartHome": "Intelligente hjemsystemer"
+    },
+    "servicesTitle": "Services",
+    "factsTitle": "Fakta"
   },
   "sidebar": {
     "home": "Hjem",
@@ -805,5 +826,19 @@
         "description": "Skaffer du en ny boligkunde til Boligmatch kvitterer vi med 10% af salæret, som overføres til din konto i Boligmatch+ fordelsprogrammet."
       }
     }
+  },
+  "aboutBoligmatch": {
+    "title": "Om Boligmatch",
+    "paragraph1": "Boligmatch+ er et gratis livsstilsunivers for bolig og fritid, der fungerer som samlingssted for dygtige leverandører til boligen. Vi har samlet et bredt udvalg af boligens vigtigste leverandører, og præsenterer dem alle gennem korte profilvideoer, Trustpilot anmeldelser og let fordøjelige beskrivelser.",
+    "paragraph2": "Som boliginteresseret kan du på en intuitiv måde med ganske få klik finde produkter og services blandt vores partnere. Det er vores håb, at vi dermed gør den ofte lidt udfordrende øvelse med at finde god og troværdig hjælp helt enkel og tryg. Vi har nemlig selv udvalgt og gennemgået hver enkelt partner.",
+    "paragraph3": "I fremtiden kommer du som kunde hos Boligmatch også til at kunne følge din købs- eller salgsproces step for step på en intuitiv måde på Boligmatch+ platformen. Her får du et klart overblik over alle trin, aktiviteter og opgaver, så du altid ved, hvor du er i processen.",
+    "paragraph4": "Herud over kommer vi med nogle fordele, som ikke før er set i branchen. Opret dig gratis som bruger på Boligmatch+ her – så kan du allerede i dag komme igang med at søge efter leverandører, og samtidig automatisk holde dig opdateret om de kommende fordele.",
+    "paragraph5": "Velkommen til Boligmatch+. Vi glæder os til at hjælpe dig med at finde de rigtige løsninger til dit hjem og din livsstil."
+  },
+  "termsAndConditions": {
+    "title": "Vilkår og betingelser",
+    "paragraph1": "Ved at oprette dig som bruger på Boligmatch+ accepterer du disse vilkår og betingelser. Boligmatch+ er en platform, der forbinder boligejere med leverandører inden for bolig og fritid. Vi stræber efter at levere en pålidelig og brugervenlig service, men kan ikke garantere resultaterne af transaktioner mellem brugere og partnere.",
+    "paragraph2": "Brugere er ansvarlige for at verificere legitimitet og kvalitet af partnere før indgåelse af aftaler. Boligmatch+ fungerer som mellemmand og påtager sig ikke ansvar for aftaler, der indgås mellem brugere og partnere. Alle transaktioner sker direkte mellem brugeren og partneren, og Boligmatch+ er ikke part i disse aftaler.",
+    "paragraph3": "Vi forbeholder os retten til at ændre disse vilkår og betingelser. Væsentlige ændringer vil blive meddelt brugere via email eller gennem platformen. Fortsat brug af tjenesten efter sådanne ændringer betyder accept af de opdaterede vilkår. For spørgsmål eller bekymringer, kontakt venligst vores support."
   }
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import supplierProfile from "../assets/supplierProfile/suppliier-profile-hero.png";
+import supplierProfile from "/src/assets/userImages/Group 37982 (3).png";
 import heartIcon from "/src/assets/userImages/Lag_1.svg";
 import share from "../assets/supplierProfile/share.png";
 import chat from "../assets/supplierProfile/chat.png";
@@ -16,13 +16,13 @@ import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
 import {
   showRecommendationErrorToast,
+  showRecommendationSuccessToast,
   showContactSuccessToast,
   showContactErrorToast,
   showFavouriteSuccessToast,
   showFavouriteErrorToast,
 } from "../components/common/ToastBanner";
-import { toast } from "react-toastify";
-import { FaPlayCircle } from "react-icons/fa";
+import { FaPlayCircle, FaPauseCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { partnerService } from "../services/partner.service";
 import ratingImg from "/src/assets/userImages/rating.png";
@@ -34,7 +34,6 @@ import factsImg from "/src/assets/userImages/faktaLogo.svg";
 import Footer from "./Footer";
 // import closeModel from "/src/assets/userImages/close.svg"
 import { IoClose } from "react-icons/io5";
-
 
 const SupplierProfile = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -54,6 +53,7 @@ const SupplierProfile = () => {
   const [recommendComment, setRecommendComment] = useState("");
   const navigate = useNavigate();
   const calledRef = useRef(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [isPartner, setIsPartner] = useState(false);
   console.log("isPartner---->", isPartner);
 
@@ -127,7 +127,7 @@ const SupplierProfile = () => {
         const normalized = parsed?.output ?? parsed;
         return normalized?.id ?? null;
       }
-    } catch { }
+    } catch {}
     return null;
   };
 
@@ -187,35 +187,33 @@ const SupplierProfile = () => {
               Number(f?.partnerId) === Number(partnerId)
           );
           if (!match?.id) {
-            showFavouriteErrorToast("Favourite not found.");
+          showFavouriteErrorToast(t("supplierProfile.favoriteNotFound"));
             return;
           }
           await favouritesService.remove(match.id);
-          showFavouriteSuccessToast("Removed from favourites successfully");
+          showFavouriteSuccessToast(
+            t("supplierProfile.removeFavoriteSuccess")
+          );
           setPartnerData((prev: any) => ({
             ...(prev || {}),
             isValidFavourite: "False",
           }));
         } catch (err) {
           console.error("Error removing favourite:", err);
-          showFavouriteErrorToast(
-            "Failed to remove from favourites. Please try again."
-          );
+          showFavouriteErrorToast(t("supplierProfile.removeFavoriteError"));
         }
       } else {
         try {
           const payload = { userId, partnerId, isActive: true };
           await favouritesService.add(payload as any);
-          showFavouriteSuccessToast("Added to favourites");
+          showFavouriteSuccessToast(t("supplierProfile.addFavoriteSuccess"));
           setPartnerData((prev: any) => ({
             ...(prev || {}),
             isValidFavourite: "True",
           }));
         } catch (err) {
           console.error("Error adding favourite:", err);
-          showFavouriteErrorToast(
-            "Failed to add to favourites. Please try again."
-          );
+          showFavouriteErrorToast(t("supplierProfile.addFavoriteError"));
         }
       }
     } finally {
@@ -235,7 +233,7 @@ const SupplierProfile = () => {
       const senderId = parsedUser?.userId ?? userData?.userId;
 
       if (!senderId) {
-        showContactErrorToast("User not found. Please log in again.");
+        showContactErrorToast(t("supplierProfile.contactUserNotFound"));
         return;
       }
 
@@ -255,7 +253,7 @@ const SupplierProfile = () => {
       setContactBody("");
     } catch (error) {
       console.error("Error sending message:", error);
-      showContactErrorToast("Failed to send message. Please try again.");
+      showContactErrorToast(t("supplierProfile.contactSendError"));
     }
   };
 
@@ -291,13 +289,13 @@ const SupplierProfile = () => {
       };
 
       await recommendationService.add(payload);
-      toast.success("Recommandation Sent Succesfully!!");
+      showRecommendationSuccessToast();
       setActiveModal(null);
       setRecommendEmail("");
       setRecommendComment("");
     } catch (error) {
       console.error("Error sending recommendation:", error);
-      showRecommendationErrorToast("Failed to Send Recommandation");
+      showRecommendationErrorToast(t("supplierProfile.recommendationError"));
     }
   };
 
@@ -323,6 +321,15 @@ const SupplierProfile = () => {
       .split("\n")
       .map((s: string) => s.trim())
       .filter((s: string) => s.length > 0);
+  };
+
+  const hasTrustPilotUrl =
+    typeof partnerData?.trustPilotUrl === "string" &&
+    partnerData.trustPilotUrl.trim().length > 0;
+
+  const handleOpenTrustPilot = () => {
+    if (!hasTrustPilotUrl) return;
+    window.open(partnerData.trustPilotUrl, "_blank", "noopener,noreferrer");
   };
 
   const renderRating = (
@@ -359,15 +366,33 @@ const SupplierProfile = () => {
             }}
           ></div>
         ) : (
-          <video
-            className="absolute inset-0 w-full md:h-full h-[368px] object-cover"
-            autoPlay
-            controls
-            onEnded={() => setIsVideoPlaying(false)}
-          >
-            <source src={partnerData?.videoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <>
+            <video
+              ref={videoRef}
+              className="absolute inset-0 w-full md:h-full h-[368px] object-cover"
+              autoPlay
+              controls
+              onEnded={() => setIsVideoPlaying(false)}
+              onPlay={() => setIsVideoPlaying(true)}
+              onPause={() => setIsVideoPlaying(false)}
+            >
+              <source src={partnerData?.videoUrl} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            {isVideoPlaying && videoRef.current && !videoRef.current.paused && (
+              <div className="absolute md:top-[50%] top-44 left-1/2 transform -translate-x-1/2 justify-center items-center text-white z-10 pointer-events-none">
+                <FaPauseCircle
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (videoRef.current) {
+                      videoRef.current.pause();
+                    }
+                  }}
+                  className="h-14 w-14 cursor-pointer hover:scale-110 transition-transform pointer-events-auto"
+                />
+              </div>
+            )}
+          </>
         )}
 
         <UserHeader />
@@ -385,54 +410,56 @@ const SupplierProfile = () => {
             {/* <div className="absolute bottom-0">
             <img src={gradient} alt="" />
           </div> */}
-            <div
-              className="flex md:gap-10 gap-5 justify-center absolute md:bottom-0 w-full md:py-8 pb-0"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
-              }}
-            >
-              {!isPartner && (
-                <>
-                  <button
-                    className="bg-[#91C73D] text-white md:px-6 md:py-3 px-[6px] py-[11px] md:rounded-lg rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors md:text-[20px] text-[10px] md:leading-[100%] leading-[11px] font-[700] shadow-md w-[110px] h-[46px] md:w-auto md:h-auto opacity-100"
-                    onClick={handleToggleFavourite}
-                    disabled={isAddingToFavorites}
-                  >
-                    <img
-                      src={heartIcon}
-                      alt=""
-                      className="w-[25px] h-[22px] md:w-auto md:h-auto"
-                    />
-                    {String(partnerData?.isValidFavourite) === "True"
-                      ? t("supplierProfile.removeFromFavorites")
-                      : t("supplierProfile.saveFavoriteButton")}
-                  </button>
-                  <button
-                    className="bg-[#91C73D] text-white md:px-6 md:py-3 px-[6px] py-[11px] md:rounded-lg rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors md:text-[20px] text-[10px] md:leading-[100%] leading-[11px] font-[700] shadow-md w-[110px] h-[46px] md:w-auto md:h-auto opacity-100"
-                    onClick={() => setActiveModal("recommend")}
-                  >
-                    <img
-                      src={share}
-                      alt=""
-                      className="w-[25px] h-[22px] md:w-auto md:h-auto"
-                    />
-                    {t("supplierProfile.recommendation")}
-                  </button>
-                  <button
-                    className="bg-[#91C73D] text-white md:px-6 md:py-3 px-[6px] py-[11px] md:rounded-lg rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors md:text-[20px] text-[10px] md:leading-[100%] leading-[11px] font-[700] shadow-md w-[110px] h-[46px] md:w-auto md:h-auto opacity-100"
-                    onClick={() => setActiveModal("contact")}
-                  >
-                    <img
-                      src={chat}
-                      alt=""
-                      className="w-[25px] h-[22px] md:w-auto md:h-auto"
-                    />
-                    {t("supplierProfile.conversation")}
-                  </button>
-                </>
-              )}
-            </div>
+            {!isVideoPlaying && (
+              <div
+                className="flex md:gap-10 gap-5 justify-center absolute md:bottom-0 w-full md:py-8 pb-0"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
+                }}
+              >
+                {!isPartner && (
+                  <>
+                    <button
+                      className="bg-[#91C73D] text-white md:px-6 md:py-3 px-[6px] py-[11px] md:rounded-lg rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors md:text-[20px] text-[10px] md:leading-[100%] leading-[11px] font-[700] shadow-md w-[110px] h-[46px] md:w-auto md:h-auto opacity-100"
+                      onClick={handleToggleFavourite}
+                      disabled={isAddingToFavorites}
+                    >
+                      <img
+                        src={heartIcon}
+                        alt=""
+                        className="w-[25px] h-[22px] md:w-auto md:h-auto"
+                      />
+                      {String(partnerData?.isValidFavourite) === "True"
+                        ? t("supplierProfile.removeFromFavorites")
+                        : t("supplierProfile.saveFavoriteButton")}
+                    </button>
+                    <button
+                      className="bg-[#91C73D] text-white md:px-6 md:py-3 px-[6px] py-[11px] md:rounded-lg rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors md:text-[20px] text-[10px] md:leading-[100%] leading-[11px] font-[700] shadow-md w-[110px] h-[46px] md:w-auto md:h-auto opacity-100"
+                      onClick={() => setActiveModal("recommend")}
+                    >
+                      <img
+                        src={share}
+                        alt=""
+                        className="w-[25px] h-[22px] md:w-auto md:h-auto"
+                      />
+                      {t("supplierProfile.recommendation")}
+                    </button>
+                    <button
+                      className="bg-[#91C73D] text-white md:px-6 md:py-3 px-[6px] py-[11px] md:rounded-lg rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors md:text-[20px] text-[10px] md:leading-[100%] leading-[11px] font-[700] shadow-md w-[110px] h-[46px] md:w-auto md:h-auto opacity-100"
+                      onClick={() => setActiveModal("contact")}
+                    >
+                      <img
+                        src={chat}
+                        alt=""
+                        className="w-[25px] h-[22px] md:w-auto md:h-auto"
+                      />
+                      {t("supplierProfile.conversation")}
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -451,7 +478,11 @@ const SupplierProfile = () => {
           <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-7xl bg-[#01351f]">
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
-              <div className="md:w-[403px] w-full md:h-[859px] h-auto rounded-[10px] bg-white p-6 flex flex-col relative">
+              <div
+                className={`md:w-[403px] w-full ${
+                  hasTrustPilotUrl ? "md:h-[859px]" : "md:h-[890px]"
+                } h-auto rounded-[10px] bg-white p-6 flex flex-col relative`}
+              >
                 <div className=" flex justify-center p-2">
                   <img
                     className="w-[130px] h-[32px]"
@@ -485,25 +516,33 @@ const SupplierProfile = () => {
                     })
                   ) : (
                     <p className="text-sm font-semibold text-black mt-3">
-                      Ingen anmeldelser endnu.
+                      {t("supplierProfile.noReviewsYet")}
                     </p>
                   )}
                 </div>
 
-                <div className="left-[25%] flex justify-center pt-2 mt-auto">
-                  <button className="absolute w-[202px] h-[66px] bg-[#95C11F] flex items-center justify-center gap-2 text-white rounded-[11px] px-4 text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]">
-                    <img
-                      src={startImg}
-                      alt="rating"
-                      className="w-[33px] h-[33px] select-none"
-                    />
-                    Anmeld os på Trustpilot
-                  </button>
-                </div>
+                {hasTrustPilotUrl && (
+                  <div className="left-[25%] flex justify-center pt-2 mt-auto">
+                    <button
+                      type="button"
+                      onClick={handleOpenTrustPilot}
+                      className="absolute w-[202px] h-[66px] bg-[#95C11F] flex items-center justify-center gap-2 text-white rounded-[11px] px-4 text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]"
+                    >
+                      <img
+                        src={startImg}
+                        alt="rating"
+                        className="w-[33px] h-[33px] select-none"
+                      />
+                      Anmeld os på Trustpilot
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div
-                className="md:w-[403px] w-full md:h-[432px] h-auto mt-[30px] rounded-[10px] flex justify-center items-center"
+                className={`md:w-[403px] w-full md:h-[432px] h-auto ${
+                  hasTrustPilotUrl ? "mt-[30px]" : "mt-[0px]"
+                } rounded-[10px] flex justify-center items-center`}
                 style={{
                   background:
                     "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
@@ -557,29 +596,29 @@ const SupplierProfile = () => {
                 />
 
                 <h2 className="text-white text-[28px] font-[700] py-4">
-                  Services
+                  {t("supplierProfile.servicesTitle")}
                 </h2>
 
-                <ul className="text-white list-none space-y-2 w-full">
+                <ul className="text-white list-none space-y-2 w-full text-left">
                   {getServices().length > 0 ? (
                     getServices().map((service: string, idx: number) => (
-                      <p
+                      <li
                         key={idx}
-                        className="relative pl-5 line-clamp-2 overflow-hidden"
+                        className="relative pl-5 line-clamp-2 overflow-hidden leading-snug"
                       >
                         <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
                         {service}
-                      </p>
+                      </li>
                     ))
                   ) : (
                     <>
-                      <li className="relative pl-5">
+                      <li className="relative pl-5 leading-snug">
                         <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-                        Løsning af fejl og fejlfinding
+                        {t("supplierProfile.servicesFallback.fixingIssues")}
                       </li>
-                      <li className="relative pl-5">
+                      <li className="relative pl-5 leading-snug">
                         <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-                        Intelligente hjemsystemer
+                        {t("supplierProfile.servicesFallback.smartHome")}
                       </li>
                     </>
                   )}
@@ -639,10 +678,10 @@ const SupplierProfile = () => {
                 />
 
                 <h2 className="text-white text-[28px] font-[700] py-4">
-                  Fakta
+                  {t("supplierProfile.factsTitle")}
                 </h2>
 
-                <div className="text-white text-sm space-y-2 w-full">
+                <div className="text-white text-sm space-y-2 w-full text-left">
                   {partnerData?.textField2 && (
                     <div
                       className="text-left"
@@ -671,28 +710,33 @@ const SupplierProfile = () => {
 
         {/* Modals */}
         {activeModal && (
-          <div className="fixed inset-0 z-40 flex items-center justify-center">
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center">
             <div
               className="absolute inset-0 bg-black/50 cursor-pointer"
               onClick={() => setActiveModal(null)}
             />
-            <div className="relative z-50 w-[320px] sm:w-[360px] md:w-[420px] bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-[#1F7A58]/10">
+            <div
+              className="relative z-50 w-[320px] sm:w-[360px] md:w-[420px] bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-gray-400/10"
+              onClick={(e) => e.stopPropagation()}
+            >
               <button
-                className="absolute right-4 top-3 text-black text-xl cursor-pointer hover:text-gray-700"
+                className="absolute right-4 top-1 text-black text-xl cursor-pointer hover:text-gray-700 z-[99999]"
                 aria-label="Close"
-                onClick={() => setActiveModal(null)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveModal(null);
+                }}
               >
-                {/* <img className="w-[31px] h-[31px] cursor-pointer z-[9999]" src={closeModel} alt="" /> */}
                 <IoClose className="w-[30px] h-[30px] cursor-pointer" />
               </button>
 
-              {activeModal === "recommend" && (
+               {activeModal === "recommend" && (
                 <div className="flex flex-col items-stretch">
                   <div className="flex justify-center mb-4">
                     <img
                       src={shareModel}
                       alt="share"
-                      className="w-[83px] h-[96px]"
+                      className="w-[63px] h-[76px]"
                     />
                   </div>
                   <h3 className="text-center font-extrabold text-lg mb-1">
@@ -726,7 +770,7 @@ const SupplierProfile = () => {
                   <div className="flex justify-center mt-4">
                     <button
                       onClick={handleSendRecommendation}
-                      className="min-w-[120px] h-10 bg-[#91C73D] text-white font-semibold rounded-lg hover:bg-[#7fb02f] transition-colors"
+                      className="min-w-[120px] h-10 bg-[#91C73D] text-white font-semibold rounded-lg hover:bg-[#7fb02f] transition-colors cursor-pointer"
                     >
                       {t("supplierProfile.recommendModal.send")}
                     </button>
@@ -772,7 +816,7 @@ const SupplierProfile = () => {
                   <div className="flex justify-center mt-4 mb-6">
                     <button
                       onClick={handleSendConversation}
-                      className="min-w-[120px] h-10 bg-[#91C73D] text-white font-semibold rounded-lg hover:bg-[#7fb02f] transition-colors cursor-poi"
+                      className="min-w-[120px] h-10 bg-[#91C73D] text-white font-semibold rounded-lg hover:bg-[#7fb02f] transition-colors cursor-pointer"
                     >
                       {t("supplierProfile.contactModal.send")}
                     </button>

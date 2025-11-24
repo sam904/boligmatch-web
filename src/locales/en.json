@@ -591,6 +591,11 @@
     "confirmPassword": "Confirm password",
     "updatePassword": "Update password"
   },
+  "partnerDetails": {
+    "fullName": "Full name",
+    "businessName": "Business name",
+    "address": "Address"
+  },
   "userDashboard": {
     "buttons": {
       "partners": "Partners",
@@ -607,7 +612,8 @@
     "readMore": "Read more",
     "moreInfo": "More info",
     "partnerLabel": "Partner",
-    "subjectLabel": "Subject"
+    "subjectLabel": "Subject",
+    "messageTitle": "Message"
   },
   "userSupplier": {
     "loadingSubcategories": "Loading subcategories...",
@@ -625,7 +631,7 @@
     "stats": {
       "profileVisits": "Profile visits",
       "totalFavorites": "Total favorites",
-      "totalPartners": "Total partners",
+      "totalMessages": "Total Messages",
       "totalRecommendations": "Total recommendations"
     }
   },
@@ -633,9 +639,18 @@
     "contactButton": "Contact Supplier",
     "saveFavoriteButton": "Save as Favorite",
     "removeFromFavorites": "Remove from favorites",
+    "removeFavoriteSuccess": "Removed from favorites successfully",
+    "favoriteNotFound": "Favorite not found.",
+    "removeFavoriteError": "Failed to remove from favorites. Please try again.",
+    "addFavoriteSuccess": "Added to favorites",
+    "addFavoriteError": "Failed to add to favorites. Please try again.",
+    "contactUserNotFound": "User not found. Please log in again.",
+    "contactSendError": "Failed to send message. Please try again.",
+    "recommendationError": "Failed to send recommendation. Please try again.",
     "recommendation": "Recommend us to others",
-    "conversation": "Conversations",
+    "conversation": "Contact us",
     "reviewsTitle": "Reviews",
+    "noReviewsYet": "No reviews yet.",
     "recommendModal": {
       "title": "Recommend us to others",
       "description": "Do you think a friend could use our service? Send them a message here",
@@ -650,7 +665,13 @@
       "body": "Description",
       "send": "Send",
       "contactInfo": "Contact information"
-    }
+    },
+    "servicesFallback": {
+      "fixingIssues": "Troubleshooting and issue resolution",
+      "smartHome": "Smart home systems"
+    },
+    "servicesTitle": "Services",
+    "factsTitle": "Facts"
   },
   "sidebar": {
     "home": "Home",
@@ -767,5 +788,19 @@
         "description": "If you bring a new housing customer to Boligmatch, we reward you with 10% of the fee, which is transferred to your account in the Boligmatch+ benefits program."
       }
     }
+  },
+  "aboutBoligmatch": {
+    "title": "About Boligmatch",
+    "paragraph1": "Boligmatch+ is a free lifestyle universe for home and leisure, serving as a meeting place for skilled suppliers to the home. We have gathered a wide range of the most important suppliers for the home, and present them all through short profile videos, Trustpilot reviews and easily digestible descriptions.",
+    "paragraph2": "As a home interested person, you can thus in an intuitive way with just a few clicks find products and services among our partners. It is our hope that we thereby make the often somewhat challenging exercise of finding good and trustworthy help completely simple and safe. We have namely selected and reviewed each individual partner ourselves.",
+    "paragraph3": "In the future, you as a customer at Boligmatch will also be able to follow your purchase or sales process step by step in an intuitive way on the Boligmatch+ platform. Here you get a clear overview of all steps, activities and tasks, so you always know where you are in the process.",
+    "paragraph4": "In addition, we come with some benefits that have not been seen before in the industry. Sign up for free as a user on Boligmatch+ here - so you can already today get started searching for suppliers, and at the same time automatically keep yourself updated on the upcoming benefits.",
+    "paragraph5": "Welcome to Boligmatch+. We look forward to helping you find the right solutions for your home and lifestyle."
+  },
+  "termsAndConditions": {
+    "title": "Terms and Conditions",
+    "paragraph1": "By creating yourself as a user on Boligmatch+, you accept these terms and conditions. Boligmatch+ is a platform that connects homeowners with suppliers in the home and leisure sector. We strive to provide a reliable and user-friendly service, but cannot guarantee the results of transactions between users and partners.",
+    "paragraph2": "Users are responsible for verifying the legitimacy and quality of partners before entering into agreements. Boligmatch+ acts as an intermediary and does not assume responsibility for agreements entered into between users and partners. All transactions occur directly between the user and the partner, and Boligmatch+ is not a party to these agreements.",
+    "paragraph3": "We reserve the right to change these terms and conditions. Significant changes will be communicated to users via email or through the platform. Continued use of the service after such changes means acceptance of the updated terms. For questions or concerns, please contact our support."
   }
 }

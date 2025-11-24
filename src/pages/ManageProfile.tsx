@@ -7,12 +7,14 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { setUser } from "../features/auth/authSlice";
 import Footer from "./Footer";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 
 export default function ManageProfile() {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const authUser = useAppSelector((state) => state.auth.user);
+    const navigate = useNavigate();
     const [firstName, setFirstName] = useState("");
     const [middleName, setMiddleName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -24,6 +26,13 @@ export default function ManageProfile() {
     // const [passwordEmail, setPasswordEmail] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+
+    useEffect(() => {
+        const userStr = localStorage.getItem("bm_user");
+        if (!userStr) {
+            navigate("/", { replace: true });
+        }
+    }, [navigate]);
 
     useEffect(() => {
         const fetchUser = async () => {

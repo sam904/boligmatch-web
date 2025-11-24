@@ -3,12 +3,23 @@ import { partnerDocumentService } from "../../../services/partnerdocument.servic
 import PartnerHeader from "./PartnerHeader";
 import documentImg from "/src/assets/userImages/document.png";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 export default function PartnerDocuments() {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
     const [docs, setDocs] = useState([] as any[]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const calledRef = useRef(false);
+
+    useEffect(() => {
+        const storedPartner = localStorage.getItem("bm_partner");
+        if (!storedPartner) {
+            navigate("/partner/statistics", { replace: true });
+        }
+    }, [navigate]);
 
     useEffect(() => {
         if (calledRef.current) return;
@@ -60,7 +71,7 @@ export default function PartnerDocuments() {
                             <img src={documentImg} alt="" />
                         </div>
                         <h2 className="text-white text-[16px] font-[800] tracking-wide">
-                            Dokumenter
+                            {t("admin.partners.Documents")}
                         </h2>
                     </div>
 

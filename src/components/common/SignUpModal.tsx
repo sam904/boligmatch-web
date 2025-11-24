@@ -31,8 +31,16 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
   const schema = z.object({
     firstName: z.string().min(1, t("signup.nameRequired")),
     lastName: z.string().min(1, t("signup.nameRequired")),
-    postalCode: z.string().min(1, t("signup.postalCodeRequired")),
-    mobileNumber: z.string().min(1, t("signup.mobileRequired")),
+    postalCode: z
+      .string()
+      .min(1, t("signup.postalCodeRequired"))
+      .regex(/^[0-9]+$/, "Postal code must be numeric")
+      .refine((val) => val.length === 5, "Postal code must be exactly 5 digits"),
+    mobileNumber: z
+      .string()
+      .min(1, t("signup.mobileRequired"))
+      .regex(/^[0-9]+$/, t("validation.mobileNumbersOnly"))
+      .refine((val) => val.length === 8, t("validation.mobileInvalidLength")),
     email: z.string().email(t("signup.emailInvalid")),
     password: z.string().min(6, t("signup.passwordMinLength")),
   });
@@ -53,6 +61,81 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
       password: "",
     },
   });
+
+  const checkEmailAvailability = async (email: string) => {
+    const trimmed = email.trim();
+    if (!trimmed) return;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmed)) return;
+
+    try {
+      const response = await userService.checkEmailOrMobileAvailability(
+        trimmed
+      );
+
+      const message =
+        response?.failureReason ||
+        response?.output ||
+        t("validation.emailAvailable") ||
+        "Email is available";
+
+      if (response?.isSuccess) {
+        showSignupSuccessToast(message);
+      } else {
+        showSignupErrorToast(message);
+      }
+    } catch (err: any) {
+      const apiError = err?.response?.data;
+      const message =
+        apiError?.failureReason ||
+        apiError?.errorMessage ||
+        apiError?.message ||
+        apiError?.output ||
+        err?.message ||
+        t("validation.emailCheckError") ||
+        "Error checking email availability";
+
+      showSignupErrorToast(message);
+    }
+  };
+
+  const checkMobileAvailability = async (mobile: string) => {
+    const cleanMobile = mobile.replace(/[\s\-\(\)]+/g, "");
+    if (!cleanMobile) return;
+
+    if (cleanMobile.length !== 8 || !/^\d+$/.test(cleanMobile)) return;
+
+    try {
+      const response = await userService.checkEmailOrMobileAvailability(
+        cleanMobile
+      );
+
+      const message =
+        response?.failureReason ||
+        response?.output ||
+        t("validation.mobileAvailable") ||
+        "Mobile number is available";
+
+      if (response?.isSuccess) {
+        showSignupSuccessToast(message);
+      } else {
+        showSignupErrorToast(message);
+      }
+    } catch (err: any) {
+      const apiError = err?.response?.data;
+      const message =
+        apiError?.failureReason ||
+        apiError?.errorMessage ||
+        apiError?.message ||
+        apiError?.output ||
+        err?.message ||
+        t("validation.mobileCheckError") ||
+        "Error checking mobile number availability";
+
+      showSignupErrorToast(message);
+    }
+  };
 
   const onSubmit = async (data: any) => {
   setIsLoading(true);
@@ -82,7 +165,15 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
       setSuccess(false);
     }, 2000);
   } catch (err: any) {
-    const msg = err?.response?.data?.message || err?.message || "Registration failed";
+    const apiError = err?.response?.data;
+    const msg =
+      (typeof apiError === "string" && apiError.trim()) ||
+      apiError?.failureReason ||
+      apiError?.errorMessage ||
+      apiError?.message?.output ||
+      apiError?.message ||
+      (apiError ? String(apiError) : "") ||
+      "Registration failed";
     setError(msg);
     showSignupErrorToast(msg);
   } finally {
@@ -227,6 +318,7 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
                   id="postalCode"
                   type="text"
                   className="w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#075835]"
+                  maxLength={5}
                   {...register("postalCode")}
                 />
                 {errors.postalCode && (
@@ -247,7 +339,12 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
                   id="mobileNumber"
                   type="tel"
                   className="w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#075835]"
-                  {...register("mobileNumber")}
+                  maxLength={8}
+                  {...register("mobileNumber", {
+                    onBlur: (e) => {
+                      checkMobileAvailability(e.target.value);
+                    },
+                  })}
                 />
                 {errors.mobileNumber && (
                   <p className="text-xs text-red-600 mt-1">
@@ -269,7 +366,11 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
                 id="email"
                 type="email"
                 className="w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#075835]"
-                {...register("email")}
+                {...register("email", {
+                  onBlur: (e) => {
+                    checkEmailAvailability(e.target.value);
+                  },
+                })}
               />
               {errors.email && (
                 <p className="text-xs text-red-600 mt-1">

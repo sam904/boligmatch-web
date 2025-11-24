@@ -61,6 +61,8 @@ export default function ServiceCarousel() {
   const [direction, setDirection] = useState(0);
   console.log("direction", direction);
   const [isHovered, setIsHovered] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
@@ -73,39 +75,19 @@ export default function ServiceCarousel() {
   }, []);
 
   useEffect(() => {
-    if (isHovered) return;
+    if (isHovered || isDragging) return;
 
     const interval = setInterval(() => {
       paginate(1);
     }, 2800); 
 
     return () => clearInterval(interval);
-  }, [currentIndex, isHovered]);
+  }, [currentIndex, isHovered, isDragging]);
 
-  // const slideVariants = {
-  //   enter: (direction: number) => ({
-  //     x: direction > 0 ? 1000 : -1000,
-  //     opacity: 0,
-  //     scale: 0.8,
-  //   }),
-  //   center: {
-  //     zIndex: 1,
-  //     x: 0,
-  //     opacity: 1,
-  //     scale: 1,
-  //   },
-  //   exit: (direction: number) => ({
-  //     zIndex: 0,
-  //     x: direction < 0 ? 1000 : -1000,
-  //     opacity: 0,
-  //     scale: 0.8,
-  //   }),
-  // };
-
-  // const swipeConfidenceThreshold = 10000;
-  // const swipePower = (offset: number, velocity: number) => {
-  //   return Math.abs(offset) * velocity;
-  // };
+  const swipeConfidenceThreshold = 10000;
+  const swipePower = (offset: number, velocity: number) => {
+    return Math.abs(offset) * velocity;
+  };
 
   const paginate = (newDirection: number) => {
     setDirection(newDirection);
@@ -115,6 +97,24 @@ export default function ServiceCarousel() {
       if (nextIndex >= services.length) nextIndex = 0;
       return nextIndex;
     });
+  };
+
+  const handleDrag = (_: any, info: any) => {
+    setDragOffset(info.offset.x);
+  };
+
+  const handleDragEnd = (_: any, { offset, velocity }: any) => {
+    const swipe = swipePower(offset.x, velocity.x);
+
+    if (Math.abs(swipe) > swipeConfidenceThreshold) {
+      if (swipe > 0) {
+        paginate(-1); // Swipe right, go to previous
+      } else {
+        paginate(1); // Swipe left, go to next
+      }
+    }
+    setIsDragging(false);
+    setDragOffset(0);
   };
 
   const isMobile = windowWidth < 1024;
@@ -140,7 +140,20 @@ export default function ServiceCarousel() {
       {/* Carousel Container */}
       <div className="relative h-[600px] md:h-[600px] flex items-center justify-center">
         {/* Cards */}
-        <div className="relative w-full max-w-[1600px] h-full flex items-center justify-center px-4">
+        <motion.div
+          className="relative w-full max-w-[1600px] h-full flex items-center justify-center px-4"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.2}
+          dragMomentum={false}
+          onDragStart={() => {
+            setIsDragging(true);
+            setDragOffset(0);
+          }}
+          onDrag={handleDrag}
+          onDragEnd={handleDragEnd}
+          style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+        >
           {getVisibleCards().map((service) => {
             const position = service.position;
             const isCurrent = position === 0;
@@ -152,6 +165,11 @@ export default function ServiceCarousel() {
 
             // Responsive card spacing
             const cardSpacing = isMobile ? 240 : 280;
+            
+            // Calculate x position with drag offset for smooth motion
+            const baseX = position * cardSpacing;
+            const dragInfluence = isDragging ? dragOffset : 0;
+            const finalX = baseX + dragInfluence;
 
             return (
               <motion.div
@@ -159,16 +177,20 @@ export default function ServiceCarousel() {
                 className="absolute"
                 initial={false}
                 animate={{
-                  x: position * cardSpacing,
+                  x: finalX,
                   scale: scale,
                   opacity: opacity,
                   zIndex: 20 - absPosition * 5,
                 }}
-                transition={{
-                  type: "tween",
-                  duration: 0.7,
-                  ease: "easeInOut",
-                }}
+                transition={
+                  isDragging
+                    ? { type: "spring", stiffness: 300, damping: 30 }
+                    : {
+                        type: "tween",
+                        duration: 0.7,
+                        ease: "easeInOut",
+                      }
+                }
                 style={{
                   width: isMobile ? "300px" : "360px",
                 }}
@@ -182,44 +204,9 @@ export default function ServiceCarousel() {
               </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
 
-      {/* Navigation Buttons */}
-      {/* <button
-        onClick={() => paginate(-1)}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group"
-        aria-label="Previous slide"
-      >
-        <ChevronLeft className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
-      </button> */}
-
-      {/* <button
-        onClick={() => paginate(1)}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 group"
-        aria-label="Next slide"
-      >
-        <ChevronRight className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
-      </button> */}
-
-      {/* Dots Indicator */}
-      {/* <div className="flex justify-center gap-2 mt-8">
-        {services.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              setDirection(index > currentIndex ? 1 : -1);
-              setCurrentIndex(index);
-            }}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === currentIndex
-                ? "bg-white w-8"
-                : "bg-white/30 hover:bg-white/50"
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div> */}
     </div>
   );
 }
