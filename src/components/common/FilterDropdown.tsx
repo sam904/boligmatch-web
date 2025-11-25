@@ -58,7 +58,7 @@ export const FilterDropdown = ({
             className="fixed inset-0 z-10 cursor-pointer"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+          <div className="absolute left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
             {options.map((option) => (
               <button
                 key={option.value}
