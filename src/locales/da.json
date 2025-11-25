@@ -627,7 +627,16 @@
     "changePasswordTitle": "Skift adgangskode",
     "newPassword": "Ny adgangskode",
     "confirmPassword": "Bekræft adgangskode",
-    "updatePassword": "Skift adgangskode"
+    "updatePassword": "Skift adgangskode",
+    "toast": {
+      "phoneDigitsError": "Mobilnummer skal være på 8 cifre",
+      "profileUpdateSuccess": "Profil opdateret",
+      "profileUpdateError": "Kunne ikke opdatere profilen",
+      "passwordRequired": "Ny adgangskode er påkrævet",
+      "passwordMismatch": "Adgangskoderne matcher ikke",
+      "passwordUpdateSuccess": "Adgangskode opdateret",
+      "passwordUpdateError": "Kunne ikke opdatere adgangskoden"
+    }
   },
   "partnerDetails": {
     "fullName": "Fuldt navn",
@@ -689,6 +698,17 @@
     "conversation": "Kontakt os",
     "reviewsTitle": "Anmeldelser",
     "noReviewsYet": "Ingen anmeldelser endnu.",
+    "toast": {
+      "userNotLoggedIn": "Bruger blev ikke fundet. Log venligst ind igen.",
+      "partnerNotLoaded": "Partner kunne ikke indlæses.",
+      "contactSuccess": "Besked sendt",
+      "contactSubjectRequired": "Emne er påkrævet",
+      "contactBodyRequired": "Beskedtekst er påkrævet",
+      "recommendPartnerMissing": "Kunne ikke indlæse partneroplysninger.",
+      "recommendEmailMissing": "Indtast venligst en e-mailadresse.",
+      "recommendUserMissing": "Bruger blev ikke fundet. Log venligst ind igen.",
+      "recommendSuccess": "Anbefaling sendt succesfuldt"
+    },
     "recommendModal": {
       "title": "Anbefal os til andre",
       "description": "Teanker du at en ven kunne gøre brug af vores service, så send en besked til vedkommende her",

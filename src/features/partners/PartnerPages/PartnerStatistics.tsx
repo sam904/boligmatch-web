@@ -17,7 +17,16 @@ function ParentStatistics() {
   const [activeTab, setActiveTab] = useState<
     "statistik" | "profil" | "partnere"
   >("statistik");
-  const [partnerData, setPartnerData] = useState<any>("");
+  const [partnerData, setPartnerData] = useState<any>(() => {
+    try {
+      const stored =
+        typeof window !== "undefined" ? localStorage.getItem("bm_partner") : null;
+      return stored ? JSON.parse(stored) : null;
+    } catch (error) {
+      console.error("Error parsing bm_partner from localStorage:", error);
+      return null;
+    }
+  });
   const calledRef = useRef(false);
   console.log("Partner Data:", partnerData);
 
@@ -54,7 +63,14 @@ function ParentStatistics() {
       try {
         const response = await partnerService.getById(partnerId);
         console.log("Partner Details:", response);
-        setPartnerData(response?.output);
+        if (response?.output) {
+          setPartnerData(response.output);
+          try {
+            localStorage.setItem("bm_partner", JSON.stringify(response.output));
+          } catch (error) {
+            console.error("Unable to persist bm_partner", error);
+          }
+        }
       } catch (error) {
         console.error("Error fetching partner details", error);
       }

@@ -107,7 +107,7 @@ export default function ManageProfile() {
                         onSubmit={async (e) => {
                             e.preventDefault();
                             if (!/^[0-9]{8}$/.test(phone)) {
-                                showSignupErrorToast("Mobilnummer skal være på 8 cifre");
+                                showSignupErrorToast(t("manageProfile.toast.phoneDigitsError"));
                                 return;
                             }
                             if (userId == null) return;
@@ -136,10 +136,10 @@ export default function ManageProfile() {
                                         })
                                     );
                                 }
-                                showSignupSuccessToast("Profil opdateret");
+                                showSignupSuccessToast(t("manageProfile.toast.profileUpdateSuccess"));
                             } catch (err) {
                                 console.error("Failed to update profile", err);
-                                showSignupErrorToast("Kunne ikke opdatere profilen");
+                                showSignupErrorToast(t("manageProfile.toast.profileUpdateError"));
                             }
                         }}
                     >
@@ -184,7 +184,7 @@ export default function ManageProfile() {
                                 <label className="block text-white text-sm mb-1">{t("manageProfile.email")}</label>
                                 <input
                                     type="email"
-                                    className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                    className="w-full rounded-md bg-white disabled:bg-gray-200 disabled:text-gray-500 text-gray-900 px-4 py-2.5 outline-none"
                                     value={email}
                                     disabled
                                 />
@@ -206,11 +206,11 @@ export default function ManageProfile() {
                         onSubmit={async (e) => {
                             e.preventDefault();
                             if (!newPassword) {
-                                showSignupErrorToast("Ny adgangskode er påkrævet");
+                                showSignupErrorToast(t("manageProfile.toast.passwordRequired"));
                                 return;
                             }
                             if (newPassword !== confirmPassword) {
-                                showSignupErrorToast("Adgangskoderne matcher ikke");
+                                showSignupErrorToast(t("manageProfile.toast.passwordMismatch"));
                                 return;
                             }
                             try {
@@ -218,12 +218,12 @@ export default function ManageProfile() {
                                     email: email,
                                     newPassword: newPassword,
                                 });
-                                showSignupSuccessToast("Adgangskode opdateret");
+                                showSignupSuccessToast(t("manageProfile.toast.passwordUpdateSuccess"));
                                 setNewPassword("");
                                 setConfirmPassword("");
                             } catch (err) {
                                 console.error("Failed to reset password", err);
-                                showSignupErrorToast("Kunne ikke opdatere adgangskoden");
+                                showSignupErrorToast(t("manageProfile.toast.passwordUpdateError"));
                             }
                         }}
                     >
@@ -233,7 +233,7 @@ export default function ManageProfile() {
                                 <label className="block text-white text-sm mb-1">Email</label>
                                 <input
                                     type="email"
-                                    className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                                    className="w-full rounded-md bg-white disabled:bg-gray-200 disabled:text-gray-500 text-gray-900 px-4 py-2.5 outline-none"
                                     value={email}
                                     disabled
                                 />

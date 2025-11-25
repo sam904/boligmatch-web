@@ -62,28 +62,28 @@ export default function LandingPage() {
             <img
               src={landingPageIcons}
               alt=""
-              className="md:w-[107px] w-10 h-auto"
+              className="md:w-[107px] w-10 h-auto shadow-black shadow-2xl rounded-full"
             />
           </div>
           <div className="mb-4">
             <img
               src={landingPageIcons2}
               alt=""
-              className="md:w-[107px] w-10 h-auto"
+              className="md:w-[107px] w-10 h-auto shadow-black shadow-2xl rounded-full"
             />
           </div>
           <div className="">
             <img
               src={landingPageIcons3}
               alt=""
-              className="md:w-[107px] w-10 h-auto"
+              className="md:w-[107px] w-10 h-auto shadow-black shadow-2xl rounded-full"
             />
           </div>
           <div className="md:w-[165px] w-[70px] flex justify-end">
             <img
               src={landingPageIcons4}
               alt=""
-              className="md:w-[107px] w-10 h-auto"
+              className="md:w-[107px] w-10 h-auto shadow-black shadow-2xl rounded-full"
             />
           </div>
         </div>

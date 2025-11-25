@@ -181,7 +181,7 @@ function PartnerManageProfile() {
               </label>
               <input
                 type="email"
-                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                className="w-full rounded-md bg-white disabled:bg-gray-200 disabled:text-gray-500 text-gray-900 px-4 py-2.5 outline-none"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled
@@ -214,7 +214,7 @@ function PartnerManageProfile() {
               <label className="block text-white text-sm mb-1">Email</label>
               <input
                 type="email"
-                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                className="w-full rounded-md bg-white disabled:bg-gray-200 disabled:text-gray-500 text-gray-900 px-4 py-2.5 outline-none"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled

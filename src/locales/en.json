@@ -589,7 +589,16 @@
     "changePasswordTitle": "Change password",
     "newPassword": "New password",
     "confirmPassword": "Confirm password",
-    "updatePassword": "Update password"
+    "updatePassword": "Update password",
+    "toast": {
+      "phoneDigitsError": "Mobile number must be 8 digits",
+      "profileUpdateSuccess": "Profile updated",
+      "profileUpdateError": "Failed to update profile",
+      "passwordRequired": "New password is required",
+      "passwordMismatch": "Passwords do not match",
+      "passwordUpdateSuccess": "Password updated",
+      "passwordUpdateError": "Failed to update password"
+    }
   },
   "partnerDetails": {
     "fullName": "Full name",
@@ -651,6 +660,17 @@
     "conversation": "Contact us",
     "reviewsTitle": "Reviews",
     "noReviewsYet": "No reviews yet.",
+    "toast": {
+      "userNotLoggedIn": "User not found. Please log in again.",
+      "partnerNotLoaded": "Partner not loaded.",
+      "contactSuccess": "Message sent successfully",
+      "contactSubjectRequired": "Subject is required",
+      "contactBodyRequired": "Message is required",
+      "recommendPartnerMissing": "Unable to load partner details.",
+      "recommendEmailMissing": "Please enter an email address.",
+      "recommendUserMissing": "User not found. Please log in again.",
+      "recommendSuccess": "Recommendation sent successfully"
+    },
     "recommendModal": {
       "title": "Recommend us to others",
       "description": "Do you think a friend could use our service? Send them a message here",

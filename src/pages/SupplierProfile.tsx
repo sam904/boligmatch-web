@@ -163,13 +163,13 @@ const SupplierProfile = () => {
       const userId = getCurrentUserId();
 
       if (!userId) {
-        showFavouriteErrorToast("User not found. Please log in again.");
+        showFavouriteErrorToast(t("supplierProfile.toast.userNotLoggedIn"));
         return;
       }
 
       const partnerId = getCurrentPartnerId();
       if (!partnerId) {
-        showFavouriteErrorToast("Partner not loaded.");
+        showFavouriteErrorToast(t("supplierProfile.toast.partnerNotLoaded"));
         return;
       }
 
@@ -225,7 +225,15 @@ const SupplierProfile = () => {
     try {
       const targetId = getCurrentPartnerId();
       if (!targetId) {
-        showContactErrorToast("Partner not loaded.");
+        showContactErrorToast(t("supplierProfile.toast.partnerNotLoaded"));
+        return;
+      }
+      if (!contactSubject.trim()) {
+        showContactErrorToast(t("supplierProfile.toast.contactSubjectRequired"));
+        return;
+      }
+      if (!contactBody.trim()) {
+        showContactErrorToast(t("supplierProfile.toast.contactBodyRequired"));
         return;
       }
       const userStr = localStorage.getItem("bm_user");
@@ -247,7 +255,7 @@ const SupplierProfile = () => {
       };
 
       await conversationService.add(payload);
-      showContactSuccessToast("Message sent successfully");
+      showContactSuccessToast(t("supplierProfile.toast.contactSuccess"));
       setActiveModal(null);
       setContactSubject("");
       setContactBody("");
@@ -261,11 +269,11 @@ const SupplierProfile = () => {
     try {
       const targetId = getCurrentPartnerId();
       if (!targetId) {
-        showRecommendationErrorToast("Fejl");
+        showRecommendationErrorToast(t("supplierProfile.toast.recommendPartnerMissing"));
         return;
       }
       if (!recommendEmail) {
-        showRecommendationErrorToast("Fejl");
+        showRecommendationErrorToast(t("supplierProfile.toast.recommendEmailMissing"));
         return;
       }
 
@@ -275,7 +283,7 @@ const SupplierProfile = () => {
       const userId = parsedUser?.userId ?? userData?.userId;
 
       if (!userId) {
-        showRecommendationErrorToast("Fejl");
+        showRecommendationErrorToast(t("supplierProfile.toast.recommendUserMissing"));
         return;
       }
 
@@ -289,7 +297,7 @@ const SupplierProfile = () => {
       };
 
       await recommendationService.add(payload);
-      showRecommendationSuccessToast();
+      showRecommendationSuccessToast(t("supplierProfile.toast.recommendSuccess"));
       setActiveModal(null);
       setRecommendEmail("");
       setRecommendComment("");

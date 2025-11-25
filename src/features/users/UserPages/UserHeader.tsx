@@ -300,7 +300,7 @@ function UserHeader({
                       setShowSidebar(false);
                       navigate("/");
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                   >
                     <span className="flex items-center gap-2 cursor-pointer">
                       <img
@@ -319,7 +319,7 @@ function UserHeader({
                           setShowSidebar(false);
                           navigate("/profile");
                         }}
-                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
                         <span className="flex items-center gap-2 cursor-pointer">
                           <img
@@ -335,7 +335,7 @@ function UserHeader({
                           setShowSidebar(false);
                           navigate("/manage-profile");
                         }}
-                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
                         <span className="flex items-center gap-2 cursor-pointer">
                           <img
@@ -368,7 +368,7 @@ function UserHeader({
                           setShowSidebar(false);
                           navigate("/partner/documents");
                         }}
-                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
                         <span className="flex items-center gap-2 cursor-pointer">
                           <img
@@ -384,7 +384,7 @@ function UserHeader({
                           setShowSidebar(false);
                           navigate("/partner/manage-profile");
                         }}
-                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
                         <span className="flex items-center gap-2 cursor-pointer">
                           <img
@@ -402,7 +402,7 @@ function UserHeader({
                       setShowSidebar(false);
                       navigate("/partner");
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                   >
                     <span className="flex items-center gap-2 cursor-pointer">
                       <img
@@ -418,7 +418,7 @@ function UserHeader({
                       setShowSidebar(false);
                       navigate("/about");
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                   >
                     <span className="flex items-center gap-2 cursor-pointer">
                       <img
@@ -458,7 +458,7 @@ function UserHeader({
                       setShowSidebar(false);
                       navigate("/terms");
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                   >
                     <span className="flex items-center gap-2 cursor-pointer">
                       <img
@@ -501,7 +501,7 @@ function UserHeader({
                       setShowSidebar(false);
                       setIsChoiceModalOpen(true);
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2"
+                    className="w-full text-left px-3 py-2.5 text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                   >
                     <svg
                       className="w-4 h-4"
