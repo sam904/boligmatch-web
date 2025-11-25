@@ -418,6 +418,7 @@
       "adjustSearch": "Prøv at justere din søgning eller filterkriterier",
       "noPartnersCreated": "Der er ikke oprettet nogen partnere endnu",
       "status": "Status",
+      "selectSubcategory": "Vælg Underkategori",
       "addTestimonial": "Tilføj udtalelse",
       "resetPassword": "Nulstil adgangskode",
       "deletePartner": "Slet partner"
@@ -487,24 +488,6 @@
       "noUsersCreated": "Der er ikke oprettet nogen brugere endnu",
       "addFirstUser": "Tilføj din første bruger",
       "user": "Bruger"
-    },
-    "partnerSubcategories": {
-      "title": "Partner Underkategorier",
-      "addMapping": "Tilføj Mapping",
-      "editMapping": "Rediger Partner Underkategori",
-      "partner": "Partner",
-      "category": "Kategori",
-      "subcategory": "Underkategori",
-      "selectCategory": "Vælg Kategori",
-      "selectSubcategory": "Vælg Underkategori",
-      "id": "ID",
-      "deleteConfirm": "Slet denne relation?",
-      "createSuccess": "Partner underkategori oprettet med succes",
-      "updateSuccess": "Partner underkategori opdateret med succes",
-      "deleteSuccess": "Partner underkategori slettet med succes",
-      "createError": "Kunne ikke oprette partner underkategori",
-      "updateError": "Kunne ikke opdatere partner underkategori",
-      "deleteError": "Kunne ikke slette partner underkategori"
     }
   },
   "landing": {

@@ -1045,12 +1045,12 @@ const DashboardPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Stats Container */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-        <div className="flex flex-nowrap overflow-x-auto justify-between items-center">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 mb-4 sm:mb-6">
+        <div className="flex flex-nowrap overflow-x-auto justify-between items-center space-x-2 sm:space-x-0">
           {statsData.map((stat, index) => (
             <div key={stat.title} className="flex items-center">
-              <div className="flex flex-col items-center text-center px-3 min-w-[100px]">
-                <div className="text-lg font-semibold text-[#232D42] mb-1">
+              <div className="flex flex-col items-center text-center px-2 sm:px-3 min-w-[80px] sm:min-w-[100px]">
+                <div className="text-base sm:text-lg font-semibold text-[#232D42] mb-1">
                   {stat.value}
                 </div>
                 <div className="text-xs font-medium text-[#8A92A6] whitespace-nowrap">
@@ -1058,7 +1058,7 @@ const DashboardPage = () => {
                 </div>
               </div>
               {index < statsData.length - 1 && (
-                <div className="h-8 w-px bg-gray-300 mx-1"></div>
+                <div className="h-6 sm:h-8 w-px bg-gray-300 mx-1 sm:mx-1"></div>
               )}
             </div>
           ))}
@@ -1066,31 +1066,31 @@ const DashboardPage = () => {
       </div>
 
       {/* Charts Container */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Categories & Subcategories Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+          <div className="mb-4 sm:mb-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
               {t("admin.partners.Categories&SubCategories") ||
                 "Categories & Subcategories"}
             </h3>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-center justify-between">
             <div className="flex-shrink-0">
-              <div className="relative" style={{ width: 220, height: 220 }}>
+              <div className="relative mx-auto" style={{ width: 220, height: 220 }}>
                 <Doughnut data={getPieChartData()} options={pieChartOptions} />
               </div>
             </div>
-            <div className="flex-1 ml-6">
-              <div className="space-y-6">
+            <div className="flex-1 sm:ml-4 lg:ml-6">
+              <div className="space-y-4 sm:space-y-6">
                 <div className="text-center">
                   <div className="flex items-center justify-center mb-2">
-                    <div className="w-4 h-4 rounded-full mr-2 bg-[#165933]"></div>
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full mr-2 bg-[#165933]"></div>
                     <span className="text-gray-700 font-medium text-sm">
                       {t("admin.categories.title") || "Categories"}
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-gray-900">
+                  <div className="text-xl sm:text-2xl font-bold text-gray-900">
                     {formatK(stats?.TotalCategorys || 0)}
                   </div>
                   <div className="text-xs text-gray-500 mt-1">
@@ -1099,12 +1099,12 @@ const DashboardPage = () => {
                 </div>
                 <div className="text-center">
                   <div className="flex items-center justify-center mb-2">
-                    <div className="w-4 h-4 rounded-full mr-2 bg-[#95C11F]"></div>
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full mr-2 bg-[#95C11F]"></div>
                     <span className="text-gray-700 font-medium text-sm">
                       {t("admin.subcategories.title") || "Sub Categories"}
                     </span>
                   </div>
-                  <div className="text-2xl font-bold text-gray-900">
+                  <div className="text-xl sm:text-2xl font-bold text-gray-900">
                     {formatK(stats?.TotalSubCategories || 0)}
                   </div>
                   <div className="text-xs text-gray-500 mt-1">
@@ -1118,27 +1118,27 @@ const DashboardPage = () => {
         </div>
 
         {/* Partners & Users Bar Chart */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3 sm:gap-0">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
               {t("admin.dashboard.TotalPartners&Users") ||
                 "Total Partners & Users"}
             </h3>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <DashboardSelect
                 value={timeFilter}
                 onChange={handleTimeFilterChange}
                 options={timeFilterOptions}
                 placeholder="Select period"
-                className="w-32"
+                className="w-full sm:w-32"
               />
             </div>
           </div>
 
-          <div className="h-64">
+          <div className="h-48 sm:h-56 lg:h-64">
             {trendsLoading ? (
               <div className="h-full flex items-center justify-center">
-                <div className="text-gray-500">
+                <div className="text-gray-500 text-sm sm:text-base">
                   {t("common.loading") || "Loading trends..."}
                 </div>
               </div>
@@ -1150,9 +1150,9 @@ const DashboardPage = () => {
             )}
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-4 text-center">
+          <div className="mt-4 sm:mt-6 grid grid-cols-2 gap-3 sm:gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-[#165933]">
+              <div className="text-xl sm:text-2xl font-bold text-[#165933]">
                 {formatK(totalPartnersFromTrends)}
                 <span className="sr-only">
                   {t("admin.dashboard.TotalPartners") || "Total Partners"}
@@ -1163,7 +1163,7 @@ const DashboardPage = () => {
               </div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[#95C11F]">
+              <div className="text-xl sm:text-2xl font-bold text-[#95C11F]">
                 {formatK(totalUsersFromTrends)}
                 <span className="sr-only">
                   {t("admin.dashboard.TotalUsers") || "Total Users"}
@@ -1178,15 +1178,15 @@ const DashboardPage = () => {
       </div>
 
       {/* User Growth Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center space-x-6">
-              <h3 className="text-lg font-semibold text-gray-900">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-4 sm:mb-6 gap-3 lg:gap-0">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                 {t("admin.dashboard.userGrowthAnalytics") ||
                   "Bruger Vækst Analyser"}
               </h3>
-              <div className="flex space-x-4 text-sm text-gray-500">
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 text-sm text-gray-500">
                 <span className="text-[#165933] font-medium flex items-center">
                   <span className="w-2 h-2 bg-[#165933] rounded-full mr-2"></span>
                   {t("admin.dashboard.thisyear") || "I år"}:{" "}
@@ -1203,12 +1203,12 @@ const DashboardPage = () => {
               <div className="text-sm font-medium text-gray-500">
                 {t("admin.dashboard.growthRate") || "Vækstrate"}
               </div>
-              <div className="text-lg font-bold text-[#165933]">
+              <div className="text-base sm:text-lg font-bold text-[#165933]">
                 +{growthRate}%
               </div>
             </div>
           </div>
-          <div className="h-64">
+          <div className="h-48 sm:h-56 lg:h-64">
             <Line data={getUserAnalyticsData()} options={lineChartOptions} />
           </div>
         </div>
