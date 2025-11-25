@@ -19,6 +19,37 @@ import signOutIcon from "/src/assets/userImages/signOut.png";
 import leftArrow from "/src/assets/userImages/arrow-left.svg";
 import manageProfileIcon from "/src/assets/userImages/gear.png";
 
+const resolveDisplayName = (entity?: any): string | null => {
+  if (!entity) return null;
+
+  const first =
+    typeof entity.firstName === "string" ? entity.firstName.trim() : "";
+  const last =
+    typeof entity.lastName === "string" ? entity.lastName.trim() : "";
+
+  if (first || last) {
+    return [first, last].filter(Boolean).join(" ");
+  }
+
+  const fallbackFields = [
+    entity.fullName,
+    entity.businessName,
+    entity.companyName,
+    entity.contactName,
+    entity.name,
+    entity.email,
+    entity.userName,
+  ];
+
+  for (const field of fallbackFields) {
+    if (typeof field === "string" && field.trim().length > 0) {
+      return field.trim();
+    }
+  }
+
+  return null;
+};
+
 function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -98,11 +129,9 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
 
   const activeUser = !activePartner ? userLocalData || partnerData : null;
 
-  const displayName = activePartner
-    ? `${activePartner.firstName} ${activePartner.lastName}`
-    : activeUser
-    ? `${activeUser.firstName} ${activeUser.lastName}`
-    : null;
+  const partnerDisplayName = resolveDisplayName(activePartner);
+  const userDisplayName = resolveDisplayName(activeUser);
+  const displayName = partnerDisplayName ?? userDisplayName;
 
   return (
     <>
@@ -230,12 +259,10 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
               <div className="flex items-center justify-between p-6 border-b border-white/10">
                 <div className="flex items-center gap-3">
                   {/* Partner/User Profile in Sidebar for partner pages */}
-                  {activePartner || activeUser ? (
+                  {displayName ? (
                     <div className="flex flex-col">
                       <span className="text-white text-sm font-medium">
-                        {activePartner
-                          ? `${activePartner.firstName} ${activePartner.lastName}`
-                          : `${activeUser.firstName} ${activeUser.lastName}`}
+                        {displayName}
                       </span>
                       <span className="text-white text-xs opacity-70">
                         {activePartner
@@ -284,7 +311,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       setShowSidebar(false);
                       navigate("/");
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                   >
                     <span className="flex items-center gap-2 cursor-pointer">
                       <img
@@ -303,7 +330,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                           setShowSidebar(false);
                           navigate("/profile");
                         }}
-                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
                         <span className="flex items-center gap-2 cursor-pointer">
                           <img
@@ -319,7 +346,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                           setShowSidebar(false);
                           navigate("/manage-profile");
                         }}
-                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
                         <span className="flex items-center gap-2 cursor-pointer">
                           <img
@@ -340,7 +367,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                           setShowSidebar(false);
                           navigate("/partner/documents");
                         }}
-                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
                         <span className="flex items-center gap-2 cursor-pointer">
                           <img
@@ -356,7 +383,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                           setShowSidebar(false);
                           navigate("/partner/manage-profile");
                         }}
-                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
                         <span className="flex items-center gap-2 cursor-pointer">
                           <img
@@ -374,7 +401,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       setShowSidebar(false);
                       navigate("/partner");
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                   >
                     <span className="flex items-center gap-2  cursor-pointer">
                       <img
@@ -390,7 +417,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       setShowSidebar(false);
                       navigate("/about");
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                   >
                     <span className="flex items-center gap-2 cursor-pointer">
                       <img
@@ -430,7 +457,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       setShowSidebar(false);
                       navigate("/terms");
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors"
+                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                   >
                     <span className="flex items-center gap-2 cursor-pointer">
                       <img
@@ -473,7 +500,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       setShowSidebar(false);
                       setIsChoiceModalOpen(true);
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2"
+                    className="w-full text-left px-3 py-2.5 text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                   >
                     <svg
                       className="w-4 h-4"
