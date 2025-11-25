@@ -1730,11 +1730,11 @@ export default function PartnersPage() {
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-5">
-            <h3 className="text-lg font-bold text-gray-900 mt-6">
+          <div className="space-y-4 sm:space-y-5">
+            <h3 className="text-lg font-bold text-gray-900 mt-4 sm:mt-6">
               {t("admin.partners.BasicInformation") || "Basic Information"}
             </h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <Input
                 label={
                   <>
@@ -1763,7 +1763,7 @@ export default function PartnersPage() {
                   onChange={(e) => handleEmailChange(e.target.value)}
                   placeholder={
                     t("common.enterEmailAddress") || "Enter email address"
-                  } // Add this line
+                  }
                   className={
                     emailValidation.available === false ? "border-red-500" : ""
                   }
@@ -1928,7 +1928,7 @@ export default function PartnersPage() {
               }
               error={errors.address?.message && t("validation.addressRequired")}
               rows={3}
-              placeholder={t("common.enterFullAddress") || "Enter full address"} // Add this line
+              placeholder={t("common.enterFullAddress") || "Enter full address"}
               {...register("address")}
             />
             <Input
@@ -1949,7 +1949,7 @@ export default function PartnersPage() {
       case 2:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-gray-900 mt-6">
+            <h3 className="text-lg font-bold text-gray-900 mt-4 sm:mt-6">
               {t("admin.partners.Media&Description") || "Media & Description"}
             </h3>
 
@@ -1968,7 +1968,7 @@ export default function PartnersPage() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <VideoUpload
                 label=""
                 value={videoUrlValue || ""}
@@ -2001,57 +2001,58 @@ export default function PartnersPage() {
       case 3:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-gray-900 mt-6">
+            <h3 className="text-lg font-bold text-gray-900 mt-4 sm:mt-6">
               {t("admin.partners.TextFields") || "Text Fields"}
             </h3>
-            <Input
-              label={t("admin.partners.TextField1") || "Text Fields 1"}
-              error={errors.textField1?.message}
-              {...register("textField1")}
-            />
-            <div>
-              <RichTextEditor
-                label={t("admin.partners.TextField2") || "Text Fields 2"}
-                value={watch("textField2") || ""}
-                onChange={(value) => setValue("textField2", value)}
-                error={errors.textField2?.message}
-                placeholder="Enter formatted text for Text Field 2..."
-                height="min-h-[50px]"
+            <div className="space-y-3 sm:space-y-4">
+              <Input
+                label={t("admin.partners.TextField1") || "Text Fields 1"}
+                error={errors.textField1?.message}
+                {...register("textField1")}
               />
-            </div>
+              <div>
+                <RichTextEditor
+                  label={t("admin.partners.TextField2") || "Text Fields 2"}
+                  value={watch("textField2") || ""}
+                  onChange={(value) => setValue("textField2", value)}
+                  error={errors.textField2?.message}
+                  placeholder="Enter formatted text for Text Field 2..."
+                  height="min-h-[120px] sm:min-h-[150px]"
+                />
+              </div>
 
-            {/* Rich Text Editor for Text Field 3 */}
-            <div>
-              <RichTextEditor
-                label={t("admin.partners.TextField3") || "Text Fields 3"}
-                value={watch("textField3") || ""}
-                onChange={(value) => setValue("textField3", value)}
-                error={errors.textField3?.message}
-                placeholder="Enter formatted text for Text Field 3..."
-                height="min-h-[50px]"
+              {/* Rich Text Editor for Text Field 3 */}
+              <div>
+                <RichTextEditor
+                  label={t("admin.partners.TextField3") || "Text Fields 3"}
+                  value={watch("textField3") || ""}
+                  onChange={(value) => setValue("textField3", value)}
+                  error={errors.textField3?.message}
+                  placeholder="Enter formatted text for Text Field 3..."
+                  height="min-h-[120px] sm:min-h-[150px]"
+                />
+              </div>
+              <Input
+                label={t("admin.partners.TextField4") || "Text Fields 4"}
+                error={errors.textField4?.message}
+                {...register("textField4")}
+              />
+              <Input
+                label={t("admin.partners.TextField5") || "Text Fields 5"}
+                error={errors.textField5?.message}
+                {...register("textField5")}
               />
             </div>
-            <Input
-              label={t("admin.partners.TextField4") || "Text Fields 4"}
-              error={errors.textField4?.message}
-              {...register("textField4")}
-            />
-            <Input
-              label={t("admin.partners.TextField5") || "Text Fields 5"}
-              error={errors.textField5?.message}
-              {...register("textField5")}
-            />
           </div>
         );
 
       case 4:
         return (
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-gray-900 mt-6">
-              {" "}
+            <h3 className="text-lg font-bold text-gray-900 mt-4 sm:mt-6">
               {t("admin.partners.Images&Status") || "Images & Status"}
             </h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <ImageUpload
                 label={t("admin.partners.ImageUpload1") || "Image Upload 1"}
                 value={imageUrl1Value}
@@ -2074,7 +2075,7 @@ export default function PartnersPage() {
                 showDimensionValidation={true}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <ImageUpload
                 label={t("admin.partners.ImageUpload3") || "Image Upload 3"}
                 value={imageUrl3Value}
@@ -2092,7 +2093,7 @@ export default function PartnersPage() {
                 error={errors.imageUrl4?.message}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <ImageUpload
                 label={t("admin.partners.ImageUpload5") || "Image Upload 5"}
                 value={imageUrl5Value}
@@ -2107,7 +2108,7 @@ export default function PartnersPage() {
       case 5:
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-bold text-gray-900 mt-6">
+            <h3 className="text-lg font-bold text-gray-900 mt-4 sm:mt-6">
               {t("admin.partners.Documents") || "Documents"}
             </h3>
             <div className="bg-gray-50 p-4 rounded-lg">
@@ -2257,7 +2258,7 @@ export default function PartnersPage() {
       case 6:
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-bold text-gray-900 mt-6">
+            <h3 className="text-lg font-bold text-gray-900 mt-4 sm:mt-6">
               {t("admin.partners.Categories&SubCategories") ||
                 "Categories & SubCategories"}
             </h3>
@@ -2354,9 +2355,9 @@ export default function PartnersPage() {
                     {subCategoryFields.map((field, index) => (
                       <div
                         key={field.id}
-                        className="flex items-end gap-4 p-4 border border-gray-200 rounded-lg mb-3"
+                        className="flex flex-col sm:flex-row items-end gap-3 sm:gap-4 p-4 border border-gray-200 rounded-lg mb-3"
                       >
-                        <div className="flex-1">
+                        <div className="flex-1 w-full">
                           <SearchableSelectController
                             name={`parSubCatlst.${index}.subCategoryId`}
                             control={control}
@@ -2384,7 +2385,7 @@ export default function PartnersPage() {
                                     "admin.partners.noSubCategoriesAvailable"
                                   ) ||
                                   "No active sub categories available for this category"
-                                : t("admin.subcategories.selectSubcategory") ||
+                                : t("admin.partners.selectSubcategory") ||
                                   "Select Sub Category"
                             }
                             disabled={
@@ -2400,7 +2401,7 @@ export default function PartnersPage() {
                             type="button"
                             variant="danger"
                             onClick={() => removeSubCategoryField(index)}
-                            className="mb-1 cursor-pointer"
+                            className="mb-1 cursor-pointer w-full sm:w-auto"
                           >
                             {t("common.remove") || "Remove"}
                           </Button>
@@ -2416,7 +2417,7 @@ export default function PartnersPage() {
                         borderColor: "#95C11F",
                         color: "white",
                       }}
-                      className="hover:bg-[#85B11F] hover:border-[#85B11F] cursor-pointer"
+                      className="hover:bg-[#85B11F] hover:border-[#85B11F] cursor-pointer w-full sm:w-auto"
                     >
                       {t("admin.partners.AddsubCategory") ||
                         "Add Sub Categories"}{" "}
@@ -2498,7 +2499,7 @@ export default function PartnersPage() {
   };
 
   const renderFormFooter = () => (
-    <div className="flex justify-between pt-6 mt-4 border-t border-gray-200">
+    <div className="flex flex-col sm:flex-row justify-between pt-4 sm:pt-6 mt-4 border-t border-gray-200 gap-3 sm:gap-0">
       <div>
         {currentStep > 1 && (
           <Button
@@ -2507,7 +2508,7 @@ export default function PartnersPage() {
             size="lg"
             onClick={handleBack}
             disabled={isSubmitting}
-            className="cursor-pointer"
+            className="cursor-pointer w-full sm:w-auto mb-2 sm:mb-0"
           >
             {t("common.Previous") || "Previous"}
           </Button>
@@ -2522,7 +2523,7 @@ export default function PartnersPage() {
             size="lg"
             onClick={handleNext}
             disabled={isSubmitting}
-            className="cursor-pointer"
+            className="cursor-pointer w-full sm:w-auto"
           >
             {isSubmitting
               ? t("common.updating") || "Updating..."
@@ -2538,7 +2539,7 @@ export default function PartnersPage() {
               createMutation.isPending ||
               updateMutation.isPending
             }
-            className="cursor-pointer"
+            className="cursor-pointer w-full sm:w-auto"
           >
             {isSubmitting
               ? t("common.Submitting") || "Submitting..."
@@ -2552,7 +2553,7 @@ export default function PartnersPage() {
   );
 
   return (
-    <div className="p-3">
+    <div className="p-3 sm:p-4">
       {/* Render Toast Banners */}
       {toasts.map((toastItem) => (
         <AdminToast
@@ -2585,9 +2586,9 @@ export default function PartnersPage() {
       />
 
       {!showForm && (
-        <div className="p-2 mb-2">
-          <div className="flex justify-between items-center">
-            <div className="font-figtree">
+        <div className="p-2 mb-2 sm:p-3 sm:mb-4">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+            <div className="font-figtree flex justify-center lg:justify-start">
               <Button
                 variant="primary"
                 size="md"
@@ -2601,14 +2602,16 @@ export default function PartnersPage() {
                 {t("admin.partners.addPartner")}
               </Button>
             </div>
-            <div className="flex items-center gap-4">
-              {/* UPDATED: Status Filter Dropdown */}
-              <FilterDropdown
-                value={statusFilter}
-                onChange={handleStatusFilterChange}
-              />
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+              <div className="w-full sm:w-auto">
+                <FilterDropdown
+                  value={statusFilter}
+                  onChange={handleStatusFilterChange}
+                  className="w-full sm:w-auto"
+                />
+              </div>
 
-              <div className="w-64">
+              <div className="w-full sm:flex-1 lg:w-64">
                 <SearchBar
                   searchTerm={searchTerm}
                   onSearchChange={handleSearchChange}
@@ -2624,7 +2627,7 @@ export default function PartnersPage() {
                 icon={IconUpload}
                 iconPosition="left"
                 iconSize="w-5 h-5"
-                className="cursor-pointer"
+                className="cursor-pointer w-full sm:w-auto"
               >
                 {isExporting
                   ? t("common.exporting") || "Exporting..."
@@ -2635,38 +2638,47 @@ export default function PartnersPage() {
         </div>
       )}
       {showForm && (
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
           {/* Updated header with back arrow */}
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
             <button
               onClick={handleFormClose}
               disabled={isSubmitting}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-[#165933] text-white cursor-pointer"
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-[#165933] text-white cursor-pointer flex-shrink-0"
               title="Go back"
             >
               <IconArrowLeft className="w-4 h-4" />
             </button>
-            <div className="flex-1">
-              <h2 className="text-xl font-bold text-gray-900">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
                 {editingPartner
                   ? t("admin.partners.editPartner")
                   : t("admin.partners.addPartner")}
               </h2>
             </div>
           </div>
-          <Stepper
-            currentStep={currentStep}
-            steps={steps}
-            onStepClick={handleStepClick}
-            completedSteps={completedSteps}
-          />
+          
+          {/* Stepper - Make it scrollable on mobile */}
+          <div className="overflow-x-auto p-2">
+            <div className="min-w-max">
+              <Stepper
+                currentStep={currentStep}
+                steps={steps}
+                onStepClick={handleStepClick}
+                completedSteps={completedSteps}
+              />
+            </div>
+          </div>
+          
           <form
             onSubmit={handleSubmit((data) => {
               console.log("Form submission triggered with data:", data);
               onSubmit(data);
             })}
           >
-            <div className="px-1 mb-6">{renderStepContent()}</div>
+            <div className="px-0 sm:px-1 mb-4 sm:mb-6">
+              {renderStepContent()}
+            </div>
             {renderFormFooter()}
           </form>
         </div>
@@ -2674,22 +2686,26 @@ export default function PartnersPage() {
       {!showForm && (
         <>
           {isLoading ? (
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8 text-center">
               <div
                 className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 cursor-pointer"
                 style={{ borderColor: "var(--color-primary)" }}
               ></div>
-              <p className="mt-4 text-gray-600">{t("common.loading")}</p>
+              <p className="mt-3 sm:mt-4 text-gray-600 text-sm sm:text-base">
+                {t("common.loading")}
+              </p>
             </div>
           ) : (
             /* UPDATED: Data Table or No Records Message */
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               {hasRecords ? (
                 <>
-                  <DataTable data={partners} columns={columns} />
+                  <div className="overflow-x-auto">
+                    <DataTable data={partners} columns={columns} />
+                  </div>
                   {/* Only show pagination if there are records and more than one page */}
                   {hasRecords && totalPages > 1 && (
-                    <div className="px-4 pb-4">
+                    <div className="px-3 sm:px-4 pb-3 sm:pb-4">
                       <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
@@ -2702,32 +2718,19 @@ export default function PartnersPage() {
                 </>
               ) : (
                 /* No Records Found Message */
-                <div className="p-8 text-center">
+                <div className="p-6 sm:p-8 text-center">
                   <div className="flex flex-col items-center justify-center">
-                    <IconNoRecords className="w-16 h-16 text-gray-400 mb-4 cursor-pointer" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    <IconNoRecords className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mb-3 sm:mb-4 cursor-pointer" />
+                    <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">
                       {t("common.noRecordsFound") || "No records found"}
                     </h3>
-                    <p className="text-gray-500 text-sm mb-4">
+                    <p className="text-gray-500 text-xs sm:text-sm mb-3 sm:mb-4 px-4">
                       {searchTerm || statusFilter !== "All"
                         ? t("admin.partners.adjustSearch") ||
                           "Try adjusting your search or filter criteria"
                         : t("admin.partners.noPartnersCreated") ||
                           "No partners have been created yet"}
                     </p>
-                    {!searchTerm && statusFilter === "All" && (
-                      <Button
-                        variant="primary"
-                        size="md"
-                        onClick={handleAddPartner}
-                        icon={IconPlus}
-                        iconPosition="left"
-                        iconSize="w-5 h-5"
-                        className="cursor-pointer"
-                      >
-                        {t("admin.partners.addPartner") || "Add Partner"}
-                      </Button>
-                    )}
                   </div>
                 </div>
               )}

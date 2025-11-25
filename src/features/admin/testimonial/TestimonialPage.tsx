@@ -476,7 +476,7 @@ export default function TestimonialFormPage() {
   const hasRecords = previousTestimonials.length > 0;
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       {/* Render Toast Banners */}
       {toasts.map((toastItem) => (
         <AdminToast
@@ -511,20 +511,20 @@ export default function TestimonialFormPage() {
       />
 
       {/* Testimonial Form */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        {/* Header Section */}
+      <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-6">
+        {/* Header Section - Responsive */}
         <div className="mb-6">
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-3 mb-4">
             <button
               onClick={handleFormClose}
               disabled={isSubmitting}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-[#165933] text-white cursor-pointer"
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-[#165933] text-white cursor-pointer flex-shrink-0"
               title="Go back"
             >
               <IconArrowLeft className="w-4 h-4" />
             </button>
 
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 break-words">
               {editingTestimonial
                 ? t("admin.testimonials.editTestimonial") || "Edit Testimonial"
                 : t("admin.testimonials.addTestimonial") ||
@@ -534,7 +534,7 @@ export default function TestimonialFormPage() {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6">
             {/* Hidden Partner ID Field */}
             <div className="hidden">
               <input
@@ -584,8 +584,8 @@ export default function TestimonialFormPage() {
                 )}
             </div>
 
-            {/* Rating */}
-            <div className="md:col-span-2">
+            {/* Rating - Improved mobile layout */}
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <>
                   {t("admin.testimonials.rating") || "Give Ratings"}
@@ -593,7 +593,7 @@ export default function TestimonialFormPage() {
                 </>
               </label>
 
-              <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 p-3 rounded-md">
+              <div className="flex items-center justify-center sm:justify-start gap-2 bg-gray-50 border border-gray-200 p-3 rounded-md">
                 {[1, 2, 3, 4, 5].map((level) => (
                   <button
                     key={level}
@@ -602,10 +602,10 @@ export default function TestimonialFormPage() {
                       setValue("rating", level);
                     }}
                     disabled={isSubmitting}
-                    className="cursor-pointer"
+                    className="cursor-pointer transform hover:scale-110 transition-transform"
                   >
                     <IconStarRating
-                      className={`w-8 h-8 transition-transform transform hover:scale-105 cursor-pointer ${
+                      className={`w-6 h-6 sm:w-8 sm:h-8 transition-colors ${
                         ratingValue >= level
                           ? "text-[#91C73D]"
                           : "text-[#165933]"
@@ -625,7 +625,7 @@ export default function TestimonialFormPage() {
             </div>
 
             {/* Testimonial Text */}
-            <div className="md:col-span-2">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <>
                   {t("admin.testimonials.testimonialText") ||
@@ -656,7 +656,7 @@ export default function TestimonialFormPage() {
             </div>
 
             {/* Note */}
-            <div className="md:col-span-2">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {t("admin.testimonials.note") || "Note"}
               </label>
@@ -672,8 +672,8 @@ export default function TestimonialFormPage() {
               />
             </div>
 
-            {/* Toggle Switches */}
-            <div className="flex flex-wrap items-center gap-6">
+            {/* Toggle Switches - Stack on mobile, row on larger screens */}
+            <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-4 sm:gap-6">
               <ToggleSwitch
                 label={
                   t("admin.testimonials.displayOnWebsite") ||
@@ -691,12 +691,12 @@ export default function TestimonialFormPage() {
             </div>
           </div>
 
-          {/* Form validation summary - Only show when there are actual errors AND showValidation is true */}
+          {/* Form validation summary */}
           {showValidation && hasValidationErrors && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
               <div className="flex items-center gap-2 text-red-800 text-sm font-medium">
                 <svg
-                  className="w-4 h-4"
+                  className="w-4 h-4 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -734,8 +734,8 @@ export default function TestimonialFormPage() {
             </div>
           )}
 
-          {/* Form Actions */}
-          <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+          {/* Form Actions - Stack on mobile, row on larger screens */}
+          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200">
             {editingTestimonial ? (
               <>
                 <Button
@@ -743,7 +743,7 @@ export default function TestimonialFormPage() {
                   variant="outline"
                   onClick={handleCancelEdit}
                   disabled={isSubmitting}
-                  className="cursor-pointer"
+                  className="cursor-pointer w-full sm:w-auto order-2 sm:order-1"
                 >
                   {t("common.cancel") || "Cancel"}
                 </Button>
@@ -751,7 +751,7 @@ export default function TestimonialFormPage() {
                   type="submit"
                   variant="secondary"
                   disabled={isSubmitting}
-                  className="cursor-pointer"
+                  className="cursor-pointer w-full sm:w-auto order-1 sm:order-2"
                 >
                   {isSubmitting
                     ? t("common.updating") || "Updating..."
@@ -765,7 +765,7 @@ export default function TestimonialFormPage() {
                   variant="outline"
                   onClick={handleFormClose}
                   disabled={isSubmitting}
-                  className="cursor-pointer"
+                  className="cursor-pointer w-full sm:w-auto order-2 sm:order-1"
                 >
                   {t("common.cancel") || "Cancel"}
                 </Button>
@@ -773,7 +773,7 @@ export default function TestimonialFormPage() {
                   type="submit"
                   variant="secondary"
                   disabled={isSubmitting}
-                  className="cursor-pointer"
+                  className="cursor-pointer w-full sm:w-auto order-1 sm:order-2"
                 >
                   {isSubmitting
                     ? t("common.creating") || "Creating..."
@@ -786,32 +786,34 @@ export default function TestimonialFormPage() {
       </div>
 
       {/* Testimonials Section */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">
+      <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+        {/* Header - Responsive */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">
             {t("admin.testimonials.title") || "Previous Testimonials"}
           </h2>
-          <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full cursor-pointer">
+          <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full cursor-pointer self-start sm:self-center">
             {totalItems} testimonial(s)
           </span>
         </div>
 
-        {/* Search and Filter Controls - MOVED TO RIGHT SIDE */}
-        <div className="flex items-center justify-between mb-6">
-          <div></div> {/* Empty div to push controls to right */}
-          <div className="flex items-center gap-4">
+        {/* Search and Filter Controls - Responsive */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div className="w-full sm:flex-1 sm:max-w-xs lg:max-w-sm">
+            <SearchBar
+              searchTerm={searchTerm}
+              onSearchChange={handleSearchChange}
+              pageSize={pageSize}
+              onPageSizeChange={handlePageSizeChange}
+            />
+          </div>
+
+          <div className="w-full sm:w-auto">
             <FilterDropdown
               value={statusFilter}
               onChange={handleStatusFilterChange}
+              className="w-full sm:w-auto"
             />
-            <div className="w-64">
-              <SearchBar
-                searchTerm={searchTerm}
-                onSearchChange={handleSearchChange}
-                pageSize={pageSize}
-                onPageSizeChange={handlePageSizeChange}
-              />
-            </div>
           </div>
         </div>
 
@@ -824,7 +826,7 @@ export default function TestimonialFormPage() {
             </p>
           </div>
         ) : testimonialsError ? (
-          <div className="text-center py-8 text-red-500">
+          <div className="text-center py-8 text-red-500 px-4">
             {t("common.errorLoading") || "Failed to load testimonials:"}{" "}
             {getErrorMessage(
               testimonialsError,
@@ -832,7 +834,7 @@ export default function TestimonialFormPage() {
             )}
           </div>
         ) : !hasRecords ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-gray-500 px-4">
             {searchTerm || statusFilter !== "All"
               ? t("admin.testimonials.noTestimonialsMatch") ||
                 "No testimonials match your search criteria."
@@ -847,44 +849,66 @@ export default function TestimonialFormPage() {
                   key={testimonial.id}
                   className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-4 mb-2">
-                        <h3 className="font-semibold text-gray-900">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      {/* Customer info and rating - Stack on mobile */}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2">
+                        <h3 className="font-semibold text-gray-900 break-words">
                           {testimonial.customerName}
                         </h3>
-                        {renderStars(testimonial.rating)}
                         <div className="flex items-center gap-2">
-                          {testimonial.isDisplayed && (
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 cursor-pointer">
-                              {t("common.displayed") || "Displayed"}
-                            </span>
-                          )}
-                          {!testimonial.isActive && (
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 cursor-pointer">
-                              {t("common.inactive") || "Inactive"}
-                            </span>
-                          )}
+                          {renderStars(testimonial.rating)}
                         </div>
                       </div>
 
-                      <p className="text-gray-700 mb-2">{testimonial.test}</p>
+                      {/* Status badges - Wrap properly on mobile */}
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        {testimonial.isDisplayed && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 cursor-pointer">
+                            {t("common.displayed") || "Displayed"}
+                          </span>
+                        )}
+                        {!testimonial.isActive && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 cursor-pointer">
+                            {t("common.inactive") || "Inactive"}
+                          </span>
+                        )}
+                      </div>
+
+                      <p className="text-gray-700 mb-2 break-words">
+                        {testimonial.test}
+                      </p>
 
                       {testimonial.note && (
-                        <p className="text-sm text-gray-500 mb-2">
-                          <strong>{t("common.note") || "Note"}:</strong> {testimonial.note}
+                        <p className="text-sm text-gray-500 mb-2 break-words">
+                          <strong>{t("common.note") || "Note"}:</strong>{" "}
+                          {testimonial.note}
                         </p>
                       )}
 
                       <div className="text-xs text-gray-400 cursor-pointer">
-                        {t("common.created") || "Created"}: {testimonial.createdDate ? new Date(testimonial.createdDate).toLocaleDateString() : 'N/A'}
+                        {t("common.created") || "Created"}:{" "}
+                        {testimonial.createdDate
+                          ? new Date(
+                              testimonial.createdDate
+                            ).toLocaleDateString()
+                          : "N/A"}
                         {testimonial.modifiedDate && (
-                          <> | {t("common.modified") || "Modified"}: {testimonial.modifiedDate ? new Date(testimonial.modifiedDate).toLocaleDateString() : 'N/A'}</>
+                          <>
+                            {" "}
+                            | {t("common.modified") || "Modified"}:{" "}
+                            {testimonial.modifiedDate
+                              ? new Date(
+                                  testimonial.modifiedDate
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 ml-4">
+                    {/* Action buttons - Right aligned on larger screens */}
+                    <div className="flex items-center gap-2 sm:ml-4 sm:flex-shrink-0 self-start sm:self-center">
                       <button
                         onClick={() => handleEditTestimonial(testimonial)}
                         disabled={isSubmitting || deleteMutation.isPending}

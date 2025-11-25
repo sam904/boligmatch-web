@@ -340,6 +340,7 @@
       "AddDocument": "Add Document",
       "pdfDocument": "PDF Document",
       "wordDocument": "Word Document",
+      "selectSubcategory": "Select Subcategory",
       "powerpointPresentation": "PowerPoint Presentation",
       "excelSpreadsheet": "Excel Spreadsheet",
       "textFile": "Text File",

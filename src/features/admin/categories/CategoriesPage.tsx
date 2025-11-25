@@ -708,8 +708,8 @@ export default function CategoriesPage() {
 
       {/* Header Section */}
       <div className="p-2 mb-2">
-        <div className="flex justify-between items-center">
-          <div className="font-figtree">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+          <div className="font-figtree flex justify-center lg:justify-start">
             <Button
               variant="primary"
               size="md"
@@ -727,15 +727,19 @@ export default function CategoriesPage() {
             </Button>
           </div>
 
-          {/* Right side: Filters, SearchBar and Export button */}
-          <div className="flex items-center gap-3">
+          {/* Right side: Filters and Search */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
             {/* Status Filter Dropdown */}
-            <FilterDropdown
-              value={statusFilter}
-              onChange={handleStatusFilterChange}
-            />
+            <div className="w-full sm:w-auto">
+              <FilterDropdown
+                value={statusFilter}
+                onChange={handleStatusFilterChange}
+                className="w-full sm:w-auto"
+              />
+            </div>
 
-            <div className="w-64">
+            {/* Search Bar */}
+            <div className="w-full sm:flex-1 lg:w-64">
               <SearchBar
                 searchTerm={searchTerm}
                 onSearchChange={handleSearchChange}
