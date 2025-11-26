@@ -843,5 +843,9 @@
     "paragraph1": "Ved at oprette dig som bruger på Boligmatch+ accepterer du disse vilkår og betingelser. Boligmatch+ er en platform, der forbinder boligejere med leverandører inden for bolig og fritid. Vi stræber efter at levere en pålidelig og brugervenlig service, men kan ikke garantere resultaterne af transaktioner mellem brugere og partnere.",
     "paragraph2": "Brugere er ansvarlige for at verificere legitimitet og kvalitet af partnere før indgåelse af aftaler. Boligmatch+ fungerer som mellemmand og påtager sig ikke ansvar for aftaler, der indgås mellem brugere og partnere. Alle transaktioner sker direkte mellem brugeren og partneren, og Boligmatch+ er ikke part i disse aftaler.",
     "paragraph3": "Vi forbeholder os retten til at ændre disse vilkår og betingelser. Væsentlige ændringer vil blive meddelt brugere via email eller gennem platformen. Fortsat brug af tjenesten efter sådanne ændringer betyder accept af de opdaterede vilkår. For spørgsmål eller bekymringer, kontakt venligst vores support."
+  },
+  "cookieConsent": {
+    "message": "Vi bruger cookies til at forbedre din oplevelse. Ved at fortsætte accepterer du cookies.",
+    "accept": "Accepter alle cookies"
   }
 }

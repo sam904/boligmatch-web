@@ -18,15 +18,40 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const TRANSITION_DURATION = 300;
 
   useEffect(() => {
-    if (!open) return;
+    let timeout: number | undefined;
+    if (open) {
+      setShouldRender(true);
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => setIsVisible(true))
+      );
+    } else {
+      setIsVisible(false);
+      timeout = window.setTimeout(
+        () => setShouldRender(false),
+        TRANSITION_DURATION
+      );
+    }
+
+    return () => {
+      if (timeout) {
+        window.clearTimeout(timeout);
+      }
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!shouldRender) return;
     const original = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = original;
     };
-  }, [open]);
+  }, [shouldRender]);
 
   const schema = z.object({
     firstName: z.string().min(1, t("signup.nameRequired")),
@@ -181,15 +206,22 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
   }
 };
 
-  if (!open) return null;
+  if (!shouldRender) return null;
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+      className={`fixed inset-0 flex items-center justify-center bg-black/50 z-50 transition-opacity duration-300 ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
       onClick={onClose}
+      style={{ pointerEvents: isVisible ? "auto" : "none" }}
     >
       <div
-        className="w-full max-w-2xl rounded-lg shadow-xl mx-4 my-16 bg-[#EFEFEF]"
+        className={`w-full max-w-2xl rounded-lg shadow-xl mx-4 my-16 bg-[#EFEFEF] transform transition-all duration-300 ${
+          isVisible
+            ? "opacity-100 scale-100 translate-y-0"
+            : "opacity-0 scale-95 translate-y-4"
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-center items-center p-4 pb-2 relative">

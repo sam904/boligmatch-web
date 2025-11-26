@@ -288,7 +288,7 @@ export default function UserModal({
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="absolute right-3 top-3 rounded-full p-1.5 text-black/80 hover:bg-black/5 hover:text-black transition"
+                className="absolute right-3 top-3 rounded-full p-1.5 text-black/80 hover:bg-black/5 hover:text-black transition cursor-pointer"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

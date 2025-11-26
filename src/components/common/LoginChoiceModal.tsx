@@ -3,7 +3,7 @@ import chooseUserImg from "/src/assets/userImages/choose_userImg.svg";
 import choosePartnerImg from "/src/assets/userImages/choose_partnerImg.svg";
 import { useTranslation } from "react-i18next";
 import ReactDOM from "react-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   open: boolean;
@@ -14,14 +14,30 @@ type Props = {
 
 export default function LoginChoiceModal({ open, onClose, onSelect, closable = true }: Props) {
   const { t } = useTranslation();
+  const [isVisible, setIsVisible] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
-    const original = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = original;
-    };
+    if (open) {
+      setIsAnimating(true);
+      // Reset to closed state first
+      setIsVisible(false);
+      // Use setTimeout to ensure the initial closed state is rendered before animating
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+      }, 10);
+      const original = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        clearTimeout(timer);
+        document.body.style.overflow = original;
+      };
+    } else {
+      setIsVisible(false);
+      // Delay unmounting to allow exit animation
+      const timer = setTimeout(() => setIsAnimating(false), 500);
+      return () => clearTimeout(timer);
+    }
   }, [open]);
 
   const goToLogin = (role: "user" | "partner") => {
@@ -31,17 +47,39 @@ export default function LoginChoiceModal({ open, onClose, onSelect, closable = t
     if (onSelect) onSelect(role);
   };
 
-  if (!open) return null;
+  if (!open && !isAnimating) return null;
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50" {...(closable ? { onClick: onClose } : {})} />
-      <div className="relative bg-[#E6E7E9] rounded-[23px] shadow-lg w-[370px] h-[444px] mx-4">
+    <div 
+      className={`fixed inset-0 z-[1000] flex items-center justify-center transition-opacity duration-500 ease-out ${
+        isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+      }`}
+      style={{ willChange: 'opacity' }}
+    >
+      <div 
+        className={`absolute inset-0 bg-black/50 transition-opacity duration-500 ease-out ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+        style={{ willChange: 'opacity' }}
+        {...(closable ? { onClick: onClose } : {})} 
+      />
+      <div 
+        className={`relative bg-[#E6E7E9] rounded-[23px] shadow-lg w-[370px] h-[444px] mx-4 transition-all duration-500 ${
+          isVisible 
+            ? "opacity-100 scale-100 translate-y-0" 
+            : "opacity-0 scale-90 translate-y-8"
+        }`}
+        style={{ 
+          willChange: 'transform, opacity',
+          transitionDelay: isVisible ? '100ms' : '0ms',
+          transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+        }}
+      >
         {closable && (
           <button
             onClick={onClose}
             aria-label="Close"
-            className="absolute right-[18px] top-[18px] h-[31px] w-[31px] p-0 flex items-center justify-center rounded-full text-black hover:bg-black/5 transition"
+            className="absolute right-[18px] top-[18px] h-[31px] w-[31px] p-0 flex items-center justify-center rounded-full text-black hover:bg-black/5 transition cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

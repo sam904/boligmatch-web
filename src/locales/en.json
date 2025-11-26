@@ -823,5 +823,9 @@
     "paragraph1": "By creating yourself as a user on Boligmatch+, you accept these terms and conditions. Boligmatch+ is a platform that connects homeowners with suppliers in the home and leisure sector. We strive to provide a reliable and user-friendly service, but cannot guarantee the results of transactions between users and partners.",
     "paragraph2": "Users are responsible for verifying the legitimacy and quality of partners before entering into agreements. Boligmatch+ acts as an intermediary and does not assume responsibility for agreements entered into between users and partners. All transactions occur directly between the user and the partner, and Boligmatch+ is not a party to these agreements.",
     "paragraph3": "We reserve the right to change these terms and conditions. Significant changes will be communicated to users via email or through the platform. Continued use of the service after such changes means acceptance of the updated terms. For questions or concerns, please contact our support."
+  },
+  "cookieConsent": {
+    "message": "We use cookies to improve your experience. By continuing, you accept cookies.",
+    "accept": "Accept All Cookies"
   }
 }
