@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import AppRouter from './app/router';
+import CookieConsent from './components/common/CookieConsent';
 import './styles/index.css';
 import './lib/i18n';
 
@@ -20,6 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Toaster position="top-right" richColors />
         <ToastContainer position="top-right" autoClose={3000} newestOnTop closeOnClick pauseOnHover />
         <AppRouter />
+        <CookieConsent />
       </QueryClientProvider>
     </Provider>
   </React.StrictMode>

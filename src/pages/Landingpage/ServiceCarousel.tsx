@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import type { WheelEvent } from "react";
 import { motion } from "framer-motion";
 import { ServiceCard } from "./ServiceCard";
 // import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -59,12 +60,16 @@ const services = [
 export default function ServiceCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  console.log("direction", direction);
   const [isHovered, setIsHovered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
+  const [isManualScroll, setIsManualScroll] = useState(false);
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
+  );
+  const wheelCooldownRef = useRef(false);
+  const manualScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
   );
 
   // Handle window resize
@@ -83,6 +88,15 @@ export default function ServiceCarousel() {
 
     return () => clearInterval(interval);
   }, [currentIndex, isHovered, isDragging]);
+
+  useEffect(
+    () => () => {
+      if (manualScrollTimeoutRef.current) {
+        clearTimeout(manualScrollTimeoutRef.current);
+      }
+    },
+    []
+  );
 
   const swipeConfidenceThreshold = 10000;
   const swipePower = (offset: number, velocity: number) => {
@@ -117,6 +131,23 @@ export default function ServiceCarousel() {
     setDragOffset(0);
   };
 
+  const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    if (wheelCooldownRef.current) return;
+
+    wheelCooldownRef.current = true;
+    setIsManualScroll(true);
+    paginate(event.deltaY > 0 ? 1 : -1);
+
+    if (manualScrollTimeoutRef.current) {
+      clearTimeout(manualScrollTimeoutRef.current);
+    }
+    manualScrollTimeoutRef.current = setTimeout(() => {
+      wheelCooldownRef.current = false;
+      setIsManualScroll(false);
+    }, 600);
+  };
+
   const isMobile = windowWidth < 1024;
   const visibleRange = isMobile ? 1 : 2;
 
@@ -146,6 +177,7 @@ export default function ServiceCarousel() {
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.2}
           dragMomentum={false}
+          onWheel={handleWheel}
           onDragStart={() => {
             setIsDragging(true);
             setDragOffset(0);
@@ -173,7 +205,7 @@ export default function ServiceCarousel() {
 
             return (
               <motion.div
-                key={`${service.id}-${currentIndex}`}
+                key={`${service.id}-${position}`}
                 className="absolute"
                 initial={false}
                 animate={{
@@ -183,7 +215,7 @@ export default function ServiceCarousel() {
                   zIndex: 20 - absPosition * 5,
                 }}
                 transition={
-                  isDragging
+                  isDragging || isManualScroll
                     ? { type: "spring", stiffness: 300, damping: 30 }
                     : {
                         type: "tween",

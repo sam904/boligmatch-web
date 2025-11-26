@@ -59,6 +59,8 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   console.log("showLangDropdown", showLangDropdown);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [sidebarRendered, setSidebarRendered] = useState(false);
+  const [sidebarTransitionActive, setSidebarTransitionActive] = useState(false);
   const { i18n, t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
   console.log("isMobile", isMobile);
@@ -86,6 +88,27 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
+
+  useEffect(() => {
+    let frame = 0;
+    let timeout: number | undefined;
+
+    if (showSidebar) {
+      setSidebarRendered(true);
+      setSidebarTransitionActive(false);
+      frame = requestAnimationFrame(() =>
+        requestAnimationFrame(() => setSidebarTransitionActive(true))
+      );
+    } else if (sidebarRendered) {
+      setSidebarTransitionActive(false);
+      timeout = window.setTimeout(() => setSidebarRendered(false), 500);
+    }
+
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      if (timeout) window.clearTimeout(timeout);
+    };
+  }, [showSidebar, sidebarRendered]);
 
   useEffect(() => {
     // Load partner from localStorage (bm_partner) so header/sidebar stay logged-in after reload
@@ -166,13 +189,14 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     </div>
                   ) : (
                     <button
-                      className="p-2 text-white transition-colors"
+                      className="p-2 text-white transition-all duration-300 ease-out hover:scale-110 active:scale-95 hover:opacity-80"
                       onClick={() => setIsChoiceModalOpen(true)}
+                      style={{ willChange: 'transform' }}
                     >
                       <img
                         src={userHeader}
                         alt=""
-                        className={`duration-300 ${
+                        className={`duration-300 transition-all ease-out ${
                           isScrolled ? "h-8" : "h-10"
                         } cursor-pointer`}
                       />
@@ -244,16 +268,22 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
       </header>
 
       {/* Sidebar */}
-      {showSidebar && (
+      {sidebarRendered && (
         <div className="fixed inset-0 z-50">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/50 transition-opacity duration-300 opacity-100"
+            className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
+              sidebarTransitionActive ? "opacity-100" : "opacity-0"
+            }`}
             onClick={() => setShowSidebar(false)}
           />
 
           {/* Sidebar */}
-          <div className="absolute right-0 top-0 h-full w-full md:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out translate-x-0">
+          <div
+            className={`absolute right-0 top-0 h-full w-full md:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out ${
+              sidebarTransitionActive ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/10">
@@ -272,11 +302,12 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     </div>
                   ) : (
                     <button
-                      className="p-2 text-white transition-colors"
+                      className="p-2 text-white transition-all duration-300 ease-out hover:scale-105 active:scale-95 hover:opacity-80"
                       onClick={() => {
                         setShowSidebar(false);
                         setIsChoiceModalOpen(true);
                       }}
+                      style={{ willChange: 'transform' }}
                     >
                       {t("sidebar.notLogIn")}
                     </button>
@@ -500,7 +531,8 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       setShowSidebar(false);
                       setIsChoiceModalOpen(true);
                     }}
-                    className="w-full text-left px-3 py-2.5 text-white hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                    className="w-full text-left px-3 py-2.5 text-white hover:bg-white/10 rounded-lg transition-all duration-300 ease-out hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 cursor-pointer"
+                    style={{ willChange: 'transform' }}
                   >
                     <svg
                       className="w-4 h-4"

@@ -19,7 +19,7 @@ export default function PartnerDashboard() {
         className={`
               relative 
               h-[368px]      
-              md:h-[100vh]     
+              md:h-[97vh]       
               bg-no-repeat bg-cover bg-center
               bg-[url('/src/assets/userImages/partnerStaticResponsive.png')] 
               md:bg-none       

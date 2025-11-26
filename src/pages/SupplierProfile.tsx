@@ -51,6 +51,11 @@ const SupplierProfile = () => {
   const [contactBody, setContactBody] = useState("");
   const [recommendEmail, setRecommendEmail] = useState("");
   const [recommendComment, setRecommendComment] = useState("");
+  const [modalRendered, setModalRendered] = useState<
+    null | "recommend" | "contact"
+  >(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const MODAL_TRANSITION_DURATION = 300;
   const navigate = useNavigate();
   const calledRef = useRef(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -156,6 +161,38 @@ const SupplierProfile = () => {
 
     loadPartnerData();
   }, []);
+
+  useEffect(() => {
+    let timeout: number | undefined;
+
+    if (activeModal) {
+      setModalRendered(activeModal);
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => setIsModalVisible(true))
+      );
+    } else if (modalRendered) {
+      setIsModalVisible(false);
+      timeout = window.setTimeout(
+        () => setModalRendered(null),
+        MODAL_TRANSITION_DURATION
+      );
+    }
+
+    return () => {
+      if (timeout) {
+        window.clearTimeout(timeout);
+      }
+    };
+  }, [activeModal, modalRendered]);
+
+  useEffect(() => {
+    if (!modalRendered) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, [modalRendered]);
 
   const handleToggleFavourite = async () => {
     try {
@@ -717,14 +754,24 @@ const SupplierProfile = () => {
         <Footer />
 
         {/* Modals */}
-        {activeModal && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+        {modalRendered && (
+          <div
+            className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-300 ${
+              isModalVisible ? "opacity-100" : "opacity-0"
+            }`}
+            style={{ pointerEvents: isModalVisible ? "auto" : "none" }}
+          >
             <div
-              className="absolute inset-0 bg-black/50 cursor-pointer"
+              className="absolute inset-0 bg-black/50 cursor-pointer transition-opacity duration-300"
+              style={{ opacity: isModalVisible ? 1 : 0.5 }}
               onClick={() => setActiveModal(null)}
             />
             <div
-              className="relative z-50 w-[320px] sm:w-[360px] md:w-[420px] bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-gray-400/10"
+              className={`relative z-50 w-[320px] sm:w-[360px] md:w-[420px] bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-gray-400/10 transform transition-all duration-300 ease-out ${
+                isModalVisible
+                  ? "opacity-100 scale-100 translate-y-0"
+                  : "opacity-0 scale-95 translate-y-4"
+              }`}
               onClick={(e) => e.stopPropagation()}
             >
               <button
@@ -738,7 +785,7 @@ const SupplierProfile = () => {
                 <IoClose className="w-[30px] h-[30px] cursor-pointer" />
               </button>
 
-               {activeModal === "recommend" && (
+              {modalRendered === "recommend" && (
                 <div className="flex flex-col items-stretch">
                   <div className="flex justify-center mb-4">
                     <img
@@ -786,7 +833,7 @@ const SupplierProfile = () => {
                 </div>
               )}
 
-              {activeModal === "contact" && (
+              {modalRendered === "contact" && (
                 <div className="flex flex-col items-stretch z-10">
                   <div className="flex justify-center mb-4">
                     <img
