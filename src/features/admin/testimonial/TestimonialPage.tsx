@@ -799,20 +799,19 @@ export default function TestimonialFormPage() {
 
         {/* Search and Filter Controls - Responsive */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div className="w-full sm:w-auto">
+            <FilterDropdown
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
+              className="w-full sm:w-auto"
+            />
+          </div>
           <div className="w-full sm:flex-1 sm:max-w-xs lg:max-w-sm">
             <SearchBar
               searchTerm={searchTerm}
               onSearchChange={handleSearchChange}
               pageSize={pageSize}
               onPageSizeChange={handlePageSizeChange}
-            />
-          </div>
-
-          <div className="w-full sm:w-auto">
-            <FilterDropdown
-              value={statusFilter}
-              onChange={handleStatusFilterChange}
-              className="w-full sm:w-auto"
             />
           </div>
         </div>
