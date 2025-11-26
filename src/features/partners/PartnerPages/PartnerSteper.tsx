@@ -1,19 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import partnerModelImg from "/src/assets/userImages/partnerModelImg.svg";
 import crossIcon from "/src/assets/userImages/close_icon.svg";
 import { useTranslation } from "react-i18next";
 
 function PartnerSteper() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [shouldRenderModal, setShouldRenderModal] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const MODAL_TRANSITION_DURATION = 300;
   const { t } = useTranslation();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  useEffect(() => {
+    let timeout: number | undefined;
+
+    if (isModalOpen) {
+      setShouldRenderModal(true);
+      setIsModalVisible(false);
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => setIsModalVisible(true))
+      );
+    } else if (shouldRenderModal) {
+      setIsModalVisible(false);
+      timeout = window.setTimeout(() => setShouldRenderModal(false), MODAL_TRANSITION_DURATION);
+    }
+
+    return () => {
+      if (timeout) window.clearTimeout(timeout);
+    };
+  }, [isModalOpen, shouldRenderModal]);
+
+  useEffect(() => {
+    if (!shouldRenderModal) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, [shouldRenderModal]);
+
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center md:-top-10 -top-52">
-        <div className="z-10 flex flex-col items-center justify-center min-h-[calc(100vh-10px)] px-4 sm:px-6 text-center mt-24 sm:mt-32 md:mt-48">
+      <div className="absolute inset-0 bg-cover bg-center md:-top-10 -top-56">
+        <div className="z-10 flex flex-col items-center justify-center min-h-[calc(100vh-10px)] px-4 sm:px-6 text-center mt-14 md:mt-48">
           <button
             onClick={openModal}
             className="md:mb-8 px-6 sm:px-8 py-3 bg-[#91C73D] text-white rounded-xl font-[600] transition-colors text-[12px] md:text-[20px]  hover:bg-[#7FB333] cursor-pointer"
@@ -26,13 +57,24 @@ function PartnerSteper() {
           </h1>
         </div>
 
-        {isModalOpen && (
+        {shouldRenderModal && (
           <div
-            className="fixed inset-0 flex items-center justify-center bg-black/50 z-[999] p-4 cursor-pointer"
+            className={`fixed inset-0 flex items-center justify-center z-[999] p-4 cursor-pointer transition-opacity duration-300 ${
+              isModalVisible ? "opacity-100" : "opacity-0"
+            }`}
             onClick={closeModal}
+            style={{ pointerEvents: isModalVisible ? "auto" : "none" }}
           >
             <div
-              className="bg-[#ECECEC] rounded-[22px] sm:rounded-[26px] relative w-full max-w-[620px] max-h-[90vh] overflow-y-auto shadow-xl border border-gray-200 cursor-default"
+              className="absolute inset-0 bg-black/50 transition-opacity duration-300"
+              style={{ opacity: isModalVisible ? 1 : 0.6 }}
+            />
+            <div
+              className={`bg-[#ECECEC] rounded-[22px] sm:rounded-[26px] relative w-full max-w-[620px] max-h-[90vh] overflow-y-auto md:overflow-hidden shadow-xl border border-gray-200 cursor-default transform transition-all duration-300 ease-out ${
+                isModalVisible
+                  ? "opacity-100 scale-100 translate-y-0"
+                  : "opacity-0 scale-95 translate-y-4"
+              }`}
               onClick={(e) => e.stopPropagation()}
             >
               <button

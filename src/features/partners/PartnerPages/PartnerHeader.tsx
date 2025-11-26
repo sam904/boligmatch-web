@@ -212,14 +212,14 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                   {currentLang?.toUpperCase?.() || "EN"}
                 </button>
                 {showLangDropdown && (
-                  <div className="absolute right-0 mt-2 w-28 bg-white rounded-md shadow-lg z-50 overflow-hidden">
+                  <div className="absolute right-0 mt-2 w-28 bg-white rounded-md shadow-lg z-50 overflow-hidden cursor-pointer">
                     <button
                       onClick={() => {
                         i18n.changeLanguage("da");
                         localStorage.setItem("bm_lang", "da");
                         setShowLangDropdown(false);
                       }}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                     >
                       Dansk
                     </button>
@@ -229,7 +229,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                         localStorage.setItem("bm_lang", "en");
                         setShowLangDropdown(false);
                       }}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                     >
                       English
                     </button>
