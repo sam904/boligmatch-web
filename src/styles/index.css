@@ -29,6 +29,10 @@ body,
   height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Landing Page Styles */
 .landing-bg {
   background-image: url('/landing_img.png');
