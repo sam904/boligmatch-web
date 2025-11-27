@@ -1,5 +1,5 @@
 import PartnerHeader from "./PartnerPages/PartnerHeader";
-import partnerlandingImg from "/src/assets/userImages/partnerDashboard.png";
+import partnerlandingImg from "/src/assets/userImages/partnerStepperImg.png";
 import PartnerSteper from "./PartnerPages/PartnerSteper";
 import ParentSteperPara from "./PartnerPages/PartnerSteperPara";
 

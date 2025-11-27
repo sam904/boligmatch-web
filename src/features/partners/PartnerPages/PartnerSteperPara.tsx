@@ -32,7 +32,7 @@ function ParentSteperPara() {
     },
   ];
   return (
-    <div className="bg-[#053628]">
+    <div className="bg-[#01351f]">
       <div className="flex items-start justify-center px-4 sm:px-6 py-8 sm:py-12 md:py-14">
         <div className="max-w-6xl mx-auto text-center">
           <div className="space-y-0">
@@ -45,7 +45,7 @@ function ParentSteperPara() {
           </div>
         </div>
       </div>
-      <div className="bg-[#053628] min-h-screen px-4 sm:px-6 py-8 sm:py-10">
+      <div className="bg-[#01351f] min-h-screen px-4 sm:px-6 py-8 sm:py-10">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 md:mb-16 figtree">
             {t("partnerSteperPara.heading")}

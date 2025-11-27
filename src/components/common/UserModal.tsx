@@ -85,6 +85,8 @@ export default function UserModal({
   const [fpLoading, setFpLoading] = useState(false);
   const [fpError, setFpError] = useState<string | null>(null);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const {
     register,
@@ -162,13 +164,33 @@ export default function UserModal({
   }, [token, user, onClose, navigate, open, redirectTo]);
 
   React.useEffect(() => {
-    if (!open) return;
-    const original = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    let showTimer: ReturnType<typeof setTimeout> | null = null;
+    let hideTimer: ReturnType<typeof setTimeout> | null = null;
+    const animationDuration = 400;
+
+    if (open) {
+      setIsAnimating(true);
+      setIsVisible(false);
+      showTimer = window.setTimeout(() => setIsVisible(true), 20);
+
+      const original = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+
+      return () => {
+        if (showTimer) window.clearTimeout(showTimer);
+        document.body.style.overflow = original;
+      };
+    }
+
+    if (!open && isAnimating) {
+      setIsVisible(false);
+      hideTimer = window.setTimeout(() => setIsAnimating(false), animationDuration);
+    }
+
     return () => {
-      document.body.style.overflow = original;
+      if (hideTimer) window.clearTimeout(hideTimer);
     };
-  }, [open]);
+  }, [open, isAnimating]);
 
   const onSubmit = (data: { userName: string; password: string }) => {
     dispatch(loginThunk(data));
@@ -276,14 +298,28 @@ export default function UserModal({
     setIsSignUpOpen(true);
   };
 
-  if (!open) return null;
+  if (!open && !isAnimating) return null;
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 z-[1000]">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-[370px]">
-          <div className="relative rounded-[23px] bg-[#E6E7E9] shadow-2xl w-full">
+    <>
+      <div
+        className={`fixed inset-0 z-[1000] flex items-center justify-center transition-opacity duration-400 ${
+          isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <div
+          className={`absolute inset-0 bg-black/40 transition-opacity duration-400 ${
+            isVisible ? "opacity-100" : "opacity-0"
+          }`}
+          onClick={onClose}
+        />
+        <div className="relative w-[370px] px-4">
+          <div
+            className={`relative rounded-[23px] bg-[#E6E7E9] shadow-2xl w-full transition-all duration-400 ${
+              isVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-6"
+            }`}
+            style={{ willChange: "transform, opacity" }}
+          >
             {!hideCloseIcon && (
               <button
                 onClick={onClose}
@@ -559,7 +595,7 @@ export default function UserModal({
         </div>
       </div>
       <SignUpModal open={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
-    </div>,
+    </>,
     document.body
   );
 }

@@ -1,5 +1,5 @@
 // components/ForgotPasswordModal.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -25,6 +25,32 @@ export default function ForgotPasswordModal({
   const [error, setError] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const TRANSITION_DURATION = 350;
+
+  useEffect(() => {
+    let hideTimer: ReturnType<typeof setTimeout> | null = null;
+    if (isOpen) {
+      setShouldRender(true);
+      requestAnimationFrame(() => setIsVisible(true));
+    } else if (shouldRender) {
+      setIsVisible(false);
+      hideTimer = window.setTimeout(() => setShouldRender(false), TRANSITION_DURATION);
+    }
+    return () => {
+      if (hideTimer) window.clearTimeout(hideTimer);
+    };
+  }, [isOpen, shouldRender]);
+
+  useEffect(() => {
+    if (!shouldRender) return;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, [shouldRender]);
 
   // Step 1: Email Schema
   const emailSchema = z.object({
@@ -244,7 +270,7 @@ export default function ForgotPasswordModal({
     onClose();
   };
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
   const getStepTitle = () => {
     switch (step) {
@@ -262,8 +288,17 @@ export default function ForgotPasswordModal({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div className="w-full max-w-lg bg-white rounded-4xl shadow-xl p-8 mx-4 max-h-[90vh] flex flex-col">
+    <div
+      className={`fixed inset-0 flex items-center justify-center bg-black/50 z-50 transition-opacity duration-300 ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
+      style={{ pointerEvents: isVisible ? "auto" : "none" }}
+    >
+      <div
+        className={`w-full max-w-lg bg-white rounded-4xl shadow-xl p-8 mx-4 max-h-[90vh] flex flex-col transform transition-all duration-300 ${
+          isVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-4"
+        }`}
+      >
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold text-gray-900">
             {getStepTitle()}
