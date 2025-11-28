@@ -72,7 +72,6 @@ export default function UsersListPage() {
         }
       ),
     isActive: z.boolean(),
-    status: z.enum(["All", "Active", "InActive"]),
   });
 
   type UserFormData = z.infer<typeof userSchema>;
@@ -236,7 +235,6 @@ export default function UsersListPage() {
       email: "",
       mobileNo: "",
       isActive: true,
-      status: "Active",
     },
   });
 
@@ -250,7 +248,6 @@ export default function UsersListPage() {
         email: editingUser.email || "",
         mobileNo: editingUser.mobileNo || "",
         isActive: editingUser.isActive,
-        status: editingUser.status || "Active",
       });
 
       // Reset validation states for editing mode
@@ -271,7 +268,6 @@ export default function UsersListPage() {
         email: "",
         mobileNo: "",
         isActive: true,
-        status: "Active",
       });
 
       // Reset validation states for new user
@@ -290,7 +286,9 @@ export default function UsersListPage() {
 
   // Create user mutation with error handling
   const createMutation = useMutation({
-    mutationFn: async (data: UserFormData) => {
+    mutationFn: async (
+      data: UserFormData & { status: "Active" | "InActive" }
+    ) => {
       try {
         return await userService.add(data);
       } catch (error) {
@@ -340,7 +338,9 @@ export default function UsersListPage() {
 
   // Update user mutation with error handling
   const updateMutation = useMutation({
-    mutationFn: async (data: UserFormData & { id: number }) => {
+    mutationFn: async (
+      data: UserFormData & { status: "Active" | "InActive"; id: number }
+    ) => {
       try {
         return await userService.update(data);
       } catch (error) {
@@ -757,11 +757,19 @@ export default function UsersListPage() {
         }
       }
 
+      // Convert isActive boolean to status string for API
+      const apiData = {
+        ...data,
+        status: data.isActive
+          ? "Active"
+          : ("InActive" as "Active" | "InActive"),
+      };
+
       // All validations passed, proceed with submission
       if (editingUser) {
-        await updateMutation.mutateAsync({ ...data, id: editingUser.id });
+        await updateMutation.mutateAsync({ ...apiData, id: editingUser.id });
       } else {
-        await createMutation.mutateAsync(data);
+        await createMutation.mutateAsync(apiData);
       }
     } catch (error) {
       // Error handling is done in the mutation onError
@@ -1070,44 +1078,6 @@ export default function UsersListPage() {
         </div>
       </div>
 
-      {/* Error State */}
-      {isFetchError && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-          <div className="flex items-center gap-2 text-red-800">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-              />
-            </svg>
-            <span className="font-medium">
-              {t("common.errorLoading") || "Failed to load users"}
-            </span>
-          </div>
-          <p className="text-red-700 text-sm mt-1">
-            {getErrorMessage(
-              fetchError,
-              t("common.retry") || "Please try again later"
-            )}
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => queryClient.refetchQueries({ queryKey: ["users"] })}
-            className="mt-2 cursor-pointer"
-          >
-            {t("common.retry") || "Retry"}
-          </Button>
-        </div>
-      )}
-
       {/* Loading State */}
       {isLoading ? (
         <div className="bg-white rounded-lg shadow p-8 text-center">
@@ -1153,21 +1123,6 @@ export default function UsersListPage() {
                     : t("admin.users.noUsersCreated") ||
                       "No users have been created yet"}
                 </p>
-                {!searchTerm && statusFilter === "All" && (
-                  <Button
-                    variant="primary"
-                    size="md"
-                    onClick={() => {
-                      setEditingUser(null);
-                      setIsModalOpen(true);
-                    }}
-                    icon={IconPlus}
-                    iconPosition="left"
-                    iconSize="w-5 h-5"
-                  >
-                    {t("admin.users.addFirstUser") || "Add Your First User"}
-                  </Button>
-                )}
               </div>
             </div>
           )}
@@ -1403,7 +1358,6 @@ export default function UsersListPage() {
                 {errors.lastName && <li>{errors.lastName.message}</li>}
                 {errors.email?.message && <li>{errors.email.message}</li>}
                 {errors.mobileNo?.message && <li>{errors.mobileNo.message}</li>}
-                {errors.status && <li>{errors.status.message}</li>}
               </ul>
             </div>
           )}
