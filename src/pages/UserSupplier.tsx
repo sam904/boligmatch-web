@@ -59,39 +59,42 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
   description,
   onMoreInfo,
   isLoading = false,
-}) => (
-  <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-[361px] h-[262px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-6 md:px-8 md:py-10 text-center">
-    <div className="mb-3 md:mb-6">
-      <img
-        src={logoUrl}
-        alt={name || fullName || "Partner"}
-        className="w-[72px] h-[72px] md:w-[120px] md:h-[120px] object-contain"
-        onError={(e) => {
-          (e.currentTarget as HTMLImageElement).src = JimmysELservice;
-        }}
-      />
-    </div>
-    <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-4 px-4">
-      {name || fullName || "Partner"}
-    </h3>
-    {description && (
-      <div className="flex-1 flex items-start justify-center w-full mb-3 md:mb-6 overflow-hidden">
-        <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-3 md:line-clamp-6">
-          {description}
-        </p>
+}) => {
+  const { t } = useTranslation();
+  return (
+    <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-[361px] h-[262px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-6 md:px-8 md:py-10 text-center">
+      <div className="mb-3 md:mb-6">
+        <img
+          src={logoUrl}
+          alt={name || fullName || "Partner"}
+          className="w-[72px] h-[72px] md:w-[120px] md:h-[120px] object-contain"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src = JimmysELservice;
+          }}
+        />
       </div>
-    )}
-    <button
-      onClick={onMoreInfo}
-      disabled={isLoading}
-      className={`font-bold text-[14px] md:text-[16px] hover:underline cursor-pointer ${
-        isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
-      }`}
-    >
-      {isLoading ? "Loading..." : "More info"}
-    </button>
-  </div>
-);
+      <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-4 px-4">
+        {name || fullName || "Partner"}
+      </h3>
+      {description && (
+        <div className="flex-1 flex items-start justify-center w-full mb-3 md:mb-6 overflow-hidden">
+          <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-3 md:line-clamp-6">
+            {description}
+          </p>
+        </div>
+      )}
+      <button
+        onClick={onMoreInfo}
+        disabled={isLoading}
+        className={`font-bold text-[14px] md:text-[16px] hover:underline cursor-pointer ${
+          isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
+        }`}
+      >
+        {isLoading ? t("common.loading") : t("userDashboard.moreInfo")}
+      </button>
+    </div>
+  );
+};
 
 const UserSupplier = () => {
   const location = useLocation();
@@ -199,13 +202,23 @@ const UserSupplier = () => {
   }, []);
 
   return (
+    // <div
+    //   className="relative h-[100vh]"
+    //   style={{
+    //     backgroundImage: `url(${getBackgroundImage()})`,
+    //     backgroundSize: "cover",
+    //     backgroundPosition: "center",
+    //     backgroundRepeat: "no-repeat",
+    //   }}
+    // >
     <div
-      className="relative h-[100vh]"
+      className="
+    relative md:h-screen 
+    bg-no-repeat md:bg-cover bg-contain
+    md:bg-center
+  "
       style={{
         backgroundImage: `url(${getBackgroundImage()})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
       }}
     >
       <style>{`
@@ -215,11 +228,10 @@ const UserSupplier = () => {
         }
       `}</style>
       <UserHeader />
-      {/* <div className="absolute inset-0 bg-gradient-to-b from-[rgba(22,89,51,0)] to-[#043428] pointer-events-none" /> */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0"
+      {/* <div className="absolute inset-0 bg-gradient-to-b from-[rgba(22,89,51,0)] to-[#043428] pointer-events-none"  /> */}
+      <div            
+        className="pointer-events-none absolute inset-x-0 bottom-0 top-20 md:top-auto md:h-[400px] h-[300px]"
         style={{
-          height: "400px",
           background:
             "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
         }}
@@ -229,7 +241,7 @@ const UserSupplier = () => {
           <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
             {categoryName}
           </h1>
-        </div>
+        </div> 
       )}
       {/* Mobile: horizontal scroll bar styled like the screenshot */}
       <section className="absolute top-72 md:bottom-0 left-1/2 transform -translate-x-1/2 px-4 w-full md:hidden">

@@ -598,7 +598,12 @@
       "passwordRequired": "New password is required",
       "passwordMismatch": "Passwords do not match",
       "passwordUpdateSuccess": "Password updated",
-      "passwordUpdateError": "Failed to update password"
+      "passwordUpdateError": "Failed to update password",
+      "firstNameInvalid": "First name can only contain letters, spaces, hyphens, and apostrophes",
+      "lastNameInvalid": "Last name can only contain letters, spaces, hyphens, and apostrophes",
+      "middleNameInvalid": "Middle name can only contain letters, spaces, hyphens, and apostrophes",
+      "fullNameInvalid": "Full name can only contain letters, spaces, hyphens, and apostrophes",
+      "businessNameInvalid": "Business name contains invalid characters"
     }
   },
   "partnerDetails": {
@@ -619,6 +624,7 @@
     "loadingFavorites": "Loading favorites...",
     "loadingConversations": "Loading conversations...",
     "noFavorites": "No favorites found",
+    "noConversations": "No conversations found",
     "readMore": "Read more",
     "moreInfo": "More info",
     "partnerLabel": "Partner",
@@ -693,6 +699,17 @@
     },
     "servicesTitle": "Services",
     "factsTitle": "Facts"
+  },
+  "recommendUser": {
+    "introModal": {
+      "brand": "boligmatch+",
+      "closeLabel": "Close introduction",
+      "recommendedBy": "{{name}} has recommended that you take a closer look at our partner:",
+      "anonymousUser": "A user",
+      "partnerFallback": "Our partner",
+      "description": "If this sounds interesting, click the button below to create a free Boligmatch+ account. Boligmatch+ is a digital platform with a fresh and user-friendly approach where home enthusiasts can discover curated products and services for their home from our many skilled partners.",
+      "acceptButton": "Accept recommendation"
+    }
   },
   "sidebar": {
     "home": "Home",

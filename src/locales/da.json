@@ -618,7 +618,12 @@
       "passwordRequired": "Ny adgangskode er påkrævet",
       "passwordMismatch": "Adgangskoderne matcher ikke",
       "passwordUpdateSuccess": "Adgangskode opdateret",
-      "passwordUpdateError": "Kunne ikke opdatere adgangskoden"
+      "passwordUpdateError": "Kunne ikke opdatere adgangskoden",
+      "firstNameInvalid": "Fornavn kan kun indeholde bogstaver, mellemrum, bindestreger og apostroffer",
+      "lastNameInvalid": "Efternavn kan kun indeholde bogstaver, mellemrum, bindestreger og apostroffer",
+      "middleNameInvalid": "Mellemnavn kan kun indeholde bogstaver, mellemrum, bindestreger og apostroffer",
+      "fullNameInvalid": "Fulde navn kan kun indeholde bogstaver, mellemrum, bindestreger og apostroffer",
+      "businessNameInvalid": "Virksomhedsnavn indeholder ugyldige tegn"
     }
   },
   "partnerDetails": {
@@ -639,6 +644,7 @@
     "loadingFavorites": "Indlæser favoritter...",
     "loadingConversations": "Indlæser samtaler...",
     "noFavorites": "Ingen favoritter fundet",
+    "noConversations": "Ingen samtaler fundet",
     "readMore": "Læs mere",
     "moreInfo": "Læs mere",
     "partnerLabel": "Partner",
@@ -713,6 +719,17 @@
     },
     "servicesTitle": "Services",
     "factsTitle": "Fakta"
+  },
+  "recommendUser": {
+    "introModal": {
+      "brand": "boligmatch+",
+      "closeLabel": "Luk introduktion",
+      "recommendedBy": "{{name}} har anbefalet dig at kigge nærmere på vores partner:",
+      "anonymousUser": "En bruger",
+      "partnerFallback": "Vores partner",
+      "description": "Hvis det har din interesse, så klik på knappen herunder og opret dig nemt og gratis som bruger på Boligmatch+. Boligmatch+ er en digital platform med en nytænkende og brugervenlig tilgang, hvor alle boliginteresserede kan finde produkter og services til hjemmet blandt vores mange dygtige partnere.",
+      "acceptButton": "Accepter anbefaling"
+    }
   },
   "sidebar": {
     "home": "Hjem",

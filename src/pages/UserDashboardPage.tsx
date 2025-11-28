@@ -664,7 +664,7 @@ export default function UserDashboardPage() {
                     </>
                   ) : (
                     <div className="text-white text-base sm:text-lg text-center py-8">
-                      No conversations found
+                      {t("userDashboard.noConversations")}
                     </div>
                   )}
                 </div>
