@@ -110,12 +110,6 @@ const DashboardPage = () => {
           0
         );
 
-        console.log("📅 Month dates:", {
-          firstDay: formatDate(firstDayOfMonth),
-          lastDay: formatDate(lastDayOfMonth),
-          currentMonth: now.getMonth() + 1,
-        });
-
         return {
           fromDate: formatDate(firstDayOfMonth),
           toDate: formatDate(lastDayOfMonth),
@@ -133,10 +127,9 @@ const DashboardPage = () => {
 
       case "all":
         // For All Time: Use empty strings
-        const veryOldDate = new Date(0, 0, 0);
         return {
-          fromDate: formatDate(veryOldDate),
-          toDate: formatDate(now),
+          fromDate: "",
+          toDate: "",
         };
 
       default:
@@ -177,7 +170,7 @@ const DashboardPage = () => {
       const dateRange = getDateRange(filter);
       const mode = getModeFromTimeFilter(filter);
 
-      // For "All Time" filter, we'll use the specific payload you provided
+      // For "All Time" filter, we'll use empty strings instead of "string"
       const trendsPayload: ReportQueryRequest = {
         reportType: "GetPartnerUserListByDashBoardReport",
         mode: mode,
@@ -196,42 +189,28 @@ const DashboardPage = () => {
         allRecordsRequired: true,
         isExportToExcel: false,
         id: 0,
-        userId: "string",
-        statusId: "string",
-        month: "string",
-        courseId: "string",
-        testId: "string",
+        userId: "",
+        statusId: "",
+        month: "",
+        courseId: "",
+        testId: "",
       };
 
-      // For "All Time", we can override specific fields to match your exact payload
+      // For "All Time", set empty strings instead of "string"
       if (filter === "all") {
-        trendsPayload.fromDate = "string";
-        trendsPayload.toDate = "string";
-        trendsPayload.pagination = {
-          page: 0,
-          pageSize: 0,
-          searchTerm: "string",
-          sortDirection: "string",
-          sortField: "string",
-          userId: 0,
-          pageNumber: 0,
-          rowsPerPage: 0,
-        };
+        trendsPayload.fromDate = "";
+        trendsPayload.toDate = "";
+        // Also update other string fields to be empty
+        trendsPayload.userId = "";
+        trendsPayload.statusId = "";
+        trendsPayload.month = "";
+        trendsPayload.courseId = "";
+        trendsPayload.testId = "";
       }
-
-      console.log(
-        "📤 Sending Payload for",
-        filter,
-        ":",
-        JSON.stringify(trendsPayload, null, 2)
-      );
 
       const response = await dashboardService.getAllReportsQuery(trendsPayload);
 
-      console.log("📊 FULL API RESPONSE:", JSON.stringify(response, null, 2));
-
       if (response && response.reportData) {
-        console.log("📈 RAW API DATA ITEMS:", response.reportData);
 
         // Calculate total partners and users from the API response
         const totalPartners = response.reportData.reduce(
@@ -246,24 +225,18 @@ const DashboardPage = () => {
         setTotalPartnersFromTrends(totalPartners);
         setTotalUsersFromTrends(totalUsers);
 
-        console.log(`📊 Total Partners from API: ${totalPartners}`);
-        console.log(`📊 Total Users from API: ${totalUsers}`);
-
         const trendsData = transformApiDataToTrends(
           response.reportData,
           filter
         );
-        console.log("🔄 TRANSFORMED DATA:", trendsData);
 
         // Always set the trends data, even if empty
         setPartnerUserTrends(trendsData);
 
         // Only use mock data if the API completely failed
         if (response.reportData.length === 0) {
-          console.log("ℹ️ API returned empty data array, showing zeros");
         }
       } else {
-        console.log("❌ Invalid API response structure");
         setTotalPartnersFromTrends(0);
         setTotalUsersFromTrends(0);
         generateMockTrendData(filter);
@@ -283,8 +256,6 @@ const DashboardPage = () => {
     apiData: any[],
     filter: string
   ): PartnerUserTrend[] => {
-    console.log("🛠️ TRANSFORMING DATA with filter:", filter);
-    console.log("📊 RAW API DATA:", apiData);
 
     switch (filter) {
       case "day":
@@ -306,7 +277,6 @@ const DashboardPage = () => {
     originalLabels: string[],
     timeFilter: string
   ) => {
-    console.log("🔄 Translating labels:", { originalLabels, timeFilter });
 
     if (timeFilter === "month") {
       return originalLabels.map((label) => {
@@ -373,7 +343,7 @@ const DashboardPage = () => {
       });
     } else if (timeFilter === "all") {
       return originalLabels.map((label) => {
-        // Handle "Total" label for All Time filter
+        // For All Time, translate "Total" label
         if (label === "Total") {
           return t("common.all") || "Total";
         }
@@ -385,28 +355,27 @@ const DashboardPage = () => {
     return originalLabels;
   };
 
-  // Transform All Time data - FIXED to show integer values
+  // Transform All Time data - Keep as single "Total" bar
   const transformAllTimeData = (apiData: any[]): PartnerUserTrend[] => {
     if (!apiData || apiData.length === 0) {
-      // Return empty data for years when no data
-      const currentYear = new Date().getFullYear();
-      return Array.from({ length: 5 }, (_, i) => ({
-        date: (currentYear - 4 + i).toString(),
-        partners: 0,
-        users: 0,
-      }));
+      // Return single "Total" bar with zeros when no data
+      return [
+        {
+          date: "Total",
+          partners: 0,
+          users: 0,
+        },
+      ];
     }
 
-    // For All Time, we expect data grouped by years
+    // For All Time, return the data as-is with "Total" label
     return apiData.map((item) => ({
-      date: item.year || item.date || "Unknown",
-      // FIXED: Use Math.round() to ensure integer values
+      date: "Total",
       partners: Math.round(item.partnerCount || item.partners || 0),
       users: Math.round(item.userCount || item.users || 0),
     }));
   };
 
-  // Transform Today data - FIXED to show integer values
   const transformTodayData = (apiData: any[]): PartnerUserTrend[] => {
     if (!apiData || apiData.length === 0) {
       // Return empty data for all hours when no data
@@ -417,21 +386,36 @@ const DashboardPage = () => {
       }));
     }
 
-    // If we have data but it's showing zeros, use the first item
-    const todayData = apiData[0];
-    // FIXED: Use Math.round() to ensure integer values
-    const totalUsers = Math.round(todayData.users || todayData.userCount || 0);
-    const totalPartners = Math.round(
-      todayData.partners || todayData.partnerCount || 0
-    );
+    // Create a map for easy lookup by hour
+    const hourMap = new Map();
 
-    // Distribute totals across hours for visualization
-    return Array.from({ length: 24 }, (_, i) => ({
-      date: `${i.toString().padStart(2, "0")}:00`,
-      partners:
-        Math.floor(totalPartners / 24) + (i < totalPartners % 24 ? 1 : 0),
-      users: Math.floor(totalUsers / 24) + (i < totalUsers % 24 ? 1 : 0),
-    }));
+    // Process each hour data from API
+    apiData.forEach((item) => {
+      if (item.date) {
+        try {
+          // Extract hour from DateTime string like "2025-11-28T15:00:00"
+          const dateObj = new Date(item.date);
+          const hour = dateObj.getHours();
+
+          hourMap.set(hour, {
+            partners: Math.round(item.partnerCount || 0),
+            users: Math.round(item.userCount || 0),
+          });
+        } catch (error) {
+          console.error("Error parsing date:", item.date, error);
+        }
+      }
+    });
+
+    // Create data for all 24 hours using actual API data
+    return Array.from({ length: 24 }, (_, i) => {
+      const hourData = hourMap.get(i);
+      return {
+        date: `${i.toString().padStart(2, "0")}:00`,
+        partners: hourData?.partners || 0,
+        users: hourData?.users || 0,
+      };
+    });
   };
 
   // Transform Week data - FIXED to show integer values without decimals
@@ -743,10 +727,6 @@ const DashboardPage = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Partner User Trends:", partnerUserTrends);
-    console.log("Time Filter:", timeFilter);
-    console.log("Total Partners from Trends:", totalPartnersFromTrends);
-    console.log("Total Users from Trends:", totalUsersFromTrends);
   }, [
     partnerUserTrends,
     timeFilter,
@@ -806,16 +786,6 @@ const DashboardPage = () => {
     const translatedLabels = getTranslatedLabels(labels, timeFilter);
     const partnersData = partnerUserTrends.map((item) => item.partners);
     const usersData = partnerUserTrends.map((item) => item.users);
-
-    console.log("🎯 FINAL CHART DATA:", {
-      originalLabels: labels,
-      translatedLabels,
-      timeFilter,
-      partnersData,
-      usersData,
-      hasData:
-        partnersData.some((val) => val > 0) || usersData.some((val) => val > 0),
-    });
 
     return {
       labels: translatedLabels,
@@ -921,8 +891,9 @@ const DashboardPage = () => {
       labels: translatedMonthLabels,
       datasets: [
         {
-          label: `${t("admin.dashboard.thisyear") || "This Year"
-            } ${currentYear}`,
+          label: `${
+            t("admin.dashboard.thisyear") || "This Year"
+          } ${currentYear}`,
           data: userTrends,
           borderColor: "#165933",
           backgroundColor: "rgba(22, 89, 51, 0.1)",
@@ -1022,12 +993,12 @@ const DashboardPage = () => {
       value: formatK(stats?.TotalConversations || 0),
     },
     {
-      title: t("admin.dashboard.TotalSubCategories") || "Total Sub Categories",
-      value: formatK(stats?.TotalSubCategories || 0),
-    },
-    {
       title: t("admin.dashboard.TotalCategories") || "Total Categories",
       value: formatK(stats?.TotalCategorys || 0),
+    },
+    {
+      title: t("admin.dashboard.TotalSubCategories") || "Total Sub Categories",
+      value: formatK(stats?.TotalSubCategories || 0),
     },
     {
       title: t("admin.dashboard.TotalFavourites") || "Total Favourites",
@@ -1077,7 +1048,10 @@ const DashboardPage = () => {
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-between">
             <div className="flex-shrink-0">
-              <div className="relative mx-auto" style={{ width: 220, height: 220 }}>
+              <div
+                className="relative mx-auto"
+                style={{ width: 220, height: 220 }}
+              >
                 <Doughnut data={getPieChartData()} options={pieChartOptions} />
               </div>
             </div>
