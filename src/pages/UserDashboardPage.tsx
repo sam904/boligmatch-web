@@ -44,9 +44,14 @@ interface ConversationItem {
   senderId?: number;
   receiverId?: number;
   type?: string;
-  senderName?: string;
-  fullName?: string;
-  timestamp?: string;
+  partnerName?: string;
+  userName?: string;
+  partnerEmail?: string;
+  logoUrl?: string;
+  thumbnail?: string;
+  createdDate?: string;
+  createdBy?: number;
+  isActive?: boolean;
   [key: string]: any;
 }
 
@@ -587,7 +592,7 @@ export default function UserDashboardPage() {
                                   {t("userDashboard.partnerLabel")}
                                 </div>
                                 <div className="text-sm text-[#052011]">
-                                  {conversation.receiverName || "-"}
+                                  {conversation.partnerName || "-"}
                                 </div>
                               </div>
                               <div
@@ -631,7 +636,7 @@ export default function UserDashboardPage() {
                                   {t("userDashboard.partnerLabel")}
                                 </div>
                                 <div className="text-sm text-[#052011]">
-                                  {conversation.receiverName || "-"}
+                                  {conversation.partnerName || "-"}
                                 </div>
                               </div>
                               <div
@@ -712,10 +717,7 @@ export default function UserDashboardPage() {
               <div>
                 <div className="text-sm font-extrabold">Partner</div>
                 <div className="text-sm">
-                  {openConversation.receiverName ||
-                    openConversation.senderName ||
-                    openConversation.fullName ||
-                    "-"}
+                  {openConversation.partnerName || "-"}
                 </div>
               </div>
               <div>
