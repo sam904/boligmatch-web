@@ -14,11 +14,17 @@ interface SignUpModalProps {
   onSignupSuccess?: (email: string, password: string) => void;
 }
 
-export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpModalProps) {
+export default function SignUpModal({
+  open,
+  onClose,
+  onSignupSuccess,
+}: SignUpModalProps) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  console.log("error", error);
   const [success, setSuccess] = useState(false);
+  console.log("success", success);
   const [shouldRender, setShouldRender] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const TRANSITION_DURATION = 300;
@@ -61,7 +67,10 @@ export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpMo
       .string()
       .min(1, t("signup.postalCodeRequired"))
       .regex(/^[0-9]+$/, "Postal code must be numeric")
-      .refine((val) => val.length === 5, "Postal code must be exactly 5 digits"),
+      .refine(
+        (val) => val.length === 5,
+        "Postal code must be exactly 5 digits"
+      ),
     mobileNumber: z
       .string()
       .min(1, t("signup.mobileRequired"))
@@ -88,12 +97,24 @@ export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpMo
     },
   });
 
-  const checkEmailAvailability = async (email: string) => {
+  const checkEmailAvailability = async (
+    email: string
+  ): Promise<{ isAvailable: boolean; message: string }> => {
     const trimmed = email.trim();
-    if (!trimmed) return;
+    if (!trimmed) {
+      return {
+        isAvailable: false,
+        message: t("signup.emailInvalid") || "Email is required",
+      };
+    }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(trimmed)) return;
+    if (!emailRegex.test(trimmed)) {
+      return {
+        isAvailable: false,
+        message: t("signup.emailInvalid") || "Invalid email format",
+      };
+    }
 
     try {
       const response = await userService.checkEmailOrMobileAvailability(
@@ -107,9 +128,9 @@ export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpMo
         "Email is available";
 
       if (response?.isSuccess) {
-        showSignupSuccessToast(message);
+        return { isAvailable: true, message };
       } else {
-        showSignupErrorToast(message);
+        return { isAvailable: false, message };
       }
     } catch (err: any) {
       const apiError = err?.response?.data;
@@ -122,15 +143,29 @@ export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpMo
         t("validation.emailCheckError") ||
         "Error checking email availability";
 
-      showSignupErrorToast(message);
+      return { isAvailable: false, message };
     }
   };
 
-  const checkMobileAvailability = async (mobile: string) => {
+  const checkMobileAvailability = async (
+    mobile: string
+  ): Promise<{ isAvailable: boolean; message: string }> => {
     const cleanMobile = mobile.replace(/[\s\-\(\)]+/g, "");
-    if (!cleanMobile) return;
+    if (!cleanMobile) {
+      return {
+        isAvailable: false,
+        message: t("signup.mobileRequired") || "Mobile number is required",
+      };
+    }
 
-    if (cleanMobile.length !== 8 || !/^\d+$/.test(cleanMobile)) return;
+    if (cleanMobile.length !== 8 || !/^\d+$/.test(cleanMobile)) {
+      return {
+        isAvailable: false,
+        message:
+          t("validation.mobileInvalidLength") ||
+          "Mobile number must be 8 digits",
+      };
+    }
 
     try {
       const response = await userService.checkEmailOrMobileAvailability(
@@ -144,9 +179,9 @@ export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpMo
         "Mobile number is available";
 
       if (response?.isSuccess) {
-        showSignupSuccessToast(message);
+        return { isAvailable: true, message };
       } else {
-        showSignupErrorToast(message);
+        return { isAvailable: false, message };
       }
     } catch (err: any) {
       const apiError = err?.response?.data;
@@ -159,62 +194,83 @@ export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpMo
         t("validation.mobileCheckError") ||
         "Error checking mobile number availability";
 
-      showSignupErrorToast(message);
+      return { isAvailable: false, message };
     }
   };
 
   const onSubmit = async (data: any) => {
-  setIsLoading(true);
-  setError(null);
-  setSuccess(false);
+    setIsLoading(true);
+    setError(null);
+    setSuccess(false);
 
-  try {
-    const registrationData: CreateUserRequest = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      password: data.password,
-      mobileNo: data.mobileNumber,
-      isActive: true,
-      status: "Active", // Add this line
-    };
+    try {
+      // First, check email availability
+      const emailCheck = await checkEmailAvailability(data.email);
+      if (!emailCheck.isAvailable) {
+        setError(emailCheck.message);
+        showSignupErrorToast(emailCheck.message);
+        setIsLoading(false);
+        return;
+      }
 
-    await userService.add(registrationData);
+      // Then, check mobile availability
+      const mobileCheck = await checkMobileAvailability(data.mobileNumber);
+      if (!mobileCheck.isAvailable) {
+        setError(mobileCheck.message);
+        showSignupErrorToast(mobileCheck.message);
+        setIsLoading(false);
+        return;
+      }
 
-    // If we get here, the registration was successful
-    setSuccess(true);
-    showSignupSuccessToast("Registration successful! Welcome to Boligmatch+.");
-    reset();
-    
-    // If onSignupSuccess callback is provided, call it with credentials for auto-login
-    if (onSignupSuccess) {
-      // Call the callback with email and password for auto-login
-      setTimeout(() => {
-        onSignupSuccess(data.email, data.password);
-      }, 1000);
-    } else {
-      // Close modal after a short delay to show success message (default behavior)
-      setTimeout(() => {
-        onClose();
-        setSuccess(false);
-      }, 2000);
+      // If both are available, proceed with user creation
+      const registrationData: CreateUserRequest = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+        mobileNo: data.mobileNumber,
+        isActive: true,
+        status: "Active",
+      };
+
+      await userService.add(registrationData);
+
+      // If we get here, the registration was successful
+      setSuccess(true);
+      showSignupSuccessToast(
+        "Registration successful! Welcome to Boligmatch+."
+      );
+      reset();
+
+      // If onSignupSuccess callback is provided, call it with credentials for auto-login
+      if (onSignupSuccess) {
+        // Call the callback with email and password for auto-login
+        setTimeout(() => {
+          onSignupSuccess(data.email, data.password);
+        }, 1000);
+      } else {
+        // Close modal after a short delay to show success message (default behavior)
+        setTimeout(() => {
+          onClose();
+          setSuccess(false);
+        }, 2000);
+      }
+    } catch (err: any) {
+      const apiError = err?.response?.data;
+      const msg =
+        (typeof apiError === "string" && apiError.trim()) ||
+        apiError?.failureReason ||
+        apiError?.errorMessage ||
+        apiError?.message?.output ||
+        apiError?.message ||
+        (apiError ? String(apiError) : "") ||
+        "Registration failed";
+      setError(msg);
+      showSignupErrorToast(msg);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (err: any) {
-    const apiError = err?.response?.data;
-    const msg =
-      (typeof apiError === "string" && apiError.trim()) ||
-      apiError?.failureReason ||
-      apiError?.errorMessage ||
-      apiError?.message?.output ||
-      apiError?.message ||
-      (apiError ? String(apiError) : "") ||
-      "Registration failed";
-    setError(msg);
-    showSignupErrorToast(msg);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   if (!shouldRender) return null;
 
@@ -264,7 +320,7 @@ export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpMo
 
         <div className="px-6 pb-4">
           {/* Error Message */}
-          {error && (
+          {/* {error && (
             <div className="mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg">
               <div className="flex items-center">
                 <svg
@@ -281,10 +337,10 @@ export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpMo
                 {error}
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Success Message */}
-          {success && (
+          {/* {success && (
             <div className="mb-4 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-lg">
               <div className="flex items-center">
                 <svg
@@ -301,7 +357,7 @@ export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpMo
                 Registration successful! Welcome to Boligmatch+.
               </div>
             </div>
-          )}
+          )} */}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* First Row - First Name and Last Name */}
@@ -382,11 +438,7 @@ export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpMo
                   type="tel"
                   className="w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#075835]"
                   maxLength={8}
-                  {...register("mobileNumber", {
-                    onBlur: (e) => {
-                      checkMobileAvailability(e.target.value);
-                    },
-                  })}
+                  {...register("mobileNumber")}
                 />
                 {errors.mobileNumber && (
                   <p className="text-xs text-red-600 mt-1">
@@ -408,11 +460,7 @@ export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpMo
                 id="email"
                 type="email"
                 className="w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#075835]"
-                {...register("email", {
-                  onBlur: (e) => {
-                    checkEmailAvailability(e.target.value);
-                  },
-                })}
+                {...register("email")}
               />
               {errors.email && (
                 <p className="text-xs text-red-600 mt-1">
