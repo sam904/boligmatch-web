@@ -11,9 +11,10 @@ import { showSignupSuccessToast, showSignupErrorToast } from "./ToastBanner";
 interface SignUpModalProps {
   open: boolean;
   onClose: () => void;
+  onSignupSuccess?: (email: string, password: string) => void;
 }
 
-export default function SignUpModal({ open, onClose }: SignUpModalProps) {
+export default function SignUpModal({ open, onClose, onSignupSuccess }: SignUpModalProps) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -184,11 +185,20 @@ export default function SignUpModal({ open, onClose }: SignUpModalProps) {
     setSuccess(true);
     showSignupSuccessToast("Registration successful! Welcome to Boligmatch+.");
     reset();
-    // Close modal after a short delay to show success message
-    setTimeout(() => {
-      onClose();
-      setSuccess(false);
-    }, 2000);
+    
+    // If onSignupSuccess callback is provided, call it with credentials for auto-login
+    if (onSignupSuccess) {
+      // Call the callback with email and password for auto-login
+      setTimeout(() => {
+        onSignupSuccess(data.email, data.password);
+      }, 1000);
+    } else {
+      // Close modal after a short delay to show success message (default behavior)
+      setTimeout(() => {
+        onClose();
+        setSuccess(false);
+      }, 2000);
+    }
   } catch (err: any) {
     const apiError = err?.response?.data;
     const msg =

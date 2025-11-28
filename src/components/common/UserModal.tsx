@@ -26,6 +26,8 @@ interface UserModalProps {
   roleTarget?: "user" | "partner";
   showSignUp?: boolean;
   hideCloseIcon?: boolean;
+  closable?: boolean;
+  enableAutoLoginAfterSignup?: boolean;
 }
 
 export default function UserModal({
@@ -35,6 +37,8 @@ export default function UserModal({
   roleTarget = "user",
   showSignUp = false,
   hideCloseIcon = false,
+  closable = true,
+  enableAutoLoginAfterSignup = false,
 }: UserModalProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -298,60 +302,108 @@ export default function UserModal({
     setIsSignUpOpen(true);
   };
 
-  if (!open && !isAnimating) return null;
+  const handleSignupSuccess = async (email: string, password: string) => {
+    // Auto-login after successful signup
+    try {
+      const result = await dispatch(loginThunk({ userName: email, password }));
+      
+      if (loginThunk.fulfilled.match(result)) {
+        const { output } = result.payload;
+        const loggedInUser = {
+          userId: output.userId,
+          firstName: output.firstName,
+          lastName: output.lastName,
+          email: output.email,
+          avatar: output.avatar,
+          role: output.role,
+          roleIds: output.roleIds,
+          roleName: output.roleName,
+          franchiseId: output.franchiseId,
+          admissionId: output.admissionId,
+          mobileNo: output.mobileNo,
+        };
+
+        // Set localStorage like normal login flow (authSlice sets token, but we need to set user)
+        localStorage.setItem("bm_access", output.token);
+        localStorage.setItem("bm_user", JSON.stringify(loggedInUser));
+        localStorage.removeItem("bm_partner");
+
+        // Close signup modal
+        setIsSignUpOpen(false);
+        // Close login modal - this will trigger RecommendUser to detect authentication
+        onClose();
+        // Show success message
+        showSuccess("Account created and logged in successfully!");
+
+        // Note: For recommendation flow, we don't redirect - we stay on the same page
+        // The RecommendUser component will automatically detect authentication and show content
+      } else {
+        // If auto-login fails, just close signup modal and let user login manually
+        setIsSignUpOpen(false);
+        toast.error("Account created! Please log in with your credentials.");
+      }
+    } catch (error) {
+      // If auto-login fails, just close signup modal and let user login manually
+      setIsSignUpOpen(false);
+      toast.error("Account created! Please log in with your credentials.");
+    }
+  };
+
+  if (!open && !isAnimating && !isSignUpOpen) return null;
 
   return ReactDOM.createPortal(
     <>
-      <div
-        className={`fixed inset-0 z-[1000] flex items-center justify-center transition-opacity duration-400 ${
-          isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      >
+      {(open || isAnimating) && !isSignUpOpen && (
         <div
-          className={`absolute inset-0 bg-black/40 transition-opacity duration-400 ${
-            isVisible ? "opacity-100" : "opacity-0"
+          className={`fixed inset-0 z-[1000] flex items-center justify-center transition-opacity duration-400 ${
+            isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
-          onClick={onClose}
-        />
-        <div className="relative w-[370px] px-4">
+        >
           <div
-            className={`relative rounded-[23px] bg-[#E6E7E9] shadow-2xl w-full transition-all duration-400 ${
-              isVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-6"
+            className={`absolute inset-0 bg-black/40 transition-opacity duration-400 ${
+              isVisible ? "opacity-100" : "opacity-0"
             }`}
-            style={{ willChange: "transform, opacity" }}
-          >
-            {!hideCloseIcon && (
-              <button
-                onClick={onClose}
-                aria-label="Close"
-                className="absolute right-3 top-3 rounded-full p-1.5 text-black/80 hover:bg-black/5 hover:text-black transition cursor-pointer"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="h-6 w-6"
+            onClick={closable ? onClose : undefined}
+          />
+          <div className="relative w-[370px] px-4">
+            <div
+              className={`relative rounded-[23px] bg-[#E6E7E9] shadow-2xl w-full transition-all duration-400 ${
+                isVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-6"
+              }`}
+              style={{ willChange: "transform, opacity" }}
+            >
+              {!hideCloseIcon && closable && (
+                <button
+                  onClick={onClose}
+                  aria-label="Close"
+                  className="absolute right-3 top-3 rounded-full p-1.5 text-black/80 hover:bg-black/5 hover:text-black transition cursor-pointer"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 11-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            )}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="h-6 w-6"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 11-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              )}
 
-            <div className="flex justify-center items-center p-6 pb-2">
-              <img
-                src={loginModelLogo}
-                alt="Boligmatch+"
-                width={144}
-                height={36}
-                className="select-none"
-                style={{ opacity: 1, transform: "rotate(0deg)" }}
-                draggable={false}
-              />
-            </div>
+              <div className="flex justify-center items-center p-6 pb-2">
+                <img
+                  src={loginModelLogo}
+                  alt="Boligmatch+"
+                  width={144}
+                  height={36}
+                  className="select-none"
+                  style={{ opacity: 1, transform: "rotate(0deg)" }}
+                  draggable={false}
+                />
+              </div>
 
             <div className="px-6 pb-6">
               <h2 className="text-[20px] font-[800] text-[#000000] text-center">
@@ -438,9 +490,9 @@ export default function UserModal({
                       {t("auth.forgotPassword")}
                     </button>
                   </div>
-                  {showSignUp && (
+                  {showSignUp && roleTarget === "user" && (
                     <div className="text-sm">
-                      Don’t have an account?{" "}
+                      Don't have an account?{" "}
                       <button
                         type="button"
                         onClick={handleSignUpClick}
@@ -592,9 +644,14 @@ export default function UserModal({
               )}
             </div>
           </div>
+          </div>
         </div>
-      </div>
-      <SignUpModal open={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
+      )}
+      <SignUpModal 
+        open={isSignUpOpen} 
+        onClose={() => setIsSignUpOpen(false)}
+        onSignupSuccess={enableAutoLoginAfterSignup ? handleSignupSuccess : undefined}
+      />
     </>,
     document.body
   );

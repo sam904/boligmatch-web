@@ -24,6 +24,34 @@ function PartnerManageProfile() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const hasFetchedRef = useRef(false);
 
+  // Validation function for name fields
+  const isValidName = (name: string): boolean => {
+    if (!name.trim()) return true; // Allow empty (optional fields)
+    // Allow letters (including accented), spaces, hyphens, apostrophes, and periods
+    const nameRegex = /^[a-zA-ZÀ-ÿÆØÅæøå\s'\-\.]+$/;
+    return nameRegex.test(name);
+  };
+
+  // Validation function for business name (allows more characters like &, numbers, etc.)
+  const isValidBusinessName = (name: string): boolean => {
+    if (!name.trim()) return true; // Allow empty (optional field)
+    // Allow letters, numbers, spaces, hyphens, apostrophes, periods, ampersands, commas, and parentheses
+    const businessNameRegex = /^[a-zA-ZÀ-ÿÆØÅæøå0-9\s'\-\.&,()]+$/;
+    return businessNameRegex.test(name);
+  };
+
+  // Filter invalid characters from name input
+  const filterNameInput = (value: string): string => {
+    // Remove invalid characters, keep only letters, spaces, hyphens, apostrophes, and periods
+    return value.replace(/[^a-zA-ZÀ-ÿÆØÅæøå\s'\-\.]/g, '');
+  };
+
+  // Filter invalid characters from business name input
+  const filterBusinessNameInput = (value: string): string => {
+    // Remove invalid characters, keep letters, numbers, spaces, hyphens, apostrophes, periods, ampersands, commas, and parentheses
+    return value.replace(/[^a-zA-ZÀ-ÿÆØÅæøå0-9\s'\-\.&,()]/g, '');
+  };
+
   useEffect(() => {
     const storedPartner = localStorage.getItem("bm_partner");
     if (!storedPartner) {
@@ -96,6 +124,17 @@ function PartnerManageProfile() {
           className="mt-6 space-y-4"
           onSubmit={async (e) => {
             e.preventDefault();
+            
+            // Validate name fields
+            if (fullName.trim() && !isValidName(fullName)) {
+              showSignupErrorToast(t("manageProfile.toast.fullNameInvalid"));
+              return;
+            }
+            if (!isValidBusinessName(businessName)) {
+              showSignupErrorToast(t("manageProfile.toast.businessNameInvalid"));
+              return;
+            }
+            
             if (!partnerId || !categoryId) {
               showSignupErrorToast("Partner data is incomplete.");
               return;
@@ -138,7 +177,7 @@ function PartnerManageProfile() {
               <input
                 className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
                 value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                onChange={(e) => setFullName(filterNameInput(e.target.value))}
               />
             </div>
             <div>
@@ -148,7 +187,7 @@ function PartnerManageProfile() {
               <input
                 className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
                 value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
+                onChange={(e) => setBusinessName(filterBusinessNameInput(e.target.value))}
               />
             </div>
             <div>

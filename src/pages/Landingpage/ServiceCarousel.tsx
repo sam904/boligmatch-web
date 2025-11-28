@@ -194,7 +194,7 @@ export default function ServiceCarousel() {
 
             // Calculate scale and opacity based on distance from center
             const scale = isCurrent ? 1 : absPosition === 1 ? 0.85 : 0.75;
-            const opacity = isCurrent ? 1 : absPosition === 1 ? 0.6 : 0.4;
+            const opacity = 1;
 
             // Responsive card spacing
             const cardSpacing = isMobile ? 240 : 280;
