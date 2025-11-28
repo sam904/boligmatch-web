@@ -27,7 +27,7 @@ export interface CreateUserRequest {
   mobileNo: string;
   password?: string;
   isActive: boolean;
-  status: "All" | "Active" | "InActive";
+  status: "Active" | "InActive";
   role?: number;
   roleIds?: string;
 }

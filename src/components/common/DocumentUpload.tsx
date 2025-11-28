@@ -200,7 +200,7 @@ export default function DocumentUpload({
       {/* Section Title */}
       <label className="block text-base font-semibold text-gray-900 mb-2 cursor-pointer">
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        {required}
       </label>
 
       {/* Sub Label */}

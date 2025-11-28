@@ -209,9 +209,7 @@ const partnerSchema = z.object({
   parSubCatlst: z
     .array(partnerSubCategorySchema)
     .min(1, "At least one sub category is required"),
-  parDoclst: z
-    .array(partnerDocumentSchema)
-    .min(1, "At least one document is required"),
+  parDoclst: z.array(partnerDocumentSchema).optional().default([]),
 });
 
 type PartnerFormData = {
@@ -284,6 +282,15 @@ export default function PartnersPage() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [toasts, setToasts] = useState<ToastState[]>([]);
+  const [documentDeleteConfirmation, setDocumentDeleteConfirmation] = useState<{
+    isOpen: boolean;
+    documentIndex: number | null;
+    documentId?: number;
+    documentName?: string;
+  }>({
+    isOpen: false,
+    documentIndex: null,
+  });
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
     isOpen: boolean;
     partner: Partner | null;
@@ -620,7 +627,7 @@ export default function PartnersPage() {
       address: "",
       trustPilotUrl: "",
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
-      parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
+      parDoclst: [],
     },
   });
 
@@ -668,7 +675,7 @@ export default function PartnersPage() {
     const stepFields: Record<number, ValidFieldNames[]> = {
       1: [
         "businessName",
-        "email", // Make sure email is included
+        "email",
         "mobileNo",
         "businessUnit",
         "cvr",
@@ -685,12 +692,18 @@ export default function PartnersPage() {
         "isActive",
         "status",
       ],
-      5: [],
+      5: [], // Documents are optional
       6: ["categoryId"],
     };
 
     // For steps 5 and 6, we need to check array fields
     if (step === 5) {
+      // If there are no documents, step is automatically completed
+      if (documentFields.length === 0) {
+        return true;
+      }
+
+      // If there are documents, validate them
       const documentValidations = documentFields.map((_, index) =>
         trigger([
           `parDoclst.${index}.documentName`,
@@ -988,6 +1001,7 @@ export default function PartnersPage() {
                 isActive: subCat.isActive ?? true,
               }))
             : [{ subCategoryId: 0, isActive: true }],
+        // CHANGED: Handle empty documents array
         parDoclst:
           editingPartner.parDoclst && editingPartner.parDoclst.length > 0
             ? editingPartner.parDoclst.map((doc) => ({
@@ -997,7 +1011,7 @@ export default function PartnersPage() {
                 documentUrl: doc.documentUrl,
                 isActive: doc.isActive ?? true,
               }))
-            : [{ documentName: "", documentUrl: "", isActive: true }],
+            : [], // Empty array instead of default document
       };
       reset(formData);
       setSelectedCategoryId(editingPartner.categoryId);
@@ -1049,7 +1063,7 @@ export default function PartnersPage() {
       isActive: true,
       status: "Active",
       parSubCatlst: [{ subCategoryId: 0, isActive: true }],
-      parDoclst: [{ documentName: "", documentUrl: "", isActive: true }],
+      parDoclst: [],
     };
     reset(defaultValues);
     setCurrentStep(1);
@@ -1144,6 +1158,56 @@ export default function PartnersPage() {
     },
   });
 
+  const handleRemoveDocumentClick = (index: number) => {
+    const documentId = watch(`parDoclst.${index}.id`);
+    const documentName = watch(`parDoclst.${index}.documentName`);
+
+    setDocumentDeleteConfirmation({
+      isOpen: true,
+      documentIndex: index,
+      documentId,
+      documentName: documentName || `Document ${index + 1}`,
+    });
+  };
+
+  const handleConfirmDocumentDelete = async () => {
+    const { documentIndex, documentId } = documentDeleteConfirmation;
+
+    if (documentIndex === null) return;
+
+    if (editingPartner?.id && documentId) {
+      try {
+        await partnerDocumentService.deleteDocument(documentId);
+        toast.success(
+          t("admin.partners.documentDeleted") || "Document deleted successfully"
+        );
+        removeDocumentField(documentIndex);
+        queryClient.invalidateQueries({
+          queryKey: ["partners"],
+        });
+      } catch (error) {
+        console.error("Delete document error:", error);
+        toast.error(
+          t("admin.partners.documentDeleteError") || "Failed to delete document"
+        );
+      }
+    } else {
+      removeDocumentField(documentIndex);
+    }
+
+    setDocumentDeleteConfirmation({
+      isOpen: false,
+      documentIndex: null,
+    });
+  };
+
+  const handleCancelDocumentDelete = () => {
+    setDocumentDeleteConfirmation({
+      isOpen: false,
+      documentIndex: null,
+    });
+  };
+
   // UPDATED: Export function with status filter
   const handleExportPartners = async () => {
     try {
@@ -1219,7 +1283,8 @@ export default function PartnersPage() {
         isActive: subCat.isActive,
       }));
 
-      const documentsPayload = data.parDoclst.map((doc) => ({
+      // CHANGED: Handle empty documents array
+      const documentsPayload = (data.parDoclst || []).map((doc) => ({
         id: doc.id,
         partnerId: editingPartner?.id || 0,
         documentName: doc.documentName,
@@ -1231,7 +1296,7 @@ export default function PartnersPage() {
         ...data,
         id: editingPartner?.id,
         parSubCatlst: subCategoriesPayload,
-        parDoclst: documentsPayload,
+        parDoclst: documentsPayload, // This can now be empty array
         email: data.email || undefined,
         mobileNo: data.mobileNo || undefined,
         trustPilotUrl: data.trustPilotUrl || undefined,
@@ -1333,7 +1398,7 @@ export default function PartnersPage() {
         "isActive",
         "status",
       ],
-      5: [],
+      5: [], // Documents are optional, no required fields
       6: ["categoryId"],
     };
 
@@ -1346,15 +1411,21 @@ export default function PartnersPage() {
 
     // Additional validation for array fields in steps 5 and 6
     if (currentStep === 5) {
-      const documentValidations = documentFields.map((_, index) =>
-        trigger([
-          `parDoclst.${index}.documentName`,
-          `parDoclst.${index}.documentUrl`,
-          `parDoclst.${index}.isActive`,
-        ] as any)
-      );
-      const documentResults = await Promise.all(documentValidations);
-      isValid = isValid && documentResults.every((result) => result);
+      // Documents are optional, so if there are no documents, step is valid
+      if (documentFields.length === 0) {
+        isValid = true;
+      } else {
+        // If there are documents, validate them
+        const documentValidations = documentFields.map((_, index) =>
+          trigger([
+            `parDoclst.${index}.documentName`,
+            `parDoclst.${index}.documentUrl`,
+            `parDoclst.${index}.isActive`,
+          ] as any)
+        );
+        const documentResults = await Promise.all(documentValidations);
+        isValid = isValid && documentResults.every((result) => result);
+      }
     }
 
     if (currentStep === 6) {
@@ -1392,7 +1463,8 @@ export default function PartnersPage() {
           isActive: subCat.isActive,
         }));
 
-        const documentsPayload = data.parDoclst.map((doc) => ({
+        // CHANGED: Handle empty documents array in update mode
+        const documentsPayload = (data.parDoclst || []).map((doc) => ({
           id: doc.id,
           partnerId: editingPartner?.id || 0,
           documentName: doc.documentName,
@@ -1565,9 +1637,9 @@ export default function PartnersPage() {
   };
 
   const removeDocumentField = (index: number) => {
-    if (documentFields.length > 1) {
-      removeDocument(index);
-    }
+    // CHANGED: Allow removing even when there's only one document
+    // since documents are optional
+    removeDocument(index);
   };
 
   const handleImagePreview = (url: string) => {
@@ -2115,6 +2187,22 @@ export default function PartnersPage() {
               <h4 className="font-medium text-gray-700 mb-3">
                 {t("admin.partners.partnerDocuments") || "Partner Documents"}
               </h4>
+
+              {/* No documents message */}
+              {documentFields.length === 0 && (
+                <div className="text-center py-6 border-2 border-dashed border-gray-300 rounded-lg mb-4">
+                  <p className="text-gray-500 text-sm">
+                    {t("admin.partners.noDocumentsAdded") ||
+                      "Ingen dokumenter tilføjet"}
+                  </p>
+                  <p className="text-gray-400 text-xs mt-1">
+                    {t("admin.partners.documentsOptional") ||
+                      "Dokumenter er valgfrie"}
+                  </p>
+                </div>
+              )}
+
+              {/* Document fields */}
               {documentFields.map((field, index) => (
                 <div
                   key={field.id}
@@ -2181,56 +2269,18 @@ export default function PartnersPage() {
                     )}
                   </div>
 
+                  {/* FIXED: Always show remove button when there are documents */}
                   <div className="flex items-center justify-between">
-                    {documentFields.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="danger"
-                        onClick={() => {
-                          const documentId = watch(`parDoclst.${index}.id`);
-                          if (editingPartner?.id && documentId) {
-                            if (
-                              confirm(
-                                t("admin.partners.confirmDeleteDocument") ||
-                                  "Are you sure you want to delete this document?"
-                              )
-                            ) {
-                              partnerDocumentService
-                                .deleteDocument(documentId)
-                                .then(() => {
-                                  toast.success(
-                                    t("admin.partners.documentDeleted") ||
-                                      "Document deleted successfully"
-                                  );
-                                  removeDocumentField(index);
-                                  queryClient.invalidateQueries({
-                                    queryKey: ["partners"],
-                                  });
-                                })
-                                .catch((error) => {
-                                  toast.error("Failed to delete document");
-                                  console.error(
-                                    "Delete document error:",
-                                    error
-                                  );
-                                });
-                            }
-                          } else {
-                            removeDocumentField(index);
-                          }
-                        }}
-                        disabled={savingDocuments.includes(index)}
-                        className="cursor-pointer"
-                      >
-                        {t("common.removeDocument") || "Remove Document"}
-                      </Button>
-                    )}
+                    <Button
+                      type="button"
+                      variant="danger"
+                      onClick={() => handleRemoveDocumentClick(index)}
+                      disabled={savingDocuments.includes(index)}
+                      className="cursor-pointer"
+                    >
+                      {t("common.removeDocument") || "Remove Document"}
+                    </Button>
                   </div>
-                  <ToggleSwitch
-                    label={t("common.active") || "Active"}
-                    checked={isActiveValue}
-                    onChange={(checked) => setValue("isActive", checked)}
-                  />
                 </div>
               ))}
               <Button
@@ -2246,13 +2296,12 @@ export default function PartnersPage() {
               >
                 {t("admin.partners.AddDocument") || "Add Document"} +
               </Button>
-              {errors.parDoclst && !errors.parDoclst.root && (
-                <p className="text-red-500 text-sm mt-2">
-                  {t("validation.atLeastOneDocument") ||
-                    "At least one document is required"}
-                </p>
-              )}
             </div>
+            <ToggleSwitch
+              label={t("common.active") || "Active"}
+              checked={isActiveValue}
+              onChange={(checked) => setValue("isActive", checked)}
+            />
           </div>
         );
       case 6:
@@ -2585,6 +2634,29 @@ export default function PartnersPage() {
         isLoading={deleteMutation.isPending}
       />
 
+      {/* Document Delete Confirmation */}
+      <DeleteConfirmation
+        open={documentDeleteConfirmation.isOpen}
+        onClose={handleCancelDocumentDelete}
+        onConfirm={handleConfirmDocumentDelete}
+        title={t("admin.partners.deleteDocumentTitle") || "Delete Document"}
+        itemName={
+          documentDeleteConfirmation.documentName
+            ? t("admin.partners.deleteDocumentItem", {
+                name: documentDeleteConfirmation.documentName,
+              }) || `Document: ${documentDeleteConfirmation.documentName}`
+            : undefined
+        }
+        confirmationMessage={
+          t("admin.partners.deleteDocumentConfirm") ||
+          "Are you sure you want to delete this document?"
+        }
+        confirmButtonText={
+          t("admin.partners.deleteDocumentButton") || "Delete Document"
+        }
+        cancelButtonText={t("common.cancel") || "Cancel"}
+      />
+
       {!showForm && (
         <div className="p-2 mb-2 sm:p-3 sm:mb-4">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
@@ -2657,7 +2729,7 @@ export default function PartnersPage() {
               </h2>
             </div>
           </div>
-          
+
           {/* Stepper - Make it scrollable on mobile */}
           <div className="overflow-x-auto p-2">
             <div className="min-w-max">
@@ -2669,7 +2741,7 @@ export default function PartnersPage() {
               />
             </div>
           </div>
-          
+
           <form
             onSubmit={handleSubmit((data) => {
               console.log("Form submission triggered with data:", data);
