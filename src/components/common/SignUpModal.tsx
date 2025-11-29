@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { userService } from "../../services/user.service";
 import type { CreateUserRequest } from "../../types/user";
 import logo from "/src/assets/userImages/boligmatchLogo2.png";
@@ -14,6 +14,23 @@ interface SignUpModalProps {
   onSignupSuccess?: (email: string, password: string) => void;
 }
 
+// Debounce hook for optimizing API calls
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 export default function SignUpModal({
   open,
   onClose,
@@ -21,12 +38,23 @@ export default function SignUpModal({
 }: SignUpModalProps) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  console.log("error", error);
-  const [success, setSuccess] = useState(false);
-  console.log("success", success);
+  
   const [shouldRender, setShouldRender] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  
+  // New states for availability checking
+  const [emailAvailability, setEmailAvailability] = useState<{
+    checking: boolean;
+    available: boolean | null;
+    message: string;
+  }>({ checking: false, available: null, message: "" });
+
+  const [mobileAvailability, setMobileAvailability] = useState<{
+    checking: boolean;
+    available: boolean | null;
+    message: string;
+  }>({ checking: false, available: null, message: "" });
+
   const TRANSITION_DURATION = 300;
 
   useEffect(() => {
@@ -83,8 +111,10 @@ export default function SignUpModal({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, touchedFields, isSubmitted },
     reset,
+    watch,
+    trigger,
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -95,134 +125,235 @@ export default function SignUpModal({
       email: "",
       password: "",
     },
+    mode: "onTouched", // This triggers validation when fields are touched
   });
 
-  const checkEmailAvailability = async (
-    email: string
-  ): Promise<{ isAvailable: boolean; message: string }> => {
-    const trimmed = email.trim();
-    if (!trimmed) {
-      return {
-        isAvailable: false,
-        message: t("signup.emailInvalid") || "Email is required",
-      };
-    }
+  // Watch email and mobile number for real-time validation
+  const watchedEmail = watch("email");
+  const watchedMobile = watch("mobileNumber");
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(trimmed)) {
-      return {
-        isAvailable: false,
-        message: t("signup.emailInvalid") || "Invalid email format",
-      };
-    }
+  // Debounce the values to avoid too many API calls
+  const debouncedEmail = useDebounce(watchedEmail, 500);
+  const debouncedMobile = useDebounce(watchedMobile, 500);
 
-    try {
-      const response = await userService.checkEmailOrMobileAvailability(
-        trimmed
-      );
-
-      const message =
-        response?.failureReason ||
-        response?.output ||
-        t("validation.emailAvailable") ||
-        "Email is available";
-
-      if (response?.isSuccess) {
-        return { isAvailable: true, message };
-      } else {
-        return { isAvailable: false, message };
-      }
-    } catch (err: any) {
-      const apiError = err?.response?.data;
-      const message =
-        apiError?.failureReason ||
-        apiError?.errorMessage ||
-        apiError?.message ||
-        apiError?.output ||
-        err?.message ||
-        t("validation.emailCheckError") ||
-        "Error checking email availability";
-
-      return { isAvailable: false, message };
-    }
+  // Helper function to show error for a field
+  const shouldShowError = (fieldName: keyof typeof touchedFields) => {
+    return (touchedFields[fieldName] || isSubmitted) && errors[fieldName];
   };
 
-  const checkMobileAvailability = async (
-    mobile: string
-  ): Promise<{ isAvailable: boolean; message: string }> => {
-    const cleanMobile = mobile.replace(/[\s\-\(\)]+/g, "");
-    if (!cleanMobile) {
-      return {
-        isAvailable: false,
-        message: t("signup.mobileRequired") || "Mobile number is required",
-      };
+  // Helper function to get input border color based on state
+  const getInputBorderColor = (
+    fieldName: keyof typeof touchedFields,
+    availability?: { available: boolean | null; checking: boolean }
+  ) => {
+    // If field has error and is touched/submitted
+    if (shouldShowError(fieldName)) {
+      return "focus:ring-red-500 ring-2 ring-red-500";
+    }
+    
+    // For email and mobile with availability check
+    if (availability) {
+      if (availability.checking) {
+        return "focus:ring-blue-500";
+      }
+      if (availability.available === false) {
+        return "focus:ring-red-500 ring-2 ring-red-500";
+      }
+      if (availability.available === true) {
+        return "focus:ring-green-500 ring-2 ring-green-500";
+      }
+    }
+    
+    // Default focus color
+    return "focus:ring-[#075835]";
+  };
+
+  // Check email availability
+  const checkEmailAvailability = useCallback(async (email: string) => {
+    const trimmed = email.trim();
+    
+    // Reset state if empty
+    if (!trimmed) {
+      setEmailAvailability({ checking: false, available: null, message: "" });
+      return;
     }
 
-    if (cleanMobile.length !== 8 || !/^\d+$/.test(cleanMobile)) {
-      return {
-        isAvailable: false,
-        message:
-          t("validation.mobileInvalidLength") ||
-          "Mobile number must be 8 digits",
-      };
+    // Validate email format first
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmed)) {
+      setEmailAvailability({ 
+        checking: false, 
+        available: false, 
+        message: t("signup.emailInvalid") || "Invalid email format" 
+      });
+      return;
     }
+
+    setEmailAvailability({ checking: true, available: null, message: "" });
 
     try {
-      const response = await userService.checkEmailOrMobileAvailability(
-        cleanMobile
-      );
-
-      const message =
-        response?.failureReason ||
-        response?.output ||
-        t("validation.mobileAvailable") ||
-        "Mobile number is available";
+      const response = await userService.checkEmailOrMobileAvailability(trimmed);
+      
+      const message = response?.failureReason || 
+                     response?.output || 
+                     t("validation.emailAvailable") || 
+                     "Email is available";
 
       if (response?.isSuccess) {
-        return { isAvailable: true, message };
+        setEmailAvailability({ 
+          checking: false, 
+          available: true, 
+          message: t("validation.emailAvailable") || "Email is available" 
+        });
       } else {
-        return { isAvailable: false, message };
+        setEmailAvailability({ 
+          checking: false, 
+          available: false, 
+          message: message || t("validation.emailNotAvailable") || "Email is already registered" 
+        });
       }
     } catch (err: any) {
       const apiError = err?.response?.data;
-      const message =
-        apiError?.failureReason ||
-        apiError?.errorMessage ||
-        apiError?.message ||
-        apiError?.output ||
-        err?.message ||
-        t("validation.mobileCheckError") ||
-        "Error checking mobile number availability";
+      const message = apiError?.failureReason ||
+                     apiError?.errorMessage ||
+                     apiError?.message ||
+                     apiError?.output ||
+                     err?.message ||
+                     t("validation.emailCheckError") ||
+                     "Error checking email availability";
 
-      return { isAvailable: false, message };
+      setEmailAvailability({ 
+        checking: false, 
+        available: false, 
+        message 
+      });
     }
+  }, [t]);
+
+  // Check mobile availability
+  const checkMobileAvailability = useCallback(async (mobile: string) => {
+    const cleanMobile = mobile.replace(/[\s\-\(\)]+/g, "");
+    
+    // Reset state if empty
+    if (!cleanMobile) {
+      setMobileAvailability({ checking: false, available: null, message: "" });
+      return;
+    }
+
+    // Validate mobile format first
+    if (cleanMobile.length !== 8 || !/^\d+$/.test(cleanMobile)) {
+      setMobileAvailability({ 
+        checking: false, 
+        available: false, 
+        message: t("validation.mobileInvalidLength") || "Mobile number must be 8 digits" 
+      });
+      return;
+    }
+
+    setMobileAvailability({ checking: true, available: null, message: "" });
+
+    try {
+      const response = await userService.checkEmailOrMobileAvailability(cleanMobile);
+      
+      const message = response?.failureReason || 
+                     response?.output || 
+                     t("validation.mobileAvailable") || 
+                     "Mobile number is available";
+
+      if (response?.isSuccess) {
+        setMobileAvailability({ 
+          checking: false, 
+          available: true, 
+          message: t("validation.mobileAvailable") || "Mobile number is available" 
+        });
+      } else {
+        setMobileAvailability({ 
+          checking: false, 
+          available: false, 
+          message: message || t("validation.mobileNotAvailable") || "Mobile number is already registered" 
+        });
+      }
+    } catch (err: any) {
+      const apiError = err?.response?.data;
+      const message = apiError?.failureReason ||
+                     apiError?.errorMessage ||
+                     apiError?.message ||
+                     apiError?.output ||
+                     err?.message ||
+                     t("validation.mobileCheckError") ||
+                     "Error checking mobile number availability";
+
+      setMobileAvailability({ 
+        checking: false, 
+        available: false, 
+        message 
+      });
+    }
+  }, [t]);
+
+  // Effect to check email availability when debounced email changes
+  useEffect(() => {
+    if (debouncedEmail) {
+      checkEmailAvailability(debouncedEmail);
+    }
+  }, [debouncedEmail, checkEmailAvailability]);
+
+  // Effect to check mobile availability when debounced mobile changes
+  useEffect(() => {
+    if (debouncedMobile && debouncedMobile.length === 8) {
+      checkMobileAvailability(debouncedMobile);
+    }
+  }, [debouncedMobile, checkMobileAvailability]);
+
+  // Helper function to check if email is unavailable
+  const isEmailUnavailable = (): boolean => {
+    return emailAvailability.available === false;
+  };
+
+  // Helper function to check if mobile is unavailable
+  const isMobileUnavailable = (): boolean => {
+    return mobileAvailability.available === false;
+  };
+
+  // Helper function to check if form can be submitted
+  const canSubmitForm = (): boolean => {
+    return !isEmailUnavailable() && !isMobileUnavailable();
   };
 
   const onSubmit = async (data: any) => {
+    // Trigger validation for all fields
+    const isValid = await trigger();
+    if (!isValid) return;
+
     setIsLoading(true);
-    setError(null);
-    setSuccess(false);
 
     try {
-      // First, check email availability
-      const emailCheck = await checkEmailAvailability(data.email);
-      if (!emailCheck.isAvailable) {
-        setError(emailCheck.message);
-        showSignupErrorToast(emailCheck.message);
+      // Final availability check before submission
+      if (isEmailUnavailable()) {
+        showSignupErrorToast(emailAvailability.message);
         setIsLoading(false);
         return;
       }
 
-      // Then, check mobile availability
-      const mobileCheck = await checkMobileAvailability(data.mobileNumber);
-      if (!mobileCheck.isAvailable) {
-        setError(mobileCheck.message);
-        showSignupErrorToast(mobileCheck.message);
+      if (isMobileUnavailable()) {
+        showSignupErrorToast(mobileAvailability.message);
         setIsLoading(false);
         return;
       }
 
-      // If both are available, proceed with user creation
+      // If availability states are still checking, wait a bit
+      if (emailAvailability.checking || mobileAvailability.checking) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Check again after waiting
+        if (isEmailUnavailable() || isMobileUnavailable()) {
+          showSignupErrorToast("Please wait while we verify your information");
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // Proceed with user creation
       const registrationData: CreateUserRequest = {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -236,15 +367,15 @@ export default function SignUpModal({
       await userService.add(registrationData);
 
       // If we get here, the registration was successful
-      setSuccess(true);
-      showSignupSuccessToast(
-        "Registration successful! Welcome to Boligmatch+."
-      );
+      showSignupSuccessToast("Registration successful! Welcome to Boligmatch+.");
       reset();
+      
+      // Reset availability states
+      setEmailAvailability({ checking: false, available: null, message: "" });
+      setMobileAvailability({ checking: false, available: null, message: "" });
 
       // If onSignupSuccess callback is provided, call it with credentials for auto-login
       if (onSignupSuccess) {
-        // Call the callback with email and password for auto-login
         setTimeout(() => {
           onSignupSuccess(data.email, data.password);
         }, 1000);
@@ -252,20 +383,17 @@ export default function SignUpModal({
         // Close modal after a short delay to show success message (default behavior)
         setTimeout(() => {
           onClose();
-          setSuccess(false);
         }, 2000);
       }
     } catch (err: any) {
       const apiError = err?.response?.data;
-      const msg =
-        (typeof apiError === "string" && apiError.trim()) ||
-        apiError?.failureReason ||
-        apiError?.errorMessage ||
-        apiError?.message?.output ||
-        apiError?.message ||
-        (apiError ? String(apiError) : "") ||
-        "Registration failed";
-      setError(msg);
+      const msg = (typeof apiError === "string" && apiError.trim()) ||
+                 apiError?.failureReason ||
+                 apiError?.errorMessage ||
+                 apiError?.message?.output ||
+                 apiError?.message ||
+                 (apiError ? String(apiError) : "") ||
+                 "Registration failed";
       showSignupErrorToast(msg);
     } finally {
       setIsLoading(false);
@@ -319,46 +447,6 @@ export default function SignUpModal({
         </div>
 
         <div className="px-6 pb-4">
-          {/* Error Message */}
-          {/* {error && (
-            <div className="mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg">
-              <div className="flex items-center">
-                <svg
-                  className="w-5 h-5 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                {error}
-              </div>
-            </div>
-          )} */}
-
-          {/* Success Message */}
-          {/* {success && (
-            <div className="mb-4 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 rounded-lg">
-              <div className="flex items-center">
-                <svg
-                  className="w-5 h-5 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Registration successful! Welcome to Boligmatch+.
-              </div>
-            </div>
-          )} */}
-
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* First Row - First Name and Last Name */}
             <div className="grid grid-cols-2 gap-4">
@@ -372,12 +460,12 @@ export default function SignUpModal({
                 <input
                   id="firstName"
                   type="text"
-                  className="w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#075835]"
+                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor("firstName")}`}
                   {...register("firstName")}
                 />
-                {errors.firstName && (
+                {shouldShowError("firstName") && (
                   <p className="text-xs text-red-600 mt-1">
-                    {errors.firstName.message}
+                    {errors.firstName?.message}
                   </p>
                 )}
               </div>
@@ -392,12 +480,12 @@ export default function SignUpModal({
                 <input
                   id="lastName"
                   type="text"
-                  className="w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#075835]"
+                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor("lastName")}`}
                   {...register("lastName")}
                 />
-                {errors.lastName && (
+                {shouldShowError("lastName") && (
                   <p className="text-xs text-red-600 mt-1">
-                    {errors.lastName.message}
+                    {errors.lastName?.message}
                   </p>
                 )}
               </div>
@@ -415,13 +503,13 @@ export default function SignUpModal({
                 <input
                   id="postalCode"
                   type="text"
-                  className="w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#075835]"
+                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor("postalCode")}`}
                   maxLength={5}
                   {...register("postalCode")}
                 />
-                {errors.postalCode && (
+                {shouldShowError("postalCode") && (
                   <p className="text-xs text-red-600 mt-1">
-                    {errors.postalCode.message}
+                    {errors.postalCode?.message}
                   </p>
                 )}
               </div>
@@ -436,13 +524,29 @@ export default function SignUpModal({
                 <input
                   id="mobileNumber"
                   type="tel"
-                  className="w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#075835]"
+                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor("mobileNumber", mobileAvailability)}`}
                   maxLength={8}
                   {...register("mobileNumber")}
                 />
-                {errors.mobileNumber && (
+                {/* Mobile availability status */}
+                {mobileAvailability.checking && (
+                  <p className="text-xs text-blue-600 mt-1">
+                    Checking mobile number availability...
+                  </p>
+                )}
+                {mobileAvailability.available === true && (
+                  <p className="text-xs text-green-600 mt-1">
+                    {mobileAvailability.message}
+                  </p>
+                )}
+                {isMobileUnavailable() && (
                   <p className="text-xs text-red-600 mt-1">
-                    {errors.mobileNumber.message}
+                    {mobileAvailability.message}
+                  </p>
+                )}
+                {shouldShowError("mobileNumber") && (
+                  <p className="text-xs text-red-600 mt-1">
+                    {errors.mobileNumber?.message}
                   </p>
                 )}
               </div>
@@ -459,12 +563,28 @@ export default function SignUpModal({
               <input
                 id="email"
                 type="email"
-                className="w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#075835]"
+                className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor("email", emailAvailability)}`}
                 {...register("email")}
               />
-              {errors.email && (
+              {/* Email availability status */}
+              {emailAvailability.checking && (
+                <p className="text-xs text-blue-600 mt-1">
+                  Checking email availability...
+                </p>
+              )}
+              {emailAvailability.available === true && (
+                <p className="text-xs text-green-600 mt-1">
+                  {emailAvailability.message}
+                </p>
+              )}
+              {isEmailUnavailable() && (
                 <p className="text-xs text-red-600 mt-1">
-                  {errors.email.message}
+                  {emailAvailability.message}
+                </p>
+              )}
+              {shouldShowError("email") && (
+                <p className="text-xs text-red-600 mt-1">
+                  {errors.email?.message}
                 </p>
               )}
             </div>
@@ -480,12 +600,12 @@ export default function SignUpModal({
               <input
                 id="password"
                 type="password"
-                className="w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#075835]"
+                className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor("password")}`}
                 {...register("password")}
               />
-              {errors.password && (
+              {shouldShowError("password") && (
                 <p className="text-xs text-red-600 mt-1">
-                  {errors.password.message}
+                  {errors.password?.message}
                 </p>
               )}
             </div>
@@ -505,7 +625,7 @@ export default function SignUpModal({
             <div className="pt-4">
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || !canSubmitForm()}
                 className="w-full cursor-pointer bg-[#91C73D] hover:bg-[#7fb32d] disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
               >
                 {isLoading ? (
