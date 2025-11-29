@@ -101,7 +101,7 @@ export default function LandingPage() {
         <h1 className="md:text-[76px] text-[40px] text-white leading-[66px] text-center rosting-script font-[400]">
           {t("landing.mainTitle")}
         </h1>
-        <h2 className="text-white md:text-[60px] md:text-[48px] text-[40px]  md:leading-[66px] leading-[48px] tracking-[0%] text-center max-w-4xl md:mx-auto mx-8 md:py-1 py-0 px-4 font-[800] plus-jakarta-sans">
+        <h2 className="text-white md:text-[60px] text-[40px]  md:leading-[66px] leading-[48px] tracking-[0%] text-center max-w-4xl md:mx-auto mx-8 md:py-1 py-0 px-4 font-[800] plus-jakarta-sans">
           {t("landing.subtitle")}
         </h2>
         <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans">

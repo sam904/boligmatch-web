@@ -82,11 +82,11 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
                     opacity: 1,
                   }}
                 >
-                  <div className="text-[64px] font-[800] text-white figtree md:-mt-2">
+                  <div className="text-[58px] font-[800] text-white figtree leading-none">
                     {stat.number}
                   </div>
-                  <div className="text-center px-2 -mt-4 md:mt-0">
-                    <p className="text-white text-[12px] md:text-[15px] leading-tight text-center max-w-[95px]">
+                  <div className="text-center px-1">
+                    <p className="text-white text-[12px] md:text-[15px] leading-tight text-center max-w-[85px] break-words">
                       {stat.label}
                     </p>
                   </div>

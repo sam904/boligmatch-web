@@ -6,11 +6,11 @@ import { useTranslation } from "react-i18next";
 import Modal from "./Modal";
 import Button from "./Button";
 import Input from "./Input";
-import { useAppSelector } from "../../app/hooks";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { userService } from "../../services/user.service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateUser } from "../../features/auth/authSlice";
 
-// Simplified schema - remove isActive and status since they're not in auth user
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
@@ -45,6 +45,7 @@ export default function UpdateProfileModal({
   const { t } = useTranslation();
   const user = useAppSelector((s) => s.auth.user);
   const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -52,6 +53,7 @@ export default function UpdateProfileModal({
     formState: { errors, isSubmitting },
     reset,
     setError,
+    watch,
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -62,30 +64,46 @@ export default function UpdateProfileModal({
     },
   });
 
-  // Use the existing update mutation
   const updateProfileMutation = useMutation({
     mutationFn: async (data: ProfileFormData) => {
       if (!user?.userId) throw new Error("User ID not found");
       
-      // Use the existing update method with user ID
-      // Add default values for required fields that might be missing from auth user
       return await userService.update({
         id: user.userId,
         ...data,
-        isActive: true, // Default value
-        status: "Active" as const, // Default value
+        isActive: true,
+        status: "Active" as const,
       });
     },
-    onSuccess: () => {
-      // Invalidate user queries to refresh user data
+    onSuccess: (updatedUser, variables) => {
+      console.log('Update successful, updated user:', updatedUser);
+      
+      // Update Redux state with the new data
+      // Use the data from the form that was successfully submitted
+      dispatch(updateUser({
+        firstName: variables.firstName,
+        lastName: variables.lastName,
+        email: variables.email,
+        mobileNo: variables.mobileNo,
+      }));
+      
+      // Invalidate queries to refresh data
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       queryClient.invalidateQueries({ queryKey: ["users"] });
       
       if (onSuccess) onSuccess();
       onClose();
-      reset();
+      
+      // Reset form with new values
+      reset({
+        firstName: variables.firstName,
+        lastName: variables.lastName,
+        email: variables.email,
+        mobileNo: variables.mobileNo,
+      });
     },
     onError: (error: Error) => {
+      console.error('Update error:', error);
       setError("root", {
         type: "manual",
         message: error.message || "Failed to update profile",
@@ -98,6 +116,7 @@ export default function UpdateProfileModal({
   };
 
   const handleClose = () => {
+    // Reset to current user data
     reset({
       firstName: user?.firstName || "",
       lastName: user?.lastName || "",
@@ -106,6 +125,10 @@ export default function UpdateProfileModal({
     });
     onClose();
   };
+
+  // Debug: watch form changes
+  const formData = watch();
+  console.log('Current form data:', formData);
 
   return (
     <Modal
