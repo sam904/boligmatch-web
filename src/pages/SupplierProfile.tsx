@@ -61,6 +61,8 @@ const SupplierProfile = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPartner, setIsPartner] = useState(false);
   console.log("isPartner---->", isPartner);
+  
+  
 
   useEffect(() => {
     const userData = localStorage.getItem("bm_user");
@@ -84,6 +86,8 @@ const SupplierProfile = () => {
       return null;
     }
   };
+
+  
 
   useEffect(() => {
     const partnerData = localStorage.getItem("bm_partner");
@@ -348,16 +352,16 @@ const SupplierProfile = () => {
     return partnerData?.imageUrl1 || partnerData?.thumbnail || supplierProfile;
   };
 
-  const getServices = () => {
-    if (!partnerData?.textField3) return [];
-    const raw = String(partnerData.textField3 || "");
-    const normalized = raw.replace(/<\/?br\s*\/?>(\r?\n)?/gi, "\n");
-    return normalized
-      .split("\n")
-      .map((s: string) => s.trim())
-      .filter((s: string) => s.length > 0)
-      .map((s: string) => s.replace(/^•\s*/, ""));
-  };
+  // const getServices = () => {
+  //   if (!partnerData?.textField3) return [];
+  //   const raw = String(partnerData.textField3 || "");
+  //   const normalized = raw.replace(/<\/?br\s*\/?>(\r?\n)?/gi, "\n");
+  //   return normalized
+  //     .split("\n")
+  //     .map((s: string) => s.trim())
+  //     .filter((s: string) => s.length > 0)
+  //     .map((s: string) => s.replace(/^•\s*/, ""));
+  // };
 
   // Parse references from textField4
   const getReferences = () => {
@@ -399,6 +403,35 @@ const SupplierProfile = () => {
   const reviews: any[] = Array.isArray(partnerData?.testImo)
     ? partnerData.testImo.filter((r: any) => r && r.isDisplayed)
     : [];
+
+    const renderServicesContent = () => {
+  if (!partnerData?.textField3) {
+    return (
+      <ul className="services-list">
+        <li className="service-item">
+          <span className="bullet-point"></span>
+          {t("supplierProfile.servicesFallback.fixingIssues")}
+        </li>
+        <li className="service-item">
+          <span className="bullet-point"></span>
+          {t("supplierProfile.servicesFallback.smartHome")}
+        </li>
+      </ul>
+    );
+  }
+
+  // Create a safe HTML object
+  const createMarkup = () => {
+    return { __html: partnerData.textField3 };
+  };
+
+  return (
+    <div 
+      className="services-html-content"
+      dangerouslySetInnerHTML={createMarkup()}
+    />
+  );
+};
 
   return (
     <>
@@ -627,49 +660,27 @@ const SupplierProfile = () => {
                 />
               </div>
 
-              <div
-                className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] p-[53px_34px] gap-[10px] flex flex-col items-center justify-start"
-                style={{
-                  background:
-                    "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
-                }}
-              >
-                <img
-                  src={servicesImg}
-                  alt="Services"
-                  className="w-[88px] h-[77px] select-none"
-                />
+               <div
+  className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] p-[53px_34px] gap-[10px] flex flex-col items-center justify-start"
+  style={{
+    background:
+      "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
+  }}
+>
+  <img
+    src={servicesImg}
+    alt="Services"
+    className="w-[88px] h-[77px] select-none"
+  />
 
-                <h2 className="text-white text-[28px] font-[700] py-4">
-                  {t("supplierProfile.servicesTitle")}
-                </h2>
+  <h2 className="text-white text-[28px] font-[700] py-4">
+    {t("supplierProfile.servicesTitle")}
+  </h2>
 
-                <ul className="text-white list-none space-y-2 w-full text-left">
-                  {getServices().length > 0 ? (
-                    getServices().map((service: string, idx: number) => (
-                      <li
-                        key={idx}
-                        className="relative pl-5 line-clamp-2 overflow-hidden leading-snug"
-                      >
-                        <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-                        {service}
-                      </li>
-                    ))
-                  ) : (
-                    <>
-                      <li className="relative pl-5 leading-snug">
-                        <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-                        {t("supplierProfile.servicesFallback.fixingIssues")}
-                      </li>
-                      <li className="relative pl-5 leading-snug">
-                        <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-                        {t("supplierProfile.servicesFallback.smartHome")}
-                      </li>
-                    </>
-                  )}
-                </ul>
-              </div>
-
+  <div className="text-white w-full text-left services-container">
+    {renderServicesContent()}
+  </div>
+</div>
               <div className="bg-[#0E3E38] rounded-2xl p-6 md:w-[403px] w-full md:h-[432px] h-auto">
                 <div className="flex flex-col items-center gap-2 mb-2">
                   <img src="/src/assets/supplierProfile/gallery.png" alt="" />
