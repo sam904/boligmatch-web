@@ -14,6 +14,7 @@ import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
+import circlePartner from '/src/assets/userImages/circlePartner.svg';
 import {
   showRecommendationErrorToast,
   showRecommendationSuccessToast,
@@ -627,17 +628,16 @@ const SupplierProfile = () => {
                 }}
               >
                 <div
-                  className="relative flex flex-col items-center justify-center"
-                  style={{
-                    width: "300px",
-                    height: "300px",
-                    backgroundImage:
-                      "url('/src/assets/userImages/circlePartner.svg')",
-                    backgroundSize: "contain",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                  }}
-                >
+  className="relative flex flex-col items-center justify-center"
+  style={{
+    width: "300px",
+    height: "300px",
+    backgroundImage: `url(${circlePartner})`,
+    backgroundSize: "contain",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+  }}
+>
                   <h2 className="text-white text-center text-[22px] font-semibold leading-tight">
                     Geografisk <br /> område
                   </h2>
