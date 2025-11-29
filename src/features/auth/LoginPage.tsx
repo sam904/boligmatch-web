@@ -9,14 +9,12 @@ import { Navigate, useLocation } from "react-router-dom";
 import login_cover from "../../../public/login_cover.png";
 import logo_2 from "../../../public/logo_2.svg";
 import { IconEye, IconEyeOff } from "../../components/common/Icons/Index";
-import { CustomCheckbox } from "../../components/common/CheckBox";
 import { useTranslation } from "react-i18next";
 
 export default function LoginPage() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [adminError, setAdminError] = useState<string | null>(null);
   const status = useAppSelector((s) => s.auth.status);
@@ -188,17 +186,6 @@ export default function LoginPage() {
                 {errors.password.message}
               </p>
             )}
-          </div>
-
-          {/* Remember + Forgot */}
-          <div className="flex justify-between items-center text-sm text-gray-600">
-            <label className="flex items-center cursor-pointer">
-              <CustomCheckbox
-                checked={rememberMe}
-                onChange={setRememberMe}
-                label={t("auth.rememberMe") || "Remember for 30 days"}
-              />
-            </label>
           </div>
 
           {/* Login Button */}

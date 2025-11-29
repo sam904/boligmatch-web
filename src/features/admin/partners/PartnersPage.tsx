@@ -2016,6 +2016,11 @@ export default function PartnersPage() {
                 "https://www.trustpilot.com/review/your-business"
               }
             />
+             <ToggleSwitch
+              label={t("common.active") || "Active"}
+              checked={isActiveValue}
+              onChange={(checked) => setValue("isActive", checked)}
+            />
           </div>
         );
       case 2:
@@ -2297,11 +2302,6 @@ export default function PartnersPage() {
                 {t("admin.partners.AddDocument") || "Add Document"} +
               </Button>
             </div>
-            <ToggleSwitch
-              label={t("common.active") || "Active"}
-              checked={isActiveValue}
-              onChange={(checked) => setValue("isActive", checked)}
-            />
           </div>
         );
       case 6:

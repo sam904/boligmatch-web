@@ -9,6 +9,7 @@ import factsImg from "/src/assets/userImages/faktaLogo.svg";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
 import startImg from "/src/assets/userImages/star.png";
 import { useTranslation } from "react-i18next";
+import ScrollToTop from "../../../components/common/ScrollToTop";
 
 function PartnerProfileShortcut({
   partnerData: initialPartnerData,
@@ -93,8 +94,18 @@ function PartnerProfileShortcut({
     fetchPartner();
   }, []);
 
+  const hasTrustPilotUrl =
+    typeof partnerData?.trustPilotUrl === "string" &&
+    partnerData.trustPilotUrl.trim().length > 0;
+
+  const handleOpenTrustPilot = () => {
+    if (!hasTrustPilotUrl) return;
+    window.open(partnerData.trustPilotUrl, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <>
+    <ScrollToTop/>
       <div className="w-full mx-auto -mt-8 md:-mt-10">
         <div className="w-full h-[52vh] md:h-[70vh] lg:h-[80vh] overflow-hidden shadow-lg">
           <img
@@ -105,7 +116,6 @@ function PartnerProfileShortcut({
         </div>
       </div>
       <div className="bg-[#01351f]">
-
         <div className=" p-4 md:p-8">
           <div className="text-center">
             <h2 className="text-[32px] md:text-4xl lg:text-[64px] font-[800] text-white mb-2">
@@ -161,7 +171,11 @@ function PartnerProfileShortcut({
                 </div>
 
                 <div className="left-[25%] flex justify-center pt-2 mt-auto">
-                  <button className="absolute w-[202px] h-[66px] bg-[#95C11F] flex items-center justify-center gap-2 text-white rounded-[11px] px-4 text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]">
+                  <button
+                    type="button"
+                    onClick={handleOpenTrustPilot}
+                    className="absolute w-[202px] h-[66px] bg-[#95C11F] flex items-center justify-center gap-2 text-white rounded-[11px] px-4 text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]"
+                  >
                     <img
                       src={startImg}
                       alt="rating"
@@ -308,7 +322,9 @@ function PartnerProfileShortcut({
                   className="w-[59px] h-[63px] select-none"
                 />
 
-                <h2 className="text-white text-[28px] font-[700] py-4">Fakta</h2>
+                <h2 className="text-white text-[28px] font-[700] py-4">
+                  Fakta
+                </h2>
 
                 <div className="text-white text-sm space-y-2 w-full">
                   {partnerData?.textField2 && (
