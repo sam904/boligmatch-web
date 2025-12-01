@@ -27,7 +27,7 @@ export default function LandingPage() {
       if (rawPartner) {
         const partner = JSON.parse(rawPartner);
         if (partner && partner.roleName === "Partner") {
-          navigate("/partner/statistics", { replace: true });
+          //navigate("/partner/statistics", { replace: true });
         }
       }
     } catch (error) {

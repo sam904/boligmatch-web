@@ -35,15 +35,14 @@ const router = createBrowserRouter([
     path: "/",
     element: <AppLayout />,
     children: [
+       { index: true, element: <LandingPage /> },
       // { index: true, element: <HomePage /> },
       { path: "home-page", element: <HomePage /> },
-      { index: true, element: <LandingPage /> },
+     
       { path: "about", element: <AboutBoligmatch /> },
       { path: "terms", element: <TermsAndConditions /> },
-      { path: "profile", element: <UserDashboardPage /> },
-      { path: "manage-profile", element: <ManageProfile /> },
-      { path: "user-supplier", element: <UserSupplier /> },
-      { path: "supplier-profile", element: <SupplierProfile /> },
+      { path: "becomePartner", element: <PartnerDashboard /> },
+      
       { path: "login", element: <LoginPage /> },
       { path: "*", element: <NotFound /> },
       {
@@ -52,13 +51,36 @@ const router = createBrowserRouter([
       },
     ],
   },
+{
+    path: "/user",
+    element: (<AuthGuard>
+        <RoleGuard roles={["user"]}>
+          <AppLayout />
+        </RoleGuard>
+      </AuthGuard> )
+     ,
+    children: [
+      
+      { path: "profile", element: <UserDashboardPage /> },
+      { path: "manage-profile", element: <ManageProfile /> },
+      { path: "user-supplier", element: <UserSupplier /> },
+      { path: "supplier-profile", element: <SupplierProfile /> },
+      // { path: "profile-shortcut", element: <PartnerProfileShortcut /> },
+      // { path: "search", element: <SearchForPartner /> },
+    ],
+  },
 
   // 🔹 Partner Routes
   {
     path: "/partner",
-    element: <PartnerLayout />,
+    element: (<AuthGuard>
+        <RoleGuard roles={["partner"]}>
+          <PartnerLayout />
+        </RoleGuard>
+      </AuthGuard> )
+     ,
     children: [
-      { index: true, element: <PartnerDashboard /> },
+      
       { path: "dashboard", element: <PartnerDashboard /> },
       { path: "statistics", element: <ParentStatistics /> },
       { path: "documents", element: <PartnerDocuments /> },

@@ -59,8 +59,7 @@ const services = [
 
 export default function ServiceCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
-  console.log('direction', direction)
+
   const [isHovered, setIsHovered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
@@ -85,7 +84,7 @@ export default function ServiceCarousel() {
 
     const interval = setInterval(() => {
       paginate(1);
-    }, 2800); 
+    }, 2800);
 
     return () => clearInterval(interval);
   }, [currentIndex, isHovered, isDragging]);
@@ -105,7 +104,6 @@ export default function ServiceCarousel() {
   };
 
   const paginate = (newDirection: number) => {
-    setDirection(newDirection);
     setCurrentIndex((prevIndex) => {
       let nextIndex = prevIndex + newDirection;
       if (nextIndex < 0) nextIndex = services.length - 1;
@@ -185,7 +183,7 @@ export default function ServiceCarousel() {
           }}
           onDrag={handleDrag}
           onDragEnd={handleDragEnd}
-          style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+          style={{ cursor: isDragging ? "grabbing" : "grab" }}
         >
           {getVisibleCards().map((service) => {
             const position = service.position;
@@ -198,7 +196,7 @@ export default function ServiceCarousel() {
 
             // Responsive card spacing
             const cardSpacing = isMobile ? 240 : 280;
-            
+
             // Calculate x position with drag offset for smooth motion
             const baseX = position * cardSpacing;
             const dragInfluence = isDragging ? dragOffset : 0;
@@ -239,7 +237,6 @@ export default function ServiceCarousel() {
           })}
         </motion.div>
       </div>
-
     </div>
   );
 }

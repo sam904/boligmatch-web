@@ -55,6 +55,7 @@ function UserHeader({
         if (storedPartner) {
           const partner = JSON.parse(storedPartner);
           setPartnerData(partner);
+          console.log('partner',partner)
         }
       } catch (error) {
         console.error("Error parsing partner data:", error);
@@ -76,6 +77,7 @@ function UserHeader({
       if (storedUser) {
         const parsed = JSON.parse(storedUser);
         setUserLocalData(parsed);
+        console.log('parsed',parsed)
       }
     } catch (error) {
       console.error("Error parsing bm_user from localStorage:", error);
@@ -130,13 +132,13 @@ function UserHeader({
 
   // Determine what to display: partner or user
   const isPartner =
-    !!partnerData && (partnerData as any).roleName === "Partner";
+    partnerData ? true:false;
   
   // Prioritize partner if exists, otherwise use user data (from localStorage or Redux)
   const activeUser = !isPartner ? (userLocalData || userData) : null;
   
   const displayName = isPartner
-    ? `${partnerData?.firstName} ${partnerData?.lastName}`
+    ? `${partnerData?.fullName}`
     : activeUser
     ? `${activeUser.firstName} ${activeUser.lastName}`
     : null;
@@ -342,12 +344,12 @@ function UserHeader({
                     </span>
                   </button>
                   {/* Show user-only links when logged in as user */}
-                  {displayName && !isPartner && (
+                  {displayName && (
                     <>
                       <button
                         onClick={() => {
                           setShowSidebar(false);
-                          navigate("/profile");
+                          partnerData ? navigate("/partner/statistics") : navigate("/user/profile")
                         }}
                         className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
@@ -363,7 +365,8 @@ function UserHeader({
                       <button
                         onClick={() => {
                           setShowSidebar(false);
-                          navigate("/manage-profile");
+                          partnerData ? navigate("/partner/manage-profile") : navigate("/user/manage-profile")
+                          
                         }}
                         className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
@@ -409,7 +412,7 @@ function UserHeader({
                           {t("admin.partners.Documents")}
                         </span>
                       </button>
-                      <button
+                      {/* <button
                         onClick={() => {
                           setShowSidebar(false);
                           navigate("/partner/manage-profile");
@@ -424,13 +427,13 @@ function UserHeader({
                           />
                           {t("sidebar.manageProfile")}
                         </span>
-                      </button>
+                      </button> */}
                     </>
                   )}
                   <button
                     onClick={() => {
                       setShowSidebar(false);
-                      navigate("/partner");
+                      navigate("/becomePartner");
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                   >

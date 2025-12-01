@@ -123,6 +123,8 @@ export default function UserModal({
           try {
             localStorage.removeItem("bm_user");
             localStorage.removeItem("bm_partner");
+            localStorage.removeItem("bm_partnerId");
+
           } catch {}
           dispatch(logout());
           onClose();
@@ -147,21 +149,25 @@ export default function UserModal({
         if (isPartner && !isUser) {
           localStorage.removeItem("bm_user");
           localStorage.setItem("bm_partner", JSON.stringify(user));
+          localStorage.setItem("bm_partnerId", JSON.stringify(user.partnerId));
+
           showSuccess("Partner login successful!");
         } else {
           localStorage.removeItem("bm_partner");
+          localStorage.removeItem("bm_partnerId");
+
           localStorage.setItem("bm_user", JSON.stringify(user));
           showSuccess("Login successful!");
         }
 
         const from = (location.state as any)?.from?.pathname;
         const defaultByRole =
-          isPartner && !isUser ? "/partner/statistics" : "/profile";
+          isPartner && !isUser ? "/partner/statistics" : "/user/profile";
         const target = redirectTo ?? from ?? defaultByRole;
         navigate(target, { replace: true });
       } catch (e) {
         const from = (location.state as any)?.from?.pathname;
-        const target = redirectTo ?? from ?? "/profile";
+        const target = redirectTo ?? from ?? "/user/profile";
         navigate(target, { replace: true });
       }
     }

@@ -38,15 +38,34 @@ function PartnerProfileShortcut({
     }
   };
 
-  const getServices = () => {
-    if (!partnerData?.textField3) return [];
-    const raw = String(partnerData.textField3 || "");
-    const normalized = raw.replace(/<\/?br\s*\/?>(\r?\n)?/gi, "\n");
-    return normalized
-      .split("\n")
-      .map((s: string) => s.trim())
-      .filter((s: string) => s.length > 0)
-      .map((s: string) => s.replace(/^•\s*/, ""));
+  // Updated getServices to preserve HTML formatting
+  const renderServicesContent = () => {
+    if (!partnerData?.textField3) {
+      return (
+        <ul className="text-white list-none space-y-2 w-full">
+          <li className="relative pl-5">
+            <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
+            Løsning af fejl og fejlfinding
+          </li>
+          <li className="relative pl-5">
+            <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
+            Intelligente hjemsystemer
+          </li>
+        </ul>
+      );
+    }
+
+    // Create a safe HTML object
+    const createMarkup = () => {
+      return { __html: partnerData.textField3 };
+    };
+
+    return (
+      <div
+        className="services-html-content text-white w-full text-left"
+        dangerouslySetInnerHTML={createMarkup()}
+      />
+    );
   };
 
   const getReferences = () => {
@@ -105,7 +124,7 @@ function PartnerProfileShortcut({
 
   return (
     <>
-    <ScrollToTop/>
+      <ScrollToTop />
       <div className="w-full mx-auto -mt-8 md:-mt-10">
         <div className="w-full h-[52vh] md:h-[70vh] lg:h-[80vh] overflow-hidden shadow-lg">
           <img
@@ -244,30 +263,10 @@ function PartnerProfileShortcut({
                   Services
                 </h2>
 
-                <ul className="text-white list-none space-y-2 w-full">
-                  {getServices().length > 0 ? (
-                    getServices().map((service: string, idx: number) => (
-                      <p
-                        key={idx}
-                        className="relative pl-5 line-clamp-2 overflow-hidden"
-                      >
-                        <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-                        {service}
-                      </p>
-                    ))
-                  ) : (
-                    <>
-                      <li className="relative pl-5">
-                        <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-                        Løsning af fejl og fejlfinding
-                      </li>
-                      <li className="relative pl-5">
-                        <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-                        Intelligente hjemsystemer
-                      </li>
-                    </>
-                  )}
-                </ul>
+                {/* Updated Services Section */}
+                <div className="text-white w-full text-left services-container">
+                  {renderServicesContent()}
+                </div>
               </div>
 
               <div className="bg-[#0E3E38] rounded-2xl p-6 md:w-[403px] w-full md:h-[432px] h-auto">
