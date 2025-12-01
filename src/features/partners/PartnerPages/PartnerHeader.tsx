@@ -5,7 +5,6 @@ import userHeader from "/src/assets/userImages/userHeader.png";
 import UserModal from "../../../components/common/UserModal";
 import LoginChoiceModal from "../../../components/common/LoginChoiceModal";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "../../../app/hooks";
 import { tokenStorage } from "../../../lib/storage";
 import { RxHamburgerMenu } from "react-icons/rx";
 import homeIcon from "/src/assets/userImages/home.png";
@@ -65,13 +64,34 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   const [isMobile, setIsMobile] = useState(false);
   console.log("isMobile", isMobile);
 
-  const partnerData = useAppSelector((state) => state.auth.user);
+ // const partnerData = useAppSelector((state) => state.auth.user);
+ const [partnerData, setPartnerData] = useState<any | null>(null);
   const [partnerLocalData, setPartnerLocalData] = useState<any | null>(null);
   const [userLocalData, setUserLocalData] = useState<any | null>(null);
   console.log("partnerData", partnerData);
 
   const currentLang = i18n.language || "en";
   console.log("currentLang", currentLang);
+ useEffect(() => {
+    const checkPartnerData = () => {
+      try {
+        const storedPartner = localStorage.getItem("bm_partner");
+        if (storedPartner) {
+          const partner = JSON.parse(storedPartner);
+          setPartnerData(partner);
+          console.log('partner',partner)
+        }
+      } catch (error) {
+        console.error("Error parsing partner data:", error);
+      }
+    };
+
+    checkPartnerData();
+
+    // Optional: Listen for storage changes
+    window.addEventListener("storage", checkPartnerData);
+    return () => window.removeEventListener("storage", checkPartnerData);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -149,7 +169,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
 
   const activePartner =
     partnerLocalData && !userLocalData ? partnerLocalData : null;
-
+console.log('activePartner',activePartner)
   const activeUser = !activePartner ? userLocalData || partnerData : null;
 
   const partnerDisplayName = resolveDisplayName(activePartner);
@@ -354,12 +374,12 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     </span>
                   </button>
                   {/* Show user-only links when logged in as user */}
-                  {activeUser && !activePartner && (
+                  {activePartner  && (
                     <>
                       <button
                         onClick={() => {
                           setShowSidebar(false);
-                          navigate("/profile");
+                          navigate("/partner/statistics");
                         }}
                         className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
@@ -375,7 +395,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       <button
                         onClick={() => {
                           setShowSidebar(false);
-                          navigate("/manage-profile");
+                          navigate("/partner/manage-profile");
                         }}
                         className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
@@ -409,7 +429,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                           {t("admin.partners.Documents")}
                         </span>
                       </button>
-                      <button
+                      {/* <button
                         onClick={() => {
                           setShowSidebar(false);
                           navigate("/partner/manage-profile");
@@ -424,13 +444,13 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                           />
                           {t("sidebar.manageProfile")}
                         </span>
-                      </button>
+                      </button> */}
                     </>
                   )}
                   <button
                     onClick={() => {
                       setShowSidebar(false);
-                      navigate("/partner");
+                      navigate("/becomePartner");
                     }}
                     className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                   >

@@ -162,7 +162,7 @@ const UserSupplier = () => {
       const detail = await partnerService.getById(partner.partnerId);
       console.log("Partner detail response:", detail);
       localStorage.setItem("bm_currentPartner", JSON.stringify(detail));
-      navigate("/supplier-profile");
+      navigate("/user/supplier-profile");
     } catch (error) {
       console.error("Error fetching partner details:", error);
       toast.error("Failed to load partner details. Please try again.");

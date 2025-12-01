@@ -161,12 +161,12 @@ export default function UserDashboardPage() {
       console.log("API response for subcategories:", subCategories);
       localStorage.setItem("bm_subcategories", JSON.stringify(subCategories));
       console.log("Stored subcategories in localStorage:", subCategories);
-      navigate("/user-supplier", {
+      navigate("/user/user-supplier", {
         state: { categoryId: category.id, categoryName: category.name },
       });
     } catch (error) {
       console.error("Error fetching subcategories:", error);
-      navigate("/user-supplier", {
+      navigate("/user/user-supplier", {
         state: { categoryId: category.id, categoryName: category.name },
       });
     } finally {
@@ -268,7 +268,7 @@ export default function UserDashboardPage() {
       }
       const detail = await partnerService.getById(favorite.partnerId);
       localStorage.setItem("bm_currentPartner", JSON.stringify(detail));
-      navigate("/supplier-profile");
+      navigate("/user/supplier-profile");
     } catch (error) {
       console.error("Error fetching partner details:", error);
       toast.error("Failed to load partner details. Please try again.");

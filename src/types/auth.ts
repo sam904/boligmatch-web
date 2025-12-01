@@ -15,7 +15,7 @@ export interface AuthUser {
   roleIds: string;
   roleName: string;
   franchiseId?: number;
-  admissionId?: number;
+  partnerId?: number;
   mobileNo?: string;
   isActive?: boolean;
   status?: "Active" | "InActive";

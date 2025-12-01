@@ -63,12 +63,12 @@ function SearchForPartner() {
       console.log("API response for subcategories:", subCategories);
       localStorage.setItem("bm_subcategories", JSON.stringify(subCategories));
       console.log("Stored subcategories in localStorage:", subCategories);
-      navigate("/user-supplier", {
+      navigate("/user/user-supplier", {
         state: { categoryId: category.id, categoryName: category.name },
       });
     } catch (error) {
       console.error("Error fetching subcategories:", error);
-      navigate("/user-supplier", {
+      navigate("/user/user-supplier", {
         state: { categoryId: category.id, categoryName: category.name },
       });
     } finally {
