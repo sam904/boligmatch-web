@@ -556,7 +556,13 @@
     "confirmPasswordRequired": "Please confirm password",
     "passwordsDontMatch": "Passwords don't match",
     "passwordMinLength": "Password must be at least 8 characters",
-    "passwordComplexity": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    "passwordComplexity": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+    "subjectRequired":"Subject is  required",
+    "subjectTooLong":"Subject name must be less than 100 characters",
+    "messageRequired": "Message is required",
+    "invalidEmail":"Invalid email address",
+    "commentTooLong":"comment Too Long must be less than 100 characters"
+    
   },
   "deleteConfirmation": {
     "title": "Confirm Deletion",
@@ -581,6 +587,7 @@
     "acceptButton": "Accept",
     "nameRequired": "Name is required",
     "postalCodeRequired": "Postal code is required",
+    "postalCodeLength":"Postal code must be exactly 4 digits",
     "mobileRequired": "Mobile number is required",
     "emailRequired": "Email is required",
     "emailInvalid": "Invalid email address",
@@ -691,7 +698,9 @@
       "description": "Do you think a friend could use our service? Send them a message here",
       "email": "Email",
       "comment": "Comment",
-      "send": "Send"
+      "send": "Send",
+      "emailPlaceholder": "Enter the email",
+      "commentPlaceholder":"Enter the Comment"
     },
     "contactModal": {
       "title": "Contact us",
@@ -699,7 +708,9 @@
       "subject": "Subject",
       "body": "Description",
       "send": "Send",
-      "contactInfo": "Contact information"
+      "contactInfo": "Contact information",
+      "subjectPlaceholder":"Enter the Subject",
+      "bodyPlaceholder":"Enter the Description"
     },
     "servicesFallback": {
       "fixingIssues": "Troubleshooting and issue resolution",
@@ -717,6 +728,7 @@
       "partnerFallback": "Our partner",
       "description": "If this sounds interesting, click the button below to create a free Boligmatch+ account. Boligmatch+ is a digital platform with a fresh and user-friendly approach where home enthusiasts can discover curated products and services for their home from our many skilled partners.",
       "acceptButton": "Accept recommendation"
+    
     }
   },
   "sidebar": {

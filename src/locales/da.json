@@ -601,6 +601,7 @@
     "acceptButton": "Acceptér",
     "nameRequired": "Navn er påkrævet",
     "postalCodeRequired": "Postnummer er påkrævet",
+    "postalCodeLength":"Postnummer skal være præcis 4 cifre",
     "mobileRequired": "Mobilnummer er påkrævet",
     "emailRequired": "Email er påkrævet",
     "emailInvalid": "Ugyldig email adresse",
@@ -711,7 +712,9 @@
       "description": "Teanker du at en ven kunne gøre brug af vores service, så send en besked til vedkommende her",
       "email": "Email",
       "comment": "Kommentar",
-      "send": "Send"
+      "send": "Send",
+      "emailPlaceholder": "Indtast e-mail",
+      "commentPlaceholder":"Indtast kommentar"
     },
     "contactModal": {
       "title": "Kontakt os",
@@ -719,7 +722,9 @@
       "subject": "Emne",
       "body": "Beskrivelse",
       "send": "Send",
-      "contactInfo": "Kontaktinformation"
+      "contactInfo": "Kontaktinformation",
+      "subjectPlaceholder":"Indtast emnet her",
+      "bodyPlaceholder":"Indtast beskrivelsen her"
     },
     "servicesFallback": {
       "fixingIssues": "Løsning af fejl og fejlfinding",
@@ -737,6 +742,7 @@
       "partnerFallback": "Vores partner",
       "description": "Hvis det har din interesse, så klik på knappen herunder og opret dig nemt og gratis som bruger på Boligmatch+. Boligmatch+ er en digital platform med en nytænkende og brugervenlig tilgang, hvor alle boliginteresserede kan finde produkter og services til hjemmet blandt vores mange dygtige partnere.",
       "acceptButton": "Accepter anbefaling"
+     
     }
   },
   "sidebar": {
