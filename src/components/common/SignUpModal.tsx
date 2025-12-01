@@ -336,7 +336,7 @@ export default function SignUpModal({
       .regex(/^[0-9]+$/, "Postal code must be numeric")
       .refine(
         (val) => val.length === 4,
-        "Postal code must be exactly 4 digits"
+       t("signup.postalCodeLength")
       ),
     mobileNumber: z
       .string()
