@@ -24,8 +24,12 @@ export default function LoginPage() {
   const loc = useLocation();
 
   const schema = z.object({
-    userName: z.string().min(1, t("validation.usernameRequired") || "Username/Email is required"),
-    password: z.string().min(1, t("validation.passwordRequired") || "Password is required"),
+    userName: z
+      .string()
+      .min(1, t("validation.usernameRequired") || "Username/Email is required"),
+    password: z
+      .string()
+      .min(1, t("validation.passwordRequired") || "Password is required"),
   });
 
   const {
@@ -58,7 +62,10 @@ export default function LoginPage() {
 
   if (token && user && user.roleName.toLowerCase() === "admin") {
     return (
-      <Navigate to={(loc.state as any)?.from?.pathname ?? "/admin"} replace />
+      <Navigate
+        to={(loc.state as any)?.from?.pathname ?? "/dashboard"}
+        replace
+      />
     );
   }
 

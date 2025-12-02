@@ -30,7 +30,9 @@ export const partnerService = {
   
   update: (data: PartnerDto) => 
     http.put<Partner>('/Partner/updatePartner', data),
-  
+ 
+   updateProfile: (data: PartnerDto) => 
+    http.put<Partner>('/Partner/updatePartnerProfile', data),
   refetchPartner: (id: number) => 
     http.get<{ output: Partner }>(`/Partner/getPartnerById/${id}`),  
   

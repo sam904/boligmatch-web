@@ -4,7 +4,11 @@ import PartnerHeader from "./PartnerHeader";
 import Footer from "../../../pages/Footer";
 import { useTranslation } from "react-i18next";
 import { partnerService } from "../../../services/partner.service";
-import { showSignupErrorToast, showSignupSuccessToast } from "../../../components/common/ToastBanner";
+import { userService } from "../../../services/user.service";
+import {
+  showSignupErrorToast,
+  showSignupSuccessToast,
+} from "../../../components/common/ToastBanner";
 import type { PartnerDto } from "../../../types/partner";
 import { useNavigate } from "react-router-dom";
 
@@ -43,13 +47,13 @@ function PartnerManageProfile() {
   // Filter invalid characters from name input
   const filterNameInput = (value: string): string => {
     // Remove invalid characters, keep only letters, spaces, hyphens, apostrophes, and periods
-    return value.replace(/[^a-zA-ZÀ-ÿÆØÅæøå\s'\-\.]/g, '');
+    return value.replace(/[^a-zA-ZÀ-ÿÆØÅæøå\s'\-\.]/g, "");
   };
 
   // Filter invalid characters from business name input
   const filterBusinessNameInput = (value: string): string => {
     // Remove invalid characters, keep letters, numbers, spaces, hyphens, apostrophes, periods, ampersands, commas, and parentheses
-    return value.replace(/[^a-zA-ZÀ-ÿÆØÅæøå0-9\s'\-\.&,()]/g, '');
+    return value.replace(/[^a-zA-ZÀ-ÿÆØÅæøå0-9\s'\-\.&,()]/g, "");
   };
 
   useEffect(() => {
@@ -84,26 +88,62 @@ function PartnerManageProfile() {
     if (!id) return;
     setPartnerId(id);
 
-    const fetchPartnerProfile = async () => {
-      try {
-        const response: any = await partnerService.getById(id);
-        const partner = response?.output ?? response;
-        const derivedFullName = partner?.fullName ?? partner?.businessName ?? "";
-
-        setFullName(derivedFullName);
-        setBusinessName(partner?.businessName ?? "");
-        setPhone(partner?.mobileNo ?? "");
-        setEmail(partner?.email ?? "");
-        setAddress(partner?.address ?? "");
-        setCategoryId(partner?.categoryId ?? null);
-        setCvr(partner?.cvr ?? null);
-      } catch (error) {
-        console.error("Failed to fetch partner profile:", error);
-      }
-    };
-
     fetchPartnerProfile();
   }, []);
+  const fetchPartnerProfile = async () => {
+    try {
+      const token = localStorage.getItem("bm_access");
+      if (!token || !token.includes(".")) return null;
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const payload = JSON.parse(window.atob(base64));
+      const decodedPartnerId = Number(payload?.partnerId);
+      const response: any = await partnerService.getById(
+        decodedPartnerId ? decodedPartnerId : 0
+      );
+      const partner = response?.output ?? response;
+      const derivedFullName = partner?.fullName ?? partner?.businessName ?? "";
+
+      setFullName(derivedFullName);
+      setBusinessName(partner?.businessName ?? "");
+      setPhone(partner?.mobileNo ?? "");
+      setEmail(partner?.email ?? "");
+      setAddress(partner?.address ?? "");
+      setCategoryId(partner?.categoryId ?? null);
+      setCvr(partner?.cvr ?? null);
+    } catch (error) {
+      console.error("Failed to fetch partner profile:", error);
+    }
+  };
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!newPassword) {
+      showSignupErrorToast(t("manageProfile.toast.passwordRequired"));
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      showSignupErrorToast(t("manageProfile.toast.passwordMismatch"));
+      return;
+    }
+
+    try {
+      // Assuming you have a resetPassword method in userService
+      // If not, you'll need to add it similar to userService
+      await userService.resetUserPassword({
+        email: email,
+        newPassword: newPassword,
+      });
+
+      showSignupSuccessToast(t("manageProfile.toast.passwordUpdateSuccess"));
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err) {
+      console.error("Failed to reset password", err);
+      showSignupErrorToast(t("manageProfile.toast.passwordUpdateError"));
+    }
+  };
 
   return (
     <div className="min-h-[100vh] bg-[#01351f]">
@@ -124,17 +164,19 @@ function PartnerManageProfile() {
           className="mt-6 space-y-4"
           onSubmit={async (e) => {
             e.preventDefault();
-            
+
             // Validate name fields
             if (fullName.trim() && !isValidName(fullName)) {
               showSignupErrorToast(t("manageProfile.toast.fullNameInvalid"));
               return;
             }
             if (!isValidBusinessName(businessName)) {
-              showSignupErrorToast(t("manageProfile.toast.businessNameInvalid"));
+              showSignupErrorToast(
+                t("manageProfile.toast.businessNameInvalid")
+              );
               return;
             }
-            
+
             if (!partnerId || !categoryId) {
               showSignupErrorToast("Partner data is incomplete.");
               return;
@@ -161,7 +203,8 @@ function PartnerManageProfile() {
             };
 
             try {
-              await partnerService.update(payload);
+              await partnerService.updateProfile(payload);
+              await fetchPartnerProfile();
               showSignupSuccessToast("Partner profile updated successfully");
             } catch (error) {
               console.error("Failed to update partner profile", error);
@@ -175,9 +218,10 @@ function PartnerManageProfile() {
                 {t("partnerDetails.fullName") || t("manageProfile.firstName")}
               </label>
               <input
-                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
+                className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none  disabled:bg-gray-200 disabled:text-gray-500"
                 value={fullName}
                 onChange={(e) => setFullName(filterNameInput(e.target.value))}
+                disabled
               />
             </div>
             <div>
@@ -187,7 +231,9 @@ function PartnerManageProfile() {
               <input
                 className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none"
                 value={businessName}
-                onChange={(e) => setBusinessName(filterBusinessNameInput(e.target.value))}
+                onChange={(e) =>
+                  setBusinessName(filterBusinessNameInput(e.target.value))
+                }
               />
             </div>
             <div>
@@ -238,13 +284,7 @@ function PartnerManageProfile() {
           </div>
         </form>
 
-        <form
-          className="mt-8 space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            // Intentionally left blank; integrate API logic when ready.
-          }}
-        >
+        <form className="mt-8 space-y-4" onSubmit={handlePasswordChange}>
           <h2 className="text-white text-[14px] font-[700]">
             {t("manageProfile.changePasswordTitle")}
           </h2>

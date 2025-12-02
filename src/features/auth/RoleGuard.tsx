@@ -17,7 +17,7 @@ export default function RoleGuard({ roles, children }: { roles: string[]; childr
   console.log('bmUser',bmUser)
   console.log('bmPartner',bmPartner)
   const user = storeUser || bmUser || bmPartner;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/" replace />;
   const hasRole = roles.some(r => r.toLowerCase() === (user.roleName?.toLowerCase?.() ?? ''));
   if (!hasRole) return <Navigate to="/" replace />;
   return <>{children}</>;

@@ -85,6 +85,8 @@ const router = createBrowserRouter([
       { path: "statistics", element: <ParentStatistics /> },
       { path: "documents", element: <PartnerDocuments /> },
       { path: "manage-profile", element: <PartnerManageProfile /> },
+       { path: "user-supplier", element: <UserSupplier /> },
+        { path: "supplier-profile", element: <SupplierProfile /> },
       // { path: "profile-shortcut", element: <PartnerProfileShortcut /> },
       // { path: "search", element: <SearchForPartner /> },
     ],

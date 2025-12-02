@@ -19,9 +19,29 @@ function SearchForPartner() {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [partnerData, setPartnerData] = useState<any | null>(null);
   const calledRef = useRef(false);
   const navigate = useNavigate();
+  useEffect(() => {
+    const checkPartnerData = () => {
+      try {
+        const storedPartner = localStorage.getItem("bm_partner");
+        if (storedPartner) {
+          const partner = JSON.parse(storedPartner);
+          setPartnerData(partner);
+          console.log("partner", partner);
+        }
+      } catch (error) {
+        console.error("Error parsing partner data:", error);
+      }
+    };
 
+    checkPartnerData();
+
+    // Optional: Listen for storage changes
+    window.addEventListener("storage", checkPartnerData);
+    return () => window.removeEventListener("storage", checkPartnerData);
+  }, []);
   useEffect(() => {
     if (calledRef.current) {
       return;
@@ -63,14 +83,22 @@ function SearchForPartner() {
       console.log("API response for subcategories:", subCategories);
       localStorage.setItem("bm_subcategories", JSON.stringify(subCategories));
       console.log("Stored subcategories in localStorage:", subCategories);
-      navigate("/user/user-supplier", {
-        state: { categoryId: category.id, categoryName: category.name },
-      });
+      partnerData
+        ? navigate("/partner/user-supplier", {
+            state: { categoryId: category.id, categoryName: category.name },
+          })
+        : navigate("/user/user-supplier", {
+            state: { categoryId: category.id, categoryName: category.name },
+          });
     } catch (error) {
       console.error("Error fetching subcategories:", error);
-      navigate("/user/user-supplier", {
-        state: { categoryId: category.id, categoryName: category.name },
-      });
+      partnerData
+        ? navigate("/partner/user-supplier", {
+            state: { categoryId: category.id, categoryName: category.name },
+          })
+        : navigate("/user/user-supplier", {
+            state: { categoryId: category.id, categoryName: category.name },
+          });
     } finally {
       setLoading(false);
     }
@@ -82,9 +110,7 @@ function SearchForPartner() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="text-white text-lg">
-                {t("common.loading")}
-              </div>
+              <div className="text-white text-lg">{t("common.loading")}</div>
             </div>
           ) : (
             <>

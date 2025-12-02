@@ -55,7 +55,7 @@ function UserHeader({
         if (storedPartner) {
           const partner = JSON.parse(storedPartner);
           setPartnerData(partner);
-          console.log('partner',partner)
+          console.log("partner", partner);
         }
       } catch (error) {
         console.error("Error parsing partner data:", error);
@@ -77,7 +77,7 @@ function UserHeader({
       if (storedUser) {
         const parsed = JSON.parse(storedUser);
         setUserLocalData(parsed);
-        console.log('parsed',parsed)
+        console.log("parsed", parsed);
       }
     } catch (error) {
       console.error("Error parsing bm_user from localStorage:", error);
@@ -130,15 +130,46 @@ function UserHeader({
     } catch {}
   }, []);
 
-  // Determine what to display: partner or user
-  const isPartner =
-    partnerData ? true:false;
-  
+  // Add this function to determine user type
+  const getUserType = () => {
+    // Check for partner-specific data first
+    const partnerToken = localStorage.getItem("bm_access");
+    const storedPartner = localStorage.getItem("bm_partner");
+
+    // If we have partner data or we're on a partner route
+    if (
+      storedPartner ||
+      (partnerToken && window.location.pathname.includes("/partner/"))
+    ) {
+      return "partner";
+    }
+
+    // Check for user data
+    const userToken = localStorage.getItem("bm_access");
+    const storedUser = localStorage.getItem("bm_user");
+
+    if (
+      storedUser ||
+      (userToken && !window.location.pathname.includes("/partner/"))
+    ) {
+      return "user";
+    }
+
+    return null;
+  };
+
+  // Then use it in your component
+  const userType = getUserType();
+  const isPartner = userType === "partner";
+  const isUser = userType === "user";
+
   // Prioritize partner if exists, otherwise use user data (from localStorage or Redux)
-  const activeUser = !isPartner ? (userLocalData || userData) : null;
-  
+  const activeUser = !isPartner ? userLocalData || userData : null;
+
   const displayName = isPartner
-    ? `${partnerData?.fullName}`
+    ? partnerData?.firstName
+      ? `${partnerData?.firstName} ${partnerData?.lastName}`
+      : `${partnerData?.businessName}`
     : activeUser
     ? `${activeUser.firstName} ${activeUser.lastName}`
     : null;
@@ -180,7 +211,7 @@ function UserHeader({
                     <button
                       className="p-2 text-white transition-all duration-300 ease-out hover:scale-110 active:scale-95 hover:opacity-80"
                       onClick={() => setIsChoiceModalOpen(true)}
-                      style={{ willChange: 'transform' }}
+                      style={{ willChange: "transform" }}
                     >
                       <img
                         src={userHeader}
@@ -349,7 +380,13 @@ function UserHeader({
                       <button
                         onClick={() => {
                           setShowSidebar(false);
-                          partnerData ? navigate("/partner/statistics") : navigate("/user/profile")
+                          if (isPartner) {
+                            navigate("/partner/statistics");
+                          } else if (isUser) {
+                            navigate("/user/profile");
+                          } else {
+                            navigate("/");
+                          }
                         }}
                         className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
@@ -365,8 +402,14 @@ function UserHeader({
                       <button
                         onClick={() => {
                           setShowSidebar(false);
-                          partnerData ? navigate("/partner/manage-profile") : navigate("/user/manage-profile")
-                          
+                          if (isPartner) {
+                            navigate("/partner/manage-profile");
+                          } else if (isUser) {
+                            navigate("/user/manage-profile");
+                          } else {
+                            // Show login modal or navigate to home
+                            setIsChoiceModalOpen(true);
+                          }
                         }}
                         className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >

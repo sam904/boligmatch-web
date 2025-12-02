@@ -64,22 +64,22 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   const [isMobile, setIsMobile] = useState(false);
   console.log("isMobile", isMobile);
 
- // const partnerData = useAppSelector((state) => state.auth.user);
- const [partnerData, setPartnerData] = useState<any | null>(null);
+  // const partnerData = useAppSelector((state) => state.auth.user);
+  const [partnerData, setPartnerData] = useState<any | null>(null);
   const [partnerLocalData, setPartnerLocalData] = useState<any | null>(null);
   const [userLocalData, setUserLocalData] = useState<any | null>(null);
   console.log("partnerData", partnerData);
 
   const currentLang = i18n.language || "en";
   console.log("currentLang", currentLang);
- useEffect(() => {
+  useEffect(() => {
     const checkPartnerData = () => {
       try {
         const storedPartner = localStorage.getItem("bm_partner");
         if (storedPartner) {
           const partner = JSON.parse(storedPartner);
           setPartnerData(partner);
-          console.log('partner',partner)
+          console.log("partner", partner);
         }
       } catch (error) {
         console.error("Error parsing partner data:", error);
@@ -134,7 +134,9 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
     // Load partner from localStorage (bm_partner) so header/sidebar stay logged-in after reload
     try {
       const storedPartner =
-        typeof window !== "undefined" ? localStorage.getItem("bm_partner") : null;
+        typeof window !== "undefined"
+          ? localStorage.getItem("bm_partner")
+          : null;
       if (storedPartner) {
         const parsed = JSON.parse(storedPartner);
         setPartnerLocalData(parsed);
@@ -169,7 +171,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
 
   const activePartner =
     partnerLocalData && !userLocalData ? partnerLocalData : null;
-console.log('activePartner',activePartner)
+  console.log("activePartner", activePartner);
   const activeUser = !activePartner ? userLocalData || partnerData : null;
 
   const partnerDisplayName = resolveDisplayName(activePartner);
@@ -211,7 +213,7 @@ console.log('activePartner',activePartner)
                     <button
                       className="p-2 text-white transition-all duration-300 ease-out hover:scale-110 active:scale-95 hover:opacity-80"
                       onClick={() => setIsChoiceModalOpen(true)}
-                      style={{ willChange: 'transform' }}
+                      style={{ willChange: "transform" }}
                     >
                       <img
                         src={userHeader}
@@ -327,7 +329,7 @@ console.log('activePartner',activePartner)
                         setShowSidebar(false);
                         setIsChoiceModalOpen(true);
                       }}
-                      style={{ willChange: 'transform' }}
+                      style={{ willChange: "transform" }}
                     >
                       {t("sidebar.notLogIn")}
                     </button>
@@ -374,7 +376,7 @@ console.log('activePartner',activePartner)
                     </span>
                   </button>
                   {/* Show user-only links when logged in as user */}
-                  {activePartner  && (
+                  {activePartner && (
                     <>
                       <button
                         onClick={() => {
@@ -396,6 +398,43 @@ console.log('activePartner',activePartner)
                         onClick={() => {
                           setShowSidebar(false);
                           navigate("/partner/manage-profile");
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <span className="flex items-center gap-2 cursor-pointer">
+                          <img
+                            src={manageProfileIcon}
+                            alt=""
+                            className="w-[30px] h-[30px]"
+                          />
+                          {t("sidebar.manageProfile")}
+                        </span>
+                      </button>
+                    </>
+                  )}
+
+                  {activeUser && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setShowSidebar(false);
+                          navigate("/user/profile");
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <span className="flex items-center gap-2 cursor-pointer">
+                          <img
+                            src={myBoligmatchIcon}
+                            alt=""
+                            className="w-[30px] h-[30px]"
+                          />
+                          {t("sidebar.mitBoligmatch")}
+                        </span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowSidebar(false);
+                          navigate("/user/manage-profile");
                         }}
                         className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
                       >
@@ -552,7 +591,7 @@ console.log('activePartner',activePartner)
                       setIsChoiceModalOpen(true);
                     }}
                     className="w-full text-left px-3 py-2.5 text-white hover:bg-white/10 rounded-lg transition-all duration-300 ease-out hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 cursor-pointer"
-                    style={{ willChange: 'transform' }}
+                    style={{ willChange: "transform" }}
                   >
                     <svg
                       className="w-4 h-4"
