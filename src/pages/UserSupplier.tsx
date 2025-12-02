@@ -112,7 +112,7 @@ const UserSupplier = () => {
   const [partnersLoading, setPartnersLoading] = useState(false);
   const [loadingPartnerId, setLoadingPartnerId] = useState<number | null>(null);
   const mobileScrollRef = useRef<HTMLDivElement>(null);
-
+  const [partnerData, setPartnerData] = useState<any | null>(null);
   // Get the background image for the active subcategory
   const getBackgroundImage = () => {
     if (!active) return userDashboard;
@@ -129,7 +129,26 @@ const UserSupplier = () => {
       navigate("/");
     }
   }, []);
+  useEffect(() => {
+    const checkPartnerData = () => {
+      try {
+        const storedPartner = localStorage.getItem("bm_partner");
+        if (storedPartner) {
+          const partner = JSON.parse(storedPartner);
+          setPartnerData(partner);
+          console.log("partner", partner);
+        }
+      } catch (error) {
+        console.error("Error parsing partner data:", error);
+      }
+    };
 
+    checkPartnerData();
+
+    // Optional: Listen for storage changes
+    window.addEventListener("storage", checkPartnerData);
+    return () => window.removeEventListener("storage", checkPartnerData);
+  }, []);
   // Load subcategories from localStorage
   useEffect(() => {
     const loadSubCategories = () => {
@@ -162,7 +181,9 @@ const UserSupplier = () => {
       const detail = await partnerService.getById(partner.partnerId);
       console.log("Partner detail response:", detail);
       localStorage.setItem("bm_currentPartner", JSON.stringify(detail));
-      navigate("/user/supplier-profile");
+      partnerData
+        ? navigate("/partner/supplier-profile")
+        : navigate("/user/supplier-profile");
     } catch (error) {
       console.error("Error fetching partner details:", error);
       toast.error("Failed to load partner details. Please try again.");
@@ -229,7 +250,7 @@ const UserSupplier = () => {
       `}</style>
       <UserHeader />
       {/* <div className="absolute inset-0 bg-gradient-to-b from-[rgba(22,89,51,0)] to-[#043428] pointer-events-none"  /> */}
-      <div            
+      <div
         className="pointer-events-none absolute inset-x-0 bottom-0 top-20 md:top-auto md:h-[400px] h-[300px]"
         style={{
           background:
@@ -241,7 +262,7 @@ const UserSupplier = () => {
           <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
             {categoryName}
           </h1>
-        </div> 
+        </div>
       )}
       {/* Mobile: horizontal scroll bar styled like the screenshot */}
       <section className="absolute top-72 md:bottom-0 left-1/2 transform -translate-x-1/2 px-4 w-full md:hidden">

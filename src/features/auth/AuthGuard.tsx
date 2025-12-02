@@ -15,7 +15,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     if (rawPartner) bmPartner = JSON.parse(rawPartner);
   } catch {}
   const isAuthed = !!token || !!bmUser || !!bmPartner;
-  if (!isAuthed) return <Navigate to="/login" state={{ from: loc }} replace />;
+  if (!isAuthed) return <Navigate to="/" state={{ from: loc }} replace />;
   return <>{children}</>;
 }
 
