@@ -2016,7 +2016,7 @@ export default function PartnersPage() {
                 "https://www.trustpilot.com/review/your-business"
               }
             />
-             <ToggleSwitch
+            <ToggleSwitch
               label={t("common.active") || "Active"}
               checked={isActiveValue}
               onChange={(checked) => setValue("isActive", checked)}
@@ -2109,11 +2109,16 @@ export default function PartnersPage() {
                   height="min-h-[120px] sm:min-h-[150px]"
                 />
               </div>
-              <Input
-                label={t("admin.partners.TextField4") || "Text Fields 4"}
-                error={errors.textField4?.message}
-                {...register("textField4")}
-              />
+              <div>
+                <RichTextEditor
+                  label={t("admin.partners.TextField4") || "Text Fields 4"}
+                  value={watch("textField4") || ""}
+                  onChange={(value) => setValue("textField4", value)}
+                  error={errors.textField4?.message}
+                  placeholder="Enter formatted text for Text Field 4..."
+                  height="min-h-[120px] sm:min-h-[150px]"
+                />
+              </div>
               <Input
                 label={t("admin.partners.TextField5") || "Text Fields 5"}
                 error={errors.textField5?.message}
@@ -2160,6 +2165,8 @@ export default function PartnersPage() {
                 onPreview={handleImagePreview}
                 folder="partners/images"
                 error={errors.imageUrl3?.message}
+                exactDimensions={{ width: 439, height: 468 }}
+                showDimensionValidation={true}
               />
               <ImageUpload
                 label={t("admin.partners.ImageUpload4") || "Image Upload 4"}
