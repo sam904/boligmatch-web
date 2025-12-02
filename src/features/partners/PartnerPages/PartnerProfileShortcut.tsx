@@ -9,6 +9,7 @@ import factsImg from "/src/assets/userImages/faktaLogo.svg";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
 import startImg from "/src/assets/userImages/star.png";
 import { useTranslation } from "react-i18next";
+import circlePartner from "/src/assets/userImages/circlePartner.svg";
 import ScrollToTop from "../../../components/common/ScrollToTop";
 
 function PartnerProfileShortcut({
@@ -36,6 +37,29 @@ function PartnerProfileShortcut({
     } catch {
       return null;
     }
+  };
+
+  // Update the getReferences function to handle HTML
+  const renderReferencesContent = () => {
+    if (!partnerData?.textField4) {
+      return (
+        <div className="text-white text-center py-4">
+          <p>Ingen referencer tilgængelige</p>
+        </div>
+      );
+    }
+
+    // Create a safe HTML object
+    const createMarkup = () => {
+      return { __html: partnerData.textField4 };
+    };
+
+    return (
+      <div
+        className="references-html-content text-white w-full text-left"
+        dangerouslySetInnerHTML={createMarkup()}
+      />
+    );
   };
 
   // Updated getServices to preserve HTML formatting
@@ -66,14 +90,6 @@ function PartnerProfileShortcut({
         dangerouslySetInnerHTML={createMarkup()}
       />
     );
-  };
-
-  const getReferences = () => {
-    if (!partnerData?.textField4) return [];
-    return partnerData.textField4
-      .split("\n")
-      .map((s: string) => s.trim())
-      .filter((s: string) => s.length > 0);
   };
 
   const renderRating = (
@@ -217,8 +233,7 @@ function PartnerProfileShortcut({
                   style={{
                     width: "300px",
                     height: "300px",
-                    backgroundImage:
-                      "url('/src/assets/userImages/circlePartner.svg')",
+                    backgroundImage: `url(${circlePartner})`,
                     backgroundSize: "contain",
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
@@ -276,16 +291,8 @@ function PartnerProfileShortcut({
                     Referencer
                   </h3>
                 </div>
-                <div className="text-white">
-                  {getReferences().length > 0 ? (
-                    getReferences().map((ref: string, idx: number) => (
-                      <p key={idx} className="mb-1">
-                        {ref}
-                      </p>
-                    ))
-                  ) : (
-                    <p>{partnerData?.textField4}</p>
-                  )}
+                <div className="text-white references-container">
+                  {renderReferencesContent()}
                 </div>
               </div>
             </div>
@@ -337,7 +344,7 @@ function PartnerProfileShortcut({
                 </div>
               </div>
 
-              <div className="rounded-[10px] flex justify-center items-center overflow-hidden md:w-[403px] w-full md:h-[432px] h-auto">
+              <div className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] overflow-hidden">
                 <img
                   src={
                     partnerData?.imageUrl3 ||

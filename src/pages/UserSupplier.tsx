@@ -323,7 +323,7 @@ const UserSupplier = () => {
       </section>
 
       {/* Desktop: keep existing layout and styling unchanged */}
-      <section className="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex md:flex-nowrap items-center justify-center gap-4 w-full p-2">
+      <section className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex md:flex-nowrap items-center justify-center gap-4 w-full p-2">
         {loading ? (
           <div className="text-white">
             {t("userSupplier.loadingSubcategories")}
@@ -364,7 +364,7 @@ const UserSupplier = () => {
         )}
       </section>
 
-      <section className="bg-[#01351f] w-full flex justify-center py-12">
+      <section className="bg-[#01351f] w-full flex justify-center py-30">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl px-12 w-full">
           {partnersLoading ? (
             <div className="col-span-3 flex justify-center items-center h-64">

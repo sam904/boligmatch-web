@@ -63,7 +63,7 @@ export default function LoginPage() {
   if (token && user && user.roleName.toLowerCase() === "admin") {
     return (
       <Navigate
-        to={(loc.state as any)?.from?.pathname ?? "/dashboard"}
+        to={(loc.state as any)?.from?.pathname ?? "/admin/dashboard"}
         replace
       />
     );
