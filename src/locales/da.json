@@ -577,7 +577,14 @@
     "confirmPasswordRequired": "Bekræft venligst adgangskode",
     "passwordsDontMatch": "Adgangskoder matcher ikke",
     "passwordMinLength": "Adgangskode skal være mindst 8 tegn",
-    "passwordComplexity": "Adgangskode skal indeholde mindst ét stort bogstav, ét lille bogstav, ét tal og ét specialtegn"
+    "passwordComplexity": "Adgangskode skal indeholde mindst ét stort bogstav, ét lille bogstav, ét tal og ét specialtegn",
+    "subjectRequired": "Emne er påkrævet",
+    "subjectTooLong": "Emnenavn skal være mindre end 100 tegn",
+    "messageRequired": "Besked er påkrævet",
+    "descriptionRequired": "Beskrivelse er påkrævet",
+    "invalidEmail": "Ugyldig e-mailadresse",
+    "commentTooLong": "Kommentar er for lang - skal være mindre end 100 tegn",
+    "commentRequired": "Kommentar er påkrævet"
   },
   "deleteConfirmation": {
     "title": "Bekræft sletning",

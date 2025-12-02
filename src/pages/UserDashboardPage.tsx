@@ -646,7 +646,7 @@ export default function UserDashboardPage() {
                                 }
                               >
                                 <span className="text-sm font-semibold">
-                                  Læs mere
+                                 {t("userDashboard.readMore")}
                                 </span>
                                 <img
                                   src={chatModelImg}

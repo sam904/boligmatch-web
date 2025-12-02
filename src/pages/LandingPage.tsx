@@ -11,13 +11,26 @@ import { useTranslation } from "react-i18next";
 import SignUpModal from "../components/common/SignUpModal";
 import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
-
+import { loginThunk } from "../features/auth/authSlice";
+import { useAppDispatch } from "../app/hooks";
 export default function LandingPage() {
+   const dispatch = useAppDispatch();
   const [currentStep, setCurrentStep] = useState(1);
+  
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  
+   const handleSignupSuccess = async (email: string, password: string) => {
+      // Auto-login after successful signup
+      try {
+        await dispatch(loginThunk({ userName: email, password }));
+         setShowSignUpModal(false)
+       } catch (error) {
+            // If auto-login fails, just close signup modal and let user login manually
+          
+          }
+        };
   useEffect(() => {
     try {
       const rawPartner =
@@ -55,6 +68,7 @@ export default function LandingPage() {
       <SignUpModal
         open={showSignUpModal}
         onClose={() => setShowSignUpModal(false)}
+        onSignupSuccess={ handleSignupSuccess}
       />
       <div className="absolute md:top-26 top-28 lg:left-66 left-0 flex max-w-6xl mx-auto md:px-12 px-8 justify-between mt-0 h-[calc(100vh-100vh)]">
         <div>
