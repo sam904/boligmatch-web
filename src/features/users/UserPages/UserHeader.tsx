@@ -187,7 +187,15 @@ function UserHeader({
           <div className="flex items-center justify-between h-full">
             <div className="flex flex-col items-start gap-1">
               <img
-                onClick={() => navigate("/")}
+                onClick={() => {
+                  if (isPartner) {
+                    navigate("/partner/statistics");
+                  } else if (isUser) {
+                    navigate("/user/profile");
+                  } else {
+                    navigate("/");
+                  }
+                }}
                 className={`duration-300 ${
                   isScrolled ? "h-10" : "h-12"
                 } cursor-pointer`}
@@ -371,7 +379,7 @@ function UserHeader({
                         alt=""
                         className="w-[30px] h-[30px]"
                       />
-                      {t("sidebar.home")}
+                      {isPartner || isUser ? t("sidebar.frontPage") : t("sidebar.home")}
                     </span>
                   </button>
                   {/* Show user-only links when logged in as user */}
@@ -592,7 +600,7 @@ function UserHeader({
                         d="M5 12h14M12 5l7 7-7 7"
                       />
                     </svg>
-                    <span className="font-medium">Sign In</span>
+                    <span className="font-medium">{t("auth.signIn")}</span>
                   </button>
                 )}
               </div>

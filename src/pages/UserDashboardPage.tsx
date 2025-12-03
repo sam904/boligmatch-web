@@ -425,11 +425,11 @@ export default function UserDashboardPage() {
                             />
                           </div>
 
-                          <h3 className="text-xl sm:text-2xl font-extrabold text-[#052011] mb-1">
+                          <h3 className="text-xl sm:text-2xl font-extrabold text-[#052011] -mb-1">
                             {category.name}
                           </h3>
 
-                          <p className="text-sm sm:text-base text-[#052011] leading-relaxed px-2">
+                          <p className="text-sm text-[#052011] leading-relaxed px-2">
                             {category.description ||
                               "Professional services and solutions"}
                           </p>

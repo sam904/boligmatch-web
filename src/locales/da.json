@@ -32,6 +32,7 @@
     "Submitting": "Indsender...",
     "address": "adresse",
     "updating": "opdaterer...",
+    "saving": "Gemme...",
     "creating": "opretter...",
     "all": "Alle",
     "noRecordsFound": "Ingen poster fundet",
@@ -508,6 +509,13 @@
     "futureDescription": "I fremtiden kommer du som kunde hos Boligmatch også til at kunne følge din købs- eller salgsproces step for step på en intuitiv måde på Boligmatch+ platformen. Her får du et klart overblik over alle trin, aktiviteter og opgaver, så du altid ved, hvor du er i processen. Herud over kommer vi med nogle fordele, som ikke før er set i branchen. Opret dig gratis som bruger på Boligmatch+ her – så kan du allerede i dag komme igang med at søge efter leverandører, og samtidig automatisk holde dig opdateret om de kommende fordele.",
     "contactInfo": "Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437"
   },
+  "footer": {
+    "street": "Tørringvej 7",
+    "city": "2610 Rødovre",
+    "phone": "Tlf 70228288",
+    "email": "info@boligmatch.dk",
+    "cvr": "CVR 33160437"
+  },
   "validation": {
     "required": "Dette felt er påkrævet",
     "nameRequired": "Navn er påkrævet",
@@ -755,6 +763,7 @@
   },
   "sidebar": {
     "home": "Hjem",
+    "frontPage": "Forside",
     "dashboard": "Betjeningspanel",
     "favourites": "Favoritter",
     "partners": "Partnere",

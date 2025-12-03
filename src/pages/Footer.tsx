@@ -1,7 +1,18 @@
 import footerLogo from "/src/assets/userImages/footerLogo.svg";
 import { useTranslation } from "react-i18next";
+
 function Footer() {
   const { t } = useTranslation();
+  
+  // Create an array of all parts
+  const contactParts = [
+    { type: 'street', text: t("footer.street") },
+    { type: 'city', text: t("footer.city") },
+    { type: 'phone', text: t("footer.phone") },
+    { type: 'email', text: t("footer.email") },
+    { type: 'cvr', text: t("footer.cvr") }
+  ];
+
   return (
     <>
       <footer className="bg-[#01351f] text-white text-center p-4 pt-42">
@@ -17,9 +28,20 @@ function Footer() {
               </div>
             </div>
           </div>
-          <p className="text-white text-sm figtree font-[400] text-[18px]">
-            {t("landing.contactInfo")}
-          </p>
+          
+          {/* Contact info with dot separators */}
+          <div className="flex flex-wrap justify-center items-center">
+            {contactParts.map((part, index) => (
+              <div key={index} className="flex items-center">
+                <span className="text-white text-sm figtree font-[400] text-[18px]">
+                  {part.text}
+                </span>
+                {index < contactParts.length - 1 && (
+                  <span className="mx-1 text-[12px]">•</span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </footer>
     </>
