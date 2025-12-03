@@ -13,7 +13,7 @@ import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
-import circlePartner from '/src/assets/userImages/circlePartner.svg';
+import circlePartner from "/src/assets/userImages/circlePartner.svg";
 import {
   showRecommendationErrorToast,
   showRecommendationSuccessToast,
@@ -22,7 +22,12 @@ import {
   showFavouriteSuccessToast,
   showFavouriteErrorToast,
 } from "../components/common/ToastBanner";
-import { FaPlayCircle, FaPauseCircle, FaForward, FaBackward } from "react-icons/fa";
+import {
+  FaPlayCircle,
+  FaPauseCircle,
+  FaForward,
+  FaBackward,
+} from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { partnerService } from "../services/partner.service";
@@ -45,7 +50,7 @@ const recommendationSchema = z.object({
     .email("validation.invalidEmail"),
   comment: z
     .string()
-    .min(1, "validation.commentRequired") 
+    .min(1, "validation.commentRequired")
     .max(500, "validation.commentMaxLength"),
 });
 
@@ -54,9 +59,7 @@ const contactSchema = z.object({
     .string()
     .min(1, "validation.subjectRequired")
     .max(200, "validation.subjectMaxLength"),
-  body: z
-    .string()
-    .min(1, "validation.descriptionRequired")
+  body: z.string().min(1, "validation.descriptionRequired"),
 });
 
 type RecommendationFormData = z.infer<typeof recommendationSchema>;
@@ -66,11 +69,15 @@ const SupplierProfile = () => {
   const [_isScrolled, setIsScrolled] = useState(false);
   const { t } = useTranslation();
   const userData = useAppSelector((state: RootState) => state.auth.user);
-  const [activeModal, setActiveModal] = useState<null | "recommend" | "contact">(null);
+  const [activeModal, setActiveModal] = useState<
+    null | "recommend" | "contact"
+  >(null);
   const [isAddingToFavorites, setIsAddingToFavorites] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [partnerData, setPartnerData] = useState<any>(null);
-  const [modalRendered, setModalRendered] = useState<null | "recommend" | "contact">(null);
+  const [modalRendered, setModalRendered] = useState<
+    null | "recommend" | "contact"
+  >(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const MODAL_TRANSITION_DURATION = 300;
   const navigate = useNavigate();
@@ -80,14 +87,15 @@ const SupplierProfile = () => {
   const [showVideoElement, setShowVideoElement] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  
-  
 
   // Recommendation form
   const {
     register: registerRecommendation,
     handleSubmit: handleRecommendationSubmit,
-    formState: { errors: recommendationErrors, isSubmitting: isRecommendationSubmitting },
+    formState: {
+      errors: recommendationErrors,
+      isSubmitting: isRecommendationSubmitting,
+    },
     reset: resetRecommendation,
     trigger: triggerRecommendation,
     clearErrors: clearRecommendationErrors,
@@ -201,46 +209,49 @@ const SupplierProfile = () => {
   // Video event handlers
   useEffect(() => {
     const videoElement = videoRef.current;
-    
+
     if (videoElement) {
       const handlePlay = () => {
         setIsVideoPlaying(true);
         setShowVideoElement(true);
       };
-      
+
       const handlePause = () => {
         setIsVideoPlaying(false);
       };
-      
+
       const handleEnded = () => {
         setIsVideoPlaying(false);
         setShowVideoElement(false);
       };
-      
+
       const handleTimeUpdate = () => {
         if (videoElement) {
           setCurrentTime(videoElement.currentTime);
         }
       };
-      
+
       const handleLoadedMetadata = () => {
         if (videoElement) {
           setDuration(videoElement.duration);
         }
       };
-      
-      videoElement.addEventListener('play', handlePlay);
-      videoElement.addEventListener('pause', handlePause);
-      videoElement.addEventListener('ended', handleEnded);
-      videoElement.addEventListener('timeupdate', handleTimeUpdate);
-      videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
-      
+
+      videoElement.addEventListener("play", handlePlay);
+      videoElement.addEventListener("pause", handlePause);
+      videoElement.addEventListener("ended", handleEnded);
+      videoElement.addEventListener("timeupdate", handleTimeUpdate);
+      videoElement.addEventListener("loadedmetadata", handleLoadedMetadata);
+
       return () => {
-        videoElement.removeEventListener('play', handlePlay);
-        videoElement.removeEventListener('pause', handlePause);
-        videoElement.removeEventListener('ended', handleEnded);
-        videoElement.removeEventListener('timeupdate', handleTimeUpdate);
-        videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        videoElement.removeEventListener("play", handlePlay);
+        videoElement.removeEventListener("pause", handlePause);
+        videoElement.removeEventListener("ended", handleEnded);
+        videoElement.removeEventListener("timeupdate", handleTimeUpdate);
+        videoElement.removeEventListener(
+          "loadedmetadata",
+          handleLoadedMetadata
+        );
       };
     }
   }, []);
@@ -251,7 +262,7 @@ const SupplierProfile = () => {
       // Give a small delay for the video element to be visible
       setTimeout(() => {
         if (videoRef.current) {
-          videoRef.current.play().catch(error => {
+          videoRef.current.play().catch((error) => {
             console.error("Error playing video:", error);
             setShowVideoElement(false);
           });
@@ -290,7 +301,9 @@ const SupplierProfile = () => {
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   // Load partner data from localStorage when component mounts
@@ -319,9 +332,9 @@ const SupplierProfile = () => {
           const parsed = JSON.parse(partnerStr);
           // Handle both wrapped and unwrapped response formats
           const normalizedPartner = parsed?.output ?? parsed;
-          
-          console.log("Partner normalizedPartner:",normalizedPartner);
-              setPartnerData(normalizedPartner);
+
+          console.log("Partner normalizedPartner:", normalizedPartner);
+          setPartnerData(normalizedPartner);
           const response = await partnerService.getById(normalizedPartner.id);
           console.log("Partner Details:", response.output);
           if (response?.output) {
@@ -411,9 +424,7 @@ const SupplierProfile = () => {
             return;
           }
           await favouritesService.remove(match.id);
-          showFavouriteSuccessToast(
-            t("supplierProfile.removeFavoriteSuccess")
-          );
+          showFavouriteSuccessToast(t("supplierProfile.removeFavoriteSuccess"));
           setPartnerData((prev: any) => ({
             ...(prev || {}),
             isValidFavourite: "False",
@@ -481,7 +492,9 @@ const SupplierProfile = () => {
     try {
       const targetId = getCurrentPartnerId();
       if (!targetId) {
-        showRecommendationErrorToast(t("supplierProfile.toast.recommendPartnerMissing"));
+        showRecommendationErrorToast(
+          t("supplierProfile.toast.recommendPartnerMissing")
+        );
         return;
       }
 
@@ -490,7 +503,9 @@ const SupplierProfile = () => {
       const userId = parsedUser?.userId ?? userData?.userId;
 
       if (!userId) {
-        showRecommendationErrorToast(t("supplierProfile.toast.recommendUserMissing"));
+        showRecommendationErrorToast(
+          t("supplierProfile.toast.recommendUserMissing")
+        );
         return;
       }
 
@@ -504,7 +519,9 @@ const SupplierProfile = () => {
       };
 
       await recommendationService.add(payload);
-      showRecommendationSuccessToast(t("supplierProfile.toast.recommendSuccess"));
+      showRecommendationSuccessToast(
+        t("supplierProfile.toast.recommendSuccess")
+      );
       setActiveModal(null);
       resetRecommendation();
     } catch (error) {
@@ -515,14 +532,6 @@ const SupplierProfile = () => {
 
   const getBackgroundImage = () => {
     return partnerData?.imageUrl1 || partnerData?.thumbnail || supplierProfile;
-  };
-
-  const getReferences = () => {
-    if (!partnerData?.textField4) return [];
-    return partnerData.textField4
-      .split("\n")
-      .map((s: string) => s.trim())
-      .filter((s: string) => s.length > 0);
   };
 
   const hasTrustPilotUrl =
@@ -557,6 +566,28 @@ const SupplierProfile = () => {
     ? partnerData.testImo.filter((r: any) => r && r.isDisplayed)
     : [];
 
+  const renderReferencesContent = () => {
+    if (!partnerData?.textField4) {
+      return (
+        <div className="text-white text-center py-4">
+          <p>Ingen referencer tilgængelige</p>
+        </div>
+      );
+    }
+
+    // Create a safe HTML object
+    const createMarkup = () => {
+      return { __html: partnerData.textField4 };
+    };
+
+    return (
+      <div
+        className="references-html-content text-white w-full text-left"
+        dangerouslySetInnerHTML={createMarkup()}
+      />
+    );
+  };
+
   const renderServicesContent = () => {
     if (!partnerData?.textField3) {
       return (
@@ -578,7 +609,7 @@ const SupplierProfile = () => {
     };
 
     return (
-      <div 
+      <div
         className="services-html-content"
         dangerouslySetInnerHTML={createMarkup()}
       />
@@ -593,148 +624,141 @@ const SupplierProfile = () => {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat md:h-[100vh] h-[368px]"
           style={{
             backgroundImage: `url(${getBackgroundImage()})`,
-            display: showVideoElement ? 'none' : 'block',
+            display: showVideoElement ? "none" : "block",
           }}
         ></div>
-        
+
         {/* Always render video element but control visibility */}
         <video
           ref={videoRef}
           className="absolute inset-0 w-full md:h-full h-[368px] object-cover"
           style={{
-            display: showVideoElement ? 'block' : 'none',
+            display: showVideoElement ? "block" : "none",
           }}
-         
         >
           <source src={partnerData?.videoUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-        
-       {/* Custom video controls - show on hover only */}
-<div className="absolute inset-0 z-50 pointer-events-none">
-  {/* Hover area - full video size */}
-  <div className="relative w-full h-full group">
-    
-    {/* Controls container - hidden by default, visible on hover */}
-    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
-      
-      {/* Centered controls (same for both playing and paused states) */}
-      <div className="flex flex-col items-center gap-6">
-        <div className="flex items-center gap-12">
-          
-          {/* Backward 10s */}
-          <button
-            onClick={handleSkipBackward}
-            className="text-white hover:scale-125 transition-transform"
-            title="Skip backward 10 seconds"
-          >
-            <FaBackward className="h-12 w-12 drop-shadow-lg" />
-            <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs bg-black/80 px-2 py-1 rounded text-white whitespace-nowrap">
-              -10s
-            </span>
-          </button>
 
-          {/* Play / Pause button - conditionally rendered */}
-          {!isVideoPlaying && partnerData?.videoUrl ? (
-            <button
-              onClick={handlePlayClick}
-              className="text-white hover:scale-125 transition-transform"
-            >
-              <FaPlayCircle className="h-20 w-20 drop-shadow-2xl" />
-            </button>
-          ) : (
-            <button
-              onClick={handlePauseClick}
-              className="text-white hover:scale-125 transition-transform"
-            >
-              <FaPauseCircle className="h-20 w-20 drop-shadow-2xl" />
-            </button>
-          )}
+        {/* Custom video controls - show on hover only */}
+        <div className="absolute inset-0 z-50 pointer-events-none">
+          {/* Hover area - full video size */}
+          <div className="relative w-full h-full group">
+            {/* Controls container - hidden by default, visible on hover */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
+              {/* Centered controls (same for both playing and paused states) */}
+              <div className="flex flex-col items-center gap-6">
+                <div className="flex items-center gap-12">
+                  {/* Backward 10s */}
+                  <button
+                    onClick={handleSkipBackward}
+                    className="text-white hover:scale-125 transition-transform"
+                    title="Skip backward 10 seconds"
+                  >
+                    <FaBackward className="h-12 w-12 drop-shadow-lg" />
+                    <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs bg-black/80 px-2 py-1 rounded text-white whitespace-nowrap">
+                      -10s
+                    </span>
+                  </button>
 
-          {/* Forward 10s */}
-          <button
-            onClick={handleSkipForward}
-            className="text-white hover:scale-125 transition-transform"
-            title="Skip forward 10 seconds"
-          >
-            <FaForward className="h-12 w-12 drop-shadow-lg" />
-            <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs bg-black/80 px-2 py-1 rounded text-white whitespace-nowrap">
-              +10s
-            </span>
-          </button>
-        </div>
+                  {/* Play / Pause button - conditionally rendered */}
+                  {!isVideoPlaying && partnerData?.videoUrl ? (
+                    <button
+                      onClick={handlePlayClick}
+                      className="text-white hover:scale-125 transition-transform"
+                    >
+                      <FaPlayCircle className="h-20 w-20 drop-shadow-2xl" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handlePauseClick}
+                      className="text-white hover:scale-125 transition-transform"
+                    >
+                      <FaPauseCircle className="h-20 w-20 drop-shadow-2xl" />
+                    </button>
+                  )}
 
-        {/* Time display */}
-        {duration > 0 && (
-          <div className="text-white text-lg font-medium bg-black/70 px-4 py-2 rounded-lg shadow-lg">
-            {formatTime(currentTime)} / {formatTime(duration)}
+                  {/* Forward 10s */}
+                  <button
+                    onClick={handleSkipForward}
+                    className="text-white hover:scale-125 transition-transform"
+                    title="Skip forward 10 seconds"
+                  >
+                    <FaForward className="h-12 w-12 drop-shadow-lg" />
+                    <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs bg-black/80 px-2 py-1 rounded text-white whitespace-nowrap">
+                      +10s
+                    </span>
+                  </button>
+                </div>
+
+                {/* Time display */}
+                {duration > 0 && (
+                  <div className="text-white text-lg font-medium bg-black/70 px-4 py-2 rounded-lg shadow-lg">
+                    {formatTime(currentTime)} / {formatTime(duration)}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-    </div>
-
-  </div>
-</div>
+        </div>
 
         <UserHeader />
 
         <div className="bg-[#01351f] pt-0 ">
           <div className="w-full mx-auto px-12 flex justify-center z-100">
-     
-              <div
-                className="flex md:gap-10 gap-5 justify-center absolute md:bottom-0 w-full md:py-8 pb-0 "
-                style={{
-                  background:
-                    "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
-                }}
-              >
-               {!isPartner && (
-  <>
-    {/* Favorite Button */}
-    <button
-      className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
-      onClick={handleToggleFavourite}
-      disabled={isAddingToFavorites}
-    >
-      <img
-        src={heartIcon}
-        alt="Favorite"
-        className="w-[35px] h-[35px] md:w-auto md:h-auto"
-      />
-      {String(partnerData?.isValidFavourite) === "True"
-        ? t("supplierProfile.removeFromFavorites")
-        : t("supplierProfile.saveFavoriteButton")}
-    </button>
+            <div
+              className="flex md:gap-10 gap-5 justify-center absolute md:bottom-0 w-full md:py-8 pb-0 "
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
+              }}
+            >
+              {!isPartner && (
+                <>
+                  {/* Favorite Button */}
+                  <button
+                    className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
+                    onClick={handleToggleFavourite}
+                    disabled={isAddingToFavorites}
+                  >
+                    <img
+                      src={heartIcon}
+                      alt="Favorite"
+                      className="w-[35px] h-[35px] md:w-auto md:h-auto"
+                    />
+                    {String(partnerData?.isValidFavourite) === "True"
+                      ? t("supplierProfile.removeFromFavorites")
+                      : t("supplierProfile.saveFavoriteButton")}
+                  </button>
 
-    {/* Recommend Button */}
-    <button
-      className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
-      onClick={() => setActiveModal("recommend")}
-    >
-      <img
-        src={share}
-        alt="Recommend"
-        className="w-[35px] h-[35px] md:w-auto md:h-auto"
-      />
-      {t("supplierProfile.recommendation")}
-    </button>
+                  {/* Recommend Button */}
+                  <button
+                    className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
+                    onClick={() => setActiveModal("recommend")}
+                  >
+                    <img
+                      src={share}
+                      alt="Recommend"
+                      className="w-[35px] h-[35px] md:w-auto md:h-auto"
+                    />
+                    {t("supplierProfile.recommendation")}
+                  </button>
 
-    {/* Contact Button */}
-    <button
-      className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
-      onClick={() => setActiveModal("contact")}
-    >
-      <img
-        src={chat}
-        alt="Contact"
-        className="w-[35px] h-[35px] md:w-auto md:h-auto"
-      />
-      {t("supplierProfile.conversation")}
-    </button>
-  </>
-)}
-              </div>
-            
+                  {/* Contact Button */}
+                  <button
+                    className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
+                    onClick={() => setActiveModal("contact")}
+                  >
+                    <img
+                      src={chat}
+                      alt="Contact"
+                      className="w-[35px] h-[35px] md:w-auto md:h-auto"
+                    />
+                    {t("supplierProfile.conversation")}
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -884,16 +908,8 @@ const SupplierProfile = () => {
                     Referencer
                   </h3>
                 </div>
-                <div className="text-white">
-                  {getReferences().length > 0 ? (
-                    getReferences().map((ref: string, idx: number) => (
-                      <p key={idx} className="mb-1">
-                        {ref}
-                      </p>
-                    ))
-                  ) : (
-                    <p>{partnerData?.textField4}</p>
-                  )}
+                <div className="text-white references-container">
+                  {renderReferencesContent()}
                 </div>
               </div>
             </div>
@@ -993,7 +1009,12 @@ const SupplierProfile = () => {
               </button>
 
               {modalRendered === "recommend" && (
-                <form onSubmit={handleRecommendationSubmit(handleSendRecommendation)} className="flex flex-col items-stretch">
+                <form
+                  onSubmit={handleRecommendationSubmit(
+                    handleSendRecommendation
+                  )}
+                  className="flex flex-col items-stretch"
+                >
                   <div className="flex justify-center mb-4">
                     <img
                       src={shareModel}
@@ -1014,7 +1035,10 @@ const SupplierProfile = () => {
                   </label>
                   <input
                     type="email"
-                    placeholder={t("supplierProfile.recommendModal.emailPlaceholder") || "Enter email address"}
+                    placeholder={
+                      t("supplierProfile.recommendModal.emailPlaceholder") ||
+                      "Enter email address"
+                    }
                     className={`mb-1 w-full rounded-[10px] bg-white h-9 px-3 outline-none ${
                       recommendationErrors.email ? "border border-red-500" : ""
                     }`}
@@ -1035,9 +1059,14 @@ const SupplierProfile = () => {
                     <span className="text-red-500 ml-1">*</span>
                   </label>
                   <textarea
-                    placeholder={t("supplierProfile.recommendModal.commentPlaceholder") || "Enter your comment"}
+                    placeholder={
+                      t("supplierProfile.recommendModal.commentPlaceholder") ||
+                      "Enter your comment"
+                    }
                     className={`w-full rounded-[10px] bg-white h-28 px-3 py-2 outline-none resize-none ${
-                      recommendationErrors.comment ? "border border-red-500" : ""
+                      recommendationErrors.comment
+                        ? "border border-red-500"
+                        : ""
                     }`}
                     {...registerRecommendation("comment", {
                       onBlur: async () => {
@@ -1050,7 +1079,6 @@ const SupplierProfile = () => {
                       {t(recommendationErrors.comment.message || "")}
                     </p>
                   )}
-                  
 
                   <div className="flex justify-center mt-4">
                     <button
@@ -1067,7 +1095,10 @@ const SupplierProfile = () => {
               )}
 
               {modalRendered === "contact" && (
-                <form onSubmit={handleContactSubmit(handleSendConversation)} className="flex flex-col items-stretch z-10">
+                <form
+                  onSubmit={handleContactSubmit(handleSendConversation)}
+                  className="flex flex-col items-stretch z-10"
+                >
                   <div className="flex justify-center mb-4">
                     <img
                       src={chatModel}
@@ -1091,7 +1122,10 @@ const SupplierProfile = () => {
                     className={`mb-1 w-full rounded-[10px] bg-white h-9 px-3 outline-none ${
                       contactErrors.subject ? "border border-red-500" : ""
                     }`}
-                    placeholder={t("supplierProfile.contactModal.subjectPlaceholder") || "Enter subject"}
+                    placeholder={
+                      t("supplierProfile.contactModal.subjectPlaceholder") ||
+                      "Enter subject"
+                    }
                     {...registerContact("subject", {
                       onBlur: async () => {
                         await triggerContact("subject");
@@ -1112,7 +1146,10 @@ const SupplierProfile = () => {
                     className={`w-full rounded-[10px] bg-white h-28 px-3 py-2 outline-none resize-none ${
                       contactErrors.body ? "border border-red-500" : ""
                     }`}
-                    placeholder={t("supplierProfile.contactModal.bodyPlaceholder") || "Enter your message"}
+                    placeholder={
+                      t("supplierProfile.contactModal.bodyPlaceholder") ||
+                      "Enter your message"
+                    }
                     {...registerContact("body", {
                       onBlur: async () => {
                         await triggerContact("body");
@@ -1124,7 +1161,6 @@ const SupplierProfile = () => {
                       {t(contactErrors.body.message || "")}
                     </p>
                   )}
-                 
 
                   <div className="flex justify-center mt-4 mb-6">
                     <button
