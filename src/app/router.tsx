@@ -60,7 +60,7 @@ const router = createBrowserRouter([
       </AuthGuard> )
      ,
     children: [
-      
+      { index: true, element: <UserDashboardPage /> },
       { path: "profile", element: <UserDashboardPage /> },
       { path: "manage-profile", element: <ManageProfile /> },
       { path: "user-supplier", element: <UserSupplier /> },
@@ -80,7 +80,7 @@ const router = createBrowserRouter([
       </AuthGuard> )
      ,
     children: [
-      
+      { index: true, element: <ParentStatistics /> },
       { path: "dashboard", element: <PartnerDashboard /> },
       { path: "statistics", element: <ParentStatistics /> },
       { path: "documents", element: <PartnerDocuments /> },
