@@ -86,8 +86,10 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
       <button
         onClick={onMoreInfo}
         disabled={isLoading}
-        className={`font-bold text-[14px] md:text-[16px] hover:underline cursor-pointer ${
-          isLoading ? "text-gray-400 cursor-not-allowed" : "text-black"
+        className={`font-bold text-[14px] md:text-[16px] cursor-pointer transition-all duration-200 ${
+          isLoading
+            ? "text-gray-400 cursor-not-allowed font-semibold"
+            : "text-black hover:font-extrabold"
         }`}
       >
         {isLoading ? t("common.loading") : t("userDashboard.moreInfo")}
@@ -258,8 +260,8 @@ const UserSupplier = () => {
         }}
       />
       {categoryName && (
-        <div className="absolute z-10 pointer-events-none px-4 inset-x-0 top-44 md:inset-0 md:flex md:items-center md:justify-center">
-          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
+        <div className="absolute z-10 pointer-events-none inset-x-0 top-44 md:inset-0 md:flex md:items-center md:justify-center">
+          <h1 className="text-white pt-32 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
             {categoryName}
           </h1>
         </div>
@@ -283,7 +285,7 @@ const UserSupplier = () => {
                 ${
                   active === sub.id
                     ? "bg-[#95C11F] text-white shadow-md px-2"
-                    : "bg-transparent text-white hover:bg-white/10 hover:text-[#b6e924] px-3.5"
+                    : "bg-transparent text-white hover:bg-white/10 px-3.5"
                 }`}
                 aria-pressed={active === sub.id}
                 title={sub.subCategory}
@@ -299,7 +301,7 @@ const UserSupplier = () => {
                     }}
                   />
                 )}
-                <span className="figtree font-[600] text-[14px] leading-[100%] tracking-normal text-center align-middle">
+                <span className="figtree font-[600] text-[14px] pl-1 leading-[100%] tracking-normal text-center align-middle">
                   {sub.subCategory}
                 </span>
               </button>
@@ -323,7 +325,7 @@ const UserSupplier = () => {
       </section>
 
       {/* Desktop: keep existing layout and styling unchanged */}
-      <section className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex md:flex-nowrap items-center justify-center gap-4 w-full p-2">
+      <section className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex md:flex-nowrap items-center justify-center gap-1 w-full p-2">
         {loading ? (
           <div className="text-white">
             {t("userSupplier.loadingSubcategories")}
@@ -333,11 +335,11 @@ const UserSupplier = () => {
             <button
               key={sub.id}
               onClick={() => setActive(sub.id)}
-              className={`flex items-center gap-1 md:gap-[2px] px-[18px] py-[9px] rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
+              className={`flex items-center gap-1 md:gap-[2px] px-[12px] py-[5px] rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
     ${
       active === sub.id
         ? "bg-[#95C11F] text-black shadow-md"
-        : "bg-transparent hover:bg-white/10 hover:text-[#b6e924]"
+        : "bg-transparent hover:bg-white/10"
     }`}
               aria-pressed={active === sub.id}
               title={sub.subCategory}
@@ -354,7 +356,7 @@ const UserSupplier = () => {
                   }}
                 />
               )}
-              <span className="text-[20px] font-[600] figtree">
+              <span className="text-[20px] font-[600] pl-2 figtree">
                 {sub.subCategory}
               </span>
             </button>

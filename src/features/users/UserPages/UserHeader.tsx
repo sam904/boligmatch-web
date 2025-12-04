@@ -404,7 +404,7 @@ function UserHeader({
                             alt=""
                             className="w-[30px] h-[30px]"
                           />
-                          {t("sidebar.mitBoligmatch")}
+                          {isPartner ? t("sidebar.partnerDashboard") : t("sidebar.mitBoligmatch")}
                         </span>
                       </button>
                       <button

@@ -18,7 +18,6 @@ export default function ManageProfile() {
   const authUser = useAppSelector((state) => state.auth.user);
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
-  const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -91,10 +90,8 @@ export default function ManageProfile() {
         const res: any = await userService.getById(id);
         const user = res?.output ?? res;
         const first = user?.firstName ?? "";
-        const middle = user?.middleName ?? "";
         const last = user?.lastName ?? "";
         setFirstName(first);
-        setMiddleName(middle);
         setLastName(last);
         setPhone(user?.mobileNo ?? "");
         setEmail(user?.email ?? "");
@@ -120,10 +117,6 @@ export default function ManageProfile() {
       showSignupErrorToast(t("manageProfile.toast.firstNameInvalid"));
       return;
     }
-    if (middleName.trim() && !isValidName(middleName)) {
-      showSignupErrorToast(t("manageProfile.toast.middleNameInvalid"));
-      return;
-    }
     if (lastName.trim() && !isValidName(lastName)) {
       showSignupErrorToast(t("manageProfile.toast.lastNameInvalid"));
       return;
@@ -138,13 +131,10 @@ export default function ManageProfile() {
 
     setIsSavingProfile(true);
 
-    const fullName = [firstName, middleName, lastName]
-      .filter(Boolean)
-      .join(" ");
+    const fullName = [firstName, lastName].filter(Boolean).join(" ");
     const payload = {
       id: userId,
       firstName: firstName,
-      middleName: middleName,
       lastName: lastName,
       fullName: fullName,
       email,
@@ -167,10 +157,7 @@ export default function ManageProfile() {
         );
       }
       showSignupSuccessToast(t("manageProfile.toast.profileUpdateSuccess"));
-      // Optional: navigate after a short delay to show success message
-      setTimeout(() => {
         navigate("/user/profile");
-      }, 1500);
     } catch (err) {
       console.error("Failed to update profile", err);
       showSignupErrorToast(t("manageProfile.toast.profileUpdateError"));
@@ -224,12 +211,21 @@ export default function ManageProfile() {
           {/* Skeleton for profile form */}
           <div className="mt-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[...Array(5)].map((_, i) => (
+              {[...Array(2)].map((_, i) => (
                 <div key={i}>
                   <div className="h-4 w-24 bg-gray-300 animate-pulse rounded mb-2"></div>
                   <div className="h-12 bg-gray-300 animate-pulse rounded"></div>
                 </div>
               ))}
+              {/* Email and Phone field skeletons - both in same row */}
+              <div>
+                <div className="h-4 w-24 bg-gray-300 animate-pulse rounded mb-2"></div>
+                <div className="h-12 bg-gray-300 animate-pulse rounded"></div>
+              </div>
+              <div>
+                <div className="h-4 w-24 bg-gray-300 animate-pulse rounded mb-2"></div>
+                <div className="h-12 bg-gray-300 animate-pulse rounded"></div>
+              </div>
             </div>
             <div className="h-12 bg-gray-300 animate-pulse rounded mt-4"></div>
           </div>
@@ -282,19 +278,6 @@ export default function ManageProfile() {
               </div>
               <div>
                 <label className="block text-white text-sm mb-1">
-                  {t("manageProfile.middleName")}
-                </label>
-                <input
-                  className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none disabled:bg-gray-200"
-                  value={middleName}
-                  onChange={(e) =>
-                    setMiddleName(filterNameInput(e.target.value))
-                  }
-                  disabled={isSavingProfile}
-                />
-              </div>
-              <div>
-                <label className="block text-white text-sm mb-1">
                   {t("manageProfile.lastName")}
                 </label>
                 <input
@@ -319,7 +302,7 @@ export default function ManageProfile() {
                   disabled={isSavingProfile}
                 />
               </div>
-              <div className="md:col-span-2">
+              <div>
                 <label className="block text-white text-sm mb-1">
                   {t("manageProfile.email")}
                 </label>

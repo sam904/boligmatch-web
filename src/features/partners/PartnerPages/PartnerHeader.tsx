@@ -399,7 +399,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                             alt=""
                             className="w-[30px] h-[30px]"
                           />
-                          {t("sidebar.mitBoligmatch")}
+                          {activePartner ? t("sidebar.partnerDashboard") : t("sidebar.mitBoligmatch")}
                         </span>
                       </button>
                       <button
