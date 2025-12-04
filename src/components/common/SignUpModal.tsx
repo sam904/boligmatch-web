@@ -21,10 +21,10 @@ export default function SignUpModal({
 }: SignUpModalProps) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const [shouldRender, setShouldRender] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  
+
   // Updated states for validation (same as PartnersPage)
   const [emailValidation, setEmailValidation] = useState<{
     checking: boolean;
@@ -70,15 +70,6 @@ export default function SignUpModal({
     };
   }, [open]);
 
-  useEffect(() => {
-    if (!shouldRender) return;
-    const original = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = original;
-    };
-  }, [shouldRender]);
-
   // Cleanup timers on unmount
   useEffect(() => {
     return () => {
@@ -106,192 +97,229 @@ export default function SignUpModal({
   };
 
   // Email validation function - IMPROVED VERSION
-  const validateEmailAvailability = useCallback(async (email: string) => {
-    if (!email) {
-      setEmailValidation({
-        checking: false,
-        available: null,
-        message: "",
-      });
-      return;
-    }
-
-    // Basic email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setEmailValidation({
-        checking: false,
-        available: false,
-        message: t("validation.emailInvalidFormat") || "Please enter a valid email address",
-      });
-      return;
-    }
-
-    setEmailValidation({
-      checking: true,
-      available: null,
-      message: "",
-    });
-
-    try {
-      const response = await userService.checkEmailOrMobileAvailability(email);
-
-      if (response.isSuccess) {
-        setEmailValidation({
-          checking: false,
-          available: true,
-          message: t("validation.emailAvailable") || "Email is available",
-        });
-      } else {
-        // Extract the error message from API response
-        const errorMessage = extractErrorMessage(response);
-        
-        // Check for specific email-related error messages
-        let userMessage = errorMessage;
-        if (errorMessage.toLowerCase().includes("email") || 
-            errorMessage.toLowerCase().includes("already") ||
-            errorMessage.toLowerCase().includes("exists") ||
-            errorMessage.toLowerCase().includes("registered")) {
-          userMessage = t("validation.emailAlreadyRegistered") || "Email already registered";
-        }
-
-        setEmailValidation({
-          checking: false,
-          available: false,
-          message: userMessage,
-        });
-      }
-    } catch (error: any) {
-      console.error("Email validation error:", error);
-
-      // Handle API errors specifically
-      if (error.response?.status === 400) {
-        const apiError = error.response.data;
-        const errorMessage = extractErrorMessage(apiError);
-        
-        let userMessage = errorMessage;
-        if (errorMessage.toLowerCase().includes("email") || 
-            errorMessage.toLowerCase().includes("already") ||
-            errorMessage.toLowerCase().includes("exists") ||
-            errorMessage.toLowerCase().includes("registered")) {
-          userMessage = t("validation.emailAlreadyRegistered") || "Email already registered";
-        }
-
-        setEmailValidation({
-          checking: false,
-          available: false,
-          message: userMessage,
-        });
-      } else {
+  const validateEmailAvailability = useCallback(
+    async (email: string) => {
+      if (!email) {
         setEmailValidation({
           checking: false,
           available: null,
-          message: t("validation.emailCheckError") || "Error checking email availability",
+          message: "",
         });
+        return;
       }
-    }
-  }, [t]);
+
+      // Basic email format validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setEmailValidation({
+          checking: false,
+          available: false,
+          message:
+            t("validation.emailInvalidFormat") ||
+            "Please enter a valid email address",
+        });
+        return;
+      }
+
+      setEmailValidation({
+        checking: true,
+        available: null,
+        message: "",
+      });
+
+      try {
+        const response = await userService.checkEmailOrMobileAvailability(
+          email
+        );
+
+        if (response.isSuccess) {
+          setEmailValidation({
+            checking: false,
+            available: true,
+            message: t("validation.emailAvailable") || "Email is available",
+          });
+        } else {
+          // Extract the error message from API response
+          const errorMessage = extractErrorMessage(response);
+
+          // Check for specific email-related error messages
+          let userMessage = errorMessage;
+          if (
+            errorMessage.toLowerCase().includes("email") ||
+            errorMessage.toLowerCase().includes("already") ||
+            errorMessage.toLowerCase().includes("exists") ||
+            errorMessage.toLowerCase().includes("registered")
+          ) {
+            userMessage =
+              t("validation.emailAlreadyRegistered") ||
+              "Email already registered";
+          }
+
+          setEmailValidation({
+            checking: false,
+            available: false,
+            message: userMessage,
+          });
+        }
+      } catch (error: any) {
+        console.error("Email validation error:", error);
+
+        // Handle API errors specifically
+        if (error.response?.status === 400) {
+          const apiError = error.response.data;
+          const errorMessage = extractErrorMessage(apiError);
+
+          let userMessage = errorMessage;
+          if (
+            errorMessage.toLowerCase().includes("email") ||
+            errorMessage.toLowerCase().includes("already") ||
+            errorMessage.toLowerCase().includes("exists") ||
+            errorMessage.toLowerCase().includes("registered")
+          ) {
+            userMessage =
+              t("validation.emailAlreadyRegistered") ||
+              "Email already registered";
+          }
+
+          setEmailValidation({
+            checking: false,
+            available: false,
+            message: userMessage,
+          });
+        } else {
+          setEmailValidation({
+            checking: false,
+            available: null,
+            message:
+              t("validation.emailCheckError") ||
+              "Error checking email availability",
+          });
+        }
+      }
+    },
+    [t]
+  );
 
   // Mobile validation function - IMPROVED VERSION
-  const validateMobileAvailability = useCallback(async (mobileNo: string) => {
-    if (!mobileNo) {
-      setMobileValidation({
-        checking: false,
-        available: null,
-        message: "",
-      });
-      return;
-    }
-
-    // Clean mobile number (remove spaces, dashes, etc.)
-    const cleanMobile = mobileNo.replace(/[\s\-\(\)]+/g, "");
-
-    // Basic mobile validation - exactly 8 digits
-    if (cleanMobile.length !== 8) {
-      setMobileValidation({
-        checking: false,
-        available: false,
-        message: t("validation.mobileInvalidLength") || "Mobile number must be exactly 8 digits",
-      });
-      return;
-    }
-
-    // Validate that it contains only digits
-    if (!/^\d+$/.test(cleanMobile)) {
-      setMobileValidation({
-        checking: false,
-        available: false,
-        message: t("validation.mobileNumbersOnly") || "Mobile number can only contain numbers",
-      });
-      return;
-    }
-
-    setMobileValidation({
-      checking: true,
-      available: null,
-      message: "",
-    });
-
-    try {
-      const response = await userService.checkEmailOrMobileAvailability(cleanMobile);
-
-      if (response.isSuccess) {
-        setMobileValidation({
-          checking: false,
-          available: true,
-          message: t("validation.mobileAvailable") || "Mobile number is available",
-        });
-      } else {
-        // Extract the error message from API response
-        const errorMessage = extractErrorMessage(response);
-        
-        // Check for specific mobile-related error messages
-        let userMessage = errorMessage;
-        if (errorMessage.toLowerCase().includes("mobile") || 
-            errorMessage.toLowerCase().includes("phone") ||
-            errorMessage.toLowerCase().includes("already") ||
-            errorMessage.toLowerCase().includes("exists") ||
-            errorMessage.toLowerCase().includes("registered")) {
-          userMessage = t("validation.mobileAlreadyRegistered") || "Mobile number already registered";
-        }
-
-        setMobileValidation({
-          checking: false,
-          available: false,
-          message: userMessage,
-        });
-      }
-    } catch (error: any) {
-      console.error("Mobile validation error:", error);
-
-      // Handle API errors specifically
-      if (error.response?.status === 400) {
-        const apiError = error.response.data;
-        const errorMessage = extractErrorMessage(apiError);
-        
-        let userMessage = errorMessage;
-        if (errorMessage.toLowerCase().includes("mobile") || 
-            errorMessage.toLowerCase().includes("phone") ||
-            errorMessage.toLowerCase().includes("already") ||
-            errorMessage.toLowerCase().includes("exists") ||
-            errorMessage.toLowerCase().includes("registered")) {
-          userMessage = t("validation.mobileAlreadyRegistered") || "Mobile number already registered";
-        }
-
-        setMobileValidation({
-          checking: false,
-          available: false,
-          message: userMessage,
-        });
-      } else {
+  const validateMobileAvailability = useCallback(
+    async (mobileNo: string) => {
+      if (!mobileNo) {
         setMobileValidation({
           checking: false,
           available: null,
-          message: t("validation.mobileCheckError") || "Error checking mobile number availability",
+          message: "",
         });
+        return;
       }
-    }
-  }, [t]);
+
+      // Clean mobile number (remove spaces, dashes, etc.)
+      const cleanMobile = mobileNo.replace(/[\s\-\(\)]+/g, "");
+
+      // Basic mobile validation - exactly 8 digits
+      if (cleanMobile.length !== 8) {
+        setMobileValidation({
+          checking: false,
+          available: false,
+          message:
+            t("validation.mobileInvalidLength") ||
+            "Mobile number must be exactly 8 digits",
+        });
+        return;
+      }
+
+      // Validate that it contains only digits
+      if (!/^\d+$/.test(cleanMobile)) {
+        setMobileValidation({
+          checking: false,
+          available: false,
+          message:
+            t("validation.mobileNumbersOnly") ||
+            "Mobile number can only contain numbers",
+        });
+        return;
+      }
+
+      setMobileValidation({
+        checking: true,
+        available: null,
+        message: "",
+      });
+
+      try {
+        const response = await userService.checkEmailOrMobileAvailability(
+          cleanMobile
+        );
+
+        if (response.isSuccess) {
+          setMobileValidation({
+            checking: false,
+            available: true,
+            message:
+              t("validation.mobileAvailable") || "Mobile number is available",
+          });
+        } else {
+          // Extract the error message from API response
+          const errorMessage = extractErrorMessage(response);
+
+          // Check for specific mobile-related error messages
+          let userMessage = errorMessage;
+          if (
+            errorMessage.toLowerCase().includes("mobile") ||
+            errorMessage.toLowerCase().includes("phone") ||
+            errorMessage.toLowerCase().includes("already") ||
+            errorMessage.toLowerCase().includes("exists") ||
+            errorMessage.toLowerCase().includes("registered")
+          ) {
+            userMessage =
+              t("validation.mobileAlreadyRegistered") ||
+              "Mobile number already registered";
+          }
+
+          setMobileValidation({
+            checking: false,
+            available: false,
+            message: userMessage,
+          });
+        }
+      } catch (error: any) {
+        console.error("Mobile validation error:", error);
+
+        // Handle API errors specifically
+        if (error.response?.status === 400) {
+          const apiError = error.response.data;
+          const errorMessage = extractErrorMessage(apiError);
+
+          let userMessage = errorMessage;
+          if (
+            errorMessage.toLowerCase().includes("mobile") ||
+            errorMessage.toLowerCase().includes("phone") ||
+            errorMessage.toLowerCase().includes("already") ||
+            errorMessage.toLowerCase().includes("exists") ||
+            errorMessage.toLowerCase().includes("registered")
+          ) {
+            userMessage =
+              t("validation.mobileAlreadyRegistered") ||
+              "Mobile number already registered";
+          }
+
+          setMobileValidation({
+            checking: false,
+            available: false,
+            message: userMessage,
+          });
+        } else {
+          setMobileValidation({
+            checking: false,
+            available: null,
+            message:
+              t("validation.mobileCheckError") ||
+              "Error checking mobile number availability",
+          });
+        }
+      }
+    },
+    [t]
+  );
 
   // Debounced email validation handler
   const handleEmailChange = (email: string) => {
@@ -334,10 +362,7 @@ export default function SignUpModal({
       .string()
       .min(1, t("signup.postalCodeRequired"))
       .regex(/^[0-9]+$/, "Postal code must be numeric")
-      .refine(
-        (val) => val.length === 4,
-       t("signup.postalCodeLength")
-      ),
+      .refine((val) => val.length === 4, t("signup.postalCodeLength")),
     mobileNumber: z
       .string()
       .min(1, t("signup.mobileRequired"))
@@ -370,6 +395,19 @@ export default function SignUpModal({
     mode: "onTouched",
   });
 
+  useEffect(() => {
+    if (!open) {
+      // Reset form fields
+      reset();
+      // Reset validation states
+      setEmailValidation({ checking: false, available: null, message: "" });
+      setMobileValidation({ checking: false, available: null, message: "" });
+      // Clear debounce timers
+      if (emailDebounceTimer) clearTimeout(emailDebounceTimer);
+      if (mobileDebounceTimer) clearTimeout(mobileDebounceTimer);
+    }
+  }, [open, reset, emailDebounceTimer, mobileDebounceTimer]);
+
   // Watch email and mobile number
   const emailValue = watch("email");
   const mobileNumberValue = watch("mobileNumber");
@@ -386,24 +424,25 @@ export default function SignUpModal({
   ) => {
     // If field has error and is touched/submitted
     if (shouldShowError(fieldName)) {
-      return "focus:ring-red-500 ring-2 ring-red-500";
+      return "focus:ring-2 focus:ring-red-500 ring-2 ring-red-500";
     }
-    
+
     // For email and mobile with validation check
     if (validation) {
       if (validation.checking) {
-        return "focus:ring-blue-500";
+        return "focus:ring-2 focus:ring-blue-500";
       }
       if (validation.available === false) {
-        return "focus:ring-red-500 ring-2 ring-red-500";
+        return "focus:ring-2 focus:ring-red-500 ring-2 ring-red-500";
       }
       if (validation.available === true) {
-        return "focus:ring-green-500 ring-2 ring-green-500";
+        // Use same green as button #91C73D
+        return "focus:ring-2 focus:ring-[#91C73D] ring-2 ring-[#91C73D]";
       }
     }
-    
-    // Default focus color
-    return "focus:ring-[#075835]";
+
+    // Default focus color - matches button color #91C73D
+    return "focus:ring-2 focus:ring-[#91C73D]";
   };
 
   // Helper function to check if email is unavailable
@@ -428,7 +467,9 @@ export default function SignUpModal({
 
     // Check if email or mobile validations are in progress
     if (emailValidation.checking || mobileValidation.checking) {
-      showSignupErrorToast("Please wait for email/mobile validation to complete");
+      showSignupErrorToast(
+        "Please wait for email/mobile validation to complete"
+      );
       return;
     }
 
@@ -461,9 +502,11 @@ export default function SignUpModal({
       await userService.add(registrationData);
 
       // If we get here, the registration was successful
-      showSignupSuccessToast("Registration successful! Welcome to Boligmatch+.");
+      showSignupSuccessToast(
+        "Registration successful! Welcome to Boligmatch+."
+      );
       reset();
-      
+
       // Reset validation states
       setEmailValidation({ checking: false, available: null, message: "" });
       setMobileValidation({ checking: false, available: null, message: "" });
@@ -482,30 +525,36 @@ export default function SignUpModal({
     } catch (err: any) {
       const apiError = err?.response?.data;
       const msg = extractErrorMessage(apiError || err);
-      
+
       // Check if it's an email/mobile already exists error
       let userMessage = msg;
-      if (msg.toLowerCase().includes("email") || 
-          msg.toLowerCase().includes("mobile") ||
-          msg.toLowerCase().includes("already") ||
-          msg.toLowerCase().includes("exists")) {
+      if (
+        msg.toLowerCase().includes("email") ||
+        msg.toLowerCase().includes("mobile") ||
+        msg.toLowerCase().includes("already") ||
+        msg.toLowerCase().includes("exists")
+      ) {
         if (msg.toLowerCase().includes("email")) {
-          userMessage = t("validation.emailAlreadyRegistered") || "Email already registered";
-          setEmailValidation({ 
-            checking: false, 
-            available: false, 
-            message: userMessage 
+          userMessage =
+            t("validation.emailAlreadyRegistered") ||
+            "Email already registered";
+          setEmailValidation({
+            checking: false,
+            available: false,
+            message: userMessage,
           });
         } else if (msg.toLowerCase().includes("mobile")) {
-          userMessage = t("validation.mobileAlreadyRegistered") || "Mobile number already registered";
-          setMobileValidation({ 
-            checking: false, 
-            available: false, 
-            message: userMessage 
+          userMessage =
+            t("validation.mobileAlreadyRegistered") ||
+            "Mobile number already registered";
+          setMobileValidation({
+            checking: false,
+            available: false,
+            message: userMessage,
           });
         }
       }
-      
+
       showSignupErrorToast(userMessage);
     } finally {
       setIsLoading(false);
@@ -519,7 +568,6 @@ export default function SignUpModal({
       className={`fixed inset-0 flex items-center justify-center bg-black/50 z-50 transition-opacity duration-300 ${
         isVisible ? "opacity-100" : "opacity-0"
       }`}
-      onClick={onClose}
       style={{ pointerEvents: isVisible ? "auto" : "none" }}
     >
       <div
@@ -528,7 +576,6 @@ export default function SignUpModal({
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 translate-y-4"
         }`}
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-center items-center p-4 pb-2 relative">
           <div className="flex items-center justify-center p-2">
@@ -544,6 +591,7 @@ export default function SignUpModal({
               />
             </div>
           </div>
+          {/* Only this button closes the modal */}
           <button
             onClick={onClose}
             className="absolute right-6 text-black hover:text-gray-600 transition-colors text-xl font-bold cursor-pointer"
@@ -572,7 +620,9 @@ export default function SignUpModal({
                 <input
                   id="firstName"
                   type="text"
-                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor("firstName")}`}
+                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
+                    "firstName"
+                  )}`}
                   {...register("firstName")}
                 />
                 {shouldShowError("firstName") && (
@@ -592,7 +642,9 @@ export default function SignUpModal({
                 <input
                   id="lastName"
                   type="text"
-                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor("lastName")}`}
+                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
+                    "lastName"
+                  )}`}
                   {...register("lastName")}
                 />
                 {shouldShowError("lastName") && (
@@ -615,7 +667,9 @@ export default function SignUpModal({
                 <input
                   id="postalCode"
                   type="text"
-                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor("postalCode")}`}
+                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
+                    "postalCode"
+                  )}`}
                   maxLength={5}
                   {...register("postalCode")}
                 />
@@ -636,7 +690,10 @@ export default function SignUpModal({
                 <input
                   id="mobileNumber"
                   type="tel"
-                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor("mobileNumber", mobileValidation)}`}
+                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
+                    "mobileNumber",
+                    mobileValidation
+                  )}`}
                   value={mobileNumberValue || ""}
                   onChange={(e) => handleMobileChange(e.target.value)}
                   placeholder={
@@ -645,18 +702,10 @@ export default function SignUpModal({
                   }
                   maxLength={8}
                 />
-                {/* Mobile validation status */}
-                {mobileValidation.checking && (
-                  <div className="flex items-center gap-2 text-blue-600 text-sm mt-1">
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
-                    {t("admin.partners.mobileChecking") ||
-                      "Checking mobile number availability..."}
-                  </div>
-                )}
+                {/* For mobile validation - available text */}
                 {mobileValidation.available === true &&
                   !mobileValidation.checking && (
-                    <div className="text-green-600 text-sm mt-1 flex items-center gap-1">
-                     
+                    <div className="text-[#91C73D] text-xs mt-1 flex items-center gap-1">
                       {t("admin.partners.mobileAvailable") ||
                         "Mobile number is available"}
                     </div>
@@ -664,14 +713,12 @@ export default function SignUpModal({
                 {mobileValidation.available === false &&
                   !mobileValidation.checking && (
                     <div className="text-red-600 text-xs mt-1 flex items-center gap-1">
-                     
                       {mobileValidation.message}
                     </div>
                   )}
                 {shouldShowError("mobileNumber") &&
                   mobileValidation.available !== false && (
                     <div className="text-red-600 text-xs mt-1 flex items-center gap-1">
-                    
                       {errors.mobileNumber?.message}
                     </div>
                   )}
@@ -689,70 +736,32 @@ export default function SignUpModal({
               <input
                 id="email"
                 type="email"
-                className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor("email", emailValidation)}`}
+                className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
+                  "email",
+                  emailValidation
+                )}`}
                 value={emailValue || ""}
                 onChange={(e) => handleEmailChange(e.target.value)}
                 placeholder={
                   t("common.enterEmailAddress") || "Enter email address"
                 }
               />
-              {/* Email validation status */}
-              {emailValidation.checking && (
-                <div className="flex items-center gap-2 text-blue-600 text-sm mt-1">
-                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
-                  {t("admin.partners.emailChecking") ||
-                    "Checking email availability..."}
-                </div>
-              )}
+              {/* For email validation - available text */}
               {emailValidation.available === true &&
                 !emailValidation.checking && (
-                  <div className="text-green-600 text-sm mt-1 flex items-center gap-1">
-                    {/* <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg> */}
-                    {t("admin.partners.emailAvailable") ||
-                      "Email is available"}
+                  <div className="text-[#91C73D] text-xs mt-1 flex items-center gap-1">
+                    {t("admin.partners.emailAvailable") || "Email is available"}
                   </div>
                 )}
               {emailValidation.available === false &&
                 !emailValidation.checking && (
                   <div className="text-red-600 text-xs mt-1 flex items-center gap-1">
-                    {/* <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                        clipRule="evenodd"
-                      />
-                    </svg> */}
                     {emailValidation.message}
                   </div>
                 )}
               {shouldShowError("email") &&
                 emailValidation.available !== false && (
                   <div className="text-red-600 text-xs mt-1 flex items-center gap-1">
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
                     {errors.email?.message}
                   </div>
                 )}
@@ -769,7 +778,9 @@ export default function SignUpModal({
               <input
                 id="password"
                 type="password"
-                className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor("password")}`}
+                className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
+                  "password"
+                )}`}
                 {...register("password")}
               />
               {shouldShowError("password") && (
@@ -795,7 +806,7 @@ export default function SignUpModal({
               <button
                 type="submit"
                 disabled={isLoading || !canSubmitForm()}
-                className="w-full cursor-pointer bg-[#91C73D] hover:bg-[#7fb32d] disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+                className="w-full cursor-pointer bg-[#91C73D] hover:bg-[#7fb32d] text-white font-semibold py-3 px-6 rounded-lg transition-colors"
               >
                 {isLoading ? (
                   <span className="flex items-center justify-center">

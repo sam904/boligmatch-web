@@ -11,6 +11,7 @@
     "creating": "Creating...",
     "update": "Update",
     "updating": "Updating...",
+    "saving": "Saving...",
     "add": "Add",
     "search": "Search",
     "exporting": "Exporting...",
@@ -498,6 +499,13 @@
     "futureDescription": "In the future, you as a customer at Boligmatch will also be able to follow your purchase or sales process step by step in an intuitive way on the Boligmatch+ platform. Here you get a clear overview of all steps, activities and tasks, so you always know where you are in the process. In addition, we come with some benefits that have not been seen before in the industry. Sign up for free as a user on Boligmatch+ here - so you can already today get started searching for suppliers, and at the same time automatically keep yourself updated on the upcoming benefits.",
     "contactInfo": "Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437"
   },
+  "footer": {
+    "street": "Tørringvej 7",
+    "city": "2610 Rødovre",
+    "phone": "Tlf 70228288",
+    "email": "info@boligmatch.dk",
+    "cvr": "CVR 33160437"
+  },
   "validation": {
     "required": "This field is required",
     "nameRequired": "Name is required",
@@ -736,6 +744,7 @@
   },
   "sidebar": {
     "home": "Home",
+    "frontPage": "Front Page",
     "dashboard": "Dashboard",
     "favourites": "Favourites",
     "partners": "Partners",

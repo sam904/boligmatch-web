@@ -189,7 +189,15 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
           <div className="flex items-center justify-between h-full">
             <div className="flex flex-col items-start gap-1">
               <img
-                onClick={() => navigate("/")}
+                onClick={() => {
+                  if (activePartner) {
+                    navigate("/partner/statistics");
+                  } else if (activeUser) {
+                    navigate("/user/profile");
+                  } else {
+                    navigate("/");
+                  }
+                }}
                 className={`duration-300 ${
                   isScrolled ? "h-10" : "h-12"
                 } cursor-pointer`}
@@ -372,7 +380,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                         alt=""
                         className="w-[30px] h-[30px]"
                       />
-                      {t("sidebar.home")}
+                      {activePartner || activeUser ? t("sidebar.frontPage") : t("sidebar.home")}
                     </span>
                   </button>
                   {/* Show user-only links when logged in as user */}
