@@ -1,7 +1,7 @@
 import ServiceCarousel from "./Landingpage/ServiceCarousel";
 import { useEffect, useState } from "react";
 import Stepper from "./Landingpage/Stepper";
-import landingImg from "/src/assets/userImages/landingImgg.png";
+import landingImg from "/src/assets/userImages/landingImgg.svg";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import landingPageIcons from "/src/assets/userImages/1.svg";
 import landingPageIcons2 from "/src/assets/userImages/2.svg";
