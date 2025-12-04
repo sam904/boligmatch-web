@@ -22,10 +22,7 @@ import {
   showFavouriteSuccessToast,
   showFavouriteErrorToast,
 } from "../components/common/ToastBanner";
-import {
-  FaPlayCircle,
-  FaPauseCircle,
-} from "react-icons/fa";
+import { FaPlayCircle, FaPauseCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { partnerService } from "../services/partner.service";
@@ -33,7 +30,7 @@ import ratingImg from "/src/assets/userImages/rating.svg";
 import fullRatingImg from "/src/assets/userImages/ratig2.svg";
 import trustPilotLogo from "/src/assets/userImages/boligmatchLogo2.svg";
 import startImg from "/src/assets/userImages/star.svg";
-import servicesImg from "/src/assets/supplierProfile/services.png";
+import servicesImg from "/src/assets/supplierProfile/services.svg";
 import factsImg from "/src/assets/userImages/faktaLogo.svg";
 import Footer from "./Footer";
 import { useForm } from "react-hook-form";
@@ -199,6 +196,16 @@ const SupplierProfile = () => {
     return null;
   };
 
+  // Get locale from localStorage
+  const getLocaleFromStorage = (): string => {
+    try {
+      const locale = localStorage.getItem("bm_lang");
+      return locale || "da"; // Default to Danish if not found
+    } catch {
+      return "da"; // Default to Danish if error
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
@@ -339,17 +346,17 @@ const SupplierProfile = () => {
   useEffect(() => {
     if (!modalRendered) return;
 
-    const formElement = document.querySelector('form');
+    const formElement = document.querySelector("form");
     if (formElement) {
       const handleMouseDown = () => setIsDragging(true);
       const handleMouseUp = () => setIsDragging(false);
 
-      formElement.addEventListener('mousedown', handleMouseDown);
-      formElement.addEventListener('mouseup', handleMouseUp);
-      
+      formElement.addEventListener("mousedown", handleMouseDown);
+      formElement.addEventListener("mouseup", handleMouseUp);
+
       return () => {
-        formElement.removeEventListener('mousedown', handleMouseDown);
-        formElement.removeEventListener('mouseup', handleMouseUp);
+        formElement.removeEventListener("mousedown", handleMouseDown);
+        formElement.removeEventListener("mouseup", handleMouseUp);
         setIsDragging(false);
       };
     }
@@ -484,6 +491,9 @@ const SupplierProfile = () => {
         return;
       }
 
+      // Get locale from localStorage
+      const locale = getLocaleFromStorage();
+
       const payload = {
         patnerId: targetId,
         userId: userId,
@@ -491,6 +501,7 @@ const SupplierProfile = () => {
         description: data.comment || "",
         isActive: true,
         recommendationKey: "",
+        locale: locale,
       };
 
       await recommendationService.add(payload);
@@ -616,7 +627,6 @@ const SupplierProfile = () => {
           className="absolute inset-0 w-full md:h-full h-[368px] object-cover"
           style={{
             display: showVideoElement ? "block" : "none",
-            
           }}
           controls
         >
@@ -947,11 +957,11 @@ const SupplierProfile = () => {
             className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-300 ${
               isModalVisible ? "opacity-100" : "opacity-0"
             }`}
-            style={{ 
+            style={{
               pointerEvents: isModalVisible ? "auto" : "none",
               // Allow scrolling in the background - FIX
-              overflowY: 'auto',
-              padding: '20px 0'
+              overflowY: "auto",
+              padding: "20px 0",
             }}
           >
             {/* Background overlay with improved click handler */}
@@ -960,7 +970,7 @@ const SupplierProfile = () => {
               style={{ opacity: isModalVisible ? 1 : 0.5 }}
               onClick={handleOverlayClick}
             />
-            
+
             <div
               className={`relative z-50 w-[320px] sm:w-[360px] md:w-[420px] bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-gray-400/10 transform transition-all duration-300 ease-out my-auto ${
                 isModalVisible
@@ -1185,8 +1195,6 @@ const SupplierProfile = () => {
 };
 
 export default SupplierProfile;
-
-
 
 
 
