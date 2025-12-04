@@ -4,7 +4,7 @@ import Footer from "../../../pages/Footer";
 import trustPilotLogo from "/src/assets/userImages/boligmatchLogo2.svg";
 import ratingImg from "/src/assets/userImages/rating.svg";
 import fullRatingImg from "/src/assets/userImages/ratig2.svg";
-import servicesImg from "/src/assets/supplierProfile/services.png";
+import servicesImg from "/src/assets/supplierProfile/services.svg";
 import factsImg from "/src/assets/userImages/faktaLogo.svg";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.svg";
 import startImg from "/src/assets/userImages/star.svg";

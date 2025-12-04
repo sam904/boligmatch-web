@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import profileIcon from "/src/assets/userImages/profileIcon.png";
+import profileIcon from "/src/assets/userImages/profileIcon.svg";
 import PartnerHeader from "./PartnerHeader";
 import Footer from "../../../pages/Footer";
 import { useTranslation } from "react-i18next";

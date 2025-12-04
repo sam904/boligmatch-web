@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import profileIcon from "/src/assets/userImages/profileIcon.png";
+import profileIcon from "/src/assets/userImages/profileIcon.svg";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import { userService } from "../services/user.service";
 import {

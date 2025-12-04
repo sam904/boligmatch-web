@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import termsandCondition from "/src/assets/userImages/termaCondition.png";
+import termsandCondition from "/src/assets/userImages/termaCondition.svg";
 import Footer from "./Footer";
 import leftArrow from "/src/assets/userImages/arrow-left.svg";
 
