@@ -117,6 +117,7 @@ function PartnerManageProfile() {
       showSignupErrorToast(t("manageProfile.toast.fetchProfileError"));
     } finally {
       setIsLoadingProfile(false);
+      return;
     }
   };
 
@@ -165,9 +166,7 @@ function PartnerManageProfile() {
       await partnerService.updateProfile(payload);
       await fetchPartnerProfile();
       showSignupSuccessToast(t("manageProfile.toast.profileUpdateSuccess"));
-      setTimeout(() => {
         navigate("/partner/statistics");
-      }, 1500);
     } catch (error) {
       console.error("Failed to update partner profile", error);
       showSignupErrorToast("Failed to update partner profile");

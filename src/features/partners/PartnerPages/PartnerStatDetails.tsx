@@ -68,12 +68,12 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
   return (
     <>
       <div className="bg-[#01351f] p-4 md:p-8">
-        <div className="w-full max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-8 md:mb-12 place-items-center">
+        <div className="w-full max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-1 md:gap-2 mb-8 pt-4 md:mb-12 place-items-center">
           {statistics.map((stat, index) => (
             <div key={index} className="flex flex-col items-center">
               <div className="flex flex-col items-center">
                 <div
-                  className="rounded-full border-2 border-dashed border-[#91C73D] flex flex-col items-center justify-center w-[188.515px] h-[188.184px]"
+                  className="rounded-full flex flex-col items-center justify-center w-[188.515px] h-[188.184px]"
                   style={{
                     backgroundImage: `url(${partnerRingImg})`,
                     backgroundSize: "cover",

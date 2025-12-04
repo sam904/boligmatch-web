@@ -2082,8 +2082,11 @@ export default function PartnersPage() {
               {t("admin.partners.TextFields") || "Text Fields"}
             </h3>
             <div className="space-y-3 sm:space-y-4">
-              <Input
-                label={t("admin.partners.TextField1") || "Text Fields 1"}
+              <TextArea
+                label={
+                  t("admin.partners.longDescription") || "Long Description"
+                }
+                rows={6}
                 error={errors.textField1?.message}
                 {...register("textField1")}
               />
