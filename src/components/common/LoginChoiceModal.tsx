@@ -1,4 +1,4 @@
-import loginModelLogo from "/src/assets/userImages/boligmatchLogo2.png";
+import loginModelLogo from "/src/assets/userImages/boligmatchLogo2.svg";
 import chooseUserImg from "/src/assets/userImages/choose_userImg.svg";
 import choosePartnerImg from "/src/assets/userImages/choose_partnerImg.svg";
 import { useTranslation } from "react-i18next";

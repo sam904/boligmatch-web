@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { partnerService } from "../../../services/partner.service";
 import Footer from "../../../pages/Footer";
-import trustPilotLogo from "/src/assets/userImages/boligmatchLogo2.png";
-import ratingImg from "/src/assets/userImages/rating.png";
-import fullRatingImg from "/src/assets/userImages/ratig2.png";
+import trustPilotLogo from "/src/assets/userImages/boligmatchLogo2.svg";
+import ratingImg from "/src/assets/userImages/rating.svg";
+import fullRatingImg from "/src/assets/userImages/ratig2.svg";
 import servicesImg from "/src/assets/supplierProfile/services.png";
 import factsImg from "/src/assets/userImages/faktaLogo.svg";
-import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.png";
-import startImg from "/src/assets/userImages/star.png";
+import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.svg";
+import startImg from "/src/assets/userImages/star.svg";
 import { useTranslation } from "react-i18next";
 import circlePartner from "/src/assets/userImages/circlePartner.svg";
 import ScrollToTop from "../../../components/common/ScrollToTop";
@@ -157,7 +157,7 @@ function PartnerProfileShortcut({
               {partnerData?.businessName || "Business Name"}
             </h2>
             <p className="text-white font-[400] text-sm md:text-base lg:text-[18px] max-w-7xl mx-auto leading-normal px-4 md:px-0">
-              {partnerData?.descriptionShort || "descriptionShort "}
+              {partnerData?.textField1 || "descriptionShort "}
             </p>
           </div>
         </div>

@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { loginThunk } from "../../features/auth/authSlice";
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
-import loginModelLogo from "/src/assets/userImages/boligmatchLogo2.png";
+import loginModelLogo from "/src/assets/userImages/boligmatchLogo2.svg";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { logout } from "../../features/auth/authSlice";

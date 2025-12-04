@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from "react";
 import { userService } from "../../services/user.service";
 import type { CreateUserRequest } from "../../types/user";
-import logo from "/src/assets/userImages/boligmatchLogo2.png";
+import logo from "/src/assets/userImages/boligmatchLogo2.svg";
 import { showSignupSuccessToast, showSignupErrorToast } from "./ToastBanner";
 
 interface SignUpModalProps {

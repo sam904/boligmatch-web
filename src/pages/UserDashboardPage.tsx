@@ -324,7 +324,7 @@ export default function UserDashboardPage() {
                 className={`${activeView === "default"
                   ? "bg-[#145939] text-white"
                   : "bg-[#95c11f] text-white"
-                  } flex items-center justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer w-[240px] h-[55px]`}
+                  } flex items-center justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md  hover:opacity-90 transition cursor-pointer w-[240px] h-[55px]`}
                 type="button"
               >
                 <img
