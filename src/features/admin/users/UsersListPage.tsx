@@ -71,6 +71,21 @@ export default function UsersListPage() {
             "Mobile number must be exactly 8 digits",
         }
       ),
+    postalCode: z
+      .string()
+      .min(1, t("signup.postalCodeRequired") || "Postal code is required")
+      .refine(
+        (value) => {
+          if (!value) return false;
+          // Allow exactly 4 digits
+          return /^\d{4}$/.test(value);
+        },
+        {
+          message:
+            t("signup.postalCodeLength") ||
+            "Postal code must be exactly 4 digits",
+        }
+      ),
     isActive: z.boolean(),
   });
 
@@ -234,6 +249,7 @@ export default function UsersListPage() {
       lastName: "",
       email: "",
       mobileNo: "",
+      postalCode: "",
       isActive: true,
     },
   });
@@ -247,6 +263,7 @@ export default function UsersListPage() {
         lastName: editingUser.lastName || "",
         email: editingUser.email || "",
         mobileNo: editingUser.mobileNo || "",
+        postalCode: editingUser.postalCode || "",
         isActive: editingUser.isActive,
       });
 
@@ -267,6 +284,7 @@ export default function UsersListPage() {
         lastName: "",
         email: "",
         mobileNo: "",
+        postalCode: "",
         isActive: true,
       });
 
@@ -760,6 +778,7 @@ export default function UsersListPage() {
       // Convert isActive boolean to status string for API
       const apiData = {
         ...data,
+        postalCode: data.postalCode,
         status: data.isActive
           ? "Active"
           : ("InActive" as "Active" | "InActive"),
@@ -1326,6 +1345,22 @@ export default function UsersListPage() {
               )}
           </div>
 
+          {/* Postal Code Field */}
+          <Input
+            label={
+              <>
+                {t("signup.postalCode") || "Postal Code"}
+                <span className="text-red-500 ml-1">*</span>
+              </>
+            }
+            error={errors.postalCode?.message}
+            {...register("postalCode")}
+            required
+            placeholder={t("signup.postalCode") || "Postal Code"}
+            maxLength={4}
+            disabled={createMutation.isPending || updateMutation.isPending}
+          />
+
           {/* Toggle Switch for Active Status */}
           <ToggleSwitch
             label={t("common.active") || "Active"}
@@ -1358,6 +1393,9 @@ export default function UsersListPage() {
                 {errors.lastName && <li>{errors.lastName.message}</li>}
                 {errors.email?.message && <li>{errors.email.message}</li>}
                 {errors.mobileNo?.message && <li>{errors.mobileNo.message}</li>}
+                {errors.postalCode?.message && (
+                  <li>{errors.postalCode.message}</li>
+                )}
               </ul>
             </div>
           )}
@@ -1394,7 +1432,7 @@ export default function UsersListPage() {
         onClose={handlePasswordModalClose}
         onSuccess={() => {
           toast.success(
-            t("admin.users.passwordResetSuccess", {
+            t("admin.partners.passwordResetSuccess", {
               email: resettingUser?.email,
             }) || `Password reset successfully for ${resettingUser?.email}`
           );

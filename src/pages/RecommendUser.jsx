@@ -9,7 +9,7 @@ import { useAppSelector } from "../app/hooks";
 import { useTranslation } from "react-i18next";
 import Servises from "/src/assets/supplierProfile/services.svg"
 import facts from "/src/assets/userImages/faktaLogo.svg"
-import boligmatchLogo from "/src/assets/userImages/loginModelLogo.png"
+import boligmatchLogo from "/src/assets/userImages/loginModelLogo.svg"
 import closeModel from "/src/assets/userImages/close.svg"
 
 function RecommendUser() {

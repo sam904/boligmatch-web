@@ -5,6 +5,7 @@ export interface User {
   userId: number;
   firstName: string;
   lastName: string;
+  postalCode: string;
   email: string;
   mobileNo?: string;
   avatar?: string;
@@ -25,6 +26,7 @@ export interface CreateUserRequest {
   lastName: string;
   email: string;
   mobileNo: string;
+  postalCode: string;
   password?: string;
   isActive: boolean;
   status: "Active" | "InActive";

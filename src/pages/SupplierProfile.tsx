@@ -451,6 +451,8 @@ const SupplierProfile = () => {
         return;
       }
 
+      const locale = getLocaleFromStorage();
+
       const payload = {
         messageSubject: data.subject,
         messageContent: data.body,
@@ -458,6 +460,7 @@ const SupplierProfile = () => {
         receiverId: targetId,
         type: "partner",
         isActive: true,
+        locale: locale,
       };
 
       await conversationService.add(payload);

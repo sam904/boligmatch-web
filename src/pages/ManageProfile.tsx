@@ -21,6 +21,7 @@ export default function ManageProfile() {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [postalCode, setPostalCode] = useState(""); // Add postalCode state
   const [isEmailVerify, setIsEmailVerify] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(true);
   const [userId, setUserId] = useState<number | null>(null);
@@ -95,6 +96,7 @@ export default function ManageProfile() {
         setLastName(last);
         setPhone(user?.mobileNo ?? "");
         setEmail(user?.email ?? "");
+        setPostalCode(user?.postalCode ?? ""); // Add postalCode
         setIsEmailVerify(Boolean(user?.isEmailVerify));
         setIsActive(user?.isActive ?? true);
         setUserId(Number(id));
@@ -127,6 +129,14 @@ export default function ManageProfile() {
       return;
     }
 
+    // Validate postal code (exactly 4 digits)
+    if (postalCode && !/^[0-9]{4}$/.test(postalCode)) {
+      showSignupErrorToast(
+        t("signup.postalCodeLength") || "Postal code must be exactly 4 digits"
+      );
+      return;
+    }
+
     if (userId == null) return;
 
     setIsSavingProfile(true);
@@ -139,6 +149,7 @@ export default function ManageProfile() {
       fullName: fullName,
       email,
       mobileNo: phone,
+      postalCode: postalCode, // Add postalCode to payload
       isEmailVerify: isEmailVerify,
       isActive: isActive,
       status: isActive ? "Active" : "InActive",
@@ -153,11 +164,12 @@ export default function ManageProfile() {
             firstName: firstName,
             lastName: lastName,
             mobileNo: phone,
+            postalCode: postalCode, // Add postalCode to user state
           })
         );
       }
       showSignupSuccessToast(t("manageProfile.toast.profileUpdateSuccess"));
-        navigate("/user/profile");
+      navigate("/user/profile");
     } catch (err) {
       console.error("Failed to update profile", err);
       showSignupErrorToast(t("manageProfile.toast.profileUpdateError"));
@@ -217,12 +229,18 @@ export default function ManageProfile() {
                   <div className="h-12 bg-gray-300 animate-pulse rounded"></div>
                 </div>
               ))}
-              {/* Email and Phone field skeletons - both in same row */}
+              {/* Phone field skeleton */}
               <div>
                 <div className="h-4 w-24 bg-gray-300 animate-pulse rounded mb-2"></div>
                 <div className="h-12 bg-gray-300 animate-pulse rounded"></div>
               </div>
+              {/* Postal Code field skeleton */}
               <div>
+                <div className="h-4 w-24 bg-gray-300 animate-pulse rounded mb-2"></div>
+                <div className="h-12 bg-gray-300 animate-pulse rounded"></div>
+              </div>
+              {/* Email field skeleton - full width */}
+              <div className="md:col-span-2">
                 <div className="h-4 w-24 bg-gray-300 animate-pulse rounded mb-2"></div>
                 <div className="h-12 bg-gray-300 animate-pulse rounded"></div>
               </div>
@@ -263,6 +281,7 @@ export default function ManageProfile() {
 
           <form className="mt-6 space-y-4" onSubmit={handleProfileUpdate}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* First Name */}
               <div>
                 <label className="block text-white text-sm mb-1">
                   {t("manageProfile.firstName")}
@@ -276,6 +295,8 @@ export default function ManageProfile() {
                   disabled={isSavingProfile}
                 />
               </div>
+
+              {/* Last Name */}
               <div>
                 <label className="block text-white text-sm mb-1">
                   {t("manageProfile.lastName")}
@@ -287,6 +308,8 @@ export default function ManageProfile() {
                   disabled={isSavingProfile}
                 />
               </div>
+
+              {/* Phone */}
               <div>
                 <label className="block text-white text-sm mb-1">
                   {t("manageProfile.phone")}
@@ -302,7 +325,27 @@ export default function ManageProfile() {
                   disabled={isSavingProfile}
                 />
               </div>
+
+              {/* Postal Code */}
               <div>
+                <label className="block text-white text-sm mb-1">
+                  {t("signup.postalCode")}
+                </label>
+                <input
+                  className="w-full rounded-md bg-white text-gray-900 px-4 py-2.5 outline-none disabled:bg-gray-200"
+                  value={postalCode}
+                  maxLength={4}
+                  onChange={(e) => {
+                    const onlyDigits = e.target.value.replace(/[^0-9]/g, "");
+                    setPostalCode(onlyDigits);
+                  }}
+                  disabled={isSavingProfile}
+                  placeholder={t("signup.postalCode") || "Postal Code"}
+                />
+              </div>
+
+              {/* Email - full width */}
+              <div className="md:col-span-2">
                 <label className="block text-white text-sm mb-1">
                   {t("manageProfile.email")}
                 </label>
