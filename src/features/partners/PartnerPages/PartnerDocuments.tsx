@@ -1,7 +1,7 @@
 import Footer from "../../../pages/Footer";
 import { partnerDocumentService } from "../../../services/partnerdocument.service";
 import PartnerHeader from "./PartnerHeader";
-import documentImg from "/src/assets/userImages/document.png";
+import documentImg from "/src/assets/userImages/document.svg";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";

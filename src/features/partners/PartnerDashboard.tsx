@@ -1,7 +1,8 @@
 import PartnerHeader from "./PartnerPages/PartnerHeader";
-import partnerlandingImg from "/src/assets/userImages/partnerStepperImg.png";
+import partnerlandingImg from "/src/assets/userImages/partnerStepperImg.svg";
 import PartnerSteper from "./PartnerPages/PartnerSteper";
 import ParentSteperPara from "./PartnerPages/PartnerSteperPara";
+
 
 export default function PartnerDashboard() {
   return (

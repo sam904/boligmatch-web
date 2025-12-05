@@ -63,9 +63,9 @@
     "validating": "Validating...",
     "clickToUpload": "Click to upload image",
     "imageFile": "Image File",
-    "supportedFormats": "PNG, JPG, JPEG, WebP",
+     "invalidImageFile": "Please select a valid image file (JPEG, PNG, SVG, etc.)",
+    "supportedFormats": "PNG, JPG, JPEG, WebP, SVG",
     "uploadSuccess": "Image uploaded successfully",
-    "invalidImageFile": "Please select a valid image file (JPEG, PNG, etc.)",
     "imageSizeExceeded": "Image size should be less than 2MB",
     "dimensionValidationFailed": "Failed to validate image dimensions",
     "loadingCategories": "Loading categories...",
@@ -93,7 +93,17 @@
     "created": "Created",
     "modified": "Modified",
     "displayed": "Displayed",
-    "note": "Note"
+    "note": "Note",
+    "svgUploadSuccess": "SVG uploaded successfully",
+    "svgUploadFailed": "Failed to upload SVG",
+    "svgFile": "SVG File",
+    "svgScalable": "Scalable vector image",
+    "svgAdvantages": "✓ Scalable without quality loss",
+    "svgSmallSize": "✓ Small file size",
+    "fileSizeExceeded": "File size should be less than {sizeLimit}",
+    "svgNotePreview": "SVG files are vector graphics that can be scaled without losing quality."
+  
+  
   },
   "videoUpload": {
     "uploadVideo": "Upload video",
@@ -110,7 +120,8 @@
     "pngImage": "PNG Image",
     "jpegImage": "JPEG Image",
     "gifImage": "GIF Image",
-    "webpImage": "WebP Image"
+    "webpImage": "WebP Image",
+    "svgImage": "SVG Image"
   },
   "auth": {
     "login": "Login",

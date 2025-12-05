@@ -35,10 +35,26 @@ export default function ImageUpload({
   const [validating, setValidating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Check if file is SVG
+  const isSVGFile = (file: File): boolean => {
+    return file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg");
+  };
+
+  // Check if URL is SVG
+  const isSVGUrl = (url: string): boolean => {
+    return url.toLowerCase().endsWith(".svg");
+  };
+
   const validateImageDimensions = (
     file: File
   ): Promise<{ isValid: boolean; width: number; height: number }> => {
     return new Promise((resolve) => {
+      // Skip dimension validation for SVG files
+      if (isSVGFile(file)) {
+        resolve({ isValid: true, width: 0, height: 0 });
+        return;
+      }
+
       const img = new Image();
       const objectUrl = URL.createObjectURL(file);
 
@@ -87,26 +103,30 @@ export default function ImageUpload({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
+    // Validate file type - now includes SVG
+    const isImage = file.type.startsWith("image/");
+    const isSVG = isSVGFile(file);
+    
+    if (!isImage && !isSVG) {
       toast.error(
         t("common.invalidImageFile") ||
-          "Please select a valid image file (JPEG, PNG, etc.)"
+          "Please select a valid image file (JPEG, PNG, SVG, etc.)"
       );
       return;
     }
 
-    // Validate file size (2MB max)
-    const maxSize = 2 * 1024 * 1024;
+    // Validate file size (increase limit for SVG files)
+    const maxSize = isSVGFile(file) ? 5 * 1024 * 1024 : 2 * 1024 * 1024; // 5MB for SVG, 2MB for others
     if (file.size > maxSize) {
+      const sizeLimit = isSVGFile(file) ? "5MB" : "2MB";
       toast.error(
-        t("common.imageSizeExceeded") || "Image size should be less than 2MB"
+        t("common.fileSizeExceeded") || `File size should be less than ${sizeLimit}`
       );
       return;
     }
 
-    // Validate dimensions if required
-    if (showDimensionValidation) {
+    // Validate dimensions for non-SVG files when required
+    if (showDimensionValidation && !isSVGFile(file)) {
       setValidating(true);
       try {
         const { isValid, width, height } = await validateImageDimensions(file);
@@ -153,15 +173,23 @@ export default function ImageUpload({
       }
     }
 
-    // Upload the image
+    // Upload the file
     setUploading(true);
     try {
       const url = await uploadService.uploadImage(file, folder);
       onChange(url);
-      toast.success(t("common.uploadSuccess") || "Image uploaded successfully");
+      toast.success(
+        isSVGFile(file) 
+          ? t("common.svgUploadSuccess") || "SVG uploaded successfully"
+          : t("common.uploadSuccess") || "Image uploaded successfully"
+      );
     } catch (error) {
-      console.error("Image upload error:", error);
-      toast.error("Failed to upload image");
+      console.error("File upload error:", error);
+      toast.error(
+        isSVGFile(file)
+          ? t("common.svgUploadFailed") || "Failed to upload SVG"
+          : t("common.uploadFailed") || "Failed to upload image"
+      );
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -191,7 +219,8 @@ export default function ImageUpload({
     }
   };
 
-  const getImageTypeText = (url: string) => {
+  const getFileTypeText = (url: string) => {
+    if (isSVGUrl(url)) return t("imageTypes.svgImage") || "SVG Image";
     if (url.includes(".png")) return t("imageTypes.pngImage") || "PNG Image";
     if (url.includes(".jpg") || url.includes(".jpeg"))
       return t("imageTypes.jpegImage") || "JPEG Image";
@@ -200,16 +229,43 @@ export default function ImageUpload({
     return t("common.imageFile") || "Image File";
   };
 
+  const renderPreview = (url: string, size: "small" | "large" = "large") => {
+    const isSVG = isSVGUrl(url);
+    const sizeClass = size === "large" ? "w-20 h-20" : "w-16 h-16";
+    
+    if (isSVG) {
+      return (
+        <div className={`${sizeClass} bg-gray-50 rounded-lg border border-gray-200 flex flex-col items-center justify-center p-2 cursor-pointer`}>
+          <div className="text-[#91C73D] font-semibold text-xs mb-1">SVG</div>
+          <div className="text-xs text-gray-400 text-center">Vector Graphic</div>
+        </div>
+      );
+    } else {
+      return (
+        <img
+          src={url}
+          alt="Uploaded preview"
+          className={`${sizeClass} object-cover rounded-lg border border-gray-300 cursor-pointer`}
+        />
+      );
+    }
+  };
+
   const isProcessing = uploading || validating;
 
   return (
     <div className="w-full">
       {/* Label */}
-      <label className="block text-sm text-gray-500 mb-2">
+      <label className="block text-sm font-medium text-gray-700 mb-2">
         {label}
-        {showDimensionValidation && (
+        {showDimensionValidation && !isSVGUrl(value || "") && (
           <span className="text-sm text-gray-500 ml-2">
             ({getDimensionMessage()})
+          </span>
+        )}
+        {isSVGUrl(value || "") && (
+          <span className="text-sm text-green-600 ml-2">
+            ({t("common.svgFile") || "SVG File"})
           </span>
         )}
       </label>
@@ -221,17 +277,17 @@ export default function ImageUpload({
           relative w-full border-2 border-dashed rounded-lg cursor-pointer
           transition-all py-3 duration-200 ease-in-out
           ${
-            uploading
+            uploading || validating
               ? "opacity-60 cursor-not-allowed"
               : "hover:border-[#91C73D] hover:bg-gray-50"
           }
-          ${error ? "border-red-300" : "border-gray-300"}
+          ${error ? "border-red-300 bg-red-50" : "border-gray-300"}
         `}
       >
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*"
+          accept="image/*,.svg"
           onChange={handleFileSelect}
           className="hidden"
           disabled={isProcessing}
@@ -248,62 +304,71 @@ export default function ImageUpload({
           </div>
         ) : value ? (
           <div className="flex flex-col items-center gap-3 text-center py-1">
-            <div className="w-20 h-20 bg-gray-100 rounded-lg border border-gray-300 flex items-center justify-center overflow-hidden cursor-pointer">
-              <img
-                src={value}
-                alt="Uploaded preview"
-                className="w-full h-full object-cover cursor-pointer"
-              />
+            <div className="cursor-pointer" onClick={handleImageClick}>
+              {renderPreview(value, "large")}
             </div>
             <div>
               <p className="text-sm font-medium text-gray-700 truncate max-w-[300px]">
                 {getFileNameFromUrl(value)}
               </p>
               <p className="text-xs text-gray-500 mt-1">
-                {getImageTypeText(value)}
+                {getFileTypeText(value)}
               </p>
+              {/* {isSVGUrl(value) && (
+                <p className="text-xs text-green-600 mt-1">
+                  {t("common.svgScalable") || "Scalable vector image"}
+                </p>
+              )} */}
             </div>
           </div>
         ) : (
           <div className="flex flex-col items-center text-gray-600">
-            <ImageUp className="w-6 h-6 text-[#91C73D] mb-1 cursor-pointer" />
-            <p className="text-sm text-[#91C73D] font-medium cursor-pointer">
+            <ImageUp className="w-6 h-6 text-[#91C73D] mb-2" />
+            <p className="text-sm text-[#91C73D] font-medium">
               {t("common.clickToUpload") || "Click to upload image"}
             </p>
             <p className="text-xs text-gray-400 mt-1">
-              {t("common.supportedFormats") || "PNG, JPG, JPEG, WebP"}
+              {t("common.supportedFormats") || "PNG, JPG, JPEG, WebP, SVG"}
               {showDimensionValidation && ` • ${getDimensionMessage()}`}
             </p>
           </div>
         )}
       </div>
 
-      {/* Image Preview */}
+      {/* File Preview Section */}
       {value && !isProcessing && (
         <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
           <div className="flex items-start gap-3">
-            {/* Image Thumbnail - Clickable */}
+            {/* Thumbnail - Clickable */}
             <div
               className="flex-shrink-0 cursor-pointer"
               onClick={handleImageClick}
             >
-              <div className="w-16 h-16 bg-white rounded border flex items-center justify-center overflow-hidden cursor-pointer">
-                <img
-                  src={value}
-                  alt="Uploaded preview"
-                  className="w-full h-full object-cover cursor-pointer"
-                />
-              </div>
+              {renderPreview(value, "small")}
             </div>
 
-            {/* Image Info */}
+            {/* File Info */}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-green-800 truncate">
                 {getFileNameFromUrl(value)}
               </p>
               <p className="text-xs text-green-600 mt-1">
-                {getImageTypeText(value)}
+                {getFileTypeText(value)}
               </p>
+              {/* {isSVGUrl(value) ? (
+                <div className="mt-2">
+                  <p className="text-xs text-green-700">
+                    {t("common.svgAdvantages") || "✓ Scalable without quality loss"}
+                  </p>
+                  <p className="text-xs text-green-700">
+                    {t("common.svgSmallSize") || "✓ Small file size"}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs text-green-500 mt-2">
+                  {t("common.readyForUse") || "✓ Ready to use"}
+                </p>
+              )} */}
             </div>
           </div>
         </div>

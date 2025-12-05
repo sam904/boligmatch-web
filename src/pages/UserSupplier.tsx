@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 // import userLogo from "/src/assets/userImages/userLogo.png";
-import userDashboard from "/src/assets/userImages/user-supplier.png";
-import JimmysELservice from "../assets/userSupplier/Jimmys EL-service.png";
+import userDashboard from "/src/assets/userImages/user-supplier.svg";
+import JimmysELservice from "../assets/userSupplier/Jimmys EL-service.svg";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { subCategoriesService } from "../services/subCategories.service";
 import { partnerService } from "../services/partner.service";
 // import footerLogo from "/src/assets/userImages/footerLogo.svg";
-import nextArrow from "/src/assets/userImages/arrow_right.png";
+import nextArrow from "/src/assets/userImages/arrow_right.svg";
 import Footer from "./Footer";
 import { useTranslation } from "react-i18next";
 

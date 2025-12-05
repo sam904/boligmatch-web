@@ -70,31 +70,19 @@ function ImagePreviewModal({
   onClose: () => void;
 }) {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (isOpen && imageUrl) {
-      setIsLoading(true);
-      const img = new Image();
-      img.onload = function () {
-        setIsLoading(false);
-      };
-      img.onerror = function () {
-        setIsLoading(false);
-      };
-      img.src = imageUrl;
-    }
-  }, [isOpen, imageUrl]);
+  const isSVG = imageUrl.toLowerCase().endsWith(".svg");
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center bg-black/50 z-50 p-4">
+    <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center bg-black/50 z-50 p-4 cursor-pointer">
       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
         <div className="flex justify-between items-center p-4 border-b">
-          <h3 className="text-lg font-semibold">
-            {t("common.imagePreview") || "Image Preview"}
-          </h3>
+          <div>
+            <h3 className="text-lg font-semibold">
+              {t("common.imagePreview") || "Image Preview"}
+            </h3>
+          </div>
           <button
             onClick={onClose}
             className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors cursor-pointer"
@@ -103,18 +91,22 @@ function ImagePreviewModal({
           </button>
         </div>
         <div className="p-4 flex justify-center items-center max-h-[70vh] overflow-auto">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span className="ml-2 text-gray-600">
-                {t("common.loadingImage") || "Loading image..."}
-              </span>
+          {isSVG ? (
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="text-center p-8">
+                {/* You can render the SVG directly if it's safe */}
+                <img
+                  src={imageUrl}
+                  alt="SVG Preview"
+                  className="max-w-full max-h-full object-contain cursor-pointer"
+                />
+              </div>
             </div>
           ) : (
             <img
               src={imageUrl}
               alt="Preview"
-              className="max-w-full max-h-full object-contain"
+              className="max-w-full max-h-full object-contain cursor-pointer"
             />
           )}
         </div>
@@ -123,10 +115,11 @@ function ImagePreviewModal({
             href={imageUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 underline text-sm cursor-pointer"
+            className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
           >
             {t("common.openInNewTab") || "Open in new tab"}
           </a>
+         
         </div>
       </div>
     </div>
