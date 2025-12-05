@@ -144,7 +144,7 @@ export default function LoginPage() {
                 errors.userName ? "border-red-500" : "border-gray-300"
               }`}
               placeholder={
-                t("auth.enterAdminUsername") || "Enter admin username or email"
+                t("auth.enterAdminUsername") || "Enter username or email"
               }
             />
             {errors.userName && (
