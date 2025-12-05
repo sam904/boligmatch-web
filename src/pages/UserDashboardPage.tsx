@@ -342,7 +342,7 @@ export default function UserDashboardPage() {
                 className={`${activeView === "favorites"
                   ? "bg-[#145939] text-white"
                   : "bg-[#95c11f] text-white"
-                  } flex items-center justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition cursor-pointer w-[272.38px] h-[55px]`}
+                  } flex items-center justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition cursor-pointer w-[272.38px] h-[55px]`}
                 type="button"
               >
                 <img
@@ -363,7 +363,7 @@ export default function UserDashboardPage() {
                 className={`${activeView === "messages"
                   ? "bg-[#145939] text-white"
                   : "bg-[#95c11f] text-white"
-                  } flex items-center justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md ring-1 ring-white/20 hover:opacity-90 transition font-medium cursor-pointer w-[272.38px] h-[55px]`}
+                  } flex items-center justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition font-medium cursor-pointer w-[272.38px] h-[55px]`}
                 type="button"
               >
                 <img
@@ -443,9 +443,9 @@ export default function UserDashboardPage() {
               {/* Favorites View */}
               {activeView === "favorites" && (
                 <div className="space-y-4">
-                  <h2 className="text-white text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
+                  {/* <h2 className="text-white text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
                     {t("userDashboard.favoritesTitle")}
-                  </h2>
+                  </h2> */}
                   {favoritesLoading ? (
                     <div className="flex justify-center items-center h-64">
                       <div className="text-white text-base sm:text-lg">
@@ -568,9 +568,9 @@ export default function UserDashboardPage() {
               {/* Messages View */}
               {activeView === "messages" && (
                 <div className="space-y-4">
-                  <h2 className="text-white text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
+                  {/* <h2 className="text-white text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
                     {t("userDashboard.conversationsTitle")}
-                  </h2>
+                  </h2> */}
                   {conversationsLoading ? (
                     <div className="flex justify-center items-center h-64">
                       <div className="text-white text-base sm:text-lg">
