@@ -149,7 +149,7 @@
     "resetNote": "This will reset the password immediately. They'll need to use the new password to login.",
     "adminLogin": "Admin Login",
     "adminAccessOnly": "Administrator access only",
-    "enterAdminUsername": "Enter admin username or email",
+    "enterAdminUsername": "Enter username or email",
     "enterPassword": "Enter your password",
     "rememberMe": "Remember for 30 days",
     "adminAccessDenied": "Access denied. This portal is for administrators only.",

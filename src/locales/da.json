@@ -146,7 +146,7 @@
     "resetNote": "Dette vil nulstille adgangskoden med det samme. De skal bruge den nye adgangskode til at logge ind.",
     "adminLogin": "Admin Login",
     "adminAccessOnly": "Kun administratoradgang",
-    "enterAdminUsername": "Indtast admin brugernavn eller email",
+    "enterAdminUsername": "Indtast brugernavn eller email",
     "enterPassword": "Indtast din adgangskode",
     "rememberMe": "Husk i 30 dage",
     "adminAccessDenied": "Adgang nægtet. Denne portal er kun for administratorer.",
