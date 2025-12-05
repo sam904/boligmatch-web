@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import icon1 from "../../assets/userImages/01.png";
-import icon2 from "../../assets/userImages/02.png";
-import icon3 from "../../assets/userImages/03.png";
-import icon4 from "../../assets/userImages/04.png";
-import icon5 from "../../assets/userImages/05.png";
-import icon6 from "../../assets/userImages/06.png";
-import icon7 from "../../assets/userImages/07.png";
-import icon8 from "../../assets/userImages/08.png";
+import icon1 from "../../assets/userImages/01.svg";
+import icon2 from "../../assets/userImages/02.svg";
+import icon3 from "../../assets/userImages/03.svg";
+import icon4 from "../../assets/userImages/04.svg";
+import icon5 from "../../assets/userImages/05.svg";
+import icon6 from "../../assets/userImages/06.svg";
+import icon7 from "../../assets/userImages/07.svg";
+import icon8 from "../../assets/userImages/08.svg";
 import circlebg from "../../assets/userImages/circle-bg.png";
-import stepperBg from "/src/assets/userImages/stepper.jpeg";
+import stepperBg from "/src/assets/userImages/stepper.svg";
 import jurneyImg from "/src/assets/userImages/jurneyImg.png";
-import steperBgMobile from "/src/assets/userImages/steper-mobile.png";
+import steperBgMobile from "/src/assets/userImages/steper-mobile.svg";
 
 interface StepperProps {
   currentStep: number;

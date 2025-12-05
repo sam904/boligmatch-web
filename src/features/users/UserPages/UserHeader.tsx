@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import userLogo from "/src/assets/userImages/boligmatchLogo.png";
+import userLogo from "/src/assets/userImages/boligmatchLogo.svg";
 import leftArrow from "/src/assets/userImages/arrow-left.svg";
-import userHeader from "/src/assets/userImages/userHeader.png";
+import userHeader from "/src/assets/userImages/userHeader.svg";
 import UserModal from "../../../components/common/UserModal";
 import LoginChoiceModal from "../../../components/common/LoginChoiceModal";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../app/hooks";
 import { tokenStorage } from "../../../lib/storage";
 import { RxHamburgerMenu } from "react-icons/rx";
-import homeIcon from "/src/assets/userImages/home.png";
-import myBoligmatchIcon from "/src/assets/userImages/my-boligmatch.png";
-import manageProfileIcon from "/src/assets/userImages/gear.png";
+import homeIcon from "/src/assets/userImages/home.svg";
+import myBoligmatchIcon from "/src/assets/userImages/my-boligmatch.svg";
+import manageProfileIcon from "/src/assets/userImages/gear.svg";
 // import partnerPitchIcon from "/src/assets/userImages/partnerPitch.png"
-import docsIcon from "/src/assets/userImages/docsIcon.png";
-import becomePartnerIcon from "/src/assets/userImages/becomePartner.png";
-import aboutBoligmatchIcon from "/src/assets/userImages/aboutBoligmatch.png";
-import termsConditionIcon from "/src/assets/userImages/termsAndCondi.png";
-import signOutIcon from "/src/assets/userImages/signOut.png";
+import docsIcon from "/src/assets/userImages/docsIcon.svg";
+import becomePartnerIcon from "/src/assets/userImages/becomePartner.svg";
+import aboutBoligmatchIcon from "/src/assets/userImages/aboutBoligmatch.svg";
+import termsConditionIcon from "/src/assets/userImages/termsAndCondi.svg";
+import signOutIcon from "/src/assets/userImages/signOut.svg";
 
 function UserHeader({
   fullHeight = true,

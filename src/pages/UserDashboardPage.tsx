@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userDashboard from "/src/assets/userImages/profileboligmatchIm2.jpeg";
-import dashboard1 from "/src/assets/userImages/dashboard1.png";
-import dashboard2 from "/src/assets/userImages/dashboard1.png";
-import dashboard3 from "/src/assets/userImages/dashboard1.png";
+import dashboard1 from "/src/assets/userImages/dashboard1.svg";
+import dashboard2 from "/src/assets/userImages/dashboard1.svg";
+import dashboard3 from "/src/assets/userImages/dashboard1.svg";
 import dashboardIcon1 from "/src/assets/userImages/userDashboardicon1.svg";
 import dashboardIcon2 from "/src/assets/userImages/userDashboardicon1.svg";
 import dashboardIcon3 from "/src/assets/userImages/userDashboardicon1.svg";
