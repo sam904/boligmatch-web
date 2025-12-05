@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import type { WheelEvent } from "react";
 import { motion } from "framer-motion";
 import { ServiceCard } from "./ServiceCard";
-// import { ChevronLeft, ChevronRight } from "lucide-react";
 import swaperImg1 from "/src/assets/userImages/swiper5.png";
 import swaperImg2 from "/src/assets/userImages/swiper4.png";
 import swaperImg3 from "/src/assets/userImages/swiper1.png";
@@ -59,7 +58,6 @@ const services = [
 
 export default function ServiceCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const [isHovered, setIsHovered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
@@ -67,10 +65,12 @@ export default function ServiceCarousel() {
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
+  const [draggedCardIndex, setDraggedCardIndex] = useState<number | null>(null);
+  
   const wheelCooldownRef = useRef(false);
-  const manualScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
+  const manualScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoRotateRef = useRef<NodeJS.Timeout | null>(null);
+  const dragStartXRef = useRef(0);
 
   // Handle window resize
   useEffect(() => {
@@ -79,64 +79,82 @@ export default function ServiceCarousel() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Auto-rotation effect
   useEffect(() => {
-    if (isHovered || isDragging) return;
+    if (autoRotateRef.current) {
+      clearInterval(autoRotateRef.current);
+    }
 
-    const interval = setInterval(() => {
-      paginate(1);
-    }, 2800);
+    // Start auto-rotation immediately
+    autoRotateRef.current = setInterval(() => {
+      setCurrentIndex((prevIndex) => {
+        const nextIndex = (prevIndex + 1) % services.length;
+        return nextIndex;
+      });
+    }, 3000);
 
-    return () => clearInterval(interval);
-  }, [currentIndex, isHovered, isDragging]);
-
-  useEffect(
-    () => () => {
-      if (manualScrollTimeoutRef.current) {
-        clearTimeout(manualScrollTimeoutRef.current);
+    return () => {
+      if (autoRotateRef.current) {
+        clearInterval(autoRotateRef.current);
       }
-    },
-    []
-  );
+    };
+  }, []);
 
-  const swipeConfidenceThreshold = 10000;
-  const swipePower = (offset: number, velocity: number) => {
-    return Math.abs(offset) * velocity;
-  };
+  // Pause auto-rotation on hover or drag
+  useEffect(() => {
+    if (isHovered || isDragging) {
+      if (autoRotateRef.current) {
+        clearInterval(autoRotateRef.current);
+        autoRotateRef.current = null;
+      }
+    } else {
+      // Resume auto-rotation when not hovering or dragging
+      if (!autoRotateRef.current) {
+        autoRotateRef.current = setInterval(() => {
+          setCurrentIndex((prevIndex) => {
+            const nextIndex = (prevIndex + 1) % services.length;
+            return nextIndex;
+          });
+        }, 3000);
+      }
+    }
+  }, [isHovered, isDragging]);
 
-  const paginate = (newDirection: number) => {
+  useEffect(() => {
+    return () => {
+      if (manualScrollTimeoutRef.current) clearTimeout(manualScrollTimeoutRef.current);
+      if (autoRotateRef.current) clearInterval(autoRotateRef.current);
+    };
+  }, []);
+
+  // Circular navigation functions
+  const goToNext = () => {
     setCurrentIndex((prevIndex) => {
-      let nextIndex = prevIndex + newDirection;
-      if (nextIndex < 0) nextIndex = services.length - 1;
-      if (nextIndex >= services.length) nextIndex = 0;
+      const nextIndex = (prevIndex + 1) % services.length;
       return nextIndex;
     });
   };
 
-  const handleDrag = (_: any, info: any) => {
-    setDragOffset(info.offset.x);
+  const goToPrev = () => {
+    setCurrentIndex((prevIndex) => {
+      const prev = prevIndex === 0 ? services.length - 1 : prevIndex - 1;
+      return prev;
+    });
   };
 
-  const handleDragEnd = (_: any, { offset, velocity }: any) => {
-    const swipe = swipePower(offset.x, velocity.x);
-
-    if (Math.abs(swipe) > swipeConfidenceThreshold) {
-      if (swipe > 0) {
-        paginate(-1); // Swipe right, go to previous
-      } else {
-        paginate(1); // Swipe left, go to next
-      }
-    }
-    setIsDragging(false);
-    setDragOffset(0);
-  };
-
+  // Handle wheel for carousel navigation
   const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
     event.preventDefault();
     if (wheelCooldownRef.current) return;
 
     wheelCooldownRef.current = true;
     setIsManualScroll(true);
-    paginate(event.deltaY > 0 ? 1 : -1);
+    
+    if (event.deltaY > 0) {
+      goToNext(); // Scroll down, go next
+    } else {
+      goToPrev(); // Scroll up, go previous
+    }
 
     if (manualScrollTimeoutRef.current) {
       clearTimeout(manualScrollTimeoutRef.current);
@@ -147,6 +165,77 @@ export default function ServiceCarousel() {
     }, 600);
   };
 
+  // Individual card drag handlers
+  const handleCardDragStart = (position: number, clientX: number) => {
+    if (position !== 0) return; // Only allow dragging the center card
+    
+    setIsDragging(true);
+    setDraggedCardIndex(position);
+    dragStartXRef.current = clientX;
+    setDragOffset(0);
+  };
+
+  const handleCardDrag = (clientX: number) => {
+    if (!isDragging || draggedCardIndex !== 0) return;
+    
+    const deltaX = clientX - dragStartXRef.current;
+    setDragOffset(deltaX);
+  };
+
+  const handleCardDragEnd = () => {
+    if (!isDragging || draggedCardIndex !== 0) return;
+    
+    const minSwipeDistance = 100; // Increased for better swipe detection
+    
+    if (Math.abs(dragOffset) > minSwipeDistance) {
+      if (dragOffset > 0) {
+        goToPrev(); // Drag right, go to previous
+      } else {
+        goToNext(); // Drag left, go to next
+      }
+    }
+    
+    setIsDragging(false);
+    setDraggedCardIndex(null);
+    setDragOffset(0);
+    dragStartXRef.current = 0;
+  };
+
+  // Mouse events for desktop
+  const handleMouseDown = (position: number, e: React.MouseEvent) => {
+    if (position !== 0) return; // Only allow dragging the center card
+    e.preventDefault();
+    handleCardDragStart(position, e.clientX);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    handleCardDrag(e.clientX);
+  };
+
+  const handleMouseUp = () => {
+    handleCardDragEnd();
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      handleCardDragEnd();
+    }
+  };
+
+  // Touch events for mobile
+  const handleTouchStart = (position: number, e: React.TouchEvent) => {
+    if (position !== 0) return; // Only allow dragging the center card
+    handleCardDragStart(position, e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    handleCardDrag(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    handleCardDragEnd();
+  };
+
   const isMobile = windowWidth < 1024;
   const visibleRange = isMobile ? 1 : 2;
 
@@ -154,6 +243,7 @@ export default function ServiceCarousel() {
     const cards = [];
     for (let i = -visibleRange; i <= visibleRange; i++) {
       let index = currentIndex + i;
+      // Handle wrap-around for circular carousel
       if (index < 0) index = services.length + index;
       if (index >= services.length) index = index - services.length;
       cards.push({ ...services[index], position: i });
@@ -166,76 +256,99 @@ export default function ServiceCarousel() {
       className="relative w-full overflow-hidden py-12 bg-[#01351f]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeaveCapture={handleMouseLeave}
     >
       {/* Carousel Container */}
       <div className="relative h-[600px] md:h-[600px] flex items-center justify-center">
-        {/* Cards */}
-        <motion.div
+        {/* Cards Container - No drag on container, only individual cards */}
+        <div
           className="relative w-full max-w-[1600px] h-full flex items-center justify-center px-4"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.2}
-          dragMomentum={false}
           onWheel={handleWheel}
-          onDragStart={() => {
-            setIsDragging(true);
-            setDragOffset(0);
+          style={{ 
+            userSelect: "none",
+            WebkitUserSelect: "none",
           }}
-          onDrag={handleDrag}
-          onDragEnd={handleDragEnd}
-          style={{ cursor: isDragging ? "grabbing" : "grab" }}
         >
           {getVisibleCards().map((service) => {
             const position = service.position;
             const isCurrent = position === 0;
             const absPosition = Math.abs(position);
+            const canDrag = isCurrent; // Only center card can be dragged
 
             // Calculate scale and opacity based on distance from center
             const scale = isCurrent ? 1 : absPosition === 1 ? 0.85 : 0.75;
-            const opacity = 1;
+            const opacity = isCurrent ? 1 : absPosition === 1 ? 0.9 : 0.7;
 
             // Responsive card spacing
             const cardSpacing = isMobile ? 240 : 280;
 
-            // Calculate x position with drag offset for smooth motion
+            // Calculate x position
             const baseX = position * cardSpacing;
-            const dragInfluence = isDragging ? dragOffset : 0;
+            const dragInfluence = (isDragging && isCurrent) ? dragOffset : 0;
             const finalX = baseX + dragInfluence;
+
+            // Add subtle rotation effect for side cards
+            const rotateY = isCurrent ? 0 : position * 5;
 
             return (
               <motion.div
-                key={`${service.id}-${position}`}
+                key={`${service.id}-${position}-${currentIndex}`}
                 className="absolute"
                 initial={false}
                 animate={{
                   x: finalX,
                   scale: scale,
                   opacity: opacity,
+                  rotateY: rotateY,
                   zIndex: 20 - absPosition * 5,
+                  filter: isCurrent ? 'none' : `blur(${absPosition * 0.5}px)`,
                 }}
                 transition={
-                  isDragging || isManualScroll
-                    ? { type: "spring", stiffness: 300, damping: 30 }
+                  isDragging && isCurrent
+                    ? { 
+                        type: "spring", 
+                        stiffness: 200, 
+                        damping: 25,
+                      }
                     : {
-                        type: "tween",
-                        duration: 0.7,
-                        ease: "easeInOut",
+                        type: "spring",
+                        stiffness: 250,
+                        damping: 25,
+                        mass: 0.8
                       }
                 }
                 style={{
                   width: isMobile ? "300px" : "360px",
+                  transformStyle: "preserve-3d",
+                  perspective: "1000px",
+                  cursor: canDrag ? (isDragging ? "grabbing" : "grab") : "default",
                 }}
+                // Mouse events for desktop
+                onMouseDown={(e) => handleMouseDown(position, e)}
+                // Touch events for mobile
+                onTouchStart={(e) => handleTouchStart(position, e)}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
               >
-                <ServiceCard
-                  title={service.title}
-                  description={service.description}
-                  icon={service.icon}
-                  image={service.image}
-                />
+                <div
+                  style={{
+                    transform: `rotateY(${rotateY}deg)`,
+                    transformStyle: "preserve-3d",
+                  }}
+                >
+                  <ServiceCard
+                    title={service.title}
+                    description={service.description}
+                    icon={service.icon}
+                    image={service.image}
+                  />
+                </div>
               </motion.div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     </div>
   );
