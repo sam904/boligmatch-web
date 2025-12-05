@@ -15,8 +15,8 @@ import ToastBanner from "./ToastBanner";
 import SignUpModal from "./SignUpModal";
 
 const schema = z.object({
-  userName: z.string().min(1, "Username is required"),
-  password: z.string().min(1, "Password is required"),
+  userName: z.string().min(1, "validation.usernameRequired"),
+  password: z.string().min(1, "validation.passwordRequired"),
 });
 
 interface UserModalProps {
@@ -54,6 +54,29 @@ export default function UserModal({
       ({ closeToast }) => (
         <ToastBanner
           type="success"
+          message={message}
+          onClose={closeToast}
+          autoDismissMs={3000}
+          fixed={false}
+        />
+      ),
+      {
+        position: "top-right",
+        closeButton: false,
+        hideProgressBar: true,
+        autoClose: 3000,
+        icon: false,
+        style: { background: "transparent", boxShadow: "none", padding: 0 },
+        className: "p-0 m-0",
+      }
+    );
+  };
+
+  const showError = (message: string) => {
+    toast(
+      ({ closeToast }) => (
+        <ToastBanner
+          type="error"
           message={message}
           onClose={closeToast}
           autoDismissMs={3000}
@@ -119,12 +142,13 @@ export default function UserModal({
             .map((r: string) => r.trim())
             .includes("1") || roleName.toLowerCase() === "admin";
         if (isAdmin) {
-          toast.error("You are not authorised for login");
+          showError(
+            t("auth.accessDenied") || "You are not authorised for login"
+          );
           try {
             localStorage.removeItem("bm_user");
             localStorage.removeItem("bm_partner");
             localStorage.removeItem("bm_partnerId");
-
           } catch {}
           dispatch(logout());
           onClose();
@@ -151,13 +175,18 @@ export default function UserModal({
           localStorage.setItem("bm_partner", JSON.stringify(user));
           localStorage.setItem("bm_partnerId", JSON.stringify(user.partnerId));
 
-          showSuccess("Partner login successful!");
+          showSuccess(
+            t("supplierProfile.toast.partnerLoginSuccess") ||
+              "Partner login successful!"
+          );
         } else {
           localStorage.removeItem("bm_partner");
           localStorage.removeItem("bm_partnerId");
 
           localStorage.setItem("bm_user", JSON.stringify(user));
-          showSuccess("Login successful!");
+          showSuccess(
+            t("supplierProfile.toast.loginSuccess") || "Login successful!"
+          );
         }
 
         const from = (location.state as any)?.from?.pathname;
@@ -194,7 +223,10 @@ export default function UserModal({
 
     if (!open && isAnimating) {
       setIsVisible(false);
-      hideTimer = window.setTimeout(() => setIsAnimating(false), animationDuration);
+      hideTimer = window.setTimeout(
+        () => setIsAnimating(false),
+        animationDuration
+      );
     }
 
     return () => {
@@ -222,11 +254,17 @@ export default function UserModal({
         )}`
       );
       setMode("otp");
-      toast.success("OTP sent successfully to your email!");
+      showSuccess(
+        t("auth.resetPasswordDetails.otpSentSuccess") ||
+          "OTP sent successfully to your email!"
+      );
     } catch (err: any) {
-      const errorMsg = err?.response?.data?.message || "Failed to send OTP";
+      const errorMsg =
+        err?.response?.data?.message ||
+        t("auth.resetPasswordDetails.otpSendError") ||
+        "Failed to send OTP";
       setFpError(errorMsg);
-      toast.error(errorMsg);
+      showError(errorMsg);
     } finally {
       setFpLoading(false);
     }
@@ -249,8 +287,9 @@ export default function UserModal({
     e.preventDefault();
     const code = otp.join("");
     if (code.length !== 6) {
-      setFpError("Enter 6-digit OTP");
-      toast.error("Enter 6-digit OTP");
+      const errorMsg = t("validation.otpLength") || "Enter 6-digit OTP";
+      setFpError(errorMsg);
+      showError(errorMsg);
       return;
     }
     setFpLoading(true);
@@ -262,11 +301,17 @@ export default function UserModal({
         { params: { email, otp: Number(code) } }
       );
       setMode("reset");
-      toast.success("OTP verified successfully!");
+      showSuccess(
+        t("auth.resetPasswordDetails.otpVerifiedSuccess") ||
+          "OTP verified successfully!"
+      );
     } catch (err: any) {
-      const errorMsg = err?.response?.data?.message || "Invalid OTP";
+      const errorMsg =
+        err?.response?.data?.message ||
+        t("auth.resetPasswordDetails.invalidOtp") ||
+        "Invalid OTP";
       setFpError(errorMsg);
-      toast.error(errorMsg);
+      showError(errorMsg);
     } finally {
       setFpLoading(false);
     }
@@ -275,8 +320,10 @@ export default function UserModal({
   const updatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPassword) {
-      setFpError("Enter new password");
-      toast.error("Enter new password");
+      const errorMsg =
+        t("validation.newPasswordRequired") || "Enter new password";
+      setFpError(errorMsg);
+      showError(errorMsg);
       return;
     }
     setFpLoading(true);
@@ -292,13 +339,18 @@ export default function UserModal({
           salt: "",
         }
       );
-      toast.success("Password updated successfully!");
+      showSuccess(
+        t("auth.resetPasswordDetails.successMessage") ||
+          "Password updated successfully!"
+      );
       onClose();
     } catch (err: any) {
       const errorMsg =
-        err?.response?.data?.message || "Failed to update password";
+        err?.response?.data?.message ||
+        t("auth.resetPasswordDetails.resetFailed") ||
+        "Failed to update password";
       setFpError(errorMsg);
-      toast.error(errorMsg);
+      showError(errorMsg);
     } finally {
       setFpLoading(false);
     }
@@ -312,7 +364,7 @@ export default function UserModal({
     // Auto-login after successful signup
     try {
       const result = await dispatch(loginThunk({ userName: email, password }));
-      
+
       if (loginThunk.fulfilled.match(result)) {
         const { output } = result.payload;
         const loggedInUser = {
@@ -329,29 +381,38 @@ export default function UserModal({
           mobileNo: output.mobileNo,
         };
 
-        // Set localStorage like normal login flow (authSlice sets token, but we need to set user)
+        // Set localStorage like normal login flow
         localStorage.setItem("bm_access", output.token);
         localStorage.setItem("bm_user", JSON.stringify(loggedInUser));
         localStorage.removeItem("bm_partner");
 
         // Close signup modal
         setIsSignUpOpen(false);
-        // Close login modal - this will trigger RecommendUser to detect authentication
+        // Close login modal
         onClose();
         // Show success message
-        showSuccess("Account created and logged in successfully!");
+        showSuccess(
+          t("signup.signupAndLoginSuccess") ||
+            "Account created and logged in successfully!"
+        );
 
         // Note: For recommendation flow, we don't redirect - we stay on the same page
         // The RecommendUser component will automatically detect authentication and show content
       } else {
         // If auto-login fails, just close signup modal and let user login manually
         setIsSignUpOpen(false);
-        toast.error("Account created! Please log in with your credentials.");
+        showError(
+          t("signup.signupSuccessLoginManually") ||
+            "Account created! Please log in with your credentials."
+        );
       }
     } catch (error) {
       // If auto-login fails, just close signup modal and let user login manually
       setIsSignUpOpen(false);
-      toast.error("Account created! Please log in with your credentials.");
+      showError(
+        t("signup.signupSuccessLoginManually") ||
+          "Account created! Please log in with your credentials."
+      );
     }
   };
 
@@ -374,7 +435,9 @@ export default function UserModal({
           <div className="relative w-[370px] px-4">
             <div
               className={`relative rounded-[23px] bg-[#E6E7E9] shadow-2xl w-full transition-all duration-400 ${
-                isVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-6"
+                isVisible
+                  ? "opacity-100 scale-100 translate-y-0"
+                  : "opacity-0 scale-95 translate-y-6"
               }`}
               style={{ willChange: "transform, opacity" }}
             >
@@ -411,252 +474,282 @@ export default function UserModal({
                 />
               </div>
 
-            <div className="px-6 pb-6">
-              <h2 className="text-[20px] font-[800] text-[#000000] text-center">
-                {mode === "login"
-                  ? `${roleTarget === "partner" ? "Partner " : ""}${t(
-                      "auth.login"
-                    )}`
-                  : mode === "forgot-email"
-                  ? "Forgot Password"
-                  : mode === "otp"
-                  ? "Verify OTP"
-                  : "Reset Password"}
-              </h2>
-            </div>
-
-            {mode === "login" && error && (
-              <div className="mx-6 mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-                <div className="flex items-center">
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  {error}
-                </div>
+              <div className="px-6 pb-6">
+                <h2 className="text-[20px] font-[800] text-[#000000] text-center">
+                  {mode === "login"
+                    ? `${roleTarget === "partner" ? "Partner " : ""}${t(
+                        "auth.login"
+                      )}`
+                    : mode === "forgot-email"
+                    ? t("auth.forgotPassword") || "Forgot Password"
+                    : mode === "otp"
+                    ? t("auth.resetPasswordDetails.verifyOtp") || "Verify OTP"
+                    : t("auth.resetPassword") || "Reset Password"}
+                </h2>
               </div>
-            )}
 
-            <div className="px-6 pb-7">
-              {mode === "login" && (
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                  <div>
-                    <label
-                      htmlFor="userName"
-                      className="block text-sm font-medium text-black mb-2"
+              {mode === "login" && error && (
+                <div className="mx-6 mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+                  <div className="flex items-center">
+                    <svg
+                      className="w-5 h-5 mr-2"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
                     >
-                      {t("auth.username")}
-                    </label>
-                    <input
-                      id="userName"
-                      type="text"
-                      className="w-full rounded-md bg-white px-3 py-2 shadow-inner outline-none ring-1 ring-transparent focus:ring-2 focus:ring-[#0A7B49]"
-                      {...register("userName")}
-                    />
-                    {errors.userName && (
-                      <p className="text-xs text-red-600 mt-1">
-                        {errors.userName.message}
-                      </p>
-                    )}
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    {error}
                   </div>
+                </div>
+              )}
 
-                  <div>
-                    <label
-                      htmlFor="password"
-                      className="block text-sm font-medium text-black mb-2"
-                    >
-                      {t("auth.password")}
-                    </label>
-                    <input
-                      id="password"
-                      type="password"
-                      className="w-full rounded-md bg-white px-3 py-2 shadow-inner outline-none ring-1 ring-transparent focus:ring-2 focus:ring-[#0A7B49]"
-                      {...register("password")}
-                    />
-                    {errors.password && (
-                      <p className="text-xs text-red-600 mt-1">
-                        {errors.password.message}
-                      </p>
-                    )}
-                  </div>
+              <div className="px-6 pb-7">
+                {mode === "login" && (
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    <div>
+                      <label
+                        htmlFor="userName"
+                        className="block text-sm font-medium text-black mb-2"
+                      >
+                        {t("auth.username")}
+                      </label>
+                      <input
+                        id="userName"
+                        type="text"
+                        className="w-full rounded-md bg-white px-3 py-2 shadow-inner outline-none ring-1 ring-transparent focus:ring-2 focus:ring-[#0A7B49]"
+                        placeholder={
+                          t("auth.enterAdminUsername") ||
+                          "Enter username or email"
+                        }
+                        {...register("userName")}
+                      />
+                      {errors.userName && (
+                        <p className="text-xs text-red-600 mt-1">
+                          {t(
+                            errors.userName.message ||
+                              "validation.usernameRequired"
+                          )}
+                        </p>
+                      )}
+                    </div>
 
-                  <div className="text-sm">
-                    <button
-                      type="button"
-                      onClick={handleForgotClick}
-                      className="text-black hover:text-gray-600 transition-colors font-normal cursor-pointer"
-                    >
-                      {t("auth.forgotPassword")}
-                    </button>
-                  </div>
-                  {showSignUp && roleTarget === "user" && (
+                    <div>
+                      <label
+                        htmlFor="password"
+                        className="block text-sm font-medium text-black mb-2"
+                      >
+                        {t("auth.password")}
+                      </label>
+                      <input
+                        id="password"
+                        type="password"
+                        className="w-full rounded-md bg-white px-3 py-2 shadow-inner outline-none ring-1 ring-transparent focus:ring-2 focus:ring-[#0A7B49]"
+                        placeholder={
+                          t("auth.enterPassword") || "Enter your password"
+                        }
+                        {...register("password")}
+                      />
+                      {errors.password && (
+                        <p className="text-xs text-red-600 mt-1">
+                          {t(
+                            errors.password.message ||
+                              "validation.passwordRequired"
+                          )}
+                        </p>
+                      )}
+                    </div>
+
                     <div className="text-sm">
-                      Don't have an account?{" "}
                       <button
                         type="button"
-                        onClick={handleSignUpClick}
+                        onClick={handleForgotClick}
                         className="text-black hover:text-gray-600 transition-colors font-normal cursor-pointer"
                       >
-                        Sign Up Here
+                        {t("auth.forgotPassword")}
                       </button>
                     </div>
-                  )}
-               
-                  <div className="pt-2">
-                    <button
-                      type="submit"
-                      disabled={status === "loading"}
-                      className="w-full rounded-lg bg-[#7CCB4A] py-3 px-4 font-medium text-white transition-colors hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {status === "loading" ? (
-                        <span className="flex items-center justify-center">
-                          <svg
-                            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                          </svg>
-                          {t("auth.signingIn")}
-                        </span>
-                      ) : (
-                        <>{t("auth.signIn")}</>
-                      )}
-                    </button>
-                  </div>
-                </form>
-              )}
+                    {showSignUp && roleTarget === "user" && (
+                      <div className="text-sm">
+                        {t("signup.noAccountQuestion") ||
+                          "Don't have an account?"}{" "}
+                        <button
+                          type="button"
+                          onClick={handleSignUpClick}
+                          className="text-black hover:text-gray-600 transition-colors font-normal cursor-pointer"
+                        >
+                          {t("signup.signUpHere") || "Sign Up Here"}
+                        </button>
+                      </div>
+                    )}
 
-              {mode === "forgot-email" && (
-                <form onSubmit={sendOtp} className="space-y-4">
-                  {fpError && (
-                    <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-                      {fpError}
+                    <div className="pt-2">
+                      <button
+                        type="submit"
+                        disabled={status === "loading"}
+                        className="w-full rounded-lg bg-[#7CCB4A] py-3 px-4 font-medium text-white transition-colors hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {status === "loading" ? (
+                          <span className="flex items-center justify-center">
+                            <svg
+                              className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                            {t("auth.signingIn")}
+                          </span>
+                        ) : (
+                          <>{t("auth.signIn")}</>
+                        )}
+                      </button>
                     </div>
-                  )}
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-black mb-2"
-                    >
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-md bg-white px-3 py-2 shadow-inner outline-none ring-1 ring-transparent focus:ring-2 focus:ring-[#0A7B49]"
-                      required
-                    />
-                  </div>
-                  <div className="pt-2">
-                    <button
-                      type="submit"
-                      disabled={fpLoading}
-                      className="w-full rounded-lg bg-[#7CCB4A] py-3 px-4 font-medium text-white transition-colors hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {fpLoading ? "Sending..." : "Send OTP"}
-                    </button>
-                  </div>
-                </form>
-              )}
+                  </form>
+                )}
 
-              {mode === "otp" && (
-                <form onSubmit={verifyOtp} className="space-y-4">
-                  {fpError && (
-                    <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-                      {fpError}
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between gap-2">
-                    {otp.map((d, i) => (
+                {mode === "forgot-email" && (
+                  <form onSubmit={sendOtp} className="space-y-4">
+                    {fpError && (
+                      <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+                        {fpError}
+                      </div>
+                    )}
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-black mb-2"
+                      >
+                        {t("auth.email")}
+                      </label>
                       <input
-                        key={i}
-                        ref={otpRefs[i]}
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        maxLength={1}
-                        value={d}
-                        onChange={(e) => onOtpChange(i, e.target.value)}
-                        className="w-10 h-12 text-center rounded-md bg-white px-2 py-2 shadow-inner outline-none ring-1 ring-transparent focus:ring-2 focus:ring-[#0A7B49]"
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full rounded-md bg-white px-3 py-2 shadow-inner outline-none ring-1 ring-transparent focus:ring-2 focus:ring-[#0A7B49]"
+                        placeholder={
+                          t("auth.enterEmailAddress") || "Enter email address"
+                        }
+                        required
                       />
-                    ))}
-                  </div>
-                  <div className="pt-2">
-                    <button
-                      type="submit"
-                      disabled={fpLoading}
-                      className="w-full rounded-lg bg-[#7CCB4A] py-3 px-4 font-medium text-white transition-colors hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {fpLoading ? "Verifying..." : "Verify OTP"}
-                    </button>
-                  </div>
-                </form>
-              )}
-
-              {mode === "reset" && (
-                <form onSubmit={updatePassword} className="space-y-4">
-                  {fpError && (
-                    <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-                      {fpError}
                     </div>
-                  )}
-                  <div>
-                    <label
-                      htmlFor="newPassword"
-                      className="block text-sm font-medium text-black mb-2"
-                    >
-                      New Password
-                    </label>
-                    <input
-                      id="newPassword"
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full rounded-md bg-white px-3 py-2 shadow-inner outline-none ring-1 ring-transparent focus:ring-2 focus:ring-[#0A7B49]"
-                      required
-                    />
-                  </div>
-                  <div className="pt-2">
-                    <button
-                      type="submit"
-                      disabled={fpLoading}
-                      className="w-full rounded-lg bg-[#7CCB4A] py-3 px-4 font-medium text-white transition-colors hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {fpLoading ? "Updating..." : "Update Password"}
-                    </button>
-                  </div>
-                </form>
-              )}
+                    <div className="pt-2">
+                      <button
+                        type="submit"
+                        disabled={fpLoading}
+                        className="w-full rounded-lg bg-[#7CCB4A] py-3 px-4 font-medium text-white transition-colors hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {fpLoading
+                          ? t("common.sending") || "Sending..."
+                          : t("auth.sendOtp") || "Send Verification Code"}
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                {mode === "otp" && (
+                  <form onSubmit={verifyOtp} className="space-y-4">
+                    {fpError && (
+                      <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+                        {fpError}
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between gap-2">
+                      {otp.map((d, i) => (
+                        <input
+                          key={i}
+                          ref={otpRefs[i]}
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          maxLength={1}
+                          value={d}
+                          onChange={(e) => onOtpChange(i, e.target.value)}
+                          className="w-10 h-12 text-center rounded-md bg-white px-2 py-2 shadow-inner outline-none ring-1 ring-transparent focus:ring-2 focus:ring-[#0A7B49]"
+                        />
+                      ))}
+                    </div>
+                    <div className="pt-2">
+                      <button
+                        type="submit"
+                        disabled={fpLoading}
+                        className="w-full rounded-lg bg-[#7CCB4A] py-3 px-4 font-medium text-white transition-colors hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {fpLoading
+                          ? t("common.verifying") || "Verifying..."
+                          : t("auth.resetPasswordDetails.verifyOtp") ||
+                            "Verify OTP"}
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                {mode === "reset" && (
+                  <form onSubmit={updatePassword} className="space-y-4">
+                    {fpError && (
+                      <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+                        {fpError}
+                      </div>
+                    )}
+                    <div>
+                      <label
+                        htmlFor="newPassword"
+                        className="block text-sm font-medium text-black mb-2"
+                      >
+                        {t("auth.newPassword") || "New Password"}
+                      </label>
+                      <input
+                        id="newPassword"
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="w-full rounded-md bg-white px-3 py-2 shadow-inner outline-none ring-1 ring-transparent focus:ring-2 focus:ring-[#0A7B49]"
+                        placeholder={
+                          t("auth.enterNewPassword") || "Enter new password"
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="pt-2">
+                      <button
+                        type="submit"
+                        disabled={fpLoading}
+                        className="w-full rounded-lg bg-[#7CCB4A] py-3 px-4 font-medium text-white transition-colors hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {fpLoading
+                          ? t("common.updating") || "Updating..."
+                          : t("manageProfile.updatePassword") ||
+                            "Update Password"}
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
             </div>
-          </div>
           </div>
         </div>
       )}
-      <SignUpModal 
-        open={isSignUpOpen} 
+      <SignUpModal
+        open={isSignUpOpen}
         onClose={() => setIsSignUpOpen(false)}
-        onSignupSuccess={enableAutoLoginAfterSignup ? handleSignupSuccess : undefined}
+        onSignupSuccess={
+          enableAutoLoginAfterSignup ? handleSignupSuccess : undefined
+        }
       />
     </>,
     document.body

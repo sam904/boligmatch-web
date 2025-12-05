@@ -125,7 +125,7 @@
     "login": "Log ind",
     "logout": "Log ud",
     "profile": "Profil",
-    "email": "E-mail",
+    "email": "Email",
     "enterEmailAddress": "Indtast e-mailadresse",
     "updateProfile": "Opdater profil",
     "username": "Brugernavn / Email",
@@ -154,6 +154,7 @@
     "adminPortalOnly": "Denne portal er kun for administratorer.",
     "returnToLogin": "Tilbage til Login",
     "forgotPassword": "Glemt adgangskode",
+    "sendOtp": "Send engangskode",
     "resetPassword": "Nulstil Adgangskode",
     "resetPasswordDetails": {
       "verifyOtp": "Bekræft OTP",
@@ -170,9 +171,11 @@
       "otpSendFailed": "Kunne ikke sende OTP. Prøv venligst igen.",
       "otpSendError": "Kunne ikke sende OTP. Tjek venligst din e-mail og prøv igen.",
       "invalidOtp": "Ugyldig OTP. Prøv venligst igen.",
-      "emailRequired": "E-mail er påkrævet for OTP-verifikation.",
+      "emailRequired": "Email er påkrævet for OTP-verifikation.",
       "otpRequired": "OTP er påkrævet for verifikation.",
-      "resetFailed": "Kunne ikke nulstille adgangskode. Prøv venligst igen."
+      "resetFailed": "Kunne ikke nulstille adgangskode. Prøv venligst igen.",
+      "otpSentSuccess": "OTP sendt succesfuldt til din e-mail!",
+      "otpVerifiedSuccess": "OTP bekræftet succesfuldt!"
     }
   },
   "nav": {
@@ -632,7 +635,11 @@
     "emailRequired": "Email er påkrævet",
     "emailInvalid": "Ugyldig email adresse",
     "passwordRequired": "Adgangskode er påkrævet",
-    "passwordMinLength": "Adgangskode skal være mindst 6 tegn"
+    "passwordMinLength": "Adgangskode skal være mindst 6 tegn",
+    "noAccountQuestion": "Har du ikke en konto?",
+    "signUpHere": "Tilmeld dig her",
+    "signupAndLoginSuccess": "Konto oprettet og logget ind succesfuldt!",
+    "signupSuccessLoginManually": "Konto oprettet! Log venligst ind med dine legitimationsoplysninger."
   },
   "manageProfile": {
     "title": "Administrér profil",
@@ -658,7 +665,9 @@
       "lastNameInvalid": "Efternavn kan kun indeholde bogstaver, mellemrum, bindestreger og apostroffer",
       "middleNameInvalid": "Mellemnavn kan kun indeholde bogstaver, mellemrum, bindestreger og apostroffer",
       "fullNameInvalid": "Fulde navn kan kun indeholde bogstaver, mellemrum, bindestreger og apostroffer",
-      "businessNameInvalid": "Virksomhedsnavn indeholder ugyldige tegn"
+      "businessNameInvalid": "Virksomhedsnavn indeholder ugyldige tegn",
+      "partnerLoginSuccess": "Partner login succesfuldt!",
+      "loginSuccess": "Login succesfuldt!"
     }
   },
   "partnerDetails": {

@@ -153,10 +153,11 @@
     "enterPassword": "Enter your password",
     "rememberMe": "Remember for 30 days",
     "adminAccessDenied": "Access denied. This portal is for administrators only.",
-    "accessDenied": "Access Denied",
+    "acessDenied": "Access denied.",
     "adminPortalOnly": "This portal is for administrators only.",
     "returnToLogin": "Return to Login",
     "forgotPassword": "Forgot Password",
+    "sendOtp": "Send OTP",
     "resetPasswordDetails": {
       "verifyOtp": "Verify OTP",
       "enterEmailInstructions": "Enter your email address and we'll send you a verification code to reset your password.",
@@ -174,7 +175,9 @@
       "invalidOtp": "Invalid OTP. Please try again.",
       "emailRequired": "Email is required for OTP verification.",
       "otpRequired": "OTP is required for verification.",
-      "resetFailed": "Failed to reset password. Please try again."
+      "resetFailed": "Failed to reset password. Please try again.",
+      "otpSentSuccess": "OTP sent successfully to your email!",
+      "otpVerifiedSuccess": "OTP verified successfully!"
     }
   },
   "nav": {
@@ -584,7 +587,9 @@
     "descriptionRequired": "Description is required",
     "invalidEmail":"Invalid email address",
     "commentTooLong":"comment Too Long must be less than 100 characters",
-    "commentRequired":"Comment is required"
+    "commentRequired":"Comment is required",
+    "postalCodeNumeric": "Postnummer skal være numerisk",
+    "validationInProgress": "Vent venligst på email/mobil validering afsluttes"
     
   },
   "deleteConfirmation": {
@@ -615,7 +620,11 @@
     "emailRequired": "Email is required",
     "emailInvalid": "Invalid email address",
     "passwordRequired": "Password is required",
-    "passwordMinLength": "Password must be at least 6 characters"
+    "passwordMinLength": "Password must be at least 6 characters",
+    "noAccountQuestion": "Don't have an account?",
+    "signUpHere": "Sign Up Here",
+    "signupAndLoginSuccess": "Account created and logged in successfully!",
+    "signupSuccessLoginManually": "Account created! Please log in with your credentials."
   },
   "manageProfile": {
     "title": "Manage Profile",
@@ -641,7 +650,9 @@
       "lastNameInvalid": "Last name can only contain letters, spaces, hyphens, and apostrophes",
       "middleNameInvalid": "Middle name can only contain letters, spaces, hyphens, and apostrophes",
       "fullNameInvalid": "Full name can only contain letters, spaces, hyphens, and apostrophes",
-      "businessNameInvalid": "Business name contains invalid characters"
+      "businessNameInvalid": "Business name contains invalid characters",
+      "signupSuccess": "Registrering succesfuld! Velkommen til Boligmatch+.",
+      "signupError": "Registrering mislykkedes. Prøv venligst igen."
     }
   },
   "partnerDetails": {
@@ -714,7 +725,9 @@
       "recommendPartnerMissing": "Unable to load partner details.",
       "recommendEmailMissing": "Please enter an email address.",
       "recommendUserMissing": "User not found. Please log in again.",
-      "recommendSuccess": "Recommendation sent successfully"
+      "recommendSuccess": "Recommendation sent successfully",
+      "partnerLoginSuccess": "Partner login successful!",
+      "loginSuccess": "Login successful!"
     },
     "recommendModal": {
       "title": "Recommend us to others",

@@ -38,11 +38,9 @@ const router = createBrowserRouter([
        { index: true, element: <LandingPage /> },
       // { index: true, element: <HomePage /> },
       { path: "home-page", element: <HomePage /> },
-     
       { path: "about", element: <AboutBoligmatch /> },
       { path: "terms", element: <TermsAndConditions /> },
       { path: "becomePartner", element: <PartnerDashboard /> },
-      
       { path: "login", element: <LoginPage /> },
       { path: "*", element: <NotFound /> },
       {

@@ -361,7 +361,10 @@ export default function SignUpModal({
     postalCode: z
       .string()
       .min(1, t("signup.postalCodeRequired"))
-      .regex(/^[0-9]+$/, "Postal code must be numeric")
+      .regex(
+        /^[0-9]+$/,
+        t("validation.postalCodeNumeric") || "Postal code must be numeric"
+      )
       .refine((val) => val.length === 4, t("signup.postalCodeLength")),
     mobileNumber: z
       .string()
@@ -468,7 +471,8 @@ export default function SignUpModal({
     // Check if email or mobile validations are in progress
     if (emailValidation.checking || mobileValidation.checking) {
       showSignupErrorToast(
-        "Please wait for email/mobile validation to complete"
+        t("validation.validationInProgress") ||
+          "Please wait for email/mobile validation to complete"
       );
       return;
     }
@@ -495,6 +499,7 @@ export default function SignUpModal({
         email: data.email,
         password: data.password,
         mobileNo: data.mobileNumber,
+        postalCode: data.postalCode,
         isActive: true,
         status: "Active",
       };
@@ -503,7 +508,8 @@ export default function SignUpModal({
 
       // If we get here, the registration was successful
       showSignupSuccessToast(
-        "Registration successful! Welcome to Boligmatch+."
+        t("toast.signupSuccess") ||
+          "Registration successful! Welcome to Boligmatch+."
       );
       reset();
 
