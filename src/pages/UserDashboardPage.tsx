@@ -283,7 +283,7 @@ export default function UserDashboardPage() {
               h-[368px]      
               md:h-[100vh]     
               bg-no-repeat bg-cover bg-center
-              bg-[url('/src/assets/userImages/profileResponsiveBanner.png')] 
+              bg-[url('/src/assets/userImages/profileResponsiveBanner.svg')] 
               md:bg-none       
   `}
         style={{
