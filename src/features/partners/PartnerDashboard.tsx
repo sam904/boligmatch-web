@@ -18,21 +18,20 @@ export default function PartnerDashboard() {
       > */}
       <div
         className={`
-              relative 
-              h-[368px]      
-              md:h-[97vh]       
-              bg-no-repeat bg-cover bg-center
+              relative      
+          bg-cover
               bg-[url('/src/assets/userImages/partnerStaticResponsive.png')] 
-              md:bg-none       
+                 
   `}
         style={{
           backgroundImage: `url(${partnerlandingImg})`,
           backgroundSize: "cover",
-          backgroundPosition: "center",
+         backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
       >
         <PartnerSteper />
+        
         <PartnerHeader />
       </div>
       <ParentSteperPara />
