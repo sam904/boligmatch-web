@@ -45,7 +45,7 @@ function PartnerSteper() {
     <div className="relative w-full min-h-screen overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center">
         {/* Main content container with adjusted positioning */}
-        <div className="z-10 flex flex-col items-center justify-center min-h-[calc(100vh-10px)] px-4 sm:px-6 text-center">
+        <div className="z-10 flex flex-col items-center justify-center min-h-[calc(100vh-20px)] px-4 sm:px-6 text-center">
           {/* Reduced spacer to push content down just a little */}
           <div className="h-[6vh] md:h-[70vh]"></div>
           
@@ -57,10 +57,7 @@ function PartnerSteper() {
             {t("partnerStepper.cta")}
           </button>
 
-          {/* Title with adjusted spacing */}
-          <h1 className="mt-0 md:mt-4 text-[16px] md:text-[56px] lg:text-[36px] xl:text-6xl font-[600] text-white max-w-4xl md:tracking-tight md:leading-tight sm:leading-14 px-2">
-            {t("partnerStepper.heroTitle")}
-          </h1>
+         
         </div>
 
         {shouldRenderModal && (

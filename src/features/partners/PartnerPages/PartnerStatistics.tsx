@@ -107,12 +107,12 @@ function ParentStatistics() {
         <PartnerHeader />
 
         <div className="flex flex-col">
-          <div className="flex items-center md:justify-start px-4 pb-4 md:px-12 md:pt-6 md:pb-6 absolute left-18 top-54 md:top-24 md:left-12">
+          <div className="flex items-center md:justify-start px-4 pb-4 md:px-12 md:pt-6 md:pb-6 absolute left-18 top-54 md:top-36 md:left-18">
             <div className="mx-auto text-white text-center md:text-left">
-              <h1 className="text-[24px] md:text-[64px] font-[800] tracking-tight leading-tight mb-1 md:mb-3">
+              <h1 className="text-[24px] md:text-[64px] font-[800] tracking-tight leading-tight">
                 {t("partnerStatistics.title")}
               </h1>
-              <h2 className="text-[24px] md:text-[64px] font-[500] tracking-tight">
+              <h2 className="text-[24px] md:text-[60px] font-[500] tracking-tight">
                 {partnerData?.businessName || "Business Name"}
               </h2>
             </div>

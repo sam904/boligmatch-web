@@ -63,6 +63,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   const { i18n, t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
   console.log("isMobile", isMobile);
+  console.log(fullHeight)
 
   // const partnerData = useAppSelector((state) => state.auth.user);
   const [partnerData, setPartnerData] = useState<any | null>(null);
@@ -180,7 +181,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
 
   return (
     <>
-      <header className={`${fullHeight ? "h-[100vh]" : "h-20"} relative`}>
+      <header className={`relative`}>
         <div
           className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-4 z-50 transition-colors duration-300 ${
             isScrolled ? "bg-[#06351E]" : "bg-transparent"
