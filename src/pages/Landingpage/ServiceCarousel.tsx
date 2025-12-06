@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import type { WheelEvent } from "react";
+import type { WheelEvent, MouseEvent, TouchEvent } from "react";
 import { motion } from "framer-motion";
 import { ServiceCard } from "./ServiceCard";
-import swaperImg1 from "/src/assets/userImages/swiper5.png";
-import swaperImg2 from "/src/assets/userImages/swiper4.png";
-import swaperImg3 from "/src/assets/userImages/swiper1.png";
-import swaperImg4 from "/src/assets/userImages/swiper2.png";
-import swaperImg5 from "/src/assets/userImages/swiper3.png";
+import swaperImg1 from "/src/assets/userImages/swiper5.svg";
+import swaperImg2 from "/src/assets/userImages/swiper4.svg";
+import swaperImg3 from "/src/assets/userImages/swiper1.svg";
+import swaperImg4 from "/src/assets/userImages/swiper2.svg";
+import swaperImg5 from "/src/assets/userImages/swiper3.svg";
 import swaperIcons1 from "/src/assets/userImages/swaperIcon1.svg";
 import swaperIcons2 from "/src/assets/userImages/swaperIcon2.svg";
 import swaperIcons3 from "/src/assets/userImages/swaperIcon3.svg";
@@ -61,7 +61,7 @@ export default function ServiceCarousel() {
   const [isHovered, setIsHovered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
-  const [isManualScroll, setIsManualScroll] = useState(false);
+  const [_isManualScroll, setIsManualScroll] = useState(false);
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
@@ -69,7 +69,7 @@ export default function ServiceCarousel() {
   
   const wheelCooldownRef = useRef(false);
   const manualScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const autoRotateRef = useRef<NodeJS.Timeout | null>(null);
+  const autoRotateRef = useRef<number | null>(null); // Changed from NodeJS.Timeout
   const dragStartXRef = useRef(0);
 
   // Handle window resize
@@ -86,7 +86,7 @@ export default function ServiceCarousel() {
     }
 
     // Start auto-rotation immediately
-    autoRotateRef.current = setInterval(() => {
+    autoRotateRef.current = window.setInterval(() => { // Added window. prefix
       setCurrentIndex((prevIndex) => {
         const nextIndex = (prevIndex + 1) % services.length;
         return nextIndex;
@@ -110,7 +110,7 @@ export default function ServiceCarousel() {
     } else {
       // Resume auto-rotation when not hovering or dragging
       if (!autoRotateRef.current) {
-        autoRotateRef.current = setInterval(() => {
+        autoRotateRef.current = window.setInterval(() => { // Added window. prefix
           setCurrentIndex((prevIndex) => {
             const nextIndex = (prevIndex + 1) % services.length;
             return nextIndex;
@@ -202,13 +202,13 @@ export default function ServiceCarousel() {
   };
 
   // Mouse events for desktop
-  const handleMouseDown = (position: number, e: React.MouseEvent) => {
+  const handleMouseDown = (position: number, e: MouseEvent) => {
     if (position !== 0) return; // Only allow dragging the center card
     e.preventDefault();
     handleCardDragStart(position, e.clientX);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = (e: MouseEvent) => {
     handleCardDrag(e.clientX);
   };
 
@@ -216,19 +216,13 @@ export default function ServiceCarousel() {
     handleCardDragEnd();
   };
 
-  const handleMouseLeave = () => {
-    if (isDragging) {
-      handleCardDragEnd();
-    }
-  };
-
   // Touch events for mobile
-  const handleTouchStart = (position: number, e: React.TouchEvent) => {
+  const handleTouchStart = (position: number, e: TouchEvent) => {
     if (position !== 0) return; // Only allow dragging the center card
     handleCardDragStart(position, e.touches[0].clientX);
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleTouchMove = (e: TouchEvent) => {
     handleCardDrag(e.touches[0].clientX);
   };
 
@@ -258,8 +252,7 @@ export default function ServiceCarousel() {
       onMouseLeave={() => setIsHovered(false)}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      onMouseLeaveCapture={handleMouseLeave}
-    >
+    > {/* Removed onMouseLeaveCapture */}
       {/* Carousel Container */}
       <div className="relative h-[600px] md:h-[600px] flex items-center justify-center">
         {/* Cards Container - No drag on container, only individual cards */}
@@ -353,3 +346,9 @@ export default function ServiceCarousel() {
     </div>
   );
 }
+
+
+
+
+
+
