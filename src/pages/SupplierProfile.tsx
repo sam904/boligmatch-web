@@ -14,6 +14,9 @@ import { conversationService } from "../services/conversation.service";
 import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.svg";
 import circlePartner from "/src/assets/userImages/circlePartner.svg";
+import PlayButton from "/src/assets/userImages/PlayButton.svg"
+
+
 import {
   showRecommendationErrorToast,
   showRecommendationSuccessToast,
@@ -22,7 +25,7 @@ import {
   showFavouriteSuccessToast,
   showFavouriteErrorToast,
 } from "../components/common/ToastBanner";
-import { FaPlayCircle, FaPauseCircle } from "react-icons/fa";
+import {FaPauseCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { partnerService } from "../services/partner.service";
@@ -645,18 +648,22 @@ const SupplierProfile = () => {
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
               {/* Centered controls (same for both playing and paused states) */}
               <div className="flex flex-col items-center gap-6">
-                <div className="flex items-center gap-12">
+                <div className="flex items-center gap-12 md:pt-72" >
                   {/* Play / Pause button - conditionally rendered */}
                   {!isVideoPlaying && partnerData?.videoUrl ? (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePlayClick();
-                      }}
-                      className="text-white hover:scale-125 transition-transform"
-                    >
-                      <FaPlayCircle className="h-20 w-20 drop-shadow-2xl" />
-                    </button>
+                   <button
+  onClick={(e) => {
+    e.stopPropagation();
+    handlePlayClick();
+  }}
+  className="text-white hover:scale-125 transition-transform"
+>
+  <img 
+    src={PlayButton} 
+    alt="Play" 
+    className="h-20 w-20 drop-shadow-2xl" 
+  />
+</button>
                   ) : (
                     <button
                       onClick={(e) => {
@@ -683,64 +690,69 @@ const SupplierProfile = () => {
 
         <UserHeader />
 
-        <div className="bg-[#01351f] pt-0">
-          <div className="w-full mx-auto px-12 flex justify-center">
-            <div
-              className="flex md:gap-10 gap-5 justify-center absolute md:bottom-0 w-full md:py-8 pb-0 z-40"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
-              }}
-            >
-              {!isPartner && (
-                <>
-                  {/* Favorite Button */}
-                  <button
-                    className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
-                    onClick={handleToggleFavourite}
-                    disabled={isAddingToFavorites}
-                  >
-                    <img
-                      src={heartIcon}
-                      alt="Favorite"
-                      className="w-[35px] h-[35px] md:w-auto md:h-auto"
-                    />
-                    {String(partnerData?.isValidFavourite) === "True"
-                      ? t("supplierProfile.removeFromFavorites")
-                      : t("supplierProfile.saveFavoriteButton")}
-                  </button>
+    <div className="bg-[#01351f] pt-0">
+  <div className="w-full mx-auto px-12 flex justify-center">
+    <div
+      className="flex md:gap-10 gap-5 justify-center absolute md:bottom-0 w-full md:py-8 pb-0 z-40"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
+      }}
+    >
+     
+    </div>
+    <div className="flex md:gap-10 gap-5 justify-center md:bottom-0 w-full md:py-4 pb-0 z-40">
+      {/* Show buttons only when video is NOT playing */}
+      {!isPartner && (
+        <>
+          {/* Favorite Button */}
+          <button
+            className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
+            onClick={handleToggleFavourite}
+            disabled={isAddingToFavorites}
+          >
+            <img
+              src={heartIcon}
+              alt="Favorite"
+              className="w-[35px] h-[35px] md:w-auto md:h-auto"
+            />
+            {String(partnerData?.isValidFavourite) === "True"
+              ? t("supplierProfile.removeFromFavorites")
+              : t("supplierProfile.saveFavoriteButton")}
+          </button>
 
-                  {/* Recommend Button */}
-                  <button
-                    className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
-                    onClick={() => setActiveModal("recommend")}
-                  >
-                    <img
-                      src={share}
-                      alt="Recommend"
-                      className="w-[35px] h-[35px] md:w-auto md:h-auto"
-                    />
-                    {t("supplierProfile.recommendation")}
-                  </button>
+          {/* Recommend Button */}
+          <button
+            className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
+            onClick={() => setActiveModal("recommend")}
+          >
+            <img
+              src={share}
+              alt="Recommend"
+              className="w-[35px] h-[35px] md:w-auto md:h-auto"
+            />
+            {t("supplierProfile.recommendation")}
+          </button>
 
-                  {/* Contact Button */}
-                  <button
-                    className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
-                    onClick={() => setActiveModal("contact")}
-                  >
-                    <img
-                      src={chat}
-                      alt="Contact"
-                      className="w-[35px] h-[35px] md:w-auto md:h-auto"
-                    />
-                    {t("supplierProfile.conversation")}
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="bg-[#01351f] pt-10">
+          {/* Contact Button */}
+          <button
+            className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
+            onClick={() => setActiveModal("contact")}
+          >
+            <img
+              src={chat}
+              alt="Contact"
+              className="w-[35px] h-[35px] md:w-auto md:h-auto"
+            />
+            {t("supplierProfile.conversation")}
+          </button>
+        </>
+      )}
+    </div>
+  </div>
+</div>
+
+        <div className="bg-[#01351f]">
           <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white py-10">
             {partnerData?.businessName || partnerData?.fullName || "Loading..."}
           </h1>
@@ -1198,6 +1210,9 @@ const SupplierProfile = () => {
 };
 
 export default SupplierProfile;
+
+
+
 
 
 
