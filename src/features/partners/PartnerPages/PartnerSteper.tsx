@@ -43,16 +43,22 @@ function PartnerSteper() {
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center md:-top-10 -top-56">
-        <div className="z-10 flex flex-col items-center justify-center min-h-[calc(100vh-10px)] px-4 sm:px-6 text-center mt-14 md:mt-48">
+      <div className="absolute inset-0 bg-cover bg-center">
+        {/* Main content container with adjusted positioning */}
+        <div className="z-10 flex flex-col items-center justify-center min-h-[calc(100vh-10px)] px-4 sm:px-6 text-center">
+          {/* Reduced spacer to push content down just a little */}
+          <div className="h-[6vh] md:h-[70vh]"></div>
+          
+          {/* Button with reduced margin */}
           <button
             onClick={openModal}
-            className="md:mb-8 px-6 sm:px-8 py-3 bg-[#91C73D] text-white rounded-xl font-[600] transition-colors text-[12px] md:text-[20px]  hover:bg-[#7FB333] cursor-pointer"
+            className="mt-0 mb-1 md:mt-4 px-6 sm:px-8 py-3 bg-[#91C73D] text-white rounded-xl font-[600] transition-colors text-[12px] md:text-[20px] hover:bg-[#7FB333] cursor-pointer"
           >
             {t("partnerStepper.cta")}
           </button>
 
-          <h1 className="text-[18px] md:text-[56px] lg:text-[64px] xl:text-6xl font-[800] text-white max-w-4xl md:tracking-tight md:leading-tight sm:leading-14 px-2">
+          {/* Title with adjusted spacing */}
+          <h1 className="mt-4 md:mt-4 text-[16px] md:text-[56px] lg:text-[40px] xl:text-6xl font-[700] text-white max-w-4xl md:tracking-tight md:leading-tight sm:leading-14 px-2">
             {t("partnerStepper.heroTitle")}
           </h1>
         </div>
@@ -85,7 +91,7 @@ function PartnerSteper() {
               </button>
 
               <div className="text-center p-4 sm:p-6 md:p-8 pt-12 sm:pt-14">
-                <h2 className="text-[24px] sm:text-[28px] md:text-[30px] text-[#111111] mb-4 sm:mb-6 font-[700] figtree">
+                <h2 className="text-[20px] sm:text-[24px] md:text-[26px] text-[#111111] mb-4 sm:mb-6 font-[700] figtree">
                   {t("partnerStepper.modalTitle")}
                 </h2>
 
