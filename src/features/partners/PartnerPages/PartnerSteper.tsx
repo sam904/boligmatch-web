@@ -58,7 +58,7 @@ function PartnerSteper() {
           </button>
 
           {/* Title with adjusted spacing */}
-          <h1 className="mt-4 md:mt-4 text-[16px] md:text-[56px] lg:text-[40px] xl:text-6xl font-[700] text-white max-w-4xl md:tracking-tight md:leading-tight sm:leading-14 px-2">
+          <h1 className="mt-0 md:mt-4 text-[16px] md:text-[56px] lg:text-[36px] xl:text-6xl font-[600] text-white max-w-4xl md:tracking-tight md:leading-tight sm:leading-14 px-2">
             {t("partnerStepper.heroTitle")}
           </h1>
         </div>
