@@ -84,8 +84,11 @@ const SupplierProfile = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPartner, setIsPartner] = useState(false);
   const [showVideoElement, setShowVideoElement] = useState(false);
-  const [_currentTime, setCurrentTime] = useState(0);
-  const [_duration, setDuration] = useState(0);
+ const [currentTime, setCurrentTime] = useState(0);
+const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+const [isMuted, setIsMuted] = useState(false);
+const [showControls, setShowControls] = useState(false);
 
   // Recommendation form
   const {
@@ -134,6 +137,100 @@ const SupplierProfile = () => {
       navigate("/");
     }
   }, []);
+
+  // Add this useEffect for volume control
+useEffect(() => {
+  const videoElement = videoRef.current;
+  
+  if (videoElement) {
+    videoElement.volume = volume;
+    videoElement.muted = isMuted;
+    
+    const handleVolumeChange = () => {
+      setVolume(videoElement.volume);
+      setIsMuted(videoElement.muted);
+    };
+    
+    videoElement.addEventListener('volumechange', handleVolumeChange);
+    
+    return () => {
+      videoElement.removeEventListener('volumechange', handleVolumeChange);
+    };
+  }
+}, [volume, isMuted]);
+
+// Add this useEffect for auto-hide controls
+useEffect(() => {
+  let hideTimeout: NodeJS.Timeout;
+  let mouseLeaveTimeout: NodeJS.Timeout;
+  let isMouseOverControls = false;
+
+  const showControlsTemporarily = () => {
+    setShowControls(true);
+    clearTimeout(hideTimeout);
+    
+    // Only hide if mouse is not over controls and video is playing
+    if (!isMouseOverControls && isVideoPlaying) {
+      hideTimeout = setTimeout(() => {
+        setShowControls(false);
+      }, 3000);
+    }
+  };
+
+  // Show controls on mouse move
+  const handleMouseMove = () => {
+    showControlsTemporarily();
+  };
+
+  // Track when mouse enters/leaves the controls area
+  const handleMouseEnterControls = () => {
+    isMouseOverControls = true;
+    clearTimeout(hideTimeout);
+    clearTimeout(mouseLeaveTimeout);
+  };
+
+  const handleMouseLeaveControls = () => {
+    isMouseOverControls = false;
+    // Small delay before starting hide timeout when leaving controls
+    mouseLeaveTimeout = setTimeout(() => {
+      if (isVideoPlaying) {
+        hideTimeout = setTimeout(() => {
+          setShowControls(false);
+        }, 2000);
+      }
+    }, 500);
+  };
+
+  // Show controls on video play/pause
+  if (videoRef.current) {
+    videoRef.current.addEventListener('play', showControlsTemporarily);
+    videoRef.current.addEventListener('pause', showControlsTemporarily);
+  }
+
+  window.addEventListener('mousemove', handleMouseMove);
+
+  // Add event listeners to the controls container
+  const controlsContainer = document.querySelector('.video-controls-container');
+  if (controlsContainer) {
+    controlsContainer.addEventListener('mouseenter', handleMouseEnterControls);
+    controlsContainer.addEventListener('mouseleave', handleMouseLeaveControls);
+  }
+
+  return () => {
+    clearTimeout(hideTimeout);
+    clearTimeout(mouseLeaveTimeout);
+    window.removeEventListener('mousemove', handleMouseMove);
+    if (videoRef.current) {
+      videoRef.current.removeEventListener('play', showControlsTemporarily);
+      videoRef.current.removeEventListener('pause', showControlsTemporarily);
+    }
+    if (controlsContainer) {
+      controlsContainer.removeEventListener('mouseenter', handleMouseEnterControls);
+      controlsContainer.removeEventListener('mouseleave', handleMouseLeaveControls);
+    }
+  };
+}, [isVideoPlaying]);
+
 
   const getCurrentUserId = (): number | null => {
     try {
@@ -287,13 +384,13 @@ const SupplierProfile = () => {
   };
 
   // Format time in MM:SS format
-  // const formatTime = (time: number) => {
-  //   const minutes = Math.floor(time / 60);
-  //   const seconds = Math.floor(time % 60);
-  //   return `${minutes.toString().padStart(2, "0")}:${seconds
-  //     .toString()
-  //     .padStart(2, "0")}`;
-  // };
+const formatTime = (time: number) => {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60);
+  return `${minutes.toString().padStart(2, "0")}:${seconds
+    .toString()
+    .padStart(2, "0")}`;
+};
 
   useEffect(() => {
     const loadPartnerData = async () => {
@@ -634,59 +731,193 @@ const SupplierProfile = () => {
           style={{
             display: showVideoElement ? "block" : "none",
           }}
-          controls
         >
           <source src={partnerData?.videoUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
         {/* Custom video controls - show on hover only */}
-        <div className="absolute inset-0 z-40 pointer-events-none">
-          {/* Hover area - full video size */}
-          <div className="relative w-full h-full group">
-            {/* Controls container - hidden by default, visible on hover */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto">
-              {/* Centered controls (same for both playing and paused states) */}
-              <div className="flex flex-col items-center gap-6">
-                <div className="flex items-center gap-12 md:pt-72" >
-                  {/* Play / Pause button - conditionally rendered */}
-                  {!isVideoPlaying && partnerData?.videoUrl ? (
-                   <button
-  onClick={(e) => {
-    e.stopPropagation();
-    handlePlayClick();
-  }}
-  className="text-white hover:scale-125 transition-transform"
->
-  <img 
-    src={PlayButton} 
-    alt="Play" 
-    className="h-20 w-20 drop-shadow-2xl" 
-  />
-</button>
-                  ) : (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePauseClick();
-                      }}
-                      className="text-white hover:scale-125 transition-transform"
-                    >
-                      <FaPauseCircle className="h-20 w-20 drop-shadow-2xl" />
-                    </button>
-                  )}
-                </div>
+     {/* Custom video controls - show on hover only */}
+<div className="absolute inset-0 z-40 pointer-events-none video-controls-container">
+  {/* Hover area - full video size */}
+  <div className="relative w-full h-full group">
+    {/* Controls container - positioned higher up */}
+    <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto ${showControls ? 'opacity-100' : 'opacity-0'}`}>
+      
+      {/* Main play/pause button - centered */}
+      <div className="flex flex-col items-center gap-6 transform -translate-y-12 mb-16">
+        <div className="flex items-center gap-12">
+          {/* Play / Pause button */}
+          {!isVideoPlaying && partnerData?.videoUrl ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePlayClick();
+              }}
+              className="text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-4"
+              onMouseEnter={() => setShowControls(true)}
+            >
+              <img 
+                src={PlayButton} 
+                alt="Play" 
+                className="h-15 w-15 drop-shadow-2xl" 
+              />
+            </button>
+          ) : (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePauseClick();
+              }}
+              className="text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-4"
+              onMouseEnter={() => setShowControls(true)}
+            >
+              <FaPauseCircle className="h-15 w-15 drop-shadow-2xl" />
+            </button>
+          )}
+        </div>
+      </div>
 
-                {/* Time display */}
-                {/* {duration > 0 && (
-                  <div className="text-white text-lg font-medium bg-black/70 px-4 py-2 rounded-lg shadow-lg">
-                    {formatTime(currentTime)} / {formatTime(duration)}
-                  </div>
-                )} */}
-              </div>
+      {/* Bottom controls bar - ALWAYS show when hovered */}
+      <div 
+        className="absolute bottom-10 left-0 right-0  p-4 pt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        onMouseEnter={() => setShowControls(true)}
+        onMouseLeave={(e) => {
+          // Don't hide immediately when leaving controls
+          e.stopPropagation();
+        }}
+      >
+        <div className="flex items-center justify-between max-w-4xl mx-auto w-full px-4">
+          
+          {/* Left side: Play/Pause */}
+          <div 
+            className="flex items-center gap-4"
+            onMouseEnter={() => setShowControls(true)}
+          >
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (isVideoPlaying) {
+                  handlePauseClick();
+                } else {
+                  handlePlayClick();
+                }
+              }}
+              className="text-white hover:scale-110 transition-transform"
+            >
+              {isVideoPlaying ? (
+                <FaPauseCircle className="h-8 w-8" />
+              ) : (
+                <img 
+                  src={PlayButton} 
+                  alt="Play" 
+                  className="h-8 w-8" 
+                />
+              )}
+            </button>
+            
+            {/* Current time / Duration */}
+            <div className="text-white text-sm font-medium">
+              {formatTime(currentTime)} / {formatTime(duration)}
             </div>
           </div>
+
+          {/* Center: Progress bar */}
+          <div 
+            className="flex-1 mx-8 max-w-2xl"
+            onMouseEnter={() => setShowControls(true)}
+          >
+            <div className="relative h-2 bg-gray-600/50 rounded-full overflow-hidden cursor-pointer">
+              <div 
+                className="absolute left-0 top-0 h-full bg-[#91C73D] rounded-full"
+                style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
+              />
+              <input
+                type="range"
+                min="0"
+                max={duration || 100}
+                value={currentTime}
+                onChange={(e) => {
+                  if (videoRef.current) {
+                    videoRef.current.currentTime = parseFloat(e.target.value);
+                    setCurrentTime(parseFloat(e.target.value));
+                    setShowControls(true); // Keep controls visible when scrubbing
+                  }
+                }}
+                onMouseDown={() => setShowControls(true)} // Keep visible when dragging
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+            </div>
+          </div>
+
+          {/* Right side: Additional controls */}
+          <div 
+            className="flex items-center gap-4"
+            onMouseEnter={() => setShowControls(true)}
+          >
+            {/* Volume control */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (videoRef.current) {
+                  videoRef.current.muted = !videoRef.current.muted;
+                }
+              }}
+              className="text-white hover:scale-110 transition-transform"
+            >
+              {videoRef.current?.muted ? (
+                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+              )}
+            </button>
+
+            {/* Fullscreen button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (videoRef.current) {
+                  if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                  } else {
+                    videoRef.current.requestFullscreen();
+                  }
+                }
+              }}
+              className="text-white hover:scale-110 transition-transform"
+            >
+              <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+              </svg>
+            </button>
+
+            {/* Close video button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePauseClick();
+                setShowVideoElement(false);
+              }}
+              className="text-white hover:scale-110 transition-transform ml-2"
+            >
+              <IoClose className="h-7 w-7" />
+            </button>
+          </div>
         </div>
+      </div>
+
+      {/* Timeline hover preview (optional) */}
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-3 py-1 rounded text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        {formatTime(currentTime)} / {formatTime(duration)}
+      </div>
+
+    </div>
+  </div>
+</div>
 
         <UserHeader />
 
