@@ -62,7 +62,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-[361px] h-[262px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-6 md:px-8 md:py-10 text-center">
+    <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-full max-w-[361px] h-[262px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-6 md:px-8 md:py-10 text-center">
       <div className="mb-3 md:mb-6">
         <img
           src={logoUrl}
@@ -86,11 +86,10 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
       <button
         onClick={onMoreInfo}
         disabled={isLoading}
-        className={`font-bold text-[14px] md:text-[16px] cursor-pointer transition-all duration-200 ${
-          isLoading
+        className={`font-bold text-[14px] md:text-[16px] cursor-pointer transition-all duration-200 ${isLoading
             ? "text-gray-400 cursor-not-allowed font-semibold"
             : "text-black hover:font-extrabold"
-        }`}
+          }`}
       >
         {isLoading ? t("common.loading") : t("userDashboard.moreInfo")}
       </button>
@@ -225,53 +224,111 @@ const UserSupplier = () => {
   }, []);
 
   return (
-    // <div
-    //   className="relative h-[100vh]"
-    //   style={{
-    //     backgroundImage: `url(${getBackgroundImage()})`,
-    //     backgroundSize: "cover",
-    //     backgroundPosition: "center",
-    //     backgroundRepeat: "no-repeat",
-    //   }}
-    // >
-    <div
-      className="
-    relative md:h-screen 
-    bg-no-repeat md:bg-cover bg-contain
-    md:bg-center
-  "
+    <>
+      {/* <div
+      className="relative h-[100vh]"
       style={{
         backgroundImage: `url(${getBackgroundImage()})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
-    >
-      <style>{`
+    > */}
+      <div
+        className="
+    relative h-[60vh] md:h-screen 
+    bg-no-repeat md:bg-cover bg-cover
+    md:bg-center bg-center
+  "
+        style={{
+          backgroundImage: `url(${getBackgroundImage()})`,
+        }}
+      >
+        <style>{`
         @media (max-width: 767px) {
           .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
           .no-scrollbar::-webkit-scrollbar { display: none; }
         }
       `}</style>
-      <UserHeader />
-      {/* <div className="absolute inset-0 bg-gradient-to-b from-[rgba(22,89,51,0)] to-[#043428] pointer-events-none"  /> */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 top-20 md:top-auto md:h-[400px] h-[300px]"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
-        }}
-      />
-      {categoryName && (
-        <div className="absolute z-10 pointer-events-none inset-x-0 top-44 md:inset-0 md:flex md:items-center md:justify-center">
-          <h1 className="text-white pt-32 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
-            {categoryName}
-          </h1>
-        </div>
-      )}
-      {/* Mobile: horizontal scroll bar styled like the screenshot */}
-      <section className="absolute top-72 md:bottom-0 left-1/2 transform -translate-x-1/2 px-4 w-full md:hidden">
+        <UserHeader />
+        {/* <div className="absolute inset-0 bg-gradient-to-b from-[rgba(22,89,51,0)] to-[#043428] pointer-events-none"  /> */}
         <div
-          ref={mobileScrollRef}
-          className="flex items-center gap-3 overflow-x-auto no-scrollbar py-2"
-        >
+          className="pointer-events-none absolute inset-x-0 bottom-0 top-20 md:top-auto md:h-[400px] h-full"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
+          }}
+        />
+        {categoryName && (
+          <div className="absolute z-10 pointer-events-none inset-x-0 top-32 md:inset-0 md:flex md:items-center md:justify-center px-4">
+            <h1 className="text-white text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
+              {categoryName}
+            </h1>
+          </div>
+        )}
+        {/* Mobile: horizontal scroll bar styled like the screenshot */}
+        <section className="absolute bottom-0 left-0 right-0 md:hidden pb-4">
+          <div className="bg-[#01351F] w-full py-3 px-4">
+            <div
+              ref={mobileScrollRef}
+              className="flex items-center gap-3 overflow-x-auto no-scrollbar py-2 relative"
+            >
+              {loading ? (
+                <div className="text-white text-sm">
+                  {t("userSupplier.loadingSubcategories")}
+                </div>
+              ) : subCategories.length > 0 ? (
+                subCategories.map((sub) => (
+                  <button
+                    key={sub.id}
+                    onClick={() => setActive(sub.id)}
+                    className={`flex flex-col items-center gap-1 py-2 rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent min-w-[80px]
+                  ${active === sub.id
+                        ? "bg-[#95C11F] text-white shadow-md px-3"
+                        : "bg-transparent text-white hover:bg-white/10 px-3"
+                      }`}
+                    aria-pressed={active === sub.id}
+                    title={sub.subCategory}
+                  >
+                    {sub.subCategoryIconUrl && (
+                      <img
+                        src={sub.subCategoryIconUrl}
+                        alt={sub.subCategory}
+                        className={`w-[20px] h-[20px] object-contain ${active === sub.id ? "" : "brightness-0 invert"}`}
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display =
+                            "none";
+                        }}
+                      />
+                    )}
+                    <span className="figtree font-[600] text-[12px] leading-[100%] tracking-normal text-center align-middle">
+                      {sub.subCategory}
+                    </span>
+                  </button>
+                ))
+              ) : (
+                <div className="text-white text-sm">
+                  {t("userSupplier.noSubcategories")}
+                </div>
+              )}
+            </div>
+            {subCategories.length > 3 && (
+              <button
+                type="button"
+                aria-label="Next"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-[32px] w-[32px] text-white flex items-center justify-center z-10 bg-[#01351F]/80 rounded-full"
+                onClick={() =>
+                  mobileScrollRef.current?.scrollBy({ left: 200, behavior: "smooth" })
+                }
+              >
+                <img className="h-[24px] w-[24px]" src={nextArrow} alt="" />
+              </button>
+            )}
+          </div>
+        </section>
+
+        {/* Desktop: keep existing layout and styling unchanged */}
+        <section className="absolute bottom-30 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex md:flex-nowrap items-center justify-center gap-1 w-full p-2">
           {loading ? (
             <div className="text-white">
               {t("userSupplier.loadingSubcategories")}
@@ -281,12 +338,11 @@ const UserSupplier = () => {
               <button
                 key={sub.id}
                 onClick={() => setActive(sub.id)}
-                className={`flex flex-col items-center gap-1 py-2 rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent
-                ${
-                  active === sub.id
-                    ? "bg-[#95C11F] text-white shadow-md px-2"
-                    : "bg-transparent text-white hover:bg-white/10 px-3.5"
-                }`}
+                className={`flex items-center gap-1 md:gap-[2px] px-[12px] py-[5px] rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
+              ${active === sub.id
+                    ? "bg-[#95C11F] text-black shadow-md"
+                    : "bg-transparent hover:bg-white/10"
+                  }`}
                 aria-pressed={active === sub.id}
                 title={sub.subCategory}
               >
@@ -294,80 +350,27 @@ const UserSupplier = () => {
                   <img
                     src={sub.subCategoryIconUrl}
                     alt={sub.subCategory}
-                    className={`w-[20px] h-[20px] object-contain brightness-0 invert`}
+                    className={`w-[32px] h-[32px] md:w-[40px] md:h-[40px] relative opacity-100 rounded object-contain
+                  ${active === sub.id ? "" : "brightness-0 invert"}`}
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).style.display =
                         "none";
                     }}
                   />
                 )}
-                <span className="figtree font-[600] text-[14px] pl-1 leading-[100%] tracking-normal text-center align-middle">
+                <span className="text-[20px] font-[600] pl-2 figtree">
                   {sub.subCategory}
                 </span>
               </button>
             ))
           ) : (
-            <div className="text-white">
-              {t("userSupplier.noSubcategories")}
-            </div>
+            <div className="text-white">{t("userSupplier.noSubcategories")}</div>
           )}
-        </div>
-        <button
-          type="button"
-          aria-label="Next"
-          className="absolute right-0 top-1/2 -translate-y-1/2 h-[32px] w-[32px] text-white flex items-center justify-center"
-          onClick={() =>
-            mobileScrollRef.current?.scrollBy({ left: 200, behavior: "smooth" })
-          }
-        >
-          <img className="h-[32px] w-[32px]" src={nextArrow} alt="" />
-        </button>
-      </section>
+        </section>
+      </div>
 
-      {/* Desktop: keep existing layout and styling unchanged */}
-      <section className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex md:flex-nowrap items-center justify-center gap-1 w-full p-2">
-        {loading ? (
-          <div className="text-white">
-            {t("userSupplier.loadingSubcategories")}
-          </div>
-        ) : subCategories.length > 0 ? (
-          subCategories.map((sub) => (
-            <button
-              key={sub.id}
-              onClick={() => setActive(sub.id)}
-              className={`flex items-center gap-1 md:gap-[2px] px-[12px] py-[5px] rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
-    ${
-      active === sub.id
-        ? "bg-[#95C11F] text-black shadow-md"
-        : "bg-transparent hover:bg-white/10"
-    }`}
-              aria-pressed={active === sub.id}
-              title={sub.subCategory}
-            >
-              {sub.subCategoryIconUrl && (
-                <img
-                  src={sub.subCategoryIconUrl}
-                  alt={sub.subCategory}
-                  className={`w-[32px] h-[32px] md:w-[40px] md:h-[40px] relative opacity-100 rounded object-contain
-        ${active === sub.id ? "" : "brightness-0 invert"}`}
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).style.display =
-                      "none";
-                  }}
-                />
-              )}
-              <span className="text-[20px] font-[600] pl-2 figtree">
-                {sub.subCategory}
-              </span>
-            </button>
-          ))
-        ) : (
-          <div className="text-white">{t("userSupplier.noSubcategories")}</div>
-        )}
-      </section>
-
-      <section className="bg-[#01351f] w-full flex justify-center py-30">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl px-12 w-full">
+      <section className="bg-[#01351f] w-full flex justify-center pt-8 pb-8 md:pt-2 md:pb-30 relative -mt-0 md:-mt-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-4 max-w-7xl px-4 md:px-7 w-full">
           {partnersLoading ? (
             <div className="col-span-3 flex justify-center items-center h-64">
               <div className="text-white text-lg">
@@ -405,28 +408,12 @@ const UserSupplier = () => {
           )}
         </div>
       </section>
-
-      {/* <footer className="bg-[#01351f] text-white text-center p-4">
-        <div className="flex flex-col items-center">
-          <div className="text-center">
-            <div className="mb-8">
-              <div className="w-[199px] h-[45px] mx-auto">
-                <img
-                  src={footerLogo}
-                  alt="Boligmatch Logo"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
-          </div>
-          <p className="text-white text-sm figtree font-[400] text-[18px]">
-            Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR
-            33160437
-          </p>
+      <div className="relative -mt-8 md:-mt-40">
+        <div className="pt-8 md:pt-0">
+          <Footer />
         </div>
-      </footer> */}
-      <Footer />
-    </div>
+      </div>
+    </>
   );
 };
 

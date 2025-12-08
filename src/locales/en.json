@@ -687,7 +687,7 @@
     "noPartners": "No partners found for this subcategory"
   },
   "partnerStatistics": {
-    "title": "Partner Statistics",
+    "title": "Partner Dashboard",
     "tabs": {
       "statistics": "Statistics",
       "profile": "Profile",
