@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import type { WheelEvent } from "react";
-import { motion } from "framer-motion";
-import { ServiceCard } from "./ServiceCard";
-// import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { motion, useMotionValue } from "framer-motion";
+
+// Import images
 import swaperImg1 from "/src/assets/userImages/swiper5.svg";
 import swaperImg2 from "/src/assets/userImages/swiper4.svg";
 import swaperImg3 from "/src/assets/userImages/swiper1.svg";
@@ -14,234 +13,226 @@ import swaperIcons3 from "/src/assets/userImages/swaperIcon3.svg";
 import swaperIcons4 from "/src/assets/userImages/swaperIcon4.svg";
 import swaperIcons5 from "/src/assets/userImages/swaperIcon5.svg";
 
-const services = [
-  {
-    id: 1,
-    title: "Flytning og opbevarin",
-    description:
-      "Olore dolupta tquatet magnimus eos etus vel et molut quis coratem hilicae vele",
-    icon: swaperIcons5,
-    image: swaperImg1,
-  },
-  {
-    id: 2,
-    title: "Byg og anlæg",
-    description:
-      "Eque illecus quunt ut volorit ut volore eum volore quatemperis quam erum et ut",
-    icon: swaperIcons4,
-    image: swaperImg2,
-  },
-  {
-    id: 3,
-    title: "Håndværkere",
-    description:
-      "Tømrer, murer, elektriker, VVS, maler, glarmester, handyman, fugemand",
-    icon: swaperIcons3,
-    image: swaperImg3,
-  },
-  {
-    id: 4,
-    title: "ndretning",
-    description:
-      "cus quunt ut volorit ut volore eum volore quatemperis quam erum et ut",
-    icon: swaperIcons2,
-    image: swaperImg4,
-  },
-  {
-    id: 5,
-    title: "Rådgivning",
-    description:
-      "dolupta tquatet magnimus eos etus vel et molut quis coratem hilicae velectu",
-    icon: swaperIcons1,
-    image: swaperImg5,
-  },
-];
+// Types
+type Position = "center" | "left1" | "left" | "right" | "right1";
+type PositionMap = Record<Position, { x: string; scale: number; zIndex: number }>;
+type ServiceItem = {
+  id: number;
+  title: string;
+  description: string;
+  icon: string;
+};
 
 export default function ServiceCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const [isHovered, setIsHovered] = useState(false);
+  // State
+  const [positionIndexes, setPositionIndexes] = useState<number[]>([0, 1, 2, 3, 4]);
   const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState(0);
-  const [isManualScroll, setIsManualScroll] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1200
-  );
-  const wheelCooldownRef = useRef(false);
-  const manualScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
+  const [isHovered, setIsHovered] = useState(false);
+  const dragX = useMotionValue(0);
+  
+  // Refs
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const autoSlideRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  // Constants
+  const IMAGES = [swaperImg1, swaperImg2, swaperImg3, swaperImg4, swaperImg5] as const;
+  const POSITIONS: Position[] = ["center", "left1", "left", "right", "right1"];
+  const SWIPE_THRESHOLD = 50;
+  const VELOCITY_THRESHOLD = 500;
+  const AUTO_SLIDE_INTERVAL = 3000;
 
-  useEffect(() => {
-    if (isHovered || isDragging) return;
-
-    const interval = setInterval(() => {
-      paginate(1);
-    }, 2800);
-
-    return () => clearInterval(interval);
-  }, [currentIndex, isHovered, isDragging]);
-
-  useEffect(
-    () => () => {
-      if (manualScrollTimeoutRef.current) {
-        clearTimeout(manualScrollTimeoutRef.current);
-      }
+  // Service data
+  const SERVICES: ServiceItem[] = [
+    {
+      id: 1,
+      title: "Flytning og opbevaring",
+      description: "Olore dolupta tquatet magnimus eos etus vel et molut quis coratem hilicae vele",
+      icon: swaperIcons5,
     },
-    []
-  );
+    {
+      id: 2,
+      title: "Byg og anlæg",
+      description: "Eque illecus quunt ut volorit ut volore eum volore quatemperis quam erum et ut",
+      icon: swaperIcons4,
+    },
+    {
+      id: 3,
+      title: "Håndværkere",
+      description: "Tømrer, murer, elektriker, VVS, maler, glarmester, handyman, fugemand",
+      icon: swaperIcons3,
+    },
+    {
+      id: 4,
+      title: "Indretning",
+      description: "cus quunt ut volorit ut volore eum volore quatemperis quam erum et ut",
+      icon: swaperIcons2,
+    },
+    {
+      id: 5,
+      title: "Rådgivning",
+      description: "dolupta tquatet magnimus eos etus vel et molut quis coratem hilicae velectu",
+      icon: swaperIcons1,
+    },
+  ];
 
-  const swipeConfidenceThreshold = 10000;
-  const swipePower = (offset: number, velocity: number) => {
-    return Math.abs(offset) * velocity;
+  // Position variants
+  const IMAGE_VARIANTS: PositionMap = {
+    center:  { x: "0%", scale: 1.05, zIndex: 5 },
+    left1:   { x: "-92%", scale: 0.94, zIndex: 3 },
+    left:    { x: "-168%", scale: 0.88, zIndex: 2 },
+    right:   { x: "168%", scale: 0.88, zIndex: 2 },
+    right1:  { x: "92%", scale: 0.94, zIndex: 3 },
   };
 
-  const paginate = (newDirection: number) => {
-    setCurrentIndex((prevIndex) => {
-      let nextIndex = prevIndex + newDirection;
-      if (nextIndex < 0) nextIndex = services.length - 1;
-      if (nextIndex >= services.length) nextIndex = 0;
-      return nextIndex;
-    });
+  // Navigation handlers
+  const handleNext = (): void => {
+    setPositionIndexes(prevIndexes => 
+      prevIndexes.map(index => (index + 1) % IMAGES.length)
+    );
   };
 
-  const handleDrag = (_: any, info: any) => {
-    setDragOffset(info.offset.x);
+  const handlePrev = (): void => {
+    setPositionIndexes(prevIndexes => 
+      prevIndexes.map(index => (index + IMAGES.length - 1) % IMAGES.length)
+    );
   };
 
-  const handleDragEnd = (_: any, { offset, velocity }: any) => {
-    const swipe = swipePower(offset.x, velocity.x);
-
-    if (Math.abs(swipe) > swipeConfidenceThreshold) {
-      if (swipe > 0) {
-        paginate(-1); // Swipe right, go to previous
+  // Drag end handler
+  const handleDragEnd = (
+    _: MouseEvent | TouchEvent | PointerEvent, 
+    info: { offset: { x: number }; velocity: { x: number } }
+  ) => {
+    const offsetX = Math.abs(info.offset.x);
+    const velocityX = Math.abs(info.velocity.x);
+    
+    if (offsetX > SWIPE_THRESHOLD || velocityX > VELOCITY_THRESHOLD) {
+      if (info.offset.x > 0 || info.velocity.x > 0) {
+        handlePrev();
       } else {
-        paginate(1); // Swipe left, go to next
+        handleNext();
       }
     }
+    
     setIsDragging(false);
-    setDragOffset(0);
+    dragX.set(0);
   };
 
-  const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    if (wheelCooldownRef.current) return;
-
-    wheelCooldownRef.current = true;
-    setIsManualScroll(true);
-    paginate(event.deltaY > 0 ? 1 : -1);
-
-    if (manualScrollTimeoutRef.current) {
-      clearTimeout(manualScrollTimeoutRef.current);
+  // Auto slide effect
+  useEffect(() => {
+    if (isHovered || isDragging) {
+      if (autoSlideRef.current) {
+        clearInterval(autoSlideRef.current);
+      }
+      return;
     }
-    manualScrollTimeoutRef.current = setTimeout(() => {
-      wheelCooldownRef.current = false;
-      setIsManualScroll(false);
-    }, 600);
-  };
 
-  const isMobile = windowWidth < 1024;
-  const visibleRange = isMobile ? 1 : 2;
+    autoSlideRef.current = setInterval(() => {
+      handleNext();
+    }, AUTO_SLIDE_INTERVAL);
 
-  const getVisibleCards = () => {
-    const cards = [];
-    for (let i = -visibleRange; i <= visibleRange; i++) {
-      let index = currentIndex + i;
-      if (index < 0) index = services.length + index;
-      if (index >= services.length) index = index - services.length;
-      cards.push({ ...services[index], position: i });
-    }
-    return cards;
+    return () => {
+      if (autoSlideRef.current) {
+        clearInterval(autoSlideRef.current);
+      }
+    };
+  }, [isHovered, isDragging]);
+
+  // Handle manual navigation with keyboard
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft") handlePrev();
+    if (e.key === "ArrowRight") handleNext();
   };
 
   return (
-    <div
-      className="relative w-full overflow-hidden py-12 bg-[#01351f]"
+    <div 
+      className="w-full flex flex-col items-center justify-center bg-[#01351f] h-screen relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onKeyDown={handleKeyDown}
+      role="region"
+      aria-label="Service carousel"
     >
-      {/* Carousel Container */}
-      <div className="relative h-[600px] md:h-[600px] flex items-center justify-center">
-        {/* Cards */}
-        <motion.div
-          className="relative w-full max-w-[1600px] h-full flex items-center justify-center px-4"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.2}
-          dragMomentum={false}
-          onWheel={handleWheel}
-          onDragStart={() => {
-            setIsDragging(true);
-            setDragOffset(0);
-          }}
-          onDrag={handleDrag}
-          onDragEnd={handleDragEnd}
-          style={{ cursor: isDragging ? "grabbing" : "grab" }}
-        >
-          {getVisibleCards().map((service) => {
-            const position = service.position;
-            const isCurrent = position === 0;
-            const absPosition = Math.abs(position);
-
-            // Calculate scale and opacity based on distance from center
-            const scale = isCurrent ? 1 : absPosition === 1 ? 0.85 : 0.75;
-            const opacity = 1;
-
-            // Responsive card spacing
-            const cardSpacing = isMobile ? 240 : 280;
-
-            // Calculate x position with drag offset for smooth motion
-            const baseX = position * cardSpacing;
-            const dragInfluence = isDragging ? dragOffset : 0;
-            const finalX = baseX + dragInfluence;
-
-            return (
-              <motion.div
-                key={`${service.id}-${position}`}
-                className="absolute"
-                initial={false}
-                animate={{
-                  x: finalX,
-                  scale: scale,
-                  opacity: opacity,
-                  zIndex: 20 - absPosition * 5,
-                }}
-                transition={
-                  isDragging || isManualScroll
-                    ? { type: "spring", stiffness: 300, damping: 30 }
-                    : {
-                        type: "tween",
-                        duration: 0.7,
-                        ease: "easeInOut",
-                      }
-                }
+      {/* Carousel Container - REMOVED DRAG FROM HERE */}
+      <div
+        ref={carouselRef}
+        className="relative w-full h-full flex justify-center items-center "
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {/* Carousel Images */}
+        {IMAGES.map((image, index) => {
+          const position = POSITIONS[positionIndexes[index]];
+          const currentService = SERVICES[index];
+          const isCenterCard = position === "center";
+          
+          return (
+            <motion.div
+              key={`carousel-item-${index}`}
+              className={`absolute rounded-[12px] !shadow-2xl !shadow-black  ${
+                isCenterCard 
+                  ? "cursor-grab active:cursor-grabbing" 
+                  : "cursor-default"
+              }`}
+              initial="center"
+              animate={position}
+              variants={IMAGE_VARIANTS}
+              transition={{
+                duration: 0.5,
+                ease: "easeInOut",
+              }}
+              // Only enable drag for center card
+              {...(isCenterCard && {
+                drag: "x",
+                dragConstraints: { left: -100, right: 100 },
+                dragElastic: 0.2,
+                dragMomentum: true,
+                onDragStart: () => setIsDragging(true),
+                onDragEnd: handleDragEnd,
+                whileTap: { scale: 0.95 },
+              })}
+              role="group"
+              aria-label={`Slide ${index + 1} of ${IMAGES.length}: ${currentService?.title || 'Service'}`}
+              tabIndex={0}
+            >
+              {/* Image */}
+              <motion.img
+                src={image}
+                alt={`Visual representation for ${currentService?.title || 'service'} slide`}
+                className="w-full h-full object-cover rounded-3xl select-none"
+                draggable="false"
                 style={{
-                  width: isMobile ? "300px" : "360px",
+                  filter: isDragging && isCenterCard ? "brightness(0.9)" : "brightness(1)",
+                  transition: isDragging ? "filter 0.2s" : "filter 0.3s",
+                  width: "359px",
+                  height: "515px",
                 }}
-              >
-                <ServiceCard
-                  title={service.title}
-                  description={service.description}
-                  icon={service.icon}
-                  image={service.image}
-                />
-              </motion.div>
-            );
-          })}
-        </motion.div>
+              />
+              
+              {/* Service Info Overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/40 to-transparent rounded-b-[12px]">
+                {currentService && (
+                  <>
+                    <div className="flex flex-col items-center justify-center gap-2 mb-2">
+                      <img 
+                        src={currentService.icon} 
+                        alt="" 
+                        className="w-14 h-14"
+                        aria-hidden="true"
+                      />
+                      <h3 className="text-white font-semibold text-2xl">
+                        {currentService.title}
+                      </h3>
+                    </div>
+                    <p className="text-white/80 text-md text-center">
+                      {currentService.description}
+                    </p>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
 }
-
-
-
-
-

@@ -24,7 +24,10 @@ function PartnerSteper() {
       );
     } else if (shouldRenderModal) {
       setIsModalVisible(false);
-      timeout = window.setTimeout(() => setShouldRenderModal(false), MODAL_TRANSITION_DURATION);
+      timeout = window.setTimeout(
+        () => setShouldRenderModal(false),
+        MODAL_TRANSITION_DURATION
+      );
     }
 
     return () => {
@@ -45,19 +48,33 @@ function PartnerSteper() {
     <div className="relative w-full min-h-screen overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center">
         {/* Main content container with adjusted positioning */}
-        <div className="z-10 flex flex-col items-center justify-center min-h-[calc(100vh-20px)] px-4 sm:px-6 text-center">
-          {/* Reduced spacer to push content down just a little */}
-          <div className="h-[6vh] md:h-[70vh]"></div>
+        <div className="z-10 flex flex-col items-center justify-center min-h-[100vh] text-center relative">
+          <div className="h-[6vh] md:h-[60vh]"></div>
           
-          {/* Button with reduced margin */}
+          {/* Gradient positioned at the bottom */}
+          <div
+            className="absolute bottom-[66vh] md:bottom-50 left-0 right-0 w-full"
+            style={{
+              background:
+                "linear-gradient(0deg, #01351F 0%, rgba(1, 53, 31, 0) 100%)",
+              height: "308px",
+              zIndex: 10,
+            }}
+          />
+          
+          {/* Button positioned over the gradient */}
           <button
             onClick={openModal}
-            className="mt-0 mb-1 md:mt-4 px-6 sm:px-8 py-3 bg-[#91C73D] text-white rounded-xl font-[600] transition-colors text-[12px] md:text-[20px] hover:bg-[#7FB333] cursor-pointer"
+            className="absolute top-56 md:relative md:top-auto md:mt-2 z-20 mt-0 mb-1 md:mb-0 px-6 sm:px-8 py-3 bg-[#91C73D] text-white rounded-xl font-[600] transition-colors text-[12px] md:text-[18px] hover:bg-[#7FB333] cursor-pointer"
           >
             {t("partnerStepper.cta")}
           </button>
-
-         
+          
+          <div className="absolute top-72 md:relative md:top-auto z-20 bg-[#043428] w-full py-4">
+            <h1 className="text-[16px] md:text-[52px] lg:text-[36px] xl:text-6xl font-[800] text-white md:tracking-tight md:leading-tighter sm:leading-14 px-2 max-w-4xl mx-auto text-center">
+              {t("partnerStepper.heroTitle")}
+            </h1>
+          </div>
         </div>
 
         {shouldRenderModal && (

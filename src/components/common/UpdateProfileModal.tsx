@@ -71,6 +71,7 @@ export default function UpdateProfileModal({
       return await userService.update({
         id: user.userId,
         ...data,
+        postalCode: (user as any).postalCode || "",
         isActive: true,
         status: "Active" as const,
       });
