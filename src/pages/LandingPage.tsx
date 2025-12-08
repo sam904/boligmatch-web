@@ -1,7 +1,7 @@
 import ServiceCarousel from "./Landingpage/ServiceCarousel";
 import { useEffect, useState } from "react";
 import Stepper from "./Landingpage/Stepper";
-import landingImg from "/src/assets/userImages/landingImgg.svg";
+import landingImg from "/src/assets/userImages/home_pageImg.png";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import landingPageIcons from "/src/assets/userImages/1.svg";
 import landingPageIcons2 from "/src/assets/userImages/2.svg";
@@ -69,41 +69,41 @@ export default function LandingPage() {
         onClose={() => setShowSignUpModal(false)}
         onSignupSuccess={handleSignupSuccess}
       />
-      <div className="absolute md:top-26 top-28 lg:left-66 left-0 flex max-w-6xl mx-auto md:px-12 px-8 justify-between mt-0 h-[calc(100vh-100vh)]">
+      <div className="absolute md:top-28 top-28 lg:left-84 left-0 flex max-w-6xl mx-auto md:px-12 px-8 justify-between mt-0 h-[calc(100vh-100vh)]">
         <div>
-          <div className="md:w-[165px] w-[70px] flex justify-end">
+          <div className="md:w-[125px] w-[70px] flex justify-end">
             <img
               src={landingPageIcons}
               alt=""
-              className="md:w-[107px] w-10 h-auto shadow-black shadow-2xl rounded-full"
+              className="md:w-[80px] w-10 h-auto shadow-black shadow-2xl rounded-full"
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-2">
             <img
               src={landingPageIcons2}
               alt=""
-              className="md:w-[107px] w-10 h-auto shadow-black shadow-2xl rounded-full"
+              className="md:w-[80px] w-10 h-auto shadow-black shadow-2xl rounded-full"
             />
           </div>
           <div className="">
             <img
               src={landingPageIcons3}
               alt=""
-              className="md:w-[107px] w-10 h-auto shadow-black shadow-2xl rounded-full"
+              className="md:w-[80px] w-10 h-auto shadow-black shadow-2xl rounded-full"
             />
           </div>
-          <div className="md:w-[165px] w-[70px] flex justify-end">
+          <div className="md:w-[130px] w-[70px] flex justify-end">
             <img
               src={landingPageIcons4}
               alt=""
-              className="md:w-[107px] w-10 h-auto shadow-black shadow-2xl rounded-full"
+              className="md:w-[80px] w-10 h-auto shadow-black shadow-2xl rounded-full"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-[#01351f] h-auto">
-        <div className="flex justify-center absolute bottom-0 md:left-[44%] left-[35%]">
+      <div className="mt-6 relative ">
+        <div className="absolute bottom-48 flex flex-col items-center justify-center w-full md:py-2 z-30">
           <button
             onClick={() => setShowSignUpModal(true)}
             className="bg-[#91C73D] rounded-lg md:text-[18px] text-[16px] cursor-pointer px-6 font-semibold md:py-2.5 py-2 text-white hover:bg-[#7fb32d] transition-colors figtree"
@@ -111,12 +111,16 @@ export default function LandingPage() {
             {t("landing.signUpButton")}
           </button>
         </div>
-        <h1 className="md:text-[76px] text-[40px] text-white leading-[66px] text-center rosting-script font-[400]">
-          {t("landing.mainTitle")}
-        </h1>
-        <h2 className="text-white md:text-[60px] text-[40px]  md:leading-[66px] leading-[48px] tracking-[0%] text-center max-w-4xl md:mx-auto mx-8 md:py-1 py-0 px-4 font-[800] plus-jakarta-sans">
-          {t("landing.subtitle")}
-        </h2>
+        <div className="absolute bottom-0 flex flex-col items-center justify-center bg-[#01351f] w-full md:py-2">
+          <h1 className="md:text-[66px] text-[40px] text-white leading-[66px] text-center rosting-script font-[400] px-4">
+            {t("landing.mainTitle")}
+          </h1>
+          <h2 className="text-white md:text-[50px] text-[40px] md:leading-[66px] leading-[48px] tracking-[0%] text-center max-w-4xl md:mx-auto mx-8 py-0 px-4 font-[800] plus-jakarta-sans">
+            {t("landing.subtitle")}
+          </h2>
+        </div>
+      </div>
+      <div className="bg-[#01351f]">
         <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans">
           {t("landing.description")}
         </p>
