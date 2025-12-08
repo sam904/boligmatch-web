@@ -71,6 +71,8 @@ export default function ServiceCarousel() {
   const manualScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null
   );
+  const wheelDeltaRef = useRef(0);
+  const wheelThrottleRef = useRef<number | null>(null);
 
   // Handle window resize
   useEffect(() => {
@@ -93,6 +95,9 @@ export default function ServiceCarousel() {
     () => () => {
       if (manualScrollTimeoutRef.current) {
         clearTimeout(manualScrollTimeoutRef.current);
+      }
+      if (wheelThrottleRef.current !== null) {
+        cancelAnimationFrame(wheelThrottleRef.current);
       }
     },
     []
@@ -132,19 +137,36 @@ export default function ServiceCarousel() {
 
   const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
     event.preventDefault();
-    if (wheelCooldownRef.current) return;
-
-    wheelCooldownRef.current = true;
-    setIsManualScroll(true);
-    paginate(event.deltaY > 0 ? 1 : -1);
-
-    if (manualScrollTimeoutRef.current) {
-      clearTimeout(manualScrollTimeoutRef.current);
+    
+    // Accumulate wheel delta for smoother scrolling
+    wheelDeltaRef.current += event.deltaY;
+    
+    // Use requestAnimationFrame for ultra-smooth frame-synced updates
+    if (wheelThrottleRef.current === null) {
+      wheelThrottleRef.current = requestAnimationFrame(() => {
+        const threshold = 30; // Lower threshold for more responsive scrolling
+        
+        if (Math.abs(wheelDeltaRef.current) >= threshold) {
+          if (!wheelCooldownRef.current) {
+            wheelCooldownRef.current = true;
+            setIsManualScroll(true);
+            paginate(wheelDeltaRef.current > 0 ? 1 : -1);
+            
+            // Reset cooldown faster for smoother continuous scrolling
+            if (manualScrollTimeoutRef.current) {
+              clearTimeout(manualScrollTimeoutRef.current);
+            }
+            manualScrollTimeoutRef.current = setTimeout(() => {
+              wheelCooldownRef.current = false;
+              setIsManualScroll(false);
+            }, 500); // Reduced from 800ms for faster response
+          }
+        }
+        
+        wheelDeltaRef.current = 0;
+        wheelThrottleRef.current = null;
+      });
     }
-    manualScrollTimeoutRef.current = setTimeout(() => {
-      wheelCooldownRef.current = false;
-      setIsManualScroll(false);
-    }, 600);
   };
 
   const isMobile = windowWidth < 1024;
@@ -214,8 +236,16 @@ export default function ServiceCarousel() {
                   zIndex: 20 - absPosition * 5,
                 }}
                 transition={
-                  isDragging || isManualScroll
+                  isDragging
                     ? { type: "spring", stiffness: 300, damping: 30 }
+                    : isManualScroll
+                    ? { 
+                        type: "spring", 
+                        stiffness: 150, 
+                        damping: 20,
+                        mass: 0.6,
+                        velocity: 0
+                      }
                     : {
                         type: "tween",
                         duration: 0.7,

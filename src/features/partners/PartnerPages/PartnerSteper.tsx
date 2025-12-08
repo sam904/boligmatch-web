@@ -24,7 +24,10 @@ function PartnerSteper() {
       );
     } else if (shouldRenderModal) {
       setIsModalVisible(false);
-      timeout = window.setTimeout(() => setShouldRenderModal(false), MODAL_TRANSITION_DURATION);
+      timeout = window.setTimeout(
+        () => setShouldRenderModal(false),
+        MODAL_TRANSITION_DURATION
+      );
     }
 
     return () => {
@@ -45,19 +48,17 @@ function PartnerSteper() {
     <div className="relative w-full min-h-screen overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center">
         {/* Main content container with adjusted positioning */}
-        <div className="z-10 flex flex-col items-center justify-center min-h-[calc(100vh-20px)] px-4 sm:px-6 text-center">
-          {/* Reduced spacer to push content down just a little */}
-          <div className="h-[6vh] md:h-[70vh]"></div>
-          
-          {/* Button with reduced margin */}
+        <div className="z-10 flex flex-col items-center justify-center min-h-[calc(100vh-30px)] px-4 sm:px-6 text-center">
+          <div className="h-[6vh] md:h-[50vh]"></div>
           <button
             onClick={openModal}
             className="mt-0 mb-1 md:mt-4 px-6 sm:px-8 py-3 bg-[#91C73D] text-white rounded-xl font-[600] transition-colors text-[12px] md:text-[20px] hover:bg-[#7FB333] cursor-pointer"
           >
             {t("partnerStepper.cta")}
           </button>
-
-         
+          <h1 className="text-[16px] md:text-[56px] lg:text-[36px] xl:text-6xl font-[800] text-white md:tracking-tight md:leading-tighter sm:leading-14 px-2 max-w-4xl mx-auto text-center">
+            {t("partnerStepper.heroTitle")}
+          </h1>
         </div>
 
         {shouldRenderModal && (
