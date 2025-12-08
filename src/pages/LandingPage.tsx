@@ -2,6 +2,7 @@ import ServiceCarousel from "./Landingpage/ServiceCarousel";
 import { useEffect, useState } from "react";
 import Stepper from "./Landingpage/Stepper";
 import landingImg from "/src/assets/userImages/home_pageImg.png";
+import landingImgMobile from "/src/assets/userImages/landingImgMobile.png";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import landingPageIcons from "/src/assets/userImages/1.svg";
 import landingPageIcons2 from "/src/assets/userImages/2.svg";
@@ -13,6 +14,9 @@ import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import { loginThunk } from "../features/auth/authSlice";
 import { useAppDispatch } from "../app/hooks";
+import { is } from "zod/v4/locales";
+
+
 export default function LandingPage() {
   const dispatch = useAppDispatch();
   const [currentStep, setCurrentStep] = useState(1);
@@ -20,6 +24,15 @@ export default function LandingPage() {
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const [isMobile, setIsMobile] = useState(false);
+
+useEffect(() => {
+  const check = () => setIsMobile(window.innerWidth < 768);
+  check();
+  window.addEventListener("resize", check);
+  return () => window.removeEventListener("resize", check);
+}, []);
 
   const handleSignupSuccess = async (email: string, password: string) => {
     // Auto-login after successful signup
@@ -48,20 +61,12 @@ export default function LandingPage() {
   }, [navigate]);
   return (
     <div
-      className={`
-              relative 
-              h-[368px]      
-              md:h-[100vh]     
-              bg-no-repeat bg-cover bg-center
-              bg-[url('/src/assets/userImages/mobile-landingImg.png')] 
-              md:bg-none       
-  `}
-      style={{
-        backgroundImage: `url(${landingImg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
+    className="
+    h-[366px]
+    md:h-[100vh] bg-cover bg-center bg-no-repeat
+    bg-[url('/src/assets/userImages/landingImgMobile.png')]   // mobile default
+    md:bg-[url('/src/assets/userImages/home_pageImg.png')]       // desktop
+  "
     >
       <UserHeader showBackButton={false} />
       <SignUpModal
@@ -69,9 +74,9 @@ export default function LandingPage() {
         onClose={() => setShowSignUpModal(false)}
         onSignupSuccess={handleSignupSuccess}
       />
-      <div className="absolute md:top-28 top-28 lg:left-84 left-0 flex max-w-6xl mx-auto md:px-12 px-8 justify-between mt-0 h-[calc(100vh-100vh)]">
+      <div className="absolute md:top-28 top-28 lg:left-93 left-0 flex max-w-6xl mx-auto md:px-12 px-8 justify-between mt-0 md:h-[calc(100vh)]">
         <div>
-          <div className="md:w-[125px] w-[70px] flex justify-end">
+          <div className="md:w-[130px] w-[70px] flex justify-end">
             <img
               src={landingPageIcons}
               alt=""
@@ -102,29 +107,31 @@ export default function LandingPage() {
         </div>
       </div>
 
-      <div className="mt-6 relative ">
-        <div className="absolute bottom-48 flex flex-col items-center justify-center w-full md:py-2 z-30">
+      <div className="relative ">
+        
+        <div  style={{top: isMobile ? "0px" : "", }} className="absolute md:bottom-0 md:h-[350px] h-[280px]  flex flex-col items-center justify-end bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] w-full ">
           <button
             onClick={() => setShowSignUpModal(true)}
-            className="bg-[#91C73D] rounded-lg md:text-[18px] text-[16px] cursor-pointer px-6 font-semibold md:py-2.5 py-2 text-white hover:bg-[#7fb32d] transition-colors figtree"
+            className="bg-[#91C73D] rounded-lg md:text-[18px] text-[16px] cursor-pointer px-6 font-semibold md:py-2.5 mb-1.5 py-2 text-white hover:bg-[#7fb32d] transition-colors figtree"
           >
             {t("landing.signUpButton")}
           </button>
-        </div>
-        <div className="absolute bottom-0 flex flex-col items-center justify-center bg-[#01351f] w-full md:py-2">
-          <h1 className="md:text-[66px] text-[40px] text-white leading-[66px] text-center rosting-script font-[400] px-4">
+          <h1 className="md:text-[66px] text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-98%   w-full text-white  text-center rosting-script font-[400] px-4">
             {t("landing.mainTitle")}
           </h1>
-          <h2 className="text-white md:text-[50px] text-[40px] md:leading-[66px] leading-[48px] tracking-[0%] text-center max-w-4xl md:mx-auto mx-8 py-0 px-4 font-[800] plus-jakarta-sans">
-            {t("landing.subtitle")}
+          <div className="bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-0% w-full">
+            <h2 className="text-white md:text-[50px] text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F]   leading-[50px]  max-w-4xl tracking-[0%] text-center  md:mx-auto mx-8 py-0 px-4 font-[800] plus-jakarta-sans">
+             {t("landing.subtitle")}
           </h2>
+          </div>
         </div>
       </div>
-      <div className="bg-[#01351f]">
+      <div className="bg-[#01351f] ">
         <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans">
           {t("landing.description")}
         </p>
       </div>
+      {/* <AquaticAnimalsCarousel/> */}
       <ServiceCarousel />
       <div className="bg-[#01351f] h-auto">
         <h1 className="md:text-[64px] text-[42px] md:leading-[66px] leading-[42px] text-white text-center max-w-[845px] mx-auto font-[800] plus-jakarta-sans">
