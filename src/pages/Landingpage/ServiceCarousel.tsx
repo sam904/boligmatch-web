@@ -32,7 +32,7 @@ export default function ServiceCarousel() {
   
   // Refs
   const carouselRef = useRef<HTMLDivElement>(null);
-  const autoSlideRef = useRef<NodeJS.Timeout | null>(null);
+  const autoSlideRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Constants
   const IMAGES = [swaperImg1, swaperImg2, swaperImg3, swaperImg4, swaperImg5] as const;

@@ -1,8 +1,6 @@
 import ServiceCarousel from "./Landingpage/ServiceCarousel";
 import { useEffect, useState } from "react";
 import Stepper from "./Landingpage/Stepper";
-import landingImg from "/src/assets/userImages/home_pageImg.png";
-import landingImgMobile from "/src/assets/userImages/landingImgMobile.png";
 import UserHeader from "../features/users/UserPages/UserHeader";
 import landingPageIcons from "/src/assets/userImages/1.svg";
 import landingPageIcons2 from "/src/assets/userImages/2.svg";
@@ -14,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import { loginThunk } from "../features/auth/authSlice";
 import { useAppDispatch } from "../app/hooks";
-import { is } from "zod/v4/locales";
 
 
 export default function LandingPage() {
