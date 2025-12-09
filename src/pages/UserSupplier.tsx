@@ -238,10 +238,10 @@ const UserSupplier = () => {
     > */}
       <div
         className="
-    relative h-[60vh] md:h-screen 
-    bg-no-repeat md:bg-cover bg-cover
-    md:bg-center bg-center
-  "
+              relative h-[60vh] md:h-screen 
+              bg-no-repeat md:bg-cover bg-cover
+              md:bg-center bg-center
+            "
         style={{
           backgroundImage: `url(${getBackgroundImage()})`,
         }}

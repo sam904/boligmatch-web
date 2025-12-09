@@ -318,13 +318,13 @@ export default function UserDashboardPage() {
         {/* Action Buttons */}
         <div className="absolute inset-x-0 bottom-0 z-10 pb-6 sm:pb-8 md:pb-10">
           <div className="px-4 sm:px-6 md:px-8">
-            <div className="flex flex-row sm:flex-row items-center justify-between sm:justify-center gap-2 sm:gap-4 md:gap-6 max-w-4xl mx-auto px-2">
+            <div className="flex flex-row sm:flex-row items-center justify-between sm:justify-center gap-3 md:gap-6 max-w-4xl mx-auto px-2">
               <button
                 onClick={handlePartnersClick}
                 className={`${activeView === "default"
                   ? "bg-[#145939] text-white"
                   : "bg-[#95c11f] text-white"
-                  } flex items-center justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md  hover:opacity-90 transition cursor-pointer w-[240px] h-[55px]`}
+                  } flex items-center justify-center gap-1 md:gap-3 md:rounded-2xl rounded-[11px] px-5 px-6 md:px-7 shadow-lg sm:shadow-md  hover:opacity-90 transition cursor-pointer w-[240px] md:h-[55px] h-[42px]`}
                 type="button"
               >
                 <img
@@ -342,7 +342,7 @@ export default function UserDashboardPage() {
                 className={`${activeView === "favorites"
                   ? "bg-[#145939] text-white"
                   : "bg-[#95c11f] text-white"
-                  } flex items-center justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition cursor-pointer w-[272.38px] h-[55px]`}
+                  } flex items-center justify-center gap-1 md:gap-3 rounded-[11px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition cursor-pointer w-[272.38px] md:h-[55px] h-[42px]`}
                 type="button"
               >
                 <img
@@ -363,7 +363,7 @@ export default function UserDashboardPage() {
                 className={`${activeView === "messages"
                   ? "bg-[#145939] text-white"
                   : "bg-[#95c11f] text-white"
-                  } flex items-center justify-center gap-1 md:gap-3 rounded-[18px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition font-medium cursor-pointer w-[272.38px] h-[55px]`}
+                  } flex items-center justify-center gap-1 md:gap-3 rounded-[11px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition font-medium cursor-pointer w-[272.38px] md:h-[55px] h-[42px]`}
                 type="button"
               >
                 <img
