@@ -116,6 +116,7 @@ const UserSupplier = () => {
   const [loadingPartnerId, setLoadingPartnerId] = useState<number | null>(null);
   const mobileScrollRef = useRef<HTMLDivElement>(null);
   const [partnerData, setPartnerData] = useState<any | null>(null);
+  
   // Get the background image for the active subcategory
   const getBackgroundImage = () => {
     if (!active) return userDashboard;
@@ -132,6 +133,7 @@ const UserSupplier = () => {
       navigate("/");
     }
   }, []);
+  
   useEffect(() => {
     const checkPartnerData = () => {
       try {
@@ -152,6 +154,7 @@ const UserSupplier = () => {
     window.addEventListener("storage", checkPartnerData);
     return () => window.removeEventListener("storage", checkPartnerData);
   }, []);
+  
   // Load subcategories from localStorage
   useEffect(() => {
     const loadSubCategories = () => {
@@ -227,15 +230,6 @@ const UserSupplier = () => {
 
   return (
     <>
-      {/* <div
-      className="relative h-[100vh]"
-      style={{
-        backgroundImage: `url(${getBackgroundImage()})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    > */}
       <div
         className="
               relative h-[60vh] md:h-screen 
@@ -253,7 +247,6 @@ const UserSupplier = () => {
         }
       `}</style>
         <UserHeader />
-        {/* <div className="absolute inset-0 bg-gradient-to-b from-[rgba(22,89,51,0)] to-[#043428] pointer-events-none"  /> */}
         <div
           className="pointer-events-none absolute inset-x-0 bottom-0 top-20 md:top-auto md:h-[400px] h-full"
           style={{
@@ -371,8 +364,9 @@ const UserSupplier = () => {
         </section>
       </div>
 
-      <section className="bg-[#01351f] w-full flex justify-center pt-8 pb-8 md:pt-2 md:pb-30 relative -mt-0 md:-mt-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-4 max-w-7xl px-4 md:px-7 w-full">
+      {/* Fixed: Added overflow-visible and adjusted z-index to prevent clipping */}
+      <section className="bg-[#01351f] w-full flex justify-center pt-8 pb-8 md:pt-2 md:pb-30 relative -mt-0 md:-mt-32 overflow-visible z-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-6 max-w-7xl px-4 md:px-7 w-full overflow-visible">
           {partnersLoading ? (
             <div className="col-span-3 flex justify-center items-center h-64">
               <div className="text-white text-lg">
@@ -384,7 +378,7 @@ const UserSupplier = () => {
               {partners.map((p) => (
                 <div
                   key={p.partnerSubCategoryId ?? p.partnerId}
-                  className="flex justify-center"
+                  className="flex justify-center overflow-visible"
                 >
                   <PartnerCard
                     logoUrl={p.logoUrl}
@@ -410,7 +404,9 @@ const UserSupplier = () => {
           )}
         </div>
       </section>
-      <div className="relative -mt-8 md:-mt-40">
+      
+      {/* Fixed: Reduced negative margin and added z-index to prevent overlap */}
+      <div className="relative -mt-4 md:-mt-32 z-10">
         <div className="pt-8 md:pt-0">
           <Footer />
         </div>
