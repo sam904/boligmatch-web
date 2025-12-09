@@ -326,7 +326,7 @@ useEffect(() => {
         </div>
       </div>
 
-      <div className="relative ">
+      <div className="">
         
         <div  style={{top: isMobile ? "0px" : "", }} className="absolute md:bottom-0 md:h-[350px] h-[280px]  flex flex-col items-center justify-end bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] w-full ">
           <button
@@ -335,11 +335,11 @@ useEffect(() => {
           >
             {t("landing.signUpButton")}
           </button>
-          <h1 className="md:text-[66px] text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-98%   w-full text-white  text-center rosting-script font-[400] px-4">
+          <h1 className="md:text-[66px] leading-15 text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-98%   w-full text-white  text-center rosting-script font-[400] px-4">
             {t("landing.mainTitle")}
           </h1>
           <div className="bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-0% w-full">
-            <h2 className="text-white md:text-[50px] text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F]   leading-[50px]  max-w-4xl tracking-[0%] text-center  md:mx-auto mx-8 py-0 px-4 font-[800] plus-jakarta-sans">
+            <h2 className="text-white md:text-[50px] text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F]   leading-[50px]  max-w-4xl tracking-[0%] text-center  md:mx-auto mx-8 pb-3 px-4 font-[800] plus-jakarta-sans">
              {t("landing.subtitle")}
           </h2>
           </div>

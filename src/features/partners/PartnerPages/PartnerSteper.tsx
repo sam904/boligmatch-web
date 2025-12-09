@@ -46,8 +46,8 @@ function PartnerSteper() {
 
   return (
     <div className="md:h-[100vh]">
-      <div className="flex flex-col items-center justify-end md:h-[100vh] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_92.79%)]">
-          <div className="bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_92.79%)] w-full flex justify-center items-end h-[50px] ">
+      <div className="flex flex-col items-center justify-end md:h-[100vh] ">
+          <div className="bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_92.79%)] w-full flex justify-center items-end h-[350px] ">
             <button
             onClick={openModal}
             className=" px-6 sm:px-8 py-3 bg-[#91C73D] text-white rounded-xl font-[600] transition-colors text-[12px] md:text-[18px] hover:bg-[#7FB333] cursor-pointer"
