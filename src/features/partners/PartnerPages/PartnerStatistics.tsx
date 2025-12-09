@@ -134,109 +134,106 @@ function ParentStatistics() {
           </div>
         </div>
 
-<div className="absolute bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] h-[400px] w-full">
-  <div className="flex justify-center space-x-5 bg-[#01351f]">
- <button
-                onClick={() => setActiveTab("statistik")}
-                className={`
+        <div className="bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] h-[400px] w-full">
+          <div className="flex justify-center space-x-5 bg-[#01351f]">
+            <button
+              onClick={() => setActiveTab("statistik")}
+              className={`
                 flex items-center justify-center
                 gap-3
-                w-[188px] h-[55px]
+                w-[180px] h-[50px]
                 text-white
                 rounded-[11px]
                 transition-all duration-200
                 cursor-pointer
                 font-['Plus_Jakarta_Sans'] font-semibold text-[20px]
-                ${
-                  activeTab === "statistik"
-                    ? "bg-[#07583A] shadow-lg"
-                    : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
+                ${activeTab === "statistik"
+                  ? "bg-[#07583A] shadow-lg"
+                  : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
                 }
               `}
-              >
-                {/* ICON PERFECTLY CENTERED */}
-                <div className="flex items-center justify-center w-[26px] h-[26px]">
-                  <img
-                    src={Statistik}
-                    alt="Statistics"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+            >
+              {/* ICON PERFECTLY CENTERED */}
+              <div className="flex items-center justify-center w-[26px] h-[26px]">
+                <img
+                  src={Statistik}
+                  alt="Statistics"
+                  className="w-full h-full object-contain"
+                />
+              </div>
 
-                {/* TEXT PERFECTLY CENTERED */}
-                <span className="flex items-center leading-none">
-                  {t("partnerStatistics.tabs.statistics")}
-                </span>
-              </button>
+              {/* TEXT PERFECTLY CENTERED */}
+              <span className="flex items-center leading-none">
+                {t("partnerStatistics.tabs.statistics")}
+              </span>
+            </button>
 
-              <button
-                onClick={() => setActiveTab("profil")}
-                className={`
+            <button
+              onClick={() => setActiveTab("profil")}
+              className={`
                 whitespace-nowrap 
                 flex items-center justify-center 
                 space-x-2 md:space-x-3 
-                w-[188px] h-[55px] 
+                w-[180px] h-[50px]
                 text-white 
                 rounded-[11px] 
                 transition-all duration-200 
                 cursor-pointer 
                 font-['Plus_Jakarta_Sans'] font-semibold
                 text-[20px] leading-[100%]
-                ${
-                  activeTab === "profil"
-                    ? "bg-[#07583A] shadow-lg"
-                    : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
+                ${activeTab === "profil"
+                  ? "bg-[#07583A] shadow-lg"
+                  : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
                 }
               `}
-              >
-                <div className="flex items-center justify-center w-[25.5px] h-[28px]">
-                  <img
-                    src={MinProfil}
-                    alt="Profile"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <span className="text-[20px] font-semibold tracking-[0%]">
-                  {t("partnerStatistics.tabs.profile")}
-                </span>
-              </button>
+            >
+              <div className="flex items-center justify-center w-[25.5px] h-[28px]">
+                <img
+                  src={MinProfil}
+                  alt="Profile"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <span className="text-[20px] font-semibold tracking-[0%]">
+                {t("partnerStatistics.tabs.profile")}
+              </span>
+            </button>
 
-              <button
-                onClick={() => setActiveTab("partnere")}
-                className={`
+            <button
+              onClick={() => setActiveTab("partnere")}
+              className={`
         whitespace-nowrap 
         flex items-center justify-center 
         space-x-2 md:space-x-3 
-        w-[188px] h-[55px] 
+       w-[180px] h-[50px]
         text-white 
         rounded-[11px] 
         transition-all duration-200 
         cursor-pointer 
         font-['Plus_Jakarta_Sans'] font-semibold
         text-[20px] leading-[100%]
-        ${
-          activeTab === "partnere"
-            ? "bg-[#07583A] shadow-lg"
-            : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
-        }
+        ${activeTab === "partnere"
+                  ? "bg-[#07583A] shadow-lg"
+                  : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
+                }
       `}
-              >
-                <div className="flex items-center justify-center w-[25.5px] h-[28px]">
-                  <img
-                    src={Partnere}
-                    alt="Partners"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <span className="text-[20px] font-semibold tracking-[0%]">
-                  {t("partnerStatistics.tabs.partners")}
-                </span>
-              </button>
-  </div>
-  {activeTab === "statistik" && (
-        <PartnerStatDetails partnerData={partnerData} />
-      )}
-</div>
+            >
+              <div className="flex items-center justify-center w-[25.5px] h-[28px]">
+                <img
+                  src={Partnere}
+                  alt="Partners"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <span className="text-[20px] font-semibold tracking-[0%]">
+                {t("partnerStatistics.tabs.partners")}
+              </span>
+            </button>
+          </div>
+          {activeTab === "statistik" && (
+            <PartnerStatDetails partnerData={partnerData} />
+          )}
+        </div>
       </div>
 
       {activeTab === "profil" && (
