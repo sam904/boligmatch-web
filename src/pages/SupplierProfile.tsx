@@ -161,8 +161,8 @@ useEffect(() => {
 
 // Add this useEffect for auto-hide controls
 useEffect(() => {
-  let hideTimeout: NodeJS.Timeout;
-  let mouseLeaveTimeout: NodeJS.Timeout;
+  let hideTimeout: ReturnType<typeof setTimeout>;
+  let mouseLeaveTimeout: ReturnType<typeof setTimeout>;
   let isMouseOverControls = false;
 
   const showControlsTemporarily = () => {

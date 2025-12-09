@@ -638,6 +638,8 @@
     "passwordMinLength": "Adgangskode skal være mindst 6 tegn",
     "noAccountQuestion": "Har du ikke en konto?",
     "signUpHere": "Tilmeld dig her",
+    "alreadyHaveAccount": "Har du allerede en konto?",
+    "loginHere": "Log ind her",
     "signupAndLoginSuccess": "Konto oprettet og logget ind succesfuldt!",
     "signupSuccessLoginManually": "Konto oprettet! Log venligst ind med dine legitimationsoplysninger."
   },
