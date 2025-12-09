@@ -736,7 +736,6 @@ const formatTime = (time: number) => {
           Your browser does not support the video tag.
         </video>
 
-        {/* Custom video controls - show on hover only */}
      {/* Custom video controls - show on hover only */}
 <div className="absolute inset-0 z-40 pointer-events-none video-controls-container">
   {/* Hover area - full video size */}
@@ -745,8 +744,8 @@ const formatTime = (time: number) => {
     <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto ${showControls ? 'opacity-100' : 'opacity-0'}`}>
       
       {/* Main play/pause button - centered */}
-      <div className="flex flex-col items-center gap-6 transform -translate-y-12 mb-16">
-        <div className="flex items-center gap-12">
+      <div className="flex  h-[100vh] items-end justify-center  w-full gap-6 transform -translate-y-12 ">
+        <div className="flex items-end gap-12">
           {/* Play / Pause button */}
           {!isVideoPlaying && partnerData?.videoUrl ? (
             <button
@@ -779,15 +778,16 @@ const formatTime = (time: number) => {
       </div>
 
       {/* Bottom controls bar - ALWAYS show when hovered */}
-      <div 
-        className="absolute bottom-10 left-0 right-0  p-4 pt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+      {isVideoPlaying && (
+        <div 
+        className="absolute bottom-60 left-0 right-0  p-4 pt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         onMouseEnter={() => setShowControls(true)}
         onMouseLeave={(e) => {
           // Don't hide immediately when leaving controls
           e.stopPropagation();
         }}
       >
-        <div className="flex items-center justify-between max-w-4xl mx-auto w-full px-4">
+        <div className="flex items-center justify-between  mx-auto w-full px-4">
           
           {/* Left side: Play/Pause */}
           <div 
@@ -823,7 +823,7 @@ const formatTime = (time: number) => {
           </div>
 
           {/* Center: Progress bar */}
-          <div 
+          {/* <div 
             className="flex-1 mx-8 max-w-2xl"
             onMouseEnter={() => setShowControls(true)}
           >
@@ -848,7 +848,7 @@ const formatTime = (time: number) => {
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Right side: Additional controls */}
           <div 
@@ -909,30 +909,13 @@ const formatTime = (time: number) => {
           </div>
         </div>
       </div>
-
-      {/* Timeline hover preview (optional) */}
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-3 py-1 rounded text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        {formatTime(currentTime)} / {formatTime(duration)}
+      )}
+      <div className=" bg-[linear-gradient(180deg,rgba(4,52,40,0)_0%,#043428_100%)] h-[80px] w-full" >
+        
       </div>
-
-    </div>
-  </div>
-</div>
-
-        <UserHeader />
-
-    <div className="bg-[#01351f] pt-0">
-  <div className="w-full mx-auto px-12 flex justify-center">
-    <div
-      className="flex md:gap-10 gap-5 justify-center absolute md:bottom-0 w-full md:py-8 pb-0 z-40"
-      style={{
-        background:
-          "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
-      }}
-    >
-     
-    </div>
-    <div className="flex md:gap-10 gap-5 justify-center md:bottom-0 w-full md:py-4 pb-0 z-40">
+       <div className=" bg-[#043428] pt-0 w-full">
+  <div className="w-full mx-auto px-12 flex justify-center items-end">
+    <div className="flex md:gap-10 gap-5 justify-center  md:bottom-0 w-full  pb-0 z-40">
       {/* Show buttons only when video is NOT playing */}
       {!isPartner && (
         <>
@@ -982,11 +965,20 @@ const formatTime = (time: number) => {
     </div>
   </div>
 </div>
-
-        <div className="bg-[#01351f]">
-          <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white py-10">
+      <div className="bg-[#01351f] w-full">
+          <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white py-5">
             {partnerData?.businessName || partnerData?.fullName || "Loading..."}
           </h1>
+          </div>
+
+    </div>
+  </div>
+</div>
+
+        <UserHeader />
+
+
+        <div className="bg-[#01351f]">
           <div className="max-w-6xl m-auto">
             <p className="text-white font-[400] md:text-[18px] text-[12px] text-center px-8">
               {partnerData?.textField1 || "Loading..."}

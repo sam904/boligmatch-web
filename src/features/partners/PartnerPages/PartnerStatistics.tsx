@@ -86,7 +86,7 @@ function ParentStatistics() {
     <>
       <div
         className={`
-              relative 
+          relative
               h-[368px]      
               md:h-[100vh]     
               bg-no-repeat bg-cover bg-center
@@ -111,32 +111,32 @@ function ParentStatistics() {
             .partner-hero-gradient { height: 400px; }
           }
         `}</style>
+
+
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 partner-hero-gradient"
+          className="pointer-events-none "
           style={{
             background:
               "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, rgba(1, 53, 31, 0.3) 40%, rgba(1, 53, 31, 0.7) 70%, #01351F 100%)",
           }}
         />
 
-        <div className="flex flex-col">
-          <div className="flex items-center md:justify-start px-4 pb-4 md:px-12 md:pt-6 md:pb-6 absolute left-18 top-54 md:top-36 md:left-18 z-10">
-            <div className="mx-auto text-white text-center md:text-left">
-              <h1 className="text-[24px] md:text-[64px] font-[800] tracking-tight leading-tight">
+        <div className="flex items-center h-[70vh] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]">
+          <div className="flex items-center md:justify-start px-4 pb-20 md:px-12 md:pt-6 md:pb-6 z-10">
+            <div className=" text-white text-center md:text-left">
+              <h1 className="text-[24px] md:text-[60px] font-[800] tracking-tight leading-[40px]">
                 {t("partnerStatistics.title")}
               </h1>
-              <h2 className="text-[24px] md:text-[60px] font-[500] tracking-tight">
+              <h2 className="text-[24px] md:text-[55px] font-[500] tracking-tight">
                 {partnerData?.businessName || "Business Name"}
               </h2>
             </div>
           </div>
         </div>
 
-        {/* Navigation Buttons Section - positioned over image */}
-        <div className="absolute bottom-32 md:bottom-36 left-0 right-0 z-20">
-          <div className="px-4 md:px-12">
-            <div className="flex flex-row flex-nowrap items-center justify-center md:justify-center gap-3 md:gap-6 lg:gap-8">
-              <button
+<div className="absolute bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] h-[400px] w-full">
+  <div className="flex justify-center space-x-5 bg-[#01351f]">
+ <button
                 onClick={() => setActiveTab("statistik")}
                 className={`
                 flex items-center justify-center
@@ -232,15 +232,13 @@ function ParentStatistics() {
                   {t("partnerStatistics.tabs.partners")}
                 </span>
               </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats section starts immediately after hero */}
-      {activeTab === "statistik" && (
+  </div>
+  {activeTab === "statistik" && (
         <PartnerStatDetails partnerData={partnerData} />
       )}
+</div>
+      </div>
+
       {activeTab === "profil" && (
         <PartnerProfileShortcut partnerData={partnerData} />
       )}

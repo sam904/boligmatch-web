@@ -32,14 +32,10 @@ function ParentSteperPara() {
     },
   ];
   return (
-    <div className="bg-[#01351f]">
+    <div className="bg-[#01351F]">
       <div className="flex items-start justify-center px-4 sm:px-6">
         <div className="max-w-6xl mx-auto text-center">
           <div className="space-y-0 md:mt-24">
-             {/* Title with adjusted spacing */}
-          {/* <h1 className="text-[16px] md:text-[56px] lg:text-[36px] xl:text-6xl font-[600]  text-white md:tracking-tight md:leading-tight sm:leading-14 px-2">
-            {t("partnerStepper.heroTitle")}
-          </h1> */}
             <p className="text-white text-[16px] sm:text-[17px] md:text-[18px] leading-relaxed font-[300]  tracking-tight figtree">
               {t("partnerSteperPara.intro1")}
             </p>
@@ -49,7 +45,7 @@ function ParentSteperPara() {
           </div>
         </div>
       </div>
-      <div className="bg-[#01351f] min-h-screen px-4 sm:px-6 py-8 sm:py-10">
+      <div className="bg-[#01351F] min-h-screen px-4 sm:px-6 py-8 sm:py-10">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 md:mb-16 figtree">
             {t("partnerSteperPara.heading")}
