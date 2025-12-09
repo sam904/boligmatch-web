@@ -62,31 +62,33 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-full max-w-[361px] h-[262px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-6 md:px-8 md:py-10 text-center">
-      <div className="mb-3 md:mb-6">
-        <img
-          src={logoUrl}
-          alt={name || fullName || "Partner"}
-          className="w-[72px] h-[72px] md:w-[120px] md:h-[120px] object-contain"
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).src = JimmysELservice;
-          }}
-        />
-      </div>
-      <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-4 px-4">
-        {name || fullName || "Partner"}
-      </h3>
-      {description && (
-        <div className="flex-1 flex items-start justify-center w-full mb-3 md:mb-6 overflow-hidden">
-          <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-3 md:line-clamp-6">
-            {description}
-          </p>
+    <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-full max-w-[361px] h-[262px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-6 md:px-8 md:py-10 text-center justify-between">
+      <div className="flex flex-col items-center w-full">
+        <div className="mb-3 md:mb-6">
+          <img
+            src={logoUrl}
+            alt={name || fullName || "Partner"}
+            className="w-[72px] h-[72px] md:w-[120px] md:h-[120px] object-contain"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = JimmysELservice;
+            }}
+          />
         </div>
-      )}
+        <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-4 px-4">
+          {name || fullName || "Partner"}
+        </h3>
+        {description && (
+          <div className="flex-1 flex items-start justify-center w-full mb-3 md:mb-6 overflow-hidden min-h-0">
+            <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-3 md:line-clamp-6">
+              {description}
+            </p>
+          </div>
+        )}
+      </div>
       <button
         onClick={onMoreInfo}
         disabled={isLoading}
-        className={`font-bold text-[14px] md:text-[16px] cursor-pointer transition-all duration-200 ${isLoading
+        className={`mt-auto font-bold text-[14px] md:text-[16px] cursor-pointer transition-all duration-200 ${isLoading
             ? "text-gray-400 cursor-not-allowed font-semibold"
             : "text-black hover:font-extrabold"
           }`}

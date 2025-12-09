@@ -192,12 +192,74 @@ export default function UserModal({
         const from = (location.state as any)?.from?.pathname;
         const defaultByRole =
           isPartner && !isUser ? "/partner/statistics" : "/user/profile";
-        const target = redirectTo ?? from ?? defaultByRole;
-        navigate(target, { replace: true });
+        
+        // Check for recommendation partner ID in sessionStorage if no redirectTo is provided
+        const handleNavigation = async () => {
+          let target = redirectTo ?? from ?? defaultByRole;
+          if (!redirectTo && !from) {
+            const partnerId = sessionStorage.getItem("bm_recommendation_partner_id");
+            if (partnerId) {
+              // Fetch partner data and store in localStorage for SupplierProfile
+              try {
+                const { partnerService } = await import("../../services/partner.service");
+                const partnerResponse = await partnerService.getById(Number(partnerId));
+                if (partnerResponse?.output) {
+                  localStorage.setItem("bm_currentPartner", JSON.stringify(partnerResponse.output));
+                }
+              } catch (error) {
+                console.error("Error fetching partner data:", error);
+              }
+              target = "/user/supplier-profile";
+              // Clear the recommendation keys
+              sessionStorage.removeItem("bm_recommendation_key");
+              sessionStorage.removeItem("bm_recommendation_partner_id");
+            } else {
+              const recommendationKey = sessionStorage.getItem("bm_recommendation_key");
+              if (recommendationKey) {
+                target = `/user/recommenduser/${recommendationKey}`;
+              }
+            }
+          }
+          
+          navigate(target, { replace: true });
+        };
+        
+        handleNavigation();
       } catch (e) {
         const from = (location.state as any)?.from?.pathname;
-        const target = redirectTo ?? from ?? "/user/profile";
-        navigate(target, { replace: true });
+        
+        // Check for recommendation partner ID in sessionStorage if no redirectTo is provided
+        const handleNavigation = async () => {
+          let target = redirectTo ?? from ?? "/user/profile";
+          if (!redirectTo && !from) {
+            const partnerId = sessionStorage.getItem("bm_recommendation_partner_id");
+            if (partnerId) {
+              // Fetch partner data and store in localStorage for SupplierProfile
+              try {
+                const { partnerService } = await import("../../services/partner.service");
+                const partnerResponse = await partnerService.getById(Number(partnerId));
+                if (partnerResponse?.output) {
+                  localStorage.setItem("bm_currentPartner", JSON.stringify(partnerResponse.output));
+                }
+              } catch (error) {
+                console.error("Error fetching partner data:", error);
+              }
+              target = "/user/supplier-profile";
+              // Clear the recommendation keys
+              sessionStorage.removeItem("bm_recommendation_key");
+              sessionStorage.removeItem("bm_recommendation_partner_id");
+            } else {
+              const recommendationKey = sessionStorage.getItem("bm_recommendation_key");
+              if (recommendationKey) {
+                target = `/user/recommenduser/${recommendationKey}`;
+              }
+            }
+          }
+          
+          navigate(target, { replace: true });
+        };
+        
+        handleNavigation();
       }
     }
   }, [token, user, onClose, navigate, open, redirectTo]);

@@ -12,12 +12,14 @@ interface SignUpModalProps {
   open: boolean;
   onClose: () => void;
   onSignupSuccess?: (email: string, password: string) => void;
+  onSwitchToLogin?: () => void;
 }
 
 export default function SignUpModal({
   open,
   onClose,
   onSignupSuccess,
+  onSwitchToLogin,
 }: SignUpModalProps) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
@@ -842,6 +844,25 @@ export default function SignUpModal({
                 )}
               </button>
             </div>
+
+            {/* Already have an account link */}
+            {onSwitchToLogin && (
+              <div className="pt-4 text-center">
+                <p className="text-sm text-black">
+                  {t("signup.alreadyHaveAccount") || "Already have an account?"}{" "}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      onSwitchToLogin();
+                    }}
+                    className="text-[#91C73D] hover:text-[#7fb32d] font-semibold underline cursor-pointer transition-colors"
+                  >
+                    {t("signup.loginHere") || "Login here"}
+                  </button>
+                </p>
+              </div>
+            )}
           </form>
         </div>
       </div>

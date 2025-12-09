@@ -623,6 +623,8 @@
     "passwordMinLength": "Password must be at least 6 characters",
     "noAccountQuestion": "Don't have an account?",
     "signUpHere": "Sign Up Here",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginHere": "Login here",
     "signupAndLoginSuccess": "Account created and logged in successfully!",
     "signupSuccessLoginManually": "Account created! Please log in with your credentials."
   },

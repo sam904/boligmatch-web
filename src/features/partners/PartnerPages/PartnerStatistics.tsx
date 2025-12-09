@@ -86,7 +86,7 @@ function ParentStatistics() {
     <>
       <div
         className={`
-              relative 
+          relative
               h-[368px]      
               md:h-[100vh]     
               bg-no-repeat bg-cover bg-center
@@ -111,136 +111,131 @@ function ParentStatistics() {
             .partner-hero-gradient { height: 400px; }
           }
         `}</style>
+
+
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 partner-hero-gradient"
+          className="pointer-events-none "
           style={{
             background:
               "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, rgba(1, 53, 31, 0.3) 40%, rgba(1, 53, 31, 0.7) 70%, #01351F 100%)",
           }}
         />
 
-        <div className="flex flex-col">
-          <div className="flex items-center md:justify-start px-4 pb-4 md:px-12 md:pt-6 md:pb-6 absolute left-18 top-54 md:top-36 md:left-18 z-10">
-            <div className="mx-auto text-white text-center md:text-left">
-              <h1 className="text-[24px] md:text-[64px] font-[800] tracking-tight leading-tight">
+        <div className="flex items-center h-[70vh] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]">
+          <div className="flex items-center md:justify-start px-4 pb-20 md:px-12 md:pt-6 md:pb-6 z-10">
+            <div className=" text-white text-center md:text-left">
+              <h1 className="text-[24px] md:text-[60px] font-[800] tracking-tight leading-[40px]">
                 {t("partnerStatistics.title")}
               </h1>
-              <h2 className="text-[24px] md:text-[60px] font-[500] tracking-tight">
+              <h2 className="text-[24px] md:text-[55px] font-[500] tracking-tight">
                 {partnerData?.businessName || "Business Name"}
               </h2>
             </div>
           </div>
         </div>
 
-        {/* Navigation Buttons Section - positioned over image */}
-        <div className="absolute bottom-32 md:bottom-36 left-0 right-0 z-20">
-          <div className="px-4 md:px-12">
-            <div className="flex flex-row flex-nowrap items-center justify-center md:justify-center gap-3 md:gap-6 lg:gap-8">
-              <button
-                onClick={() => setActiveTab("statistik")}
-                className={`
+        <div className="bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] h-[400px] w-full">
+          <div className="flex justify-center space-x-5 bg-[#01351f]">
+            <button
+              onClick={() => setActiveTab("statistik")}
+              className={`
                 flex items-center justify-center
                 gap-3
-                w-[188px] h-[55px]
+                w-[180px] h-[50px]
                 text-white
                 rounded-[11px]
                 transition-all duration-200
                 cursor-pointer
                 font-['Plus_Jakarta_Sans'] font-semibold text-[20px]
-                ${
-                  activeTab === "statistik"
-                    ? "bg-[#07583A] shadow-lg"
-                    : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
+                ${activeTab === "statistik"
+                  ? "bg-[#07583A] shadow-lg"
+                  : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
                 }
               `}
-              >
-                {/* ICON PERFECTLY CENTERED */}
-                <div className="flex items-center justify-center w-[26px] h-[26px]">
-                  <img
-                    src={Statistik}
-                    alt="Statistics"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+            >
+              {/* ICON PERFECTLY CENTERED */}
+              <div className="flex items-center justify-center w-[26px] h-[26px]">
+                <img
+                  src={Statistik}
+                  alt="Statistics"
+                  className="w-full h-full object-contain"
+                />
+              </div>
 
-                {/* TEXT PERFECTLY CENTERED */}
-                <span className="flex items-center leading-none">
-                  {t("partnerStatistics.tabs.statistics")}
-                </span>
-              </button>
+              {/* TEXT PERFECTLY CENTERED */}
+              <span className="flex items-center leading-none">
+                {t("partnerStatistics.tabs.statistics")}
+              </span>
+            </button>
 
-              <button
-                onClick={() => setActiveTab("profil")}
-                className={`
+            <button
+              onClick={() => setActiveTab("profil")}
+              className={`
                 whitespace-nowrap 
                 flex items-center justify-center 
                 space-x-2 md:space-x-3 
-                w-[188px] h-[55px] 
+                w-[180px] h-[50px]
                 text-white 
                 rounded-[11px] 
                 transition-all duration-200 
                 cursor-pointer 
                 font-['Plus_Jakarta_Sans'] font-semibold
                 text-[20px] leading-[100%]
-                ${
-                  activeTab === "profil"
-                    ? "bg-[#07583A] shadow-lg"
-                    : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
+                ${activeTab === "profil"
+                  ? "bg-[#07583A] shadow-lg"
+                  : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
                 }
               `}
-              >
-                <div className="flex items-center justify-center w-[25.5px] h-[28px]">
-                  <img
-                    src={MinProfil}
-                    alt="Profile"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <span className="text-[20px] font-semibold tracking-[0%]">
-                  {t("partnerStatistics.tabs.profile")}
-                </span>
-              </button>
+            >
+              <div className="flex items-center justify-center w-[25.5px] h-[28px]">
+                <img
+                  src={MinProfil}
+                  alt="Profile"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <span className="text-[20px] font-semibold tracking-[0%]">
+                {t("partnerStatistics.tabs.profile")}
+              </span>
+            </button>
 
-              <button
-                onClick={() => setActiveTab("partnere")}
-                className={`
+            <button
+              onClick={() => setActiveTab("partnere")}
+              className={`
         whitespace-nowrap 
         flex items-center justify-center 
         space-x-2 md:space-x-3 
-        w-[188px] h-[55px] 
+       w-[180px] h-[50px]
         text-white 
         rounded-[11px] 
         transition-all duration-200 
         cursor-pointer 
         font-['Plus_Jakarta_Sans'] font-semibold
         text-[20px] leading-[100%]
-        ${
-          activeTab === "partnere"
-            ? "bg-[#07583A] shadow-lg"
-            : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
-        }
+        ${activeTab === "partnere"
+                  ? "bg-[#07583A] shadow-lg"
+                  : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
+                }
       `}
-              >
-                <div className="flex items-center justify-center w-[25.5px] h-[28px]">
-                  <img
-                    src={Partnere}
-                    alt="Partners"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <span className="text-[20px] font-semibold tracking-[0%]">
-                  {t("partnerStatistics.tabs.partners")}
-                </span>
-              </button>
-            </div>
+            >
+              <div className="flex items-center justify-center w-[25.5px] h-[28px]">
+                <img
+                  src={Partnere}
+                  alt="Partners"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <span className="text-[20px] font-semibold tracking-[0%]">
+                {t("partnerStatistics.tabs.partners")}
+              </span>
+            </button>
           </div>
+          {activeTab === "statistik" && (
+            <PartnerStatDetails partnerData={partnerData} />
+          )}
         </div>
       </div>
 
-      {/* Stats section starts immediately after hero */}
-      {activeTab === "statistik" && (
-        <PartnerStatDetails partnerData={partnerData} />
-      )}
       {activeTab === "profil" && (
         <PartnerProfileShortcut partnerData={partnerData} />
       )}
