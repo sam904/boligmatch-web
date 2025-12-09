@@ -68,12 +68,12 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
   return (
     <>
       <div className="bg-[#01351f] h-[450px]">
-        <div className="w-full max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-1 mb-8 pt-[70px] md:pt-[20px] place-items-center">
+        <div className="w-full max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4  mb-8 pt-[70px] md:pt-[20px] place-items-center">
           {statistics.map((stat, index) => (
             <div key={index} className="flex flex-col items-center">
               <div className="flex flex-col items-center">
                 <div
-                  className="rounded-full flex flex-col items-center justify-center w-[170.515px] h-[170.184px]"
+                  className="rounded-full flex flex-col items-center justify-center w-[160.515px] h-[160.184px]"
                   style={{
                     backgroundImage: `url(${partnerRingImg})`,
                     backgroundSize: "cover",
@@ -82,11 +82,11 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
                     opacity: 1,
                   }}
                 >
-                  <div className="text-[58px] font-[800] text-white figtree leading-none">
+                  <div className="text-[50px] font-[800] text-white figtree leading-none">
                     {stat.number}
                   </div>
                   <div className="text-center px-1">
-                    <p className="text-white text-[12px] md:text-[15px] leading-tight text-center max-w-[85px] break-words">
+                    <p className="text-white text-[12px] md:text-[13px] leading-tight text-center max-w-[85px] break-words">
                       {stat.label}
                     </p>
                   </div>
@@ -105,14 +105,6 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
         </div>
       </div>
 
-      {/* <div className="bg-[#01351f] flex flex-col justify-center items-center py-2 space-y-2">
-        <div className="text-center">
-          <img src={sampleImg} alt="" />
-        </div>
-        <p className="text-white text-sm text-center">
-          Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR 33160437
-        </p>
-      </div> */}
       <Footer />
     </>
   );

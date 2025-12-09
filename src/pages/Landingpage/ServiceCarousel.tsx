@@ -33,6 +33,7 @@ export default function ServiceCarousel() {
   // Refs
   const carouselRef = useRef<HTMLDivElement>(null);
   const autoSlideRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const activeDragIndexRef = useRef<number | null>(null);
 
   // Constants
   const IMAGES = [swaperImg1, swaperImg2, swaperImg3, swaperImg4, swaperImg5] as const;
@@ -97,24 +98,34 @@ export default function ServiceCarousel() {
     );
   };
 
-  // Drag end handler
+  // Enhanced drag end handler for all cards
   const handleDragEnd = (
+    index: number,
     _: MouseEvent | TouchEvent | PointerEvent, 
     info: { offset: { x: number }; velocity: { x: number } }
   ) => {
     const offsetX = Math.abs(info.offset.x);
     const velocityX = Math.abs(info.velocity.x);
     
+    // Only process swipe if it meets threshold
     if (offsetX > SWIPE_THRESHOLD || velocityX > VELOCITY_THRESHOLD) {
       if (info.offset.x > 0 || info.velocity.x > 0) {
+        // Swipe right - go to previous
         handlePrev();
       } else {
+        // Swipe left - go to next
         handleNext();
       }
     }
     
     setIsDragging(false);
-    dragX.set(0);
+    activeDragIndexRef.current = null;
+  };
+
+  // Drag start handler
+  const handleDragStart = (index: number) => {
+    setIsDragging(true);
+    activeDragIndexRef.current = index;
   };
 
   // Auto slide effect
@@ -152,10 +163,10 @@ export default function ServiceCarousel() {
       role="region"
       aria-label="Service carousel"
     >
-      {/* Carousel Container - REMOVED DRAG FROM HERE */}
+      {/* Carousel Container */}
       <div
         ref={carouselRef}
-        className="relative w-full h-full flex justify-center items-center "
+        className="relative w-full h-full flex justify-center items-center"
         aria-live="polite"
         aria-atomic="true"
       >
@@ -163,13 +174,14 @@ export default function ServiceCarousel() {
         {IMAGES.map((image, index) => {
           const position = POSITIONS[positionIndexes[index]];
           const currentService = SERVICES[index];
-          const isCenterCard = position === "center";
+          const isVisible = position !== "left" && position !== "right"; // Only enable drag on visible cards
+          const isActiveDrag = activeDragIndexRef.current === index;
           
           return (
             <motion.div
               key={`carousel-item-${index}`}
-              className={`absolute rounded-[12px] !shadow-2xl !shadow-black  ${
-                isCenterCard 
+              className={`absolute rounded-[12px] !shadow-2xl !shadow-black ${
+                isVisible 
                   ? "cursor-grab active:cursor-grabbing" 
                   : "cursor-default"
               }`}
@@ -180,15 +192,18 @@ export default function ServiceCarousel() {
                 duration: 0.5,
                 ease: "easeInOut",
               }}
-              // Only enable drag for center card
-              {...(isCenterCard && {
+              // Enable drag for all visible cards
+              {...(isVisible && {
                 drag: "x",
                 dragConstraints: { left: -100, right: 100 },
                 dragElastic: 0.2,
                 dragMomentum: true,
-                onDragStart: () => setIsDragging(true),
-                onDragEnd: handleDragEnd,
+                onDragStart: () => handleDragStart(index),
+                onDragEnd: (e, info) => handleDragEnd(index, e, info),
                 whileTap: { scale: 0.95 },
+                style: { 
+                  touchAction: "pan-y pinch-zoom" 
+                }
               })}
               role="group"
               aria-label={`Slide ${index + 1} of ${IMAGES.length}: ${currentService?.title || 'Service'}`}
@@ -201,10 +216,12 @@ export default function ServiceCarousel() {
                 className="w-full h-full object-cover rounded-3xl select-none"
                 draggable="false"
                 style={{
-                  filter: isDragging && isCenterCard ? "brightness(0.9)" : "brightness(1)",
+                  filter: isDragging && isActiveDrag ? "brightness(0.9)" : "brightness(1)",
                   transition: isDragging ? "filter 0.2s" : "filter 0.3s",
                   width: "359px",
                   height: "515px",
+                  userSelect: "none",
+                  WebkitUserDrag: "none",
                 }}
               />
               

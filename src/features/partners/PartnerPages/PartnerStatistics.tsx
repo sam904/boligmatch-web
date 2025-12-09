@@ -84,64 +84,24 @@ function ParentStatistics() {
 
   return (
     <>
-      <div
-        className={`
-          relative
-              h-[368px]      
-              md:h-[100vh]     
-              bg-no-repeat bg-cover bg-center
-              bg-[url('/src/assets/userImages/mobile-landingImg.png')] 
-              md:bg-none       
-  `}
-        style={{
-          backgroundImage: `url(${parentStatisticsImg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
+     <div className="bg-cover bg-center bg-no-repeat h-[100vh]"
+        style={{ backgroundImage: `url(${parentStatisticsImg})`}}>
         <PartnerHeader />
 
-        {/* Gradient overlay at bottom */}
-        <style>{`
-          @media (max-width: 767px) {
-            .partner-hero-gradient { height: 40%; }
-          }
-          @media (min-width: 768px) {
-            .partner-hero-gradient { height: 400px; }
-          }
-        `}</style>
-
-
-        <div
-          className="pointer-events-none "
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, rgba(1, 53, 31, 0.3) 40%, rgba(1, 53, 31, 0.7) 70%, #01351F 100%)",
-          }}
-        />
-
-        <div className="flex items-center h-[70vh] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]">
-          <div className="flex items-center md:justify-start px-4 pb-20 md:px-12 md:pt-6 md:pb-6 z-10">
-            <div className=" text-white text-center md:text-left">
-              <h1 className="text-[24px] md:text-[60px] font-[800] tracking-tight leading-[40px]">
-                {t("partnerStatistics.title")}
-              </h1>
-              <h2 className="text-[24px] md:text-[55px] font-[500] tracking-tight">
-                {partnerData?.businessName || "Business Name"}
-              </h2>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] h-[400px] w-full">
-          <div className="flex justify-center space-x-5 bg-[#01351f]">
+        <div className="flex flex-col h-[100vh] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]">
+               <div className="">
+            <div className="text-white text-center md:text-left pt-45 pl-28">
+                   <h1 className="text-[24px] md:text-[60px] font-[800] tracking-tight leading-[45px] [text-shadow:_0_4px_20px_rgba(0,0,0,0.8)]">
+                       {t("partnerStatistics.title")}</h1>
+                   <h2 className="text-[24px] md:text-[55px] font-[500] tracking-tight [text-shadow:_0_4px_20px_rgba(0,0,0,0.8)]"> {partnerData?.businessName || "Business Name"}</h2>
+                   </div>
+             <div className="flex justify-center space-x-5 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full  pt-20 pb-13 ">
             <button
               onClick={() => setActiveTab("statistik")}
               className={`
                 flex items-center justify-center
                 gap-3
-                w-[180px] h-[50px]
+                px-7
                 text-white
                 rounded-[11px]
                 transition-all duration-200
@@ -154,7 +114,7 @@ function ParentStatistics() {
               `}
             >
               {/* ICON PERFECTLY CENTERED */}
-              <div className="flex items-center justify-center w-[26px] h-[26px]">
+              <div className="flex items-center justify-center w-[20px] h-[20px]">
                 <img
                   src={Statistik}
                   alt="Statistics"
@@ -163,7 +123,7 @@ function ParentStatistics() {
               </div>
 
               {/* TEXT PERFECTLY CENTERED */}
-              <span className="flex items-center leading-none">
+              <span className="flex items-center leading-none text-lg">
                 {t("partnerStatistics.tabs.statistics")}
               </span>
             </button>
@@ -174,7 +134,7 @@ function ParentStatistics() {
                 whitespace-nowrap 
                 flex items-center justify-center 
                 space-x-2 md:space-x-3 
-                w-[180px] h-[50px]
+                px-7
                 text-white 
                 rounded-[11px] 
                 transition-all duration-200 
@@ -187,14 +147,14 @@ function ParentStatistics() {
                 }
               `}
             >
-              <div className="flex items-center justify-center w-[25.5px] h-[28px]">
+              <div className="flex items-center justify-center w-[20px] h-[20px]">
                 <img
                   src={MinProfil}
                   alt="Profile"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="text-[20px] font-semibold tracking-[0%]">
+              <span className="text-lg font-semibold tracking-[0%]">
                 {t("partnerStatistics.tabs.profile")}
               </span>
             </button>
@@ -205,41 +165,45 @@ function ParentStatistics() {
         whitespace-nowrap 
         flex items-center justify-center 
         space-x-2 md:space-x-3 
-       w-[180px] h-[50px]
+       px-7 py-2
         text-white 
         rounded-[11px] 
         transition-all duration-200 
         cursor-pointer 
         font-['Plus_Jakarta_Sans'] font-semibold
-        text-[20px] leading-[100%]
+         leading-[100%]
         ${activeTab === "partnere"
                   ? "bg-[#07583A] shadow-lg"
                   : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
                 }
       `}
             >
-              <div className="flex items-center justify-center w-[25.5px] h-[28px]">
+              <div className="flex items-center justify-center w-[20.5px] h-[20px]">
                 <img
                   src={Partnere}
                   alt="Partners"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span className="text-[20px] font-semibold tracking-[0%]">
+              <span className="text-lg font-semibold tracking-[0%]">
                 {t("partnerStatistics.tabs.partners")}
               </span>
             </button>
+                   </div>
           </div>
-          {activeTab === "statistik" && (
+          <div className="h-full w-full bg-[#01351F] flex flex-col justify-center items-start ">
+          <div className="w-full">
+             {activeTab === "statistik" && (
             <PartnerStatDetails partnerData={partnerData} />
           )}
         </div>
-      </div>
-
-      {activeTab === "profil" && (
-        <PartnerProfileShortcut partnerData={partnerData} />
-      )}
-      {activeTab === "partnere" && <SearchForPartner />}
+        </div>
+          </div>
+          {activeTab === "profil" && (
+              <PartnerProfileShortcut partnerData={partnerData} />
+          )}
+          {activeTab === "partnere" && <SearchForPartner />}
+        </div>
     </>
   );
 }
