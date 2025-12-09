@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { motion, useMotionValue } from "framer-motion";
+import { motion } from "framer-motion";
 
 // Import images
 import swaperImg1 from "/src/assets/userImages/swiper5.svg";
@@ -28,7 +28,6 @@ export default function ServiceCarousel() {
   const [positionIndexes, setPositionIndexes] = useState<number[]>([0, 1, 2, 3, 4]);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const dragX = useMotionValue(0);
   
   // Refs
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -100,7 +99,7 @@ export default function ServiceCarousel() {
 
   // Enhanced drag end handler for all cards
   const handleDragEnd = (
-    index: number,
+    _index: number,
     _: MouseEvent | TouchEvent | PointerEvent, 
     info: { offset: { x: number }; velocity: { x: number } }
   ) => {
@@ -222,7 +221,7 @@ export default function ServiceCarousel() {
                   height: "515px",
                   userSelect: "none",
                   WebkitUserDrag: "none",
-                }}
+                } as React.CSSProperties}
               />
               
               {/* Service Info Overlay */}
