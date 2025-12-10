@@ -13,7 +13,7 @@ import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.svg";
-import circlePartner from "/src/assets/userImages/circlePartner.svg";
+import circlePartner from "/src/assets/userImages/supplierCircle.png";
 import PlayButton from "/src/assets/userImages/PlayButton.svg"
 
 
@@ -937,7 +937,6 @@ const SupplierProfile = () => {
                             : t("supplierProfile.saveFavoriteButton")}
                         </button>
 
-                        {/* Recommend Button */}
                         <button
                           className="bg-[#91C73D] text-white px-7 py-[10px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[188px] h-[55px] md:w-auto md:h-auto opacity-100"
                           onClick={() => setActiveModal("recommend")}
@@ -1110,7 +1109,7 @@ const SupplierProfile = () => {
                   {t("supplierProfile.servicesTitle")}
                 </h2>
 
-                <div className="text-white w-full text-left services-container">
+                <div className="text-white w-full text-left services-container leading-[31px]">
                   {renderServicesContent()}
                 </div>
               </div>
@@ -1121,7 +1120,7 @@ const SupplierProfile = () => {
                     Referencer
                   </h3>
                 </div>
-                <div className="text-white references-container">
+                <div className="text-white references-container leading-[31px]">
                   {renderReferencesContent()}
                 </div>
               </div>
@@ -1162,7 +1161,7 @@ const SupplierProfile = () => {
                   {t("supplierProfile.factsTitle")}
                 </h2>
 
-                <div className="text-white text-sm space-y-2 w-full text-left">
+                <div className="text-white text-sm space-y-2 w-full text-left leading-[31px]">
                   {partnerData?.textField2 && (
                     <div
                       className="text-left"
@@ -1210,8 +1209,8 @@ const SupplierProfile = () => {
 
             <div
               className={`relative z-50 w-[320px] sm:w-[360px] md:w-[420px] bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-gray-400/10 transform transition-all duration-300 ease-out my-auto ${isModalVisible
-                  ? "opacity-100 scale-100 translate-y-0"
-                  : "opacity-0 scale-95 translate-y-4"
+                ? "opacity-100 scale-100 translate-y-0"
+                : "opacity-0 scale-95 translate-y-4"
                 }`}
               onClick={(e) => e.stopPropagation()}
               // Prevent form closing on drag
@@ -1293,8 +1292,8 @@ const SupplierProfile = () => {
                       "Enter your comment"
                     }
                     className={`w-full rounded-[10px] bg-white h-28 px-3 py-2 outline-none resize-none ${recommendationErrors.comment
-                        ? "border border-red-500"
-                        : ""
+                      ? "border border-red-500"
+                      : ""
                       }`}
                     {...registerRecommendation("comment", {
                       onBlur: async () => {
