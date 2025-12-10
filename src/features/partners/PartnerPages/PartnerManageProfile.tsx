@@ -46,9 +46,9 @@ function PartnerManageProfile() {
   };
 
   // Filter invalid characters from name input
-  const filterNameInput = (value: string): string => {
-    return value.replace(/[^a-zA-ZÀ-ÿÆØÅæøå\s'\-\.]/g, "");
-  };
+  // const filterNameInput = (value: string): string => {
+  //   return value.replace(/[^a-zA-ZÀ-ÿÆØÅæøå\s'\-\.]/g, "");
+  // };
 
   // Filter invalid characters from business name input
   const filterBusinessNameInput = (value: string): string => {
@@ -267,7 +267,7 @@ function PartnerManageProfile() {
 
         <form className="mt-6 space-y-4" onSubmit={handleProfileUpdate}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+            {/* <div>
               <label className="block text-white text-sm mb-1">
                 {t("partnerDetails.fullName") || t("manageProfile.firstName")}
               </label>
@@ -277,7 +277,7 @@ function PartnerManageProfile() {
                 onChange={(e) => setFullName(filterNameInput(e.target.value))}
                 disabled
               />
-            </div>
+            </div> */}
             <div>
               <label className="block text-white text-sm mb-1">
                 {t("partnerDetails.businessName") || t("partners.businessName")}
@@ -317,7 +317,7 @@ function PartnerManageProfile() {
                 disabled={isSavingProfile}
               />
             </div>
-            <div className="md:col-span-2">
+            <div >
               <label className="block text-white text-sm mb-1">
                 {t("manageProfile.email")}
               </label>
@@ -335,7 +335,7 @@ function PartnerManageProfile() {
             <button
               type="submit"
               disabled={isSavingProfile}
-              className="w-full bg-[#95C11F] hover:bg-[#7fb32d] text-white font-semibold rounded-full py-2.5 cursor-pointer transition-colors flex items-center justify-center gap-2"
+              className="w-full bg-[#95C11F] hover:bg-[#7fb32d] text-white font-semibold rounded-lg py-2.5 cursor-pointer transition-colors flex items-center justify-center gap-2"
             >
               {isSavingProfile ? (
                 <>
@@ -412,7 +412,7 @@ function PartnerManageProfile() {
             <button
               type="submit"
               disabled={isUpdatingPassword}
-              className="w-full bg-[#95C11F] hover:bg-[#7fb32d] text-white font-semibold rounded-full py-2.5 cursor-pointer transition-colors flex items-center justify-center gap-2"
+              className="w-full bg-[#95C11F] hover:bg-[#7fb32d] text-white font-semibold rounded-lg py-2.5 cursor-pointer transition-colors flex items-center justify-center gap-2"
             >
               {isUpdatingPassword ? (
                 <>

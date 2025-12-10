@@ -84,6 +84,18 @@ export default function ServiceCarousel() {
     right1:  { x: "92%", scale: 0.94, zIndex: 3 },
   };
 
+  // Get drag constraints based on position
+  const getDragConstraints = (position: Position) => {
+    switch(position) {
+      case 'center': return { left: -150, right: 150 };
+      case 'left1': return { left: -50, right: 100 };
+      case 'right1': return { left: -100, right: 50 };
+      case 'left': return { left: -30, right: 50 };
+      case 'right': return { left: -50, right: 30 };
+      default: return { left: -100, right: 100 };
+    }
+  };
+
   // Navigation handlers
   const handleNext = (): void => {
     setPositionIndexes(prevIndexes => 
@@ -99,15 +111,29 @@ export default function ServiceCarousel() {
 
   // Enhanced drag end handler for all cards
   const handleDragEnd = (
-    _index: number,
+    index: number,
     _: MouseEvent | TouchEvent | PointerEvent, 
     info: { offset: { x: number }; velocity: { x: number } }
   ) => {
     const offsetX = Math.abs(info.offset.x);
     const velocityX = Math.abs(info.velocity.x);
+    const position = POSITIONS[positionIndexes[index]];
+    
+    // Adjust thresholds based on position
+    let threshold = SWIPE_THRESHOLD;
+    let velocityThreshold = VELOCITY_THRESHOLD;
+    
+    // Make it easier to swipe side cards
+    if (position === 'left' || position === 'right') {
+      threshold = 30;
+      velocityThreshold = 300;
+    } else if (position === 'left1' || position === 'right1') {
+      threshold = 40;
+      velocityThreshold = 400;
+    }
     
     // Only process swipe if it meets threshold
-    if (offsetX > SWIPE_THRESHOLD || velocityX > VELOCITY_THRESHOLD) {
+    if (offsetX > threshold || velocityX > velocityThreshold) {
       if (info.offset.x > 0 || info.velocity.x > 0) {
         // Swipe right - go to previous
         handlePrev();
@@ -173,17 +199,12 @@ export default function ServiceCarousel() {
         {IMAGES.map((image, index) => {
           const position = POSITIONS[positionIndexes[index]];
           const currentService = SERVICES[index];
-          const isVisible = position !== "left" && position !== "right"; // Only enable drag on visible cards
           const isActiveDrag = activeDragIndexRef.current === index;
           
           return (
             <motion.div
               key={`carousel-item-${index}`}
-              className={`absolute rounded-[12px] !shadow-2xl !shadow-black ${
-                isVisible 
-                  ? "cursor-grab active:cursor-grabbing" 
-                  : "cursor-default"
-              }`}
+              className="absolute rounded-[12px] !shadow-2xl !shadow-black cursor-grab active:cursor-grabbing"
               initial="center"
               animate={position}
               variants={IMAGE_VARIANTS}
@@ -191,19 +212,19 @@ export default function ServiceCarousel() {
                 duration: 0.5,
                 ease: "easeInOut",
               }}
-              // Enable drag for all visible cards
-              {...(isVisible && {
-                drag: "x",
-                dragConstraints: { left: -100, right: 100 },
-                dragElastic: 0.2,
-                dragMomentum: true,
-                onDragStart: () => handleDragStart(index),
-                onDragEnd: (e, info) => handleDragEnd(index, e, info),
-                whileTap: { scale: 0.95 },
-                style: { 
-                  touchAction: "pan-y pinch-zoom" 
-                }
-              })}
+              // Enable drag for ALL cards
+              drag="x"
+              dragConstraints={getDragConstraints(position)}
+              dragElastic={0.2}
+              dragMomentum={true}
+              onDragStart={() => handleDragStart(index)}
+              onDragEnd={(e, info) => handleDragEnd(index, e, info)}
+              whileTap={{ scale: 0.95 }}
+              style={{ 
+                touchAction: "pan-y pinch-zoom",
+                width: "359px",
+                height: "515px",
+              }}
               role="group"
               aria-label={`Slide ${index + 1} of ${IMAGES.length}: ${currentService?.title || 'Service'}`}
               tabIndex={0}
@@ -217,10 +238,10 @@ export default function ServiceCarousel() {
                 style={{
                   filter: isDragging && isActiveDrag ? "brightness(0.9)" : "brightness(1)",
                   transition: isDragging ? "filter 0.2s" : "filter 0.3s",
-                  width: "359px",
-                  height: "515px",
                   userSelect: "none",
                   WebkitUserDrag: "none",
+                  // Add opacity for side cards when dragging
+                  opacity: isDragging && position !== 'center' ? 0.9 : 1,
                 } as React.CSSProperties}
               />
               
@@ -248,6 +269,28 @@ export default function ServiceCarousel() {
             </motion.div>
           );
         })}
+      </div>
+
+      {/* Optional Navigation Buttons (for accessibility) */}
+      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-4">
+        <button
+          onClick={handlePrev}
+          className="bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-colors duration-200"
+          aria-label="Previous slide"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          onClick={handleNext}
+          className="bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-colors duration-200"
+          aria-label="Next slide"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
     </div>
   );

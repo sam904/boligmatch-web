@@ -62,7 +62,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-full max-w-[361px] h-[262px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-6 md:px-8 md:py-10 text-center justify-between">
+    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 w-full  h-[262px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-6 md:px-8 md:py-10 text-center justify-between">
       <div className="flex flex-col items-center w-full">
         <div className="mb-3 md:mb-6">
           <img
@@ -232,7 +232,7 @@ const UserSupplier = () => {
     <>
       <div
         className="
-              relative h-[60vh] md:h-screen 
+              h-[60vh] md:h-screen 
               bg-no-repeat md:bg-cover bg-cover
               md:bg-center bg-center
             "
@@ -266,7 +266,7 @@ const UserSupplier = () => {
           <div className="bg-[#01351F] w-full py-3 px-4">
             <div
               ref={mobileScrollRef}
-              className="flex items-center gap-3 overflow-x-auto no-scrollbar py-2 relative"
+              className="flex items-center gap-3 overflow-x-auto no-scrollbar py-4 relative "
             >
               {loading ? (
                 <div className="text-white text-sm">
@@ -277,7 +277,7 @@ const UserSupplier = () => {
                   <button
                     key={sub.id}
                     onClick={() => setActive(sub.id)}
-                    className={`flex flex-col items-center gap-1 py-2 rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent min-w-[80px]
+                    className={`flex flex-col items-center gap-1 py-2  rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent min-w-[80px]
                   ${active === sub.id
                         ? "bg-[#95C11F] text-white shadow-md px-3"
                         : "bg-transparent text-white hover:bg-white/10 px-3"
@@ -323,7 +323,7 @@ const UserSupplier = () => {
         </section>
 
         {/* Desktop: keep existing layout and styling unchanged */}
-        <section className="absolute bottom-30 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex md:flex-nowrap items-center justify-center gap-1 w-full p-2">
+        <section className="absolute h-[120px]  bottom-15 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex md:flex-nowrap items-center justify-center gap-1 w-full p-2 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] ">
           {loading ? (
             <div className="text-white">
               {t("userSupplier.loadingSubcategories")}

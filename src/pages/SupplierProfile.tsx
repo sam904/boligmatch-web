@@ -13,7 +13,7 @@ import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.svg";
-import circlePartner from "/src/assets/userImages/circlePartner.svg";
+import circlePartner from "/src/assets/userImages/supplierCircle.png";
 import PlayButton from "/src/assets/userImages/PlayButton.svg"
 
 
@@ -683,7 +683,7 @@ const SupplierProfile = () => {
       return (
         <ul className="services-list">
           <li className="service-item">
-            <span className="bullet-point"></span>
+            <span className="bullet"></span>
             {t("supplierProfile.servicesFallback.fixingIssues")}
           </li>
           <li className="service-item">
@@ -824,34 +824,6 @@ const SupplierProfile = () => {
                       </div>
                     </div>
 
-                    {/* Center: Progress bar */}
-                    {/* <div 
-            className="flex-1 mx-8 max-w-2xl"
-            onMouseEnter={() => setShowControls(true)}
-          >
-            <div className="relative h-2 bg-gray-600/50 rounded-full overflow-hidden cursor-pointer">
-              <div 
-                className="absolute left-0 top-0 h-full bg-[#91C73D] rounded-full"
-                style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
-              />
-              <input
-                type="range"
-                min="0"
-                max={duration || 100}
-                value={currentTime}
-                onChange={(e) => {
-                  if (videoRef.current) {
-                    videoRef.current.currentTime = parseFloat(e.target.value);
-                    setCurrentTime(parseFloat(e.target.value));
-                    setShowControls(true); // Keep controls visible when scrubbing
-                  }
-                }}
-                onMouseDown={() => setShowControls(true)} // Keep visible when dragging
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-            </div>
-          </div> */}
-
                     {/* Right side: Additional controls */}
                     <div
                       className="flex items-center gap-4"
@@ -917,13 +889,13 @@ const SupplierProfile = () => {
               </div>
               <div className=" bg-[#043428] pt-0 w-full">
                 <div className="w-full mx-auto px-12 flex justify-center items-end">
-                  <div className="flex md:gap-10 gap-5 justify-center  md:bottom-0 w-full  pb-0 z-40">
+                  <div className="flex md:gap-6 gap-3 justify-center  md:bottom-0 w-full  pb-0 z-40">
                     {/* Show buttons only when video is NOT playing */}
                     {!isPartner && (
                       <>
                         {/* Favorite Button */}
                         <button
-                          className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
+                          className="bg-[#91C73D] text-white px-7 py-[10px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[188px] h-[55px] md:w-auto md:h-auto opacity-100"
                           onClick={handleToggleFavourite}
                           disabled={isAddingToFavorites}
                         >
@@ -938,7 +910,7 @@ const SupplierProfile = () => {
                         </button>
 
                         <button
-                          className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
+                          className="bg-[#91C73D] text-white px-7 py-[10px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[188px] h-[55px] md:w-auto md:h-auto opacity-100"
                           onClick={() => setActiveModal("recommend")}
                         >
                           <img
@@ -951,7 +923,7 @@ const SupplierProfile = () => {
 
                         {/* Contact Button */}
                         <button
-                          className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
+                          className="bg-[#91C73D] text-white px-7 py-[10px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[188px] h-[55px] md:w-auto md:h-auto opacity-100"
                           onClick={() => setActiveModal("contact")}
                         >
                           <img
@@ -1109,18 +1081,23 @@ const SupplierProfile = () => {
                   {t("supplierProfile.servicesTitle")}
                 </h2>
 
-                <div className="text-white w-full text-left services-container">
+                <div className="text-white w-full text-left services-container leading-[31px]">
                   {renderServicesContent()}
                 </div>
               </div>
-              <div className="bg-[#0E3E38] rounded-2xl p-6 md:w-[403px] w-full md:h-[432px] h-auto">
+              <div className=" rounded-2xl p-6 md:w-[403px] w-full md:h-[432px] h-auto"
+               style={{
+                background:
+                  "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
+              }}
+              >
                 <div className="flex flex-col items-center gap-2 mb-2">
                   <img src="/src/assets/supplierProfile/gallery.png" alt="" />
                   <h3 className="text-3xl font-semibold text-white py-4">
                     Referencer
                   </h3>
                 </div>
-                <div className="text-white references-container">
+                <div className="text-white references-container leading-[31px]">
                   {renderReferencesContent()}
                 </div>
               </div>
@@ -1154,14 +1131,14 @@ const SupplierProfile = () => {
                 <img
                   src={factsImg}
                   alt="Fakta"
-                  className="w-[59px] h-[63px] select-none"
+                  className="w-[88px] h-[77px] select-none"
                 />
 
                 <h2 className="text-white text-[28px] font-[700] py-4">
                   {t("supplierProfile.factsTitle")}
                 </h2>
 
-                <div className="text-white text-sm space-y-2 w-full text-left">
+                <div className="text-white text-sm space-y-2 w-full text-left leading-[31px]">
                   {partnerData?.textField2 && (
                     <div
                       className="text-left"
@@ -1209,8 +1186,8 @@ const SupplierProfile = () => {
 
             <div
               className={`relative z-50 w-[320px] sm:w-[360px] md:w-[420px] bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-gray-400/10 transform transition-all duration-300 ease-out my-auto ${isModalVisible
-                  ? "opacity-100 scale-100 translate-y-0"
-                  : "opacity-0 scale-95 translate-y-4"
+                ? "opacity-100 scale-100 translate-y-0"
+                : "opacity-0 scale-95 translate-y-4"
                 }`}
               onClick={(e) => e.stopPropagation()}
               // Prevent form closing on drag
@@ -1292,8 +1269,8 @@ const SupplierProfile = () => {
                       "Enter your comment"
                     }
                     className={`w-full rounded-[10px] bg-white h-28 px-3 py-2 outline-none resize-none ${recommendationErrors.comment
-                        ? "border border-red-500"
-                        : ""
+                      ? "border border-red-500"
+                      : ""
                       }`}
                     {...registerRecommendation("comment", {
                       onBlur: async () => {
