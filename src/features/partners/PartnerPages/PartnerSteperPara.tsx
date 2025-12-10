@@ -39,7 +39,7 @@ function ParentSteperPara() {
     {
       title: t("partnerSteperPara.benefits.6.title"),
       description: t("partnerSteperPara.benefits.6.description"),
-      img:reffer
+      img:reffer   
     },
   ];
   return (
