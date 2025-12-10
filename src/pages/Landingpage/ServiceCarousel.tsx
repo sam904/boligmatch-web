@@ -249,7 +249,7 @@ export default function ServiceCarousel() {
               <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/40 to-transparent rounded-b-[12px]">
                 {currentService && (
                   <>
-                    <div className="flex flex-col items-center justify-center gap-2 mb-2">
+                    <div className="flex flex-col items-center justify-center gap-2 mb-">
                       <img 
                         src={currentService.icon} 
                         alt="" 
@@ -271,27 +271,6 @@ export default function ServiceCarousel() {
         })}
       </div>
 
-      {/* Optional Navigation Buttons (for accessibility) */}
-      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-4">
-        <button
-          onClick={handlePrev}
-          className="bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-colors duration-200"
-          aria-label="Previous slide"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <button
-          onClick={handleNext}
-          className="bg-white/20 hover:bg-white/30 text-white p-3 rounded-full transition-colors duration-200"
-          aria-label="Next slide"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
     </div>
   );
 }

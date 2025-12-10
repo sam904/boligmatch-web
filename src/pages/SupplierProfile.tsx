@@ -13,7 +13,7 @@ import { favouritesService } from "../services/favourites.service";
 import { conversationService } from "../services/conversation.service";
 import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.svg";
-import circlePartner from "/src/assets/userImages/supplierCircle.png";
+import circlePartner from "/src/assets/userImages/supplierCircle.svg";
 import PlayButton from "/src/assets/userImages/PlayButton.svg"
 
 
@@ -40,7 +40,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-// Validation schemas
 const recommendationSchema = z.object({
   email: z
     .string()
@@ -884,10 +883,10 @@ const SupplierProfile = () => {
                   </div>
                 </div>
               )}
-              <div className=" bg-[linear-gradient(180deg,rgba(4,52,40,0)_0%,#043428_100%)] h-[80px] w-full" >
+              <div className=" bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] h-[350px] w-full" >
 
               </div>
-              <div className=" bg-[#043428] pt-0 w-full">
+              <div className=" bg-[#01351f] pt-0 w-full">
                 <div className="w-full mx-auto px-12 flex justify-center items-end">
                   <div className="flex md:gap-6 gap-3 justify-center  md:bottom-0 w-full  pb-0 z-40">
                     {/* Show buttons only when video is NOT playing */}
@@ -1017,7 +1016,7 @@ const SupplierProfile = () => {
                         alt="rating"
                         className="w-[33px] h-[33px] select-none"
                       />
-                      Anmeld os på Trustpilot
+                      {t("supplierProfile.reviewUsOnTrustpilot")}
                     </button>
                   </div>
                 )}
@@ -1031,26 +1030,23 @@ const SupplierProfile = () => {
                     "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
                 }}
               >
-                <div
-                  className="relative flex flex-col items-center justify-center"
-                  style={{
-                    width: "300px",
-                    height: "300px",
-                    backgroundImage: `url(${circlePartner})`,
-                    backgroundSize: "contain",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                  }}
-                >
-                  <h2 className="text-white text-center text-[22px] font-semibold leading-tight">
+                <div className="relative flex items-center justify-center">
+                  <img 
+                     src={circlePartner} 
+                     alt="Geografisk område" 
+                     className="w-[300px] h-[300px] object-contain"
+                  />
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <h2 className="text-white text-center text-[30px] font-semibold leading-tight">
                     Geografisk <br /> område
                   </h2>
-                  <div className="max-w-[151px]">
-                    <p className="text-white text-center text-[16px] pt-4 leading-tight">
-                      {partnerData?.textField5}
-                    </p>
-                  </div>
-                </div>
+              <div className="max-w-[151px] mt-4">
+                  <p className="text-white text-center text-[16px] leading-tight">
+                    {partnerData?.textField5}
+                </p>
+             </div>
+          </div>
+            </div>
               </div>
             </div>
 
