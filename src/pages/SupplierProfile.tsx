@@ -1016,7 +1016,7 @@ const SupplierProfile = () => {
                         alt="rating"
                         className="w-[33px] h-[33px] select-none"
                       />
-                      Anmeld os på Trustpilot
+                      {t("supplierProfile.reviewUsOnTrustpilot")}
                     </button>
                   </div>
                 )}
