@@ -251,7 +251,7 @@ function PartnerProfileShortcut({
     <>
       <video
         ref={videoRef}
-        className="inset-0 w-full h-full object-cover z-10"
+        className="inset-0 w-full h-full object-cover z-10 rounded-t-4xl"
         style={{
           display: showVideoElement ? "block" : "none",
         }}
