@@ -95,12 +95,11 @@ function ParentStatistics() {
                 {t("partnerStatistics.title")}</h1>
               <h2 className="text-[24px] md:text-[55px] font-[500] tracking-tight [text-shadow:_0_4px_20px_rgba(0,0,0,0.8)]"> {partnerData?.businessName || "Business Name"}</h2>
             </div>
-            <div className="flex justify-center space-x-5 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full  pt-20 pb-13 ">
+            <div className="flex justify-center md:gap-6 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full  pt-20 pb-13 ">
               <button
                 onClick={() => setActiveTab("statistik")}
                 className={`
                 flex items-center justify-center
-                gap-3
                 w-[188px]
                 h-[55px]
                 px-7

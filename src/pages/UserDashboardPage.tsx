@@ -324,7 +324,7 @@ export default function UserDashboardPage() {
                 className={`${activeView === "default"
                   ? "bg-[#145939] text-white"
                   : "bg-[#95c11f] text-white"
-                  } flex items-center justify-center gap-1 md:gap-3 md:rounded-2xl rounded-[11px] px-5 px-6 md:px-7 shadow-lg sm:shadow-md  hover:opacity-90 transition cursor-pointer w-[240px] md:h-[55px] h-[42px]`}
+                  } flex items-center justify-center gap-1 md:gap-3 md:rounded-xl rounded-xl px-7 shadow-lg sm:shadow-md  hover:opacity-90 transition cursor-pointer w-[188px] md:h-[55px] h-[42px]`}
                 type="button"
               >
                 <img
@@ -342,7 +342,7 @@ export default function UserDashboardPage() {
                 className={`${activeView === "favorites"
                   ? "bg-[#145939] text-white"
                   : "bg-[#95c11f] text-white"
-                  } flex items-center justify-center gap-1 md:gap-3 rounded-[11px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition cursor-pointer w-[272.38px] md:h-[55px] h-[42px]`}
+                  } flex items-center justify-center gap-1 md:gap-3 rounded-xl md:rounded-xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition cursor-pointer w-[272px] md:h-[55px] h-[42px]`}
                 type="button"
               >
                 <img
@@ -363,7 +363,7 @@ export default function UserDashboardPage() {
                 className={`${activeView === "messages"
                   ? "bg-[#145939] text-white"
                   : "bg-[#95c11f] text-white"
-                  } flex items-center justify-center gap-1 md:gap-3 rounded-[11px] md:rounded-2xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition font-medium cursor-pointer w-[272.38px] md:h-[55px] h-[42px]`}
+                  } flex items-center justify-center gap-1 md:gap-3 rounded-xl md:rounded-xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition font-medium cursor-pointer w-[272.38px] md:h-[55px] h-[42px]`}
                 type="button"
               >
                 <img

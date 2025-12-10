@@ -917,13 +917,13 @@ const SupplierProfile = () => {
               </div>
               <div className=" bg-[#043428] pt-0 w-full">
                 <div className="w-full mx-auto px-12 flex justify-center items-end">
-                  <div className="flex md:gap-10 gap-5 justify-center  md:bottom-0 w-full  pb-0 z-40">
+                  <div className="flex md:gap-6 gap-3 justify-center  md:bottom-0 w-full  pb-0 z-40">
                     {/* Show buttons only when video is NOT playing */}
                     {!isPartner && (
                       <>
                         {/* Favorite Button */}
                         <button
-                          className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
+                          className="bg-[#91C73D] text-white px-7 py-[10px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[188px] h-[55px] md:w-auto md:h-auto opacity-100"
                           onClick={handleToggleFavourite}
                           disabled={isAddingToFavorites}
                         >
@@ -939,7 +939,7 @@ const SupplierProfile = () => {
 
                         {/* Recommend Button */}
                         <button
-                          className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
+                          className="bg-[#91C73D] text-white px-7 py-[10px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[188px] h-[55px] md:w-auto md:h-auto opacity-100"
                           onClick={() => setActiveModal("recommend")}
                         >
                           <img
@@ -952,7 +952,7 @@ const SupplierProfile = () => {
 
                         {/* Contact Button */}
                         <button
-                          className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
+                          className="bg-[#91C73D] text-white px-7 py-[10px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[188px] h-[55px] md:w-auto md:h-auto opacity-100"
                           onClick={() => setActiveModal("contact")}
                         >
                           <img
