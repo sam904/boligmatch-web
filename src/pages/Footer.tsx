@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 function Footer() {
   const { t } = useTranslation();
   
-  // Create an array of all parts
+ 
   const contactParts = [
     { type: 'street', text: t("footer.street") },
     { type: 'city', text: t("footer.city") },
