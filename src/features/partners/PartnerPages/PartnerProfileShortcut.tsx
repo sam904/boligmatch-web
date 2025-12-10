@@ -649,7 +649,12 @@ function PartnerProfileShortcut({
               </div>
             </div>
 
-            <div className="bg-[#0E3E38] rounded-2xl p-6 md:w-[403px] w-full md:h-[432px] h-auto">
+            <div className="rounded-2xl p-6 md:w-[403px] w-full md:h-[432px] h-auto" 
+             style={{
+                background:
+                  "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
+              }}
+            >
               <div className="flex flex-col items-center gap-2 mb-2">
                 <img src="/src/assets/supplierProfile/gallery.png" alt="" />
                 <h3 className="text-3xl font-semibold text-white py-4">
