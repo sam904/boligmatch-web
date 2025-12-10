@@ -824,34 +824,6 @@ const SupplierProfile = () => {
                       </div>
                     </div>
 
-                    {/* Center: Progress bar */}
-                    {/* <div 
-            className="flex-1 mx-8 max-w-2xl"
-            onMouseEnter={() => setShowControls(true)}
-          >
-            <div className="relative h-2 bg-gray-600/50 rounded-full overflow-hidden cursor-pointer">
-              <div 
-                className="absolute left-0 top-0 h-full bg-[#91C73D] rounded-full"
-                style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
-              />
-              <input
-                type="range"
-                min="0"
-                max={duration || 100}
-                value={currentTime}
-                onChange={(e) => {
-                  if (videoRef.current) {
-                    videoRef.current.currentTime = parseFloat(e.target.value);
-                    setCurrentTime(parseFloat(e.target.value));
-                    setShowControls(true); // Keep controls visible when scrubbing
-                  }
-                }}
-                onMouseDown={() => setShowControls(true)} // Keep visible when dragging
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-            </div>
-          </div> */}
-
                     {/* Right side: Additional controls */}
                     <div
                       className="flex items-center gap-4"
