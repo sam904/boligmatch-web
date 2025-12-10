@@ -15,6 +15,7 @@ import { FaPauseCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import PlayButton from "/src/assets/userImages/PlayButton.svg";
 
+
 function PartnerProfileShortcut({
   partnerData: initialPartnerData,
 }: {

@@ -430,8 +430,7 @@ export default function UserDashboardPage() {
                           </h3>
 
                           <p className="text-sm text-[#052011] leading-relaxed px-2">
-                            {category.description ||
-                              "Professional services and solutions"}
+                            {category.description }
                           </p>
                         </div>
                       </div>
@@ -537,13 +536,11 @@ export default function UserDashboardPage() {
 
                               <h3 className="text-xl font-extrabold text-[#052011] mb-1">
                                 {favorite.partnerName ||
-                                  favorite.businessName ||
-                                  "Partner Name"}
+                                  favorite.businessName }
                               </h3>
 
                               <p className="text-sm text-[#052011] leading-relaxed px-2 line-clamp-3">
-                                {favorite.descriptionShort ||
-                                  "Professional services and solutions"}
+                                {favorite.descriptionShort}
                               </p>
 
                               <button
@@ -558,8 +555,10 @@ export default function UserDashboardPage() {
                       </div>
                     </>
                   ) : (
-                    <div className="text-white text-base sm:text-lg text-center py-8">
-                      {t("userDashboard.noFavorites")}
+                    <div className="flex justify-center items-center h-64">
+                      <div className="text-white text-base sm:text-lg text-center">
+                        {t("userDashboard.noFavorites")}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -668,8 +667,10 @@ export default function UserDashboardPage() {
                       </div>
                     </>
                   ) : (
-                    <div className="text-white text-base sm:text-lg text-center py-8">
-                      {t("userDashboard.noConversations")}
+                    <div className="flex justify-center items-center h-64">
+                      <div className="text-white text-base sm:text-lg text-center">
+                        {t("userDashboard.noConversations")}
+                      </div>
                     </div>
                   )}
                 </div>
