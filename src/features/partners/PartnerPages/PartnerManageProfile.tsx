@@ -46,9 +46,9 @@ function PartnerManageProfile() {
   };
 
   // Filter invalid characters from name input
-  const filterNameInput = (value: string): string => {
-    return value.replace(/[^a-zA-ZÀ-ÿÆØÅæøå\s'\-\.]/g, "");
-  };
+  // const filterNameInput = (value: string): string => {
+  //   return value.replace(/[^a-zA-ZÀ-ÿÆØÅæøå\s'\-\.]/g, "");
+  // };
 
   // Filter invalid characters from business name input
   const filterBusinessNameInput = (value: string): string => {

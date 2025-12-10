@@ -11,7 +11,7 @@ import startImg from "/src/assets/userImages/star.svg";
 import { useTranslation } from "react-i18next";
 import circlePartner from "/src/assets/userImages/supplierCircle.png";
 import ScrollToTop from "../../../components/common/ScrollToTop";
-import { FaPlayCircle, FaPauseCircle } from "react-icons/fa";
+import { FaPauseCircle } from "react-icons/fa";
 import PlayButton from "/src/assets/userImages/PlayButton.svg"
 
 
