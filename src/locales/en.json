@@ -653,8 +653,8 @@
       "middleNameInvalid": "Middle name can only contain letters, spaces, hyphens, and apostrophes",
       "fullNameInvalid": "Full name can only contain letters, spaces, hyphens, and apostrophes",
       "businessNameInvalid": "Business name contains invalid characters",
-      "signupSuccess": "Registrering succesfuld! Velkommen til Boligmatch+.",
-      "signupError": "Registrering mislykkedes. Prøv venligst igen."
+      "signupSuccess": "Registration successful! Welcome to Boligmatch+.",
+      "signupError": "Registration failed. Please try again."
     }
   },
   "partnerDetails": {

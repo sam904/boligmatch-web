@@ -510,8 +510,7 @@ export default function SignUpModal({
 
       // If we get here, the registration was successful
       showSignupSuccessToast(
-        t("toast.signupSuccess") ||
-          "Registration successful! Welcome to Boligmatch+."
+        t("manageProfile.toast.signupSuccess")
       );
       reset();
 
