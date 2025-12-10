@@ -593,26 +593,23 @@ function PartnerProfileShortcut({
                   "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
               }}
             >
-              <div
-                className="relative flex flex-col items-center justify-center"
-                style={{
-                  width: "300px",
-                  height: "300px",
-                  backgroundImage: `url(${circlePartner})`,
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                }}
-              >
-                <h2 className="text-white text-center text-[22px] font-semibold leading-tight">
-                  Geografisk <br /> område
-                </h2>
-                <div className="max-w-[151px]">
-                  <p className="text-white text-center text-[16px] pt-4 leading-tight">
+               <div className="relative flex items-center justify-center">
+                  <img 
+                     src={circlePartner} 
+                     alt="Geografisk område" 
+                     className="w-[300px] h-[300px] object-contain"
+                  />
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <h2 className="text-white text-center text-[30px] font-semibold leading-tight">
+                    Geografisk <br /> område
+                  </h2>
+              <div className="max-w-[151px] mt-4">
+                  <p className="text-white text-center text-[16px] leading-tight">
                     {partnerData?.textField5}
-                  </p>
-                </div>
-              </div>
+                </p>
+             </div>
+          </div>
+            </div>
             </div>
           </div>
 
