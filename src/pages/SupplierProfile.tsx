@@ -40,7 +40,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-// Validation schemas
 const recommendationSchema = z.object({
   email: z
     .string()
