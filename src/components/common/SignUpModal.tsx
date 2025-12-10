@@ -509,9 +509,7 @@ export default function SignUpModal({
       await userService.add(registrationData);
 
       // If we get here, the registration was successful
-      showSignupSuccessToast(
-        t("manageProfile.toast.signupSuccess")
-      );
+      showSignupSuccessToast(t("manageProfile.toast.signupSuccess"));
       reset();
 
       // Reset validation states
@@ -607,7 +605,7 @@ export default function SignUpModal({
           </button>
         </div>
 
-        <div className="px-6 pb-4">
+        <div className="px-6 pb-2">
           <h2 className="text-[20px] font-[800] text-[#000000] text-center">
             {t("signup.title")}
           </h2>
