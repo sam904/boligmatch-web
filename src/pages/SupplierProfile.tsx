@@ -937,7 +937,6 @@ const SupplierProfile = () => {
                             : t("supplierProfile.saveFavoriteButton")}
                         </button>
 
-                        {/* Recommend Button */}
                         <button
                           className="bg-[#91C73D] text-white px-[27px] py-[11px] rounded-[11px] flex items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[198px] h-[64px] md:w-auto md:h-auto opacity-100"
                           onClick={() => setActiveModal("recommend")}

@@ -88,7 +88,7 @@ function ParentStatistics() {
         style={{ backgroundImage: `url(${parentStatisticsImg})` }}>
         <PartnerHeader />
 
-        <div className="flex flex-col h-[100vh] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]">
+        <div className="flex flex-col  bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]">
           <div className="">
             <div className="text-white text-center md:text-left pt-45 pl-28">
               <h1 className="text-[24px] md:text-[60px] font-[800] tracking-tight leading-[45px] [text-shadow:_0_4px_20px_rgba(0,0,0,0.8)]">

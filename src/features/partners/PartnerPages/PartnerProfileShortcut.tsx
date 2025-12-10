@@ -231,8 +231,11 @@ function PartnerProfileShortcut({
                       display: showVideoElement ? "none" : "block",
                   }}>
                     <div className="flex flex-col item-end justify-end ">
-                      <div className="h-[60vh] "></div>
-                      <div className="h-[50vh] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]"> </div>
+                      <div className="h-[40vh] "></div>
+                      <div className="h-[60vh]"> 
+                        <div className="h-[45vh] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_90%)]"></div>
+                        <div className="h-[15vh] bg-[#01351F]"></div>
+                      </div>
                     </div>
                     </div>
   
@@ -248,7 +251,7 @@ function PartnerProfileShortcut({
     <>
       <video
         ref={videoRef}
-        className="inset-0 w-full h-full object-cover z-10"
+        className="inset-0 w-full h-full object-cover z-10 rounded-t-4xl"
         style={{
           display: showVideoElement ? "block" : "none",
         }}
