@@ -62,7 +62,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-full max-w-[361px] h-[262px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-6 md:px-8 md:py-10 text-center justify-between">
+    <div className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-300 w-full w-[361px] h-[262px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-6 md:px-8 md:py-10 text-center justify-between">
       <div className="flex flex-col items-center w-full">
         <div className="mb-3 md:mb-6">
           <img

@@ -155,8 +155,7 @@ function SearchForPartner() {
                         </h3>
 
                         <p className="text-sm sm:text-base text-[#052011] leading-relaxed px-2">
-                          {category.description ||
-                            "Professional services and solutions"}
+                          {category.description}
                         </p>
                       </div>
                     </div>

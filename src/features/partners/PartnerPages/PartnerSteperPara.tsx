@@ -72,6 +72,7 @@ function ParentSteperPara() {
                   borderRadius: "10px",
                   opacity: 1,
                   minHeight: "350px",
+                  boxShadow: "0px 7px 16.6px 1px #00000040",
                 }}
               >
                 <div className="mb-3 sm:mb-4 flex justify-center flex-shrink-0">
