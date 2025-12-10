@@ -884,10 +884,10 @@ const SupplierProfile = () => {
                   </div>
                 </div>
               )}
-              <div className=" bg-[linear-gradient(180deg,rgba(4,52,40,0)_0%,#043428_100%)] h-[80px] w-full" >
+              <div className=" bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] h-[350px] w-full" >
 
               </div>
-              <div className=" bg-[#043428] pt-0 w-full">
+              <div className=" bg-[#01351f] pt-0 w-full">
                 <div className="w-full mx-auto px-12 flex justify-center items-end">
                   <div className="flex md:gap-6 gap-3 justify-center  md:bottom-0 w-full  pb-0 z-40">
                     {/* Show buttons only when video is NOT playing */}
