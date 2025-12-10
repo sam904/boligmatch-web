@@ -668,6 +668,8 @@
       "middleNameInvalid": "Mellemnavn kan kun indeholde bogstaver, mellemrum, bindestreger og apostroffer",
       "fullNameInvalid": "Fulde navn kan kun indeholde bogstaver, mellemrum, bindestreger og apostroffer",
       "businessNameInvalid": "Virksomhedsnavn indeholder ugyldige tegn",
+      "signupSuccess": "Registrering vellykket! Velkommen til Boligmatch+.",
+      "signupError": "Registrering mislykkedes. Prøv venligst igen.",
       "partnerLoginSuccess": "Partner login succesfuldt!",
       "loginSuccess": "Login succesfuldt!"
     }

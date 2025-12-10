@@ -1,4 +1,9 @@
-import partnerCartImg from "/src/assets/userImages/partnerCardImg.svg";
+import ACP from "/src/assets/userImages/accesstoplatform.svg";
+import visiblemarketing from "/src/assets/userImages/visiblemarketing.svg";
+import focus from "/src/assets/userImages/focus.svg";
+import networkgroup from "/src/assets/userImages/networkgroup.svg";
+import discount from "/src/assets/userImages/discount.svg";
+import reffer from "/src/assets/userImages/reffer.svg";
 // import sampleImg from "/src/assets/userImages/footerLogo.svg";
 import { useTranslation } from "react-i18next";
 import Footer from "../../../pages/Footer";
@@ -9,26 +14,32 @@ function ParentSteperPara() {
     {
       title: t("partnerSteperPara.benefits.1.title"),
       description: t("partnerSteperPara.benefits.1.description"),
+      img:ACP
     },
     {
       title: t("partnerSteperPara.benefits.2.title"),
       description: t("partnerSteperPara.benefits.2.description"),
+      img:visiblemarketing
     },
     {
       title: t("partnerSteperPara.benefits.3.title"),
       description: t("partnerSteperPara.benefits.3.description"),
+      img:focus
     },
     {
       title: t("partnerSteperPara.benefits.4.title"),
       description: t("partnerSteperPara.benefits.4.description"),
+      img:networkgroup
     },
     {
       title: t("partnerSteperPara.benefits.5.title"),
       description: t("partnerSteperPara.benefits.5.description"),
+      img:discount
     },
     {
       title: t("partnerSteperPara.benefits.6.title"),
       description: t("partnerSteperPara.benefits.6.description"),
+      img:reffer   
     },
   ];
   return (
@@ -65,7 +76,7 @@ function ParentSteperPara() {
               >
                 <div className="mb-3 sm:mb-4 flex justify-center flex-shrink-0">
                   <img
-                    src={partnerCartImg}
+                    src={benefit.img}
                     alt=""
                     className="h-[60px] w-[72px] sm:h-[70px] sm:w-[84px] md:h-[82px] md:w-[98px]"
                   />
