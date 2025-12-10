@@ -102,6 +102,7 @@ function ParentStatistics() {
                 flex items-center justify-center
                 w-[188px]
                 h-[55px]
+                space-x-2 md:space-x-3 
                 px-7
                 text-white
                 rounded-[11px]
@@ -115,7 +116,7 @@ function ParentStatistics() {
               `}
               >
                 {/* ICON PERFECTLY CENTERED */}
-                <div className="flex items-center justify-center w-[25px] h-[28px]">
+                <div className="flex items-center  justify-center w-[25px] h-[28px]">
                   <img
                     src={Statistik}
                     alt="Statistics"
