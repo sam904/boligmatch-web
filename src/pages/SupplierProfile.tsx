@@ -683,7 +683,7 @@ const SupplierProfile = () => {
       return (
         <ul className="services-list">
           <li className="service-item">
-            <span className="bullet-point"></span>
+            <span className="bullet"></span>
             {t("supplierProfile.servicesFallback.fixingIssues")}
           </li>
           <li className="service-item">
@@ -1126,7 +1126,7 @@ const SupplierProfile = () => {
                 <img
                   src={factsImg}
                   alt="Fakta"
-                  className="w-[59px] h-[63px] select-none"
+                  className="w-[88px] h-[77px] select-none"
                 />
 
                 <h2 className="text-white text-[28px] font-[700] py-4">
