@@ -105,7 +105,7 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, onStepClick }) => {
       `}</style>
       <div className="flex items-center justify-center w-full h-full">
         <div
-          className="flex items-start justify-center w-full overflow-x-auto scrollbar-hide md:w-full md:overflow-visible"
+          className="md:pt-0 pt-40 flex items-start justify-center w-full overflow-x-auto scrollbar-hide md:w-full md:overflow-visible"
         >
           {steps.map((step, index) => (
           <React.Fragment key={step.number}>
