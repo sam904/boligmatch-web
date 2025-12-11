@@ -686,7 +686,7 @@
     "loadingSubcategories": "Loading subcategories...",
     "noSubcategories": "No subcategories available",
     "loadingPartners": "Loading partners...",
-    "noPartners": "No partners found for this subcategory"
+    "noPartners": "No partners found."
   },
   "partnerStatistics": {
     "title": "Partner Dashboard",
@@ -734,9 +734,11 @@
     "recommendModal": {
       "title": "Recommend us to others",
       "description": "Do you think a friend could use our service? Send them a message here",
+      "name": "Name",
       "email": "Email",
       "comment": "Comment",
       "send": "Send",
+      "namePlaceholder": "Enter name",
       "emailPlaceholder": "Enter the email",
       "commentPlaceholder":"Enter the Comment"
     },
