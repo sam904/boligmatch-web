@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import termsandCondition from "/src/assets/userImages/termaCondition.svg";
 import Footer from "./Footer";
@@ -6,13 +6,28 @@ import leftArrow from "/src/assets/userImages/arrow-left.svg";
 
 export default function TermsAndConditions() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-[#01351f] text-white">
       <header className="px-4 py-4 sm:px-6 sm:py-6">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            // Smart back: use browser back if history exists, otherwise redirect to "/"
+            const hasHistory = window.history.length > 1;
+            const hasState = location.state !== null && location.state !== undefined;
+            const hasLocationKey = location.key !== 'default' && location.key !== null;
+            const notOnHome = location.pathname !== '/';
+            
+            const canGoBack = hasHistory && (hasState || hasLocationKey || (notOnHome && window.history.length > 2));
+            
+            if (canGoBack) {
+              navigate(-1);
+            } else {
+              navigate('/', { replace: true });
+            }
+          }}
           className="p-2 cursor-pointer"
           aria-label="Back"
         >
