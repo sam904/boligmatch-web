@@ -42,6 +42,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 const recommendationSchema = z.object({
+  name: z
+    .string()
+    .min(1, "validation.nameRequired"),
   email: z
     .string()
     .min(1, "validation.emailRequired")
@@ -107,6 +110,7 @@ const SupplierProfile = () => {
     mode: "onBlur",
     reValidateMode: "onBlur",
     defaultValues: {
+      name: "",
       email: "",
       comment: "",
     },
@@ -601,6 +605,7 @@ const SupplierProfile = () => {
       const payload = {
         patnerId: targetId,
         userId: userId,
+        name: data.name,
         email: data.email,
         description: data.comment || "",
         isActive: true,
@@ -1232,6 +1237,30 @@ const SupplierProfile = () => {
                   <p className="text-center text-[13px] text-[#27323F] leading-snug mb-4">
                     {t("supplierProfile.recommendModal.description")}
                   </p>
+
+                  <label className="text-sm font-semibold mb-1">
+                    {t("supplierProfile.recommendModal.name")}
+                    <span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder={
+                      t("supplierProfile.recommendModal.namePlaceholder") ||
+                      "Enter name"
+                    }
+                    className={`mb-1 w-full rounded-[10px] bg-white h-9 px-3 outline-none ${recommendationErrors.name ? "border border-red-500" : ""
+                      }`}
+                    {...registerRecommendation("name", {
+                      onBlur: async () => {
+                        await triggerRecommendation("name");
+                      },
+                    })}
+                  />
+                  {recommendationErrors.name && (
+                    <p className="text-red-500 text-xs mb-2">
+                      {t(recommendationErrors.name.message || "")}
+                    </p>
+                  )}
 
                   <label className="text-sm font-semibold mb-1">
                     {t("supplierProfile.recommendModal.email")}

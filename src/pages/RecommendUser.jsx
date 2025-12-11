@@ -25,7 +25,7 @@ function RecommendUser() {
 
   // Define fetchRecommendation before useEffect that uses it
   const fetchRecommendation = React.useCallback(async () => {
-    if (calledRef.current || !recommendationKey) return;
+    if (calledRef.current || !recommendationKey) return Promise.resolve();
     calledRef.current = true;
 
     try {
@@ -43,7 +43,8 @@ function RecommendUser() {
         if (partnerId) {
           sessionStorage.setItem("bm_recommendation_partner_id", partnerId.toString());
           
-          // If authenticated, fetch partner data and navigate to supplier profile
+          // If authenticated, fetch partner data and store it, but don't navigate yet
+          // Let the modal show first, then navigate after acceptance
           if (isAuthenticated) {
             try {
               const { partnerService } = await import("../services/partner.service");
@@ -51,18 +52,13 @@ function RecommendUser() {
               if (partnerResponse?.output) {
                 localStorage.setItem("bm_currentPartner", JSON.stringify(partnerResponse.output));
               }
-              // Navigate to supplier profile instead of showing recommendation page
-              navigate("/user/supplier-profile", { replace: true });
-              return;
             } catch (error) {
               console.error("Error fetching partner data:", error);
-              // If partner fetch fails, still show the recommendation page
-              setData(firstEntry || null);
             }
-          } else {
-            // If not authenticated, set data for later display
-            setData(firstEntry || null);
           }
+          
+          // Set data for display (will be used by modal on LandingPage)
+          setData(firstEntry || null);
         } else {
           setData(firstEntry || null);
         }
@@ -80,23 +76,29 @@ function RecommendUser() {
     } finally {
       setIsLoading(false);
     }
-  }, [recommendationKey, i18n, isAuthenticated, navigate]);
+    
+    return Promise.resolve();
+  }, [recommendationKey, i18n, isAuthenticated]);
 
   useEffect(() => {
     if (recommendationKey) {
-      if (!isAuthenticated) {
-        // If not authenticated, store key and redirect to home page to show modal
-        sessionStorage.setItem("bm_recommendation_key", recommendationKey);
+      // Always store the recommendation key in sessionStorage
+      sessionStorage.setItem("bm_recommendation_key", recommendationKey);
+      
+      // Fetch recommendation data first (to get partner ID)
+      fetchRecommendation().then(() => {
+        // After fetching, always redirect to landing page to show modal
+        // The modal will handle navigation after user accepts
         navigate("/", { replace: true });
-      } else {
-        // If authenticated, fetch and show recommendation content
-        fetchRecommendation();
-      }
+      }).catch(() => {
+        // If fetch fails, still redirect to show modal
+        navigate("/", { replace: true });
+      });
     } else {
       // If no key, redirect to home
       navigate("/", { replace: true });
     }
-  }, [recommendationKey, navigate, isAuthenticated, fetchRecommendation]);
+  }, [recommendationKey, navigate, fetchRecommendation]);
 
   // Video playback effect - must be called before any early returns
   useEffect(() => {
