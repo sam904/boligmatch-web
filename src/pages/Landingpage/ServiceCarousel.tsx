@@ -27,7 +27,6 @@ export default function ServiceCarousel() {
   const isMobile = window.innerWidth < 768;
 
   const POSITIONS = ["center", "left1", "left", "right", "right1"] as const;
-  type Position = (typeof POSITIONS)[number];
 
   // Responsive position map
   const IMAGE_VARIANTS = {
@@ -82,7 +81,7 @@ export default function ServiceCarousel() {
     setPositionIndexes((prev) => prev.map((i) => (i + IMAGES.length - 1) % IMAGES.length));
   };
 
-  const handleDragEnd = (index: number, _: any, info: any) => {
+  const handleDragEnd = (_index: number, _: any, info: any) => {
     if (Math.abs(info.offset.x) > SWIPE_THRESHOLD || Math.abs(info.velocity.x) > VELOCITY_THRESHOLD) {
       info.offset.x > 0 ? handlePrev() : handleNext();
     }
