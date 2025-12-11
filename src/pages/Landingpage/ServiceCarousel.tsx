@@ -2,11 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 
 // Import images
-import swaperImg1 from "/src/assets/userImages/swiper5.svg";
-import swaperImg2 from "/src/assets/userImages/swiper4.svg";
-import swaperImg3 from "/src/assets/userImages/swiper1.svg";
-import swaperImg4 from "/src/assets/userImages/swiper2.svg";
-import swaperImg5 from "/src/assets/userImages/swiper3.svg";
+import swaperImg1 from "/src/assets/userImages/swiper5.png";
+import swaperImg2 from "/src/assets/userImages/swiper4.png";
+import swaperImg3 from "/src/assets/userImages/swiper1.png";
+import swaperImg4 from "/src/assets/userImages/swiper2.png";
+import swaperImg5 from "/src/assets/userImages/swiper3.png";
 import swaperIcons1 from "/src/assets/userImages/swaperIcon1.svg";
 import swaperIcons2 from "/src/assets/userImages/swaperIcon2.svg";
 import swaperIcons3 from "/src/assets/userImages/swaperIcon3.svg";
@@ -204,7 +204,7 @@ export default function ServiceCarousel() {
           return (
             <motion.div
               key={`carousel-item-${index}`}
-              className="absolute rounded-[12px] !shadow-2xl !shadow-black cursor-grab active:cursor-grabbing"
+              className="absolute rounded-3xl !shadow-2xl !shadow-black cursor-grab active:cursor-grabbing"
               initial="center"
               animate={position}
               variants={IMAGE_VARIANTS}
