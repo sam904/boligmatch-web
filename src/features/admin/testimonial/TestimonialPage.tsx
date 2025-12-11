@@ -424,7 +424,19 @@ export default function TestimonialFormPage() {
 
   // Handle form close/back navigation
   const handleFormClose = () => {
-    navigate(-1);
+    // Smart back: use browser back if history exists, otherwise redirect to "/"
+    const hasHistory = window.history.length > 1;
+    const hasState = location.state !== null && location.state !== undefined;
+    const hasLocationKey = location.key !== 'default' && location.key !== null;
+    const notOnHome = location.pathname !== '/';
+    
+    const canGoBack = hasHistory && (hasState || hasLocationKey || (notOnHome && window.history.length > 2));
+    
+    if (canGoBack) {
+      navigate(-1);
+    } else {
+      navigate('/', { replace: true });
+    }
   };
 
   // Handle page change
