@@ -14,6 +14,7 @@ import ScrollToTop from "../../../components/common/ScrollToTop";
 import { FaPauseCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import PlayButton from "/src/assets/userImages/PlayButton.svg";
+import referancesImg from "/src/assets/supplierProfile/gallery.png"
 
 
 function PartnerProfileShortcut({
@@ -289,7 +290,7 @@ function PartnerProfileShortcut({
         <div className="absolute inset-0 z-40 pointer-events-none video-controls-container">
           <div className="relative w-full h-full group">
             <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto`}>
-              
+
               {/* Main play/pause button - centered */}
               <div className="flex h-[100vh] items-end justify-center w-full gap-6 transform -translate-y-12">
                 <div className="flex items-end gap-12">
@@ -332,7 +333,7 @@ function PartnerProfileShortcut({
                   }}
                 >
                   <div className="flex items-center justify-between mx-auto w-full px-4">
-                    
+
                     {/* Left side: Play/Pause */}
                     <div
                       className="flex items-center gap-4"
@@ -424,10 +425,10 @@ function PartnerProfileShortcut({
                   </div>
                 </div>
               )}
-              
+
               {/* Gradient overlay at bottom */}
               <div className="bg-[linear-gradient(180deg,rgba(4,52,40,0)_0%,#043428_100%)] h-[80px] w-full"></div>
-              
+
               {/* Bottom section with partner info */}
               <div className="bg-[#043428] pt-0 w-full">
                 <div className="w-full mx-auto px-12 flex justify-center items-end">
@@ -520,23 +521,23 @@ function PartnerProfileShortcut({
                   "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
               }}
             >
-               <div className="relative flex items-center justify-center">
-                  <img 
-                     src={circlePartner} 
-                     alt="Geografisk område" 
-                     className="w-[300px] h-[300px] object-contain"
-                  />
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="relative flex items-center justify-center">
+                <img
+                  src={circlePartner}
+                  alt="Geografisk område"
+                  className="w-[300px] h-[300px] object-contain"
+                />
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <h2 className="text-white text-center text-[30px] font-semibold leading-tight">
                     Geografisk <br /> område
                   </h2>
-              <div className="max-w-[151px] mt-4">
-                  <p className="text-white text-center text-[16px] leading-tight">
-                    {partnerData?.textField5}
-                </p>
-             </div>
-          </div>
-            </div>
+                  <div className="max-w-[151px] mt-4">
+                    <p className="text-white text-center text-[16px] leading-tight">
+                      {partnerData?.textField5}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -573,14 +574,14 @@ function PartnerProfileShortcut({
               </div>
             </div>
 
-            <div className="rounded-2xl p-8 md:w-[403px] w-full md:h-[432px] h-auto" 
-             style={{
+            <div className="rounded-2xl p-8 md:w-[403px] w-full md:h-[432px] h-auto"
+              style={{
                 background:
                   "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
               }}
             >
               <div className="flex flex-col items-center gap-2 mb-2">
-                <img src="/src/assets/supplierProfile/gallery.png" alt="" />
+                <img src={referancesImg} alt="" />
                 <h3 className="text-3xl font-semibold text-white py-4">
                   {t("supplierProfile.referencesTitle")}
                 </h3>
