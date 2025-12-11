@@ -15,6 +15,7 @@ import { recommendationService } from "../services/recommendation.service";
 import kabelLogoImg from "/src/assets/userImages/kabelLogoImg.svg";
 import circlePartner from "/src/assets/userImages/supplierCircle.svg";
 import PlayButton from "/src/assets/userImages/PlayButton.svg"
+import referancesImg from "/src/assets/supplierProfile/gallery.png"
 
 
 import {
@@ -1089,7 +1090,7 @@ const SupplierProfile = () => {
                 }}
               >
                 <div className="flex flex-col items-center gap-2 mb-2">
-                  <img src="/src/assets/supplierProfile/gallery.png" alt="" className="w-[88px] h-[59px] select-none" />
+                  <img src={referancesImg} alt="" className="w-[88px] h-[59px] select-none" />
                   <h3 className="text-3xl font-semibold text-white py-4">
                     {t("supplierProfile.referencesTitle")}
                   </h3>
