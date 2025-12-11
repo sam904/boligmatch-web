@@ -744,7 +744,7 @@ const SupplierProfile = () => {
             <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto `}>
 
               {/* Main play/pause button - centered */}
-              <div className="flex  h-[100vh] items-end justify-center  w-full gap-6 transform -translate-y-12 ">
+              <div className="flex h-[100vh] items-end justify-center  w-full gap-6 transform translate-y-12 ">
                 <div className="flex items-end gap-12">
                   {/* Play / Pause button */}
                   {!isVideoPlaying && partnerData?.videoUrl ? (
@@ -753,7 +753,7 @@ const SupplierProfile = () => {
                         e.stopPropagation();
                         handlePlayClick();
                       }}
-                      className="text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-2"
+                      className="text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-2 cursor-pointer"
                       onMouseEnter={() => setShowControls(true)}
                     >
                       <img
@@ -1031,22 +1031,22 @@ const SupplierProfile = () => {
                 }}
               >
                 <div className="relative flex items-center justify-center">
-                  <img 
-                     src={circlePartner} 
-                     alt="Geografisk område" 
-                     className="w-[300px] h-[300px] object-contain"
+                  <img
+                    src={circlePartner}
+                    alt="Geografisk område"
+                    className="w-[300px] h-[300px] object-contain"
                   />
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <h2 className="text-white text-center text-[30px] font-semibold leading-tight">
-                    Geografisk <br /> område
-                  </h2>
-              <div className="max-w-[151px] mt-4">
-                  <p className="text-white text-center text-[16px] leading-tight">
-                    {partnerData?.textField5}
-                </p>
-             </div>
-          </div>
-            </div>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <h2 className="text-white text-center text-[30px] font-semibold leading-tight">
+                      Geografisk <br /> område
+                    </h2>
+                    <div className="max-w-[151px] mt-4">
+                      <p className="text-white text-center text-[16px] leading-tight">
+                        {partnerData?.textField5}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1081,14 +1081,15 @@ const SupplierProfile = () => {
                   {renderServicesContent()}
                 </div>
               </div>
-              <div className="rounded-2xl p-8 md:w-[403px] w-full md:h-[432px] h-auto"
-               style={{
-                background:
-                  "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
-              }}
+              {/* className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] p-[53px_34px] gap-[10px] flex flex-col items-center justify-start" */}
+              <div className="rounded-2xl pt-[53px] px-8 pb-8 md:w-[403px] w-full md:h-[432px] h-auto"
+                style={{
+                  background:
+                    "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
+                }}
               >
                 <div className="flex flex-col items-center gap-2 mb-2">
-                  <img src="/src/assets/supplierProfile/gallery.png" alt="" />
+                  <img src="/src/assets/supplierProfile/gallery.png" alt="" className="w-[88px] h-[59px] select-none" />
                   <h3 className="text-3xl font-semibold text-white py-4">
                     {t("supplierProfile.referencesTitle")}
                   </h3>

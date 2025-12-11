@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import userLogo from "/src/assets/userImages/boligmatchLogo.svg";
 import leftArrow from "/src/assets/userImages/arrow-left.svg";
 import userHeader from "/src/assets/userImages/userHeader.svg";
@@ -27,6 +27,7 @@ function UserHeader({
   showBackButton?: boolean;
 }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalRole, setModalRole] = useState<"user" | "partner">("user");
@@ -283,7 +284,21 @@ function UserHeader({
             <span>
               <button
                 type="button"
-                onClick={() => navigate(-1)}
+                onClick={() => {
+                  // Smart back: use browser back if history exists, otherwise redirect to "/"
+                  const hasHistory = window.history.length > 1;
+                  const hasState = location.state !== null && location.state !== undefined;
+                  const hasLocationKey = location.key !== 'default' && location.key !== null;
+                  const notOnHome = location.pathname !== '/';
+                  
+                  const canGoBack = hasHistory && (hasState || hasLocationKey || (notOnHome && window.history.length > 2));
+                  
+                  if (canGoBack) {
+                    navigate(-1);
+                  } else {
+                    navigate('/', { replace: true });
+                  }
+                }}
                 className="inline-flex items-center justify-center mt-0 p-1 transition-colors cursor-pointer"
               >
                 <img

@@ -619,14 +619,14 @@ function PartnerProfileShortcut({
               <img
                 src={factsImg}
                 alt="Fakta"
-                className="w-[59px] h-[63px] select-none"
+                className="w-[88px] h-[77px] select-none"
               />
 
               <h2 className="text-white text-[28px] font-[700] py-4">
                 {t("supplierProfile.factsTitle")}
               </h2>
 
-              <div className="text-white text-sm space-y-2 w-full leading-[31px]">
+              <div className="text-white text-sm space-y-2 w-full text-left leading-[31px]">
                 {partnerData?.textField2 && (
                   <div
                     className="text-left"
