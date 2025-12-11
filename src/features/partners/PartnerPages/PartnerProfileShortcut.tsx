@@ -160,7 +160,7 @@ function PartnerProfileShortcut({
     if (!partnerData?.textField4) {
       return (
         <div className="text-white text-center py-4">
-          <p>Ingen referencer tilgængelige</p>
+          <p>{t("supplierProfile.noReferencesAvailable")}</p>
         </div>
       );
     }
@@ -184,11 +184,11 @@ function PartnerProfileShortcut({
         <ul className="text-white list-none space-y-2 w-full">
           <li className="relative pl-5">
             <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-            Løsning af fejl og fejlfinding
+            {t("supplierProfile.servicesFallback.fixingIssues")}
           </li>
           <li className="relative pl-5">
             <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-            Intelligente hjemsystemer
+            {t("supplierProfile.servicesFallback.smartHome")}
           </li>
         </ul>
       );
@@ -492,7 +492,7 @@ function PartnerProfileShortcut({
                   })
                 ) : (
                   <p className="text-sm font-semibold text-black mt-3">
-                    Ingen anmeldelser endnu.
+                    {t("supplierProfile.noReviewsYet")}
                   </p>
                 )}
               </div>
@@ -564,7 +564,7 @@ function PartnerProfileShortcut({
               />
 
               <h2 className="text-white text-[28px] font-[700] py-4">
-                Services
+                {t("supplierProfile.servicesTitle")}
               </h2>
 
               {/* Updated Services Section */}
@@ -573,7 +573,7 @@ function PartnerProfileShortcut({
               </div>
             </div>
 
-            <div className="rounded-2xl p-6 md:w-[403px] w-full md:h-[432px] h-auto" 
+            <div className="rounded-2xl p-8 md:w-[403px] w-full md:h-[432px] h-auto" 
              style={{
                 background:
                   "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
@@ -582,7 +582,7 @@ function PartnerProfileShortcut({
               <div className="flex flex-col items-center gap-2 mb-2">
                 <img src="/src/assets/supplierProfile/gallery.png" alt="" />
                 <h3 className="text-3xl font-semibold text-white py-4">
-                  Referencer
+                  {t("supplierProfile.referencesTitle")}
                 </h3>
               </div>
               <div className="text-white references-container leading-[31px]">
@@ -623,7 +623,7 @@ function PartnerProfileShortcut({
               />
 
               <h2 className="text-white text-[28px] font-[700] py-4">
-                Fakta
+                {t("supplierProfile.factsTitle")}
               </h2>
 
               <div className="text-white text-sm space-y-2 w-full leading-[31px]">
