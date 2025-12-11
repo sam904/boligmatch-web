@@ -769,8 +769,11 @@
       "fixingIssues": "Løsning af fejl og fejlfinding",
       "smartHome": "Intelligente hjemsystemer"
     },
-    "servicesTitle": "Services",
+    "servicesTitle": "Tjenester",
     "factsTitle": "Fakta",
+    "referencesTitle": "Referencer",
+    "geographicalArea": "Geografisk område",
+    "noReferencesAvailable": "Ingen referencer tilgængelige",
     "reviewUsOnTrustpilot": "Anmeld os på Trustpilot"
   },
   "recommendUser": {
