@@ -3,10 +3,10 @@ import CookieConsent from './components/common/CookieConsent';
 
 function App() {
   return (
-    <>
+    <div>
       <AppRouter />
       <CookieConsent />
-    </>
+    </div>
   );
 }
 

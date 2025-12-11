@@ -236,7 +236,7 @@ useEffect(() => {
   return (
     <div
     className="
-    h-[366px]
+    h-[400px]
     md:h-[100vh] bg-cover bg-center bg-no-repeat
     bg-[url('/src/assets/userImages/landingImgMobile.png')]   // mobile default
     md:bg-[url('/src/assets/userImages/home_pageImg.png')]       // desktop
@@ -293,6 +293,7 @@ useEffect(() => {
           </div>
         </div>
       )}
+
       <div className="absolute md:top-28 top-28 lg:left-93 left-0 flex max-w-6xl mx-auto md:px-12 px-8 justify-between mt-0 md:h-[calc(100vh)]">
         <div>
           <div className="md:w-[130px] w-[70px] flex justify-end">
@@ -326,10 +327,13 @@ useEffect(() => {
         </div>
       </div>
 
-      <div className="">
+      <div className="pt-46 md:pt-0">
         
-        <div  style={{top: isMobile ? "0px" : "", }} className="absolute md:bottom-0 md:h-[350px] h-[280px]  flex flex-col items-center justify-end bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] w-full ">
-          <button
+        <div  style={{top: isMobile ? "350px" : "", }} className="md:absolute md:bottom-0 md:h-[350px] h-[350px]  flex flex-col items-center justify-end bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] w-full ">
+         {isMobile ? 
+         <>
+          <div className="absolute z-10  bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-100%  w-full items-center justify-center flex flex-col">
+           <button
             onClick={() => setShowSignUpModal(true)}
             className="bg-[#91C73D]  w-[188px]
                 h-[55px] rounded-xl md:text-[18px] text-[16px] cursor-pointer px-7
@@ -337,7 +341,32 @@ useEffect(() => {
           >
             {t("landing.signUpButton")}
           </button>
-          <h1 className="md:text-[66px] leading-15 text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-98%   w-full text-white  text-center rosting-script font-[400] px-4">
+          <div className="bg-[#01351f]">
+             <h1 className="md:text-[66px] leading-15 text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-98%   w-full text-white  text-center rosting-script font-[400] px-4">
+            {t("landing.mainTitle")}
+          </h1>
+          <div className=" w-full ">
+            <h2 className="text-white md:text-[50px] text-[40px]   leading-[50px]  max-w-4xl tracking-[0%] text-center  md:mx-auto mx-8 pb-3 px-4 font-[800] plus-jakarta-sans">
+             {t("landing.subtitle")}
+          </h2>
+          </div>
+           <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans">
+          {t("landing.description")}
+        </p>
+        
+          </div>
+          </div> 
+         
+         </>
+         : <> <button
+            onClick={() => setShowSignUpModal(true)}
+            className="bg-[#91C73D]  w-[188px]
+                h-[55px] rounded-xl md:text-[18px] text-[16px] cursor-pointer px-7
+            font-semibold  text-white hover:bg-[#7fb32d] transition-colors figtree"
+          >
+            {t("landing.signUpButton")}
+          </button>
+           <h1 className="md:text-[66px] leading-15 text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-98%   w-full text-white  text-center rosting-script font-[400] px-4">
             {t("landing.mainTitle")}
           </h1>
           <div className="bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-0% w-full">
@@ -345,23 +374,26 @@ useEffect(() => {
              {t("landing.subtitle")}
           </h2>
           </div>
+          </>
+          }
         </div>
       </div>
+      {!isMobile && 
       <div className="bg-[#01351f] ">
         <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans">
           {t("landing.description")}
         </p>
       </div>
-      {/* <AquaticAnimalsCarousel/> */}
-      <ServiceCarousel />
-      <div className="bg-[#01351f] h-auto">
+      }
+       <ServiceCarousel />
+        <div className="bg-[#01351f]">
         <h1 className="md:text-[64px] text-[42px] md:leading-[66px] leading-[42px] text-white text-center max-w-[845px] mx-auto font-[800] plus-jakarta-sans">
-          {t("landing.transparentJourney")}
+          {t("landing.transparentJourney")} 
         </h1>
         <p className="text-white text-center md:text-[18px] text-[16px] mx-auto max-w-7xl py-4 px-4">
           {t("landing.futureDescription")}
         </p>
-      </div>
+      </div>   
       <Stepper currentStep={currentStep} onStepClick={setCurrentStep} />
       <Footer />
     </div>
