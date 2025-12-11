@@ -32,8 +32,6 @@ function PartnerProfileShortcut({
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
-  const [showControls, setShowControls] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
 
   const reviews: any[] = Array.isArray(partnerData?.testImo)
     ? partnerData.testImo.filter((r: any) => r && r.isDisplayed)
@@ -72,72 +70,6 @@ function PartnerProfileShortcut({
       };
     }
   }, [volume, isMuted]);
-
-  // Auto-hide controls effect
-  useEffect(() => {
-    let hideTimeout: ReturnType<typeof setTimeout>;
-    let mouseLeaveTimeout: ReturnType<typeof setTimeout>;
-    let isMouseOverControls = false;
-
-    const showControlsTemporarily = () => {
-      setShowControls(true);
-      clearTimeout(hideTimeout);
-
-      if (!isMouseOverControls && isVideoPlaying) {
-        hideTimeout = setTimeout(() => {
-          setShowControls(false);
-        }, 3000);
-      }
-    };
-
-    const handleMouseMove = () => {
-      showControlsTemporarily();
-    };
-
-    const handleMouseEnterControls = () => {
-      isMouseOverControls = true;
-      clearTimeout(hideTimeout);
-      clearTimeout(mouseLeaveTimeout);
-    };
-
-    const handleMouseLeaveControls = () => {
-      isMouseOverControls = false;
-      mouseLeaveTimeout = setTimeout(() => {
-        if (isVideoPlaying) {
-          hideTimeout = setTimeout(() => {
-            setShowControls(false);
-          }, 2000);
-        }
-      }, 500);
-    };
-
-    if (videoRef.current) {
-      videoRef.current.addEventListener('play', showControlsTemporarily);
-      videoRef.current.addEventListener('pause', showControlsTemporarily);
-    }
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    const controlsContainer = document.querySelector('.video-controls-container');
-    if (controlsContainer) {
-      controlsContainer.addEventListener('mouseenter', handleMouseEnterControls);
-      controlsContainer.addEventListener('mouseleave', handleMouseLeaveControls);
-    }
-
-    return () => {
-      clearTimeout(hideTimeout);
-      clearTimeout(mouseLeaveTimeout);
-      window.removeEventListener('mousemove', handleMouseMove);
-      if (videoRef.current) {
-        videoRef.current.removeEventListener('play', showControlsTemporarily);
-        videoRef.current.removeEventListener('pause', showControlsTemporarily);
-      }
-      if (controlsContainer) {
-        controlsContainer.removeEventListener('mouseenter', handleMouseEnterControls);
-        controlsContainer.removeEventListener('mouseleave', handleMouseLeaveControls);
-      }
-    };
-  }, [isVideoPlaying]);
 
   // Video event handlers
   useEffect(() => {
@@ -228,7 +160,7 @@ function PartnerProfileShortcut({
     if (!partnerData?.textField4) {
       return (
         <div className="text-white text-center py-4">
-          <p>Ingen referencer tilgængelige</p>
+          <p>{t("supplierProfile.noReferencesAvailable")}</p>
         </div>
       );
     }
@@ -252,11 +184,11 @@ function PartnerProfileShortcut({
         <ul className="text-white list-none space-y-2 w-full">
           <li className="relative pl-5">
             <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-            Løsning af fejl og fejlfinding
+            {t("supplierProfile.servicesFallback.fixingIssues")}
           </li>
           <li className="relative pl-5">
             <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-white rounded-full"></span>
-            Intelligente hjemsystemer
+            {t("supplierProfile.servicesFallback.smartHome")}
           </li>
         </ul>
       );
@@ -369,7 +301,6 @@ function PartnerProfileShortcut({
                         handlePlayClick();
                       }}
                       className="text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-2 cursor-pointer"
-                      onMouseEnter={() => setShowControls(true)}
                     >
                       <img
                         src={PlayButton}
@@ -385,7 +316,6 @@ function PartnerProfileShortcut({
                       }}
                       className={`text-white hover:scale-125 transition-all duration-300 bg-black/50 rounded-full p-2 cursor-pointer ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
                         }`}
-                      onMouseEnter={() => setShowControls(true)}
                     >
                       <FaPauseCircle className="h-15 w-15 drop-shadow-2xl" />
                     </button>
@@ -397,7 +327,6 @@ function PartnerProfileShortcut({
               {isVideoPlaying && (
                 <div
                   className="absolute bottom-60 left-0 right-0 p-4 pt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  onMouseEnter={() => setShowControls(true)}
                   onMouseLeave={(e) => {
                     e.stopPropagation();
                   }}
@@ -407,7 +336,6 @@ function PartnerProfileShortcut({
                     {/* Left side: Play/Pause */}
                     <div
                       className="flex items-center gap-4"
-                      onMouseEnter={() => setShowControls(true)}
                     >
                       <button
                         onClick={(e) => {
@@ -440,7 +368,6 @@ function PartnerProfileShortcut({
                     {/* Right side: Additional controls */}
                     <div
                       className="flex items-center gap-4"
-                      onMouseEnter={() => setShowControls(true)}
                     >
                       {/* Volume control */}
                       <button
@@ -565,7 +492,7 @@ function PartnerProfileShortcut({
                   })
                 ) : (
                   <p className="text-sm font-semibold text-black mt-3">
-                    Ingen anmeldelser endnu.
+                    {t("supplierProfile.noReviewsYet")}
                   </p>
                 )}
               </div>
@@ -637,7 +564,7 @@ function PartnerProfileShortcut({
               />
 
               <h2 className="text-white text-[28px] font-[700] py-4">
-                Services
+                {t("supplierProfile.servicesTitle")}
               </h2>
 
               {/* Updated Services Section */}
@@ -646,7 +573,7 @@ function PartnerProfileShortcut({
               </div>
             </div>
 
-            <div className="rounded-2xl p-6 md:w-[403px] w-full md:h-[432px] h-auto" 
+            <div className="rounded-2xl p-8 md:w-[403px] w-full md:h-[432px] h-auto" 
              style={{
                 background:
                   "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
@@ -655,7 +582,7 @@ function PartnerProfileShortcut({
               <div className="flex flex-col items-center gap-2 mb-2">
                 <img src="/src/assets/supplierProfile/gallery.png" alt="" />
                 <h3 className="text-3xl font-semibold text-white py-4">
-                  Referencer
+                  {t("supplierProfile.referencesTitle")}
                 </h3>
               </div>
               <div className="text-white references-container leading-[31px]">
@@ -696,7 +623,7 @@ function PartnerProfileShortcut({
               />
 
               <h2 className="text-white text-[28px] font-[700] py-4">
-                Fakta
+                {t("supplierProfile.factsTitle")}
               </h2>
 
               <div className="text-white text-sm space-y-2 w-full leading-[31px]">

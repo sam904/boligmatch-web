@@ -756,6 +756,9 @@
     },
     "servicesTitle": "Services",
     "factsTitle": "Facts",
+    "referencesTitle": "References",
+    "geographicalArea": "Geographical Area",
+    "noReferencesAvailable": "No references available",
     "reviewUsOnTrustpilot": "Review us on Trustpilot"
   },
   "recommendUser": {
