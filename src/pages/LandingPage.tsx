@@ -12,7 +12,7 @@ import UserModal from "../components/common/UserModal";
 import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import { loginThunk } from "../features/auth/authSlice";
-import { useAppDispatch } from "../app/hooks";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import axios from "axios";
 import boligmatchLogo from "/src/assets/userImages/loginModelLogo.svg";
 
@@ -27,6 +27,21 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Get authentication status to detect login changes
+  const token = useAppSelector((state) => state.auth.accessToken);
+  const user = useAppSelector((state) => state.auth.user);
+  // Check both Redux state and localStorage for authentication
+  const [localAuthStatus, setLocalAuthStatus] = useState(() => {
+    try {
+      const bmUser = typeof window !== "undefined" ? localStorage.getItem("bm_user") : null;
+      const bmPartner = typeof window !== "undefined" ? localStorage.getItem("bm_partner") : null;
+      return Boolean(bmUser || bmPartner);
+    } catch {
+      return false;
+    }
+  });
+  const isAuthenticated = Boolean(token || user || localAuthStatus);
   
   // Recommendation modal state
   type PartnerInfo = {
@@ -57,6 +72,8 @@ export default function LandingPage() {
   const [recommendationKey, setRecommendationKey] = useState<string | null>(null);
   const [currentLocale, setCurrentLocale] = useState<"en" | "da">("da");
   const calledRef = useRef(false);
+  const previousAuthStatusRef = useRef<boolean>(false);
+  const recommendationAcceptedRef = useRef(false);
 
 useEffect(() => {
   const check = () => setIsMobile(window.innerWidth < 768);
@@ -114,14 +131,118 @@ useEffect(() => {
     }
   }, [navigate]);
 
-  // Check for recommendation key and fetch data
+  // Check for recommendation key and fetch data on mount
   useEffect(() => {
     const storedKey = sessionStorage.getItem("bm_recommendation_key");
-    if (storedKey && !calledRef.current) {
+    if (storedKey && !calledRef.current && !recommendationAcceptedRef.current) {
       setRecommendationKey(storedKey);
       fetchRecommendation(storedKey);
     }
+    // Initialize previous auth status
+    previousAuthStatusRef.current = isAuthenticated;
   }, []);
+
+  // Also check when recommendation key appears in sessionStorage (for authenticated users)
+  useEffect(() => {
+    const checkForRecommendationKey = () => {
+      const storedKey = sessionStorage.getItem("bm_recommendation_key");
+      if (storedKey && storedKey !== recommendationKey && !calledRef.current) {
+        setRecommendationKey(storedKey);
+        fetchRecommendation(storedKey);
+      }
+    };
+    
+    // Check periodically for new recommendation keys
+    const interval = setInterval(checkForRecommendationKey, 500);
+    
+    return () => clearInterval(interval);
+  }, [recommendationKey]);
+
+  // Monitor localStorage for authentication changes (check periodically)
+  useEffect(() => {
+    const checkAuth = () => {
+      try {
+        const bmUser = typeof window !== "undefined" ? localStorage.getItem("bm_user") : null;
+        const bmPartner = typeof window !== "undefined" ? localStorage.getItem("bm_partner") : null;
+        const newAuthStatus = Boolean(bmUser || bmPartner);
+        setLocalAuthStatus(newAuthStatus);
+      } catch {
+        setLocalAuthStatus(false);
+      }
+    };
+    
+    // Check immediately
+    checkAuth();
+    
+    // Check periodically to detect login (since storage event only fires in other tabs)
+    const interval = setInterval(checkAuth, 300);
+    
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Check for recommendation key when authentication status changes (after login)
+  useEffect(() => {
+    const storedKey = sessionStorage.getItem("bm_recommendation_key");
+    const wasNotAuthenticated = !previousAuthStatusRef.current;
+    const isNowAuthenticated = isAuthenticated;
+    
+    // If user just logged in and we have a recommendation key, show the modal
+    if (wasNotAuthenticated && isNowAuthenticated && storedKey && !showRecommendationModal) {
+      // Reset calledRef to allow fetching again if needed
+      if (!recommendationData) {
+        calledRef.current = false;
+        setRecommendationKey(storedKey);
+        fetchRecommendation(storedKey);
+      } else {
+        // If we already have the data, just show the modal
+        setShowRecommendationModal(true);
+      }
+    }
+    
+    // Also check if user is already authenticated and has a recommendation key
+    // This handles the case when authenticated user opens recommendation link
+    if (isAuthenticated && storedKey && !showRecommendationModal) {
+      if (!recommendationData && !calledRef.current) {
+        // Fetch if we don't have data yet
+        calledRef.current = false;
+        setRecommendationKey(storedKey);
+        fetchRecommendation(storedKey);
+      } else if (recommendationData) {
+        // If we already have the data, show the modal
+        setShowRecommendationModal(true);
+      }
+    }
+    
+    // Update previous auth status
+    previousAuthStatusRef.current = isAuthenticated;
+  }, [isAuthenticated, showRecommendationModal, recommendationData]);
+
+  // Check for recommendation key when login modal closes
+  useEffect(() => {
+    if (!showLoginModal && !showSignUpModal && !recommendationAcceptedRef.current) {
+      // Login modal just closed, check if we need to show recommendation modal
+      const storedKey = sessionStorage.getItem("bm_recommendation_key");
+      if (storedKey && !showRecommendationModal) {
+        // Small delay to ensure state updates are processed
+        setTimeout(() => {
+          // Don't show if signup modal is now open or recommendation was accepted
+          if (!showSignUpModal && !recommendationAcceptedRef.current) {
+            // If we have data but modal is not showing, show it
+            if (recommendationData) {
+              setShowRecommendationModal(true);
+            } else if (!calledRef.current) {
+              // If we don't have data yet, fetch it
+              calledRef.current = false;
+              setRecommendationKey(storedKey);
+              fetchRecommendation(storedKey);
+            }
+          }
+        }, 200);
+      }
+    }
+  }, [showLoginModal, showRecommendationModal, recommendationData, showSignUpModal]);
 
   const fetchRecommendation = async (recommendationKey: string) => {
     if (calledRef.current) {
@@ -144,6 +265,19 @@ useEffect(() => {
         const partnerId = firstEntry?.patnerId || firstEntry?.partnerId || null;
         if (partnerId) {
           sessionStorage.setItem("bm_recommendation_partner_id", partnerId.toString());
+          
+          // If authenticated, fetch partner data and store it for later navigation
+          if (isAuthenticated) {
+            try {
+              const { partnerService } = await import("../services/partner.service");
+              const partnerResponse = await partnerService.getById(Number(partnerId));
+              if (partnerResponse?.output) {
+                localStorage.setItem("bm_currentPartner", JSON.stringify(partnerResponse.output));
+              }
+            } catch (error) {
+              console.error("Error fetching partner data:", error);
+            }
+          }
         }
 
         // Set locale from API response if available
@@ -152,7 +286,7 @@ useEffect(() => {
           i18n.changeLanguage(firstEntry.locale);
         }
         
-        // Show modal after data is loaded
+        // Always show modal after data is loaded (for both authenticated and non-authenticated users)
         setShowRecommendationModal(true);
       }
     } catch (error) {
@@ -178,9 +312,38 @@ useEffect(() => {
     return "";
   };
 
-  const handleAcceptRecommendation = () => {
+  const handleAcceptRecommendation = async () => {
+    // Mark recommendation as accepted to prevent reopening
+    recommendationAcceptedRef.current = true;
+    
+    // Close the recommendation modal first
     setShowRecommendationModal(false);
-    setShowSignUpModal(true);
+    
+    // Small delay to ensure modal closes before opening signup modal
+    setTimeout(() => {
+      // If user is already authenticated, navigate to supplier profile
+      if (isAuthenticated) {
+        const partnerId = sessionStorage.getItem("bm_recommendation_partner_id");
+        if (partnerId) {
+          // Partner data should already be fetched and stored by RecommendUser component
+          navigate("/user/supplier-profile", { replace: true });
+          // Clear the recommendation keys
+          sessionStorage.removeItem("bm_recommendation_key");
+          sessionStorage.removeItem("bm_recommendation_partner_id");
+        } else if (recommendationKey) {
+          // Fallback to recommendation page if no partner ID
+          navigate(`/user/recommenduser/${recommendationKey}`, { replace: true });
+          sessionStorage.removeItem("bm_recommendation_key");
+        } else {
+          // Default to user profile
+          navigate("/user/profile", { replace: true });
+        }
+      } else {
+        // If not authenticated, show signup modal
+        // Don't clear the recommendation key yet - keep it for after signup
+        setShowSignUpModal(true);
+      }
+    }, 100);
   };
 
   const getPartnerName = () => {
@@ -251,7 +414,23 @@ useEffect(() => {
       />
       <UserModal
         open={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
+        onClose={() => {
+          setShowLoginModal(false);
+          // Check for recommendation key after login modal closes
+          const storedKey = sessionStorage.getItem("bm_recommendation_key");
+          if (storedKey && !showRecommendationModal) {
+            // Small delay to ensure state updates are processed
+            setTimeout(() => {
+              if (recommendationData) {
+                setShowRecommendationModal(true);
+              } else if (!calledRef.current) {
+                calledRef.current = false;
+                setRecommendationKey(storedKey);
+                fetchRecommendation(storedKey);
+              }
+            }, 100);
+          }
+        }}
         redirectTo={undefined}
         roleTarget="user"
         showSignUp={false}
@@ -259,7 +438,7 @@ useEffect(() => {
       />
       
       {/* Recommendation Modal */}
-      {showRecommendationModal && recommendationData && (
+      {showRecommendationModal && recommendationData && !showSignUpModal && !showLoginModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black/20" />
           <div className="relative z-[10000] w-full max-w-sm bg-white rounded-2xl shadow-2xl px-6 py-7 text-center">
