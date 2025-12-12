@@ -265,7 +265,7 @@ function PartnerProfileShortcut({
           <div className="flex flex-col item-end justify-end">
             <div className="h-[40vh]"></div>
             <div className="h-[60vh]">
-              <div className="h-[45vh] bg-[linear-gradient(180deg,rgba(4,52,40,0)_0%,#043428_100%)]"></div>
+              <div className="h-[45vh] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]"></div>
               <div className="h-[15vh] bg-[#01351F]"></div>
             </div>
           </div>
@@ -425,13 +425,13 @@ function PartnerProfileShortcut({
               )}
 
               {/* Gradient overlay at bottom */}
-              <div className="bg-[linear-gradient(180deg,rgba(4,52,40,0)_0%,#043428_100%)] h-[80px] w-full"></div>
+              <div className="bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] h-[80px] w-full"></div>
 
               {/* Bottom section with partner info */}
               <div className="bg-[#043428] pt-0 w-full">
-                <div className="w-full mx-auto px-4 md:px-12 flex justify-center items-end">
+                <div className="w-full mx-auto  flex justify-center items-end">
                   <div className="bg-[#01351F] w-full">
-                    <h1 className="font-extrabold md:text-6xl text-[24px] md:text-[32px] text-center text-white py-3 md:py-5">
+                    <h1 className="w-full font-extrabold md:text-6xl text-[24px] md:text-[32px] text-center text-white py-3 md:py-5">
                       {partnerData?.businessName || partnerData?.fullName || "Loading..."}
                     </h1>
                   </div>
