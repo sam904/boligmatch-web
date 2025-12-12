@@ -133,6 +133,7 @@ export default function UserDashboardPage() {
   // Helpers to safely read Category/Subcategory names from favourite payloads
   const getFavouriteCategory = (fav: FavouriteItem) => {
     return (
+      fav.categoriesName ||
       fav.categoryName ||
       fav.category ||
       fav.categorys ||
@@ -143,6 +144,7 @@ export default function UserDashboardPage() {
 
   const getFavouriteSubCategory = (fav: FavouriteItem) => {
     return (
+      fav.subCategoriesName ||
       fav.subCategoryName ||
       fav.subCategory ||
       fav.subCategories ||
@@ -710,25 +712,25 @@ export default function UserDashboardPage() {
 
             <div className="space-y-4 text-[#052011]">
               <div>
-                <div className="text-sm font-extrabold">Dato</div>
+                <div className="text-sm font-extrabold">{t("userDashboard.dateLabel")}</div>
                 <div className="text-sm">
                   {formatConvDate(openConversation.createdDate)}
                 </div>
               </div>
               <div>
-                <div className="text-sm font-extrabold">Partner</div>
+                <div className="text-sm font-extrabold">{t("userDashboard.partnerLabel")}</div>
                 <div className="text-sm">
                   {openConversation.partnerName || "-"}
                 </div>
               </div>
               <div>
-                <div className="text-sm font-extrabold">Emne</div>
+                <div className="text-sm font-extrabold">{t("userDashboard.subjectLabel")}</div>
                 <div className="text-sm">
                   {openConversation.messageSubject || "-"}
                 </div>
               </div>
               <div>
-                <div className="text-sm font-extrabold">Beskrivelse</div>
+                <div className="text-sm font-extrabold">{t("userDashboard.descriptionLabel")}</div>
                 <div className="text-sm leading-relaxed">
                   {openConversation.messageContent || "-"}
                 </div>

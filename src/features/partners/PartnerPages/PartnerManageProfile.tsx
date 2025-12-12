@@ -31,13 +31,6 @@ function PartnerManageProfile() {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
-  // Validation function for name fields
-  const isValidName = (name: string): boolean => {
-    if (!name.trim()) return true;
-    const nameRegex = /^[a-zA-ZÀ-ÿÆØÅæøå\s'\-\.]+$/;
-    return nameRegex.test(name);
-  };
-
   // Validation function for business name (allows more characters like &, numbers, etc.)
   const isValidBusinessName = (name: string): boolean => {
     if (!name.trim()) return true;
@@ -125,11 +118,7 @@ function PartnerManageProfile() {
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate name fields
-    if (fullName.trim() && !isValidName(fullName)) {
-      showSignupErrorToast(t("manageProfile.toast.fullNameInvalid"));
-      return;
-    }
+    // Validate business name
     if (!isValidBusinessName(businessName)) {
       showSignupErrorToast(t("manageProfile.toast.businessNameInvalid"));
       return;
