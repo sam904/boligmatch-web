@@ -67,8 +67,8 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
 
   return (
     <>
-      <div className="bg-[#01351f] h-[450px]">
-        <div className="w-full max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4  mb-8 pt-[70px] md:pt-[20px] place-items-center">
+      <div className="bg-[#01351f] md:h-[450px] h-[350px]">
+        <div className="w-full max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4  md:mb-8 mb-4 md:pt-[20px] place-items-center gap-y-4 md:gap-y-0">
           {statistics.map((stat, index) => (
             <div key={index} className="flex flex-col items-center">
               <div className="flex flex-col items-center">

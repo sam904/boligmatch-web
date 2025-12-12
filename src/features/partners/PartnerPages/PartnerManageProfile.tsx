@@ -253,7 +253,7 @@ function PartnerManageProfile() {
   return (
     <div className="min-h-[100vh] bg-[#01351f]">
       <PartnerHeader fullHeight={false} />
-      <div className="max-w-5xl mx-auto px-5 py-4">
+      <div className="max-w-5xl mx-auto px-5 py-4 pt-26 md:pt-22">
         <div className="flex flex-col items-center">
           <img
             src={profileIcon}

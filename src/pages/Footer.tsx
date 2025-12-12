@@ -15,11 +15,11 @@ function Footer() {
 
   return (
     <>
-      <footer className="bg-[#01351f] text-white text-center p-4 pt-42">
+      <footer className="bg-[#01351f] text-white text-center p-4 md:p-4 pt-42">
         <div className="flex flex-col items-center">
           <div className="text-center">
             <div className="mb-4">
-              <div className="w-[199px] h-[45px] mx-auto">
+              <div className="w-[150px] h-[34px] md:w-[199px] md:h-[45px] mx-auto">
                 <img
                   src={footerLogo}
                   alt="Boligmatch Logo"
@@ -30,14 +30,14 @@ function Footer() {
           </div>
           
           {/* Contact info with dot separators */}
-          <div className="flex flex-wrap justify-center items-center">
+          <div className="flex flex-wrap justify-center items-center gap-x-1">
             {contactParts.map((part, index) => (
               <div key={index} className="flex items-center">
-                <span className="text-white text-sm figtree font-[400] text-[18px]">
+                <span className="text-white figtree font-[400] text-[12px] md:text-[18px]">
                   {part.text}
                 </span>
                 {index < contactParts.length - 1 && (
-                  <span className="mx-1 text-[12px]">•</span>
+                  <span className="mx-1 text-[10px] md:text-[12px]">•</span>
                 )}
               </div>
             ))}

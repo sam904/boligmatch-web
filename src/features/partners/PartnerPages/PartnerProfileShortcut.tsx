@@ -16,7 +16,6 @@ import { IoClose } from "react-icons/io5";
 import PlayButton from "/src/assets/userImages/PlayButton.svg";
 import referancesImg from "/src/assets/supplierProfile/gallery.png"
 
-
 function PartnerProfileShortcut({
   partnerData: initialPartnerData,
 }: {
@@ -256,15 +255,13 @@ function PartnerProfileShortcut({
   return (
     <>
       <ScrollToTop />
-      <div className="relative w-full h-[650px] overflow-hidden shadow-lg bg-[#01351F]">
-        {/* Background Image */}
+      <div className="relative w-full md:h-[650px] h-[400px] overflow-hidden shadow-lg bg-[#01351F]">
         <div
-          className="inset-0 bg-cover bg-center bg-no-repeat w-full h-[100vh] bg-[#01351F] rounded-t-4xl"
+          className="inset-0 bg-cover bg-center bg-no-repeat w-full md:h-[100vh] h-[400px] bg-[#01351F] rounded-t-4xl"
           style={{
             backgroundImage: `url(${getBackgroundImage()})`,
             display: showVideoElement ? "none" : "block",
           }}>
-          {/* Gradient Overlay - Exact same as SupplierProfile */}
           <div className="flex flex-col item-end justify-end">
             <div className="h-[40vh]"></div>
             <div className="h-[60vh]">
@@ -277,10 +274,11 @@ function PartnerProfileShortcut({
         {/* Video Player */}
         <video
           ref={videoRef}
-          className="absolute inset-0 w-full h-full object-cover rounded-t-4xl"
+          className="absolute inset-0 w-full md:h-full h-[400px] object-cover rounded-t-4xl"
           style={{
             display: showVideoElement ? "block" : "none",
           }}
+          playsInline
         >
           <source src={partnerData?.videoUrl} type="video/mp4" />
           Your browser does not support the video tag.
@@ -292,7 +290,7 @@ function PartnerProfileShortcut({
             <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto`}>
 
               {/* Main play/pause button - centered */}
-              <div className="flex h-[100vh] items-end justify-center w-full gap-6 transform -translate-y-12">
+              <div className="flex md:h-[100vh] h-[400px] items-end justify-center w-full gap-6 md:transform md:-translate-y-12 -translate-y-8">
                 <div className="flex items-end gap-12">
                   {/* Play / Pause button */}
                   {!isVideoPlaying && partnerData?.videoUrl ? (
@@ -301,12 +299,12 @@ function PartnerProfileShortcut({
                         e.stopPropagation();
                         handlePlayClick();
                       }}
-                      className="text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-2 cursor-pointer"
+                      className="text-white hover:scale-125 active:scale-110 transition-transform bg-black/50 rounded-full p-2 cursor-pointer touch-manipulation"
                     >
                       <img
                         src={PlayButton}
                         alt="Play"
-                        className="h-15 w-15 drop-shadow-2xl"
+                        className="md:h-15 md:w-15 h-12 w-12 drop-shadow-2xl"
                       />
                     </button>
                   ) : (
@@ -315,10 +313,10 @@ function PartnerProfileShortcut({
                         e.stopPropagation();
                         handlePauseClick();
                       }}
-                      className={`text-white hover:scale-125 transition-all duration-300 bg-black/50 rounded-full p-2 cursor-pointer ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                      className={`text-white hover:scale-125 active:scale-110 transition-all duration-300 bg-black/50 rounded-full p-2 cursor-pointer touch-manipulation ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
                         }`}
                     >
-                      <FaPauseCircle className="h-15 w-15 drop-shadow-2xl" />
+                      <FaPauseCircle className="md:h-15 md:w-15 h-12 w-12 drop-shadow-2xl" />
                     </button>
                   )}
                 </div>
@@ -327,16 +325,16 @@ function PartnerProfileShortcut({
               {/* Bottom controls bar */}
               {isVideoPlaying && (
                 <div
-                  className="absolute bottom-60 left-0 right-0 p-4 pt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="absolute md:bottom-60 bottom-20 left-0 right-0 p-2 md:p-4 pt-4 md:pt-8 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300"
                   onMouseLeave={(e) => {
                     e.stopPropagation();
                   }}
                 >
-                  <div className="flex items-center justify-between mx-auto w-full px-4">
+                  <div className="flex items-center justify-between mx-auto w-full px-2 md:px-4">
 
                     {/* Left side: Play/Pause */}
                     <div
-                      className="flex items-center gap-4"
+                      className="flex items-center gap-2 md:gap-4"
                     >
                       <button
                         onClick={(e) => {
@@ -347,28 +345,28 @@ function PartnerProfileShortcut({
                             handlePlayClick();
                           }
                         }}
-                        className="text-white hover:scale-110 transition-transform cursor-pointer"
+                        className="text-white hover:scale-110 active:scale-95 transition-transform cursor-pointer touch-manipulation"
                       >
                         {isVideoPlaying ? (
-                          <FaPauseCircle className="h-8 w-8" />
+                          <FaPauseCircle className="h-6 w-6 md:h-8 md:w-8" />
                         ) : (
                           <img
                             src={PlayButton}
                             alt="Play"
-                            className="h-8 w-8"
+                            className="h-6 w-6 md:h-8 md:w-8"
                           />
                         )}
                       </button>
 
                       {/* Current time / Duration */}
-                      <div className="text-white text-sm font-medium">
+                      <div className="text-white text-xs md:text-sm font-medium">
                         {formatTime(currentTime)} / {formatTime(duration)}
                       </div>
                     </div>
 
                     {/* Right side: Additional controls */}
                     <div
-                      className="flex items-center gap-4"
+                      className="flex items-center gap-2 md:gap-4"
                     >
                       {/* Volume control */}
                       <button
@@ -378,14 +376,14 @@ function PartnerProfileShortcut({
                             videoRef.current.muted = !videoRef.current.muted;
                           }
                         }}
-                        className="text-white hover:scale-110 transition-transform cursor-pointer"
+                        className="text-white hover:scale-110 active:scale-95 transition-transform cursor-pointer touch-manipulation"
                       >
                         {videoRef.current?.muted ? (
-                          <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                          <svg className="h-5 w-5 md:h-6 md:w-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
                           </svg>
                         ) : (
-                          <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                          <svg className="h-5 w-5 md:h-6 md:w-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
                           </svg>
                         )}
@@ -403,9 +401,9 @@ function PartnerProfileShortcut({
                             }
                           }
                         }}
-                        className="text-white hover:scale-110 transition-transform cursor-pointer"
+                        className="text-white hover:scale-110 active:scale-95 transition-transform cursor-pointer touch-manipulation"
                       >
-                        <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="h-5 w-5 md:h-6 md:w-6" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
                         </svg>
                       </button>
@@ -417,9 +415,9 @@ function PartnerProfileShortcut({
                           handlePauseClick();
                           setShowVideoElement(false);
                         }}
-                        className="text-white hover:scale-110 transition-transform ml-2 cursor-pointer"
+                        className="text-white hover:scale-110 active:scale-95 transition-transform ml-1 md:ml-2 cursor-pointer touch-manipulation"
                       >
-                        <IoClose className="h-7 w-7" />
+                        <IoClose className="h-6 w-6 md:h-7 md:w-7" />
                       </button>
                     </div>
                   </div>
@@ -431,9 +429,9 @@ function PartnerProfileShortcut({
 
               {/* Bottom section with partner info */}
               <div className="bg-[#043428] pt-0 w-full">
-                <div className="w-full mx-auto px-12 flex justify-center items-end">
+                <div className="w-full mx-auto px-4 md:px-12 flex justify-center items-end">
                   <div className="bg-[#01351F] w-full">
-                    <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white py-5">
+                    <h1 className="font-extrabold md:text-6xl text-[24px] md:text-[32px] text-center text-white py-3 md:py-5">
                       {partnerData?.businessName || partnerData?.fullName || "Loading..."}
                     </h1>
                   </div>
@@ -448,16 +446,15 @@ function PartnerProfileShortcut({
       <div className="relative z-30 bg-[#01351f] -mt-1">
         <div className="pt-4 md:pt-8 px-4 md:px-8">
           <div className="text-center">
-            <p className="text-white font-[400] text-sm md:text-base lg:text-[18px] max-w-7xl mx-auto leading-normal px-4 md:px-0">
+            <p className="text-white font-[400] text-sm md:text-base lg:text-[18px] max-w-7xl mx-auto leading-normal md:px-0">
               {partnerData?.textField1 || "descriptionShort "}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="min-h-screen flex justify-center items-center p-8 bg-[#01351F]">
+      <div className="min-h-screen flex justify-center items-center md:p-8 p-4 bg-[#01351F]">
         <div className="grid md:grid-cols-3 grid-cols-1 gap-4 max-w-7xl">
-          {/* Trustpilot Section */}
           <div className="flex flex-col gap-6">
             <div className="md:w-[403px] w-full md:h-[859px] h-auto rounded-[10px] bg-white p-6 flex flex-col relative">
               <div className=" flex justify-center p-2">
@@ -502,12 +499,12 @@ function PartnerProfileShortcut({
                 <button
                   type="button"
                   onClick={handleOpenTrustPilot}
-                  className="absolute w-[202px] h-[66px] bg-[#95C11F] flex items-center justify-center gap-2 text-white rounded-[11px] px-4 text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]"
+                  className="absolute w-[160px] md:w-[202px] h-[50px] md:h-[66px] bg-[#95C11F] flex items-center justify-center gap-1.5 md:gap-2 text-white rounded-[11px] px-3 md:px-4 text-base md:text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]"
                 >
                   <img
                     src={startImg}
                     alt="rating"
-                    className="w-[33px] h-[33px] select-none"
+                    className="w-6 h-6 md:w-[33px] md:h-[33px] select-none"
                   />
                   {t("supplierProfile.reviewUsOnTrustpilot")}
                 </button>
@@ -525,7 +522,7 @@ function PartnerProfileShortcut({
                 <img
                   src={circlePartner}
                   alt="Geografisk område"
-                  className="w-[300px] h-[300px] object-contain"
+                  className="w-[300px] h-[300px] object-contain p-4 md:p-4"
                 />
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <h2 className="text-white text-center text-[30px] font-semibold leading-tight">
@@ -541,7 +538,6 @@ function PartnerProfileShortcut({
             </div>
           </div>
 
-          {/* Middle Section */}
           <div className="flex flex-col gap-6">
             <div className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] overflow-hidden">
               <img
@@ -568,7 +564,6 @@ function PartnerProfileShortcut({
                 {t("supplierProfile.servicesTitle")}
               </h2>
 
-              {/* Updated Services Section */}
               <div className="text-white w-full text-left services-container leading-[31px]">
                 {renderServicesContent()}
               </div>
@@ -592,10 +587,9 @@ function PartnerProfileShortcut({
             </div>
           </div>
 
-          {/* Right Column */}
           <div className="flex flex-col gap-6">
             <div className="bg-white rounded-[10px] md:w-[403px] w-full md:h-[432px] h-auto flex justify-center items-center">
-              <div className="text-center">
+              <div className="text-center p-4">
                 <img
                   src={partnerData?.logoUrl || kabelLogoImg}
                   alt={partnerData?.businessName}
@@ -609,7 +603,6 @@ function PartnerProfileShortcut({
                 </h2>
               </div>
             </div>
-
             <div
               className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] flex flex-col items-center gap-[10px] p-[53px_34px]"
               style={{
@@ -622,11 +615,9 @@ function PartnerProfileShortcut({
                 alt="Fakta"
                 className="w-[88px] h-[77px] select-none"
               />
-
               <h2 className="text-white text-[28px] font-[700] py-4">
                 {t("supplierProfile.factsTitle")}
               </h2>
-
               <div className="text-white text-sm space-y-2 w-full text-left leading-[31px]">
                 {partnerData?.textField2 && (
                   <div

@@ -744,7 +744,9 @@
       "recommendPartnerMissing": "Kunne ikke indlæse partneroplysninger.",
       "recommendEmailMissing": "Indtast venligst en e-mailadresse.",
       "recommendUserMissing": "Bruger blev ikke fundet. Log venligst ind igen.",
-      "recommendSuccess": "Anbefaling sendt succesfuldt"
+      "recommendSuccess": "Anbefaling sendt succesfuldt",
+      "partnerLoginSuccess": "Partner login succesfuldt!",
+      "loginSuccess": "Login succesfuldt!"
     },
     "recommendModal": {
       "title": "Anbefal os til andre",

@@ -184,7 +184,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
     <>
       <header className={`relative`}>
         <div
-          className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-4 z-50 transition-colors duration-300 ${
+          className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-2 z-50 transition-colors duration-300 ${
             isScrolled ? "bg-[#06351E]" : "bg-transparent"
           }`}
         >
@@ -201,7 +201,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                   }
                 }}
                 className={`duration-300 ${
-                  isScrolled ? "h-10" : "h-12"
+                  isScrolled ? "h-10" : "h-11"
                 } cursor-pointer`}
                 src={userLogo}
                 alt=""
@@ -306,7 +306,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
               <img
                 src={leftArrow}
                 alt="Tilbage"
-                className="w-[51px] h-[51px]"
+                className="md:w-[51px] md:h-[51px] w-[40px] h-[40px]"
               />
             </button>
           </div>

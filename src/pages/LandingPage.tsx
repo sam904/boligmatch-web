@@ -514,8 +514,8 @@ useEffect(() => {
           <div className="absolute z-10  bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-100%  w-full items-center justify-center flex flex-col">
            <button
             onClick={() => setShowSignUpModal(true)}
-            className="bg-[#91C73D]  w-[188px]
-                h-[55px] rounded-xl md:text-[18px] text-[16px] cursor-pointer px-7
+            className="bg-[#91C73D] md:w-[188px] w-[165px]
+                md:h-[55px] h-[48px] rounded-xl md:text-[18px] text-[16px] cursor-pointer px-7
             font-semibold  text-white hover:bg-[#7fb32d] transition-colors figtree"
           >
             {t("landing.signUpButton")}
