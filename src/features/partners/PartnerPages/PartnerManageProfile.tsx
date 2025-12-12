@@ -17,6 +17,7 @@ function PartnerManageProfile() {
   const navigate = useNavigate();
 
   const [fullName, setFullName] = useState("");
+  console.log("fullName---", fullName)
   const [businessName, setBusinessName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -155,7 +156,7 @@ function PartnerManageProfile() {
       await partnerService.updateProfile(payload);
       await fetchPartnerProfile();
       showSignupSuccessToast(t("manageProfile.toast.profileUpdateSuccess"));
-        navigate("/partner/statistics");
+      navigate("/partner/statistics");
     } catch (error) {
       console.error("Failed to update partner profile", error);
       showSignupErrorToast("Failed to update partner profile");
