@@ -255,9 +255,11 @@ function PartnerProfileShortcut({
   return (
     <>
       <ScrollToTop />
-      <div className="relative w-full md:h-[650px] h-[400px] overflow-hidden shadow-lg bg-[#01351F]">
+      {/* <div className="relative w-full md:h-[650px] h-[400px] overflow-hidden shadow-lg bg-[#01351F]"> */}
+      {/* className="inset-0 bg-cover bg-center bg-no-repeat w-full md:h-[100vh] h-[400px] bg-[#01351F] rounded-t-4xl" */}
+      <div className="relative w-full md:h-[683px] h-[400px] overflow-hidden shadow-lg bg-[#01351F]">
         <div
-          className="inset-0 bg-cover bg-center bg-no-repeat w-full md:h-[100vh] h-[400px] bg-[#01351F] rounded-t-4xl"
+          className="inset-0 bg-cover bg-center bg-no-repeat w-full md:h-[683px] h-[400px] bg-[#01351F] rounded-t-4xl"
           style={{
             backgroundImage: `url(${getBackgroundImage()})`,
             display: showVideoElement ? "none" : "block",
@@ -274,7 +276,7 @@ function PartnerProfileShortcut({
         {/* Video Player */}
         <video
           ref={videoRef}
-          className="absolute inset-0 w-full md:h-full h-[400px] object-cover rounded-t-4xl"
+          className="absolute inset-0 w-full md:h-[683px] h-[400px] object-cover rounded-t-4xl"
           style={{
             display: showVideoElement ? "block" : "none",
           }}
@@ -290,7 +292,7 @@ function PartnerProfileShortcut({
             <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto`}>
 
               {/* Main play/pause button - centered */}
-              <div className="flex md:h-[100vh] h-[400px] items-end justify-center w-full gap-6 md:transform md:-translate-y-12 -translate-y-8">
+              <div className="flex md:h-[683px] h-[400px] items-end justify-center w-full gap-6 md:transform md:-translate-y-12 -translate-y-8">
                 <div className="flex items-end gap-12">
                   {/* Play / Pause button */}
                   {!isVideoPlaying && partnerData?.videoUrl ? (

@@ -99,7 +99,7 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
         <div className="max-w-7xl mx-auto">
           <div className="p-4 md:p-8">
             <p className="text-white text-[10px] sm:text-[20px] leading-relaxed text-center">
-              {partnerData?.descriptionShort}
+              {t("partnerStatistics.description")}
             </p>
           </div>
         </div>

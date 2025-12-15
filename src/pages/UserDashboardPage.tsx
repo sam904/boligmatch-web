@@ -398,9 +398,9 @@ export default function UserDashboardPage() {
                       <div
                         key={category.id}
                         onClick={() => handleCategoryClick(category)}
-                        className="w-full h-[394px] sm:w-auto sm:h-auto mx-auto rounded-[18px] sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
+                        className="w-full h-[540px] mx-auto rounded-[18px] sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl flex flex-col"
                       >
-                        <div className="relative w-full h-[222px] sm:h-56 md:h-64 lg:h-72 rounded-t-[18px] sm:rounded-t-xl overflow-hidden">
+                        <div className="relative w-full flex-shrink-0 h-[340px] rounded-t-[18px] sm:rounded-t-xl overflow-hidden">
                           <img
                             src={category.imageUrl || assets.image}
                             alt={category.name}
@@ -415,12 +415,12 @@ export default function UserDashboardPage() {
                           </div>
                         </div>
 
-                        <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center gap-2">
-                          <div className="w-16 h-12 sm:w-20 sm:h-14 flex items-center justify-center -mt-4 sm:-mt-6 mb-0">
+                        <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center gap-2 flex-1 justify-center">
+                          <div className="w-[80px] h-[40px] sm:w-[100px] sm:h-[50px] flex items-center justify-center -mt-4 sm:-mt-6 mb-0">
                             <img
                               src={category.iconUrl || assets.icon}
                               alt={category.name}
-                              className="w-[60px] h-[55px] sm:w-14 sm:h-14 object-contain"
+                              className="w-[80px] h-[40px] sm:w-[100px] sm:h-[50px] object-contain"
                               onError={(e) => {
                                 e.currentTarget.src = assets.icon;
                               }}

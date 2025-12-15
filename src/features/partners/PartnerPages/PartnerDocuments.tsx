@@ -44,7 +44,7 @@ export default function PartnerDocuments() {
               setDocs(items as any[]);
             })
             .catch((e) => {
-              setError("Failed to load documents");
+              setError(t("admin.partners.failedToLoadDocuments"));
               console.error(e);
             })
             .finally(() => setLoading(false));
@@ -67,20 +67,20 @@ export default function PartnerDocuments() {
       <div className="h-[100vh] bg-[#01351f]">
         <div className="max-w-xl md:max-w-2xl mx-auto px-4 md:px-6 pt-10 pb-16">
           <div className="flex flex-col items-center mt-[5rem]">
-            <div className="w-[60px] h-[56px] mb-4 text-white">
-              <img src={documentImg} alt="" />
+            <div className="w-[60px] h-[56px] mb-4 text-white flex items-center justify-center mx-auto">
+              <img src={documentImg} alt="" className="w-full h-full object-contain" />
             </div>
-            <h2 className="text-white text-[16px] font-[800] tracking-wide">
+            <h2 className="text-white text-[16px] font-[800] tracking-wide text-center">
               {t("admin.partners.Documents")}
             </h2>
           </div>
 
           <div className="mt-6 bg-white rounded-xl shadow-[0_8px_20px_rgba(0,0,0,0.25)]">
             <div className="w-full text-left px-6 py-5">
-              {loading && <div className="text-sm text-gray-600">Loading…</div>}
-              {error && <div className="text-sm text-red-600">{error}</div>}
+              {loading && <div className="text-sm text-gray-600">{t("common.loading")}</div>}
+              {error && <div className="text-sm text-red-600">{error || t("admin.partners.failedToLoadDocuments")}</div>}
               {!loading && !error && docs.length === 0 && (
-                <div className="text-sm text-gray-600">No documents</div>
+                <div className="text-sm text-gray-600">{t("admin.partners.noDocuments")}</div>
               )}
               {!loading && !error && docs.length > 0 && (
                 <ul className="divide-y">
@@ -112,7 +112,7 @@ export default function PartnerDocuments() {
                             );
                           }}
                         >
-                          {t("common.learnMore")}
+                          {t("common.downloadFile")}
                         </a>
                       )}
                     </li>

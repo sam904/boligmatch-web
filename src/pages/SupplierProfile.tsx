@@ -1113,14 +1113,13 @@ const SupplierProfile = () => {
                   <img
                     src={partnerData?.logoUrl || kabelLogoImg}
                     alt={partnerData?.businessName}
-                    className="w-[177px] h-[164px] object-contain mx-auto"
+                    className="w-full max-w-[1024px] aspect-[2/1] object-contain mx-auto"
                   />
-
-                  <h2 className="font-extrabold text-[30px] leading-[76px] text-black text-center">
+                  {/* <h2 className="font-extrabold text-[30px] leading-[76px] text-black text-center">
                     {partnerData?.businessName ||
                       partnerData?.fullName ||
                       "Kabel-specialisten"}
-                  </h2>
+                  </h2> */}
                 </div>
               </div>
 

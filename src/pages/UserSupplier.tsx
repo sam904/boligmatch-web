@@ -68,7 +68,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
           <img
             src={logoUrl}
             alt={name || fullName || "Partner"}
-            className="w-[72px] h-[72px] md:w-[120px] md:h-[120px] object-contain"
+            className="w-[144px] h-[72px] md:w-[240px] md:h-[120px] object-contain"
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).src = JimmysELservice;
             }}

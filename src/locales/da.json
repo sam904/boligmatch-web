@@ -80,6 +80,7 @@
     "preview": "Forhåndsvisning",
     "open": "Åbn",
     "download": "Download",
+    "downloadFile": "Hent fil",
     "enterEmailAddress": "Indtast e-mailadresse",
     "enterFullAddress": "Indtast fuld adresse",
     "errorLoading": "Fejl ved indlæsning:",
@@ -429,6 +430,8 @@
       "deleteDocumentButton": "Slet dokument",
       "documentDeleteError": "Kunne ikke slette dokumentet",
       "noDocumentsAdded": "Ingen dokumenter tilføjet",
+      "noDocuments": "Ingen dokumenter",
+      "failedToLoadDocuments": "Kunne ikke indlæse dokumenter",
       "documentsOptional": "Dokumenter er valgfrie",
       "waitEmailValidation": "Vent venligst på email validering afsluttes",
       "fixEmailErrors": "Ret venligst email valideringsfejl før du fortsætter",
@@ -716,10 +719,11 @@
     },
     "stats": {
       "profileVisits": "Besøg på min profil",
-      "totalFavorites": "i alt Favoritter",
-      "totalMessages": "antal beskeder",
-      "totalRecommendations": "samlede anbefalinger"
-    }
+      "totalFavorites": "Gemt som favorit",
+      "totalMessages": "Afsendte forespørgsler",
+      "totalRecommendations": "Antal anbefalinger"
+    },
+    "description": "Sa dolut magnis ea sitas sed es ea verum rererum, et molorer itatecerovit venite cum qui nis nonecab orporuptam et ut ut endae pa dolorectem nus magnatium et quae magniste laborem imus et mi, inihiliamus ut poriam sendusam, conem ellor sitatem voluptatiae verat asperiate vendite volupta consectur maionseque ea quate volore doluptas aboreria isintotatem as nis que verum"
   },
   "supplierProfile": {
     "contactButton": "Kontakt Leverandør",

@@ -28,7 +28,6 @@ function PartnerManageProfile() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const hasFetchedRef = useRef(false);
-  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
@@ -85,7 +84,6 @@ function PartnerManageProfile() {
   }, []);
 
   const fetchPartnerProfile = async () => {
-    setIsLoadingProfile(true);
     try {
       const token = localStorage.getItem("bm_access");
       if (!token || !token.includes(".")) return null;
@@ -110,7 +108,6 @@ function PartnerManageProfile() {
       console.error("Failed to fetch partner profile:", error);
       showSignupErrorToast(t("manageProfile.toast.fetchProfileError"));
     } finally {
-      setIsLoadingProfile(false);
       return;
     }
   };
@@ -196,49 +193,6 @@ function PartnerManageProfile() {
       setIsUpdatingPassword(false);
     }
   };
-
-  // Loading skeleton
-  if (isLoadingProfile) {
-    return (
-      <div className="min-h-[100vh] bg-[#01351f]">
-        <PartnerHeader fullHeight={false} />
-        <div className="max-w-5xl mx-auto px-5 py-4">
-          <div className="flex flex-col items-center">
-            <div className="w-[40px] h-[78px] mb-3 bg-gray-300 animate-pulse rounded"></div>
-            <div className="h-6 w-48 bg-gray-300 animate-pulse rounded mb-6"></div>
-          </div>
-
-          {/* Skeleton for profile form */}
-          <div className="mt-6 space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className={i === 4 ? "md:col-span-2" : ""}>
-                  <div className="h-4 w-24 bg-gray-300 animate-pulse rounded mb-2"></div>
-                  <div className="h-12 bg-gray-300 animate-pulse rounded"></div>
-                </div>
-              ))}
-            </div>
-            <div className="h-12 bg-gray-300 animate-pulse rounded mt-4"></div>
-          </div>
-
-          {/* Skeleton for password form */}
-          <div className="mt-8 space-y-4">
-            <div className="h-5 w-48 bg-gray-300 animate-pulse rounded"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className={i === 0 ? "md:col-span-2" : ""}>
-                  <div className="h-4 w-24 bg-gray-300 animate-pulse rounded mb-2"></div>
-                  <div className="h-12 bg-gray-300 animate-pulse rounded"></div>
-                </div>
-              ))}
-            </div>
-            <div className="h-12 bg-gray-300 animate-pulse rounded mt-4"></div>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-[100vh] bg-[#01351f]">
