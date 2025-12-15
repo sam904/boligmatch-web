@@ -109,6 +109,9 @@ useEffect(() => {
       } else if (recommendationKey) {
         // Fallback to recommendation page if no partner ID
         navigate(`/user/recommenduser/${recommendationKey}`, { replace: true });
+      } else {
+        // Default redirect to user profile after successful signup
+        navigate("/user/profile", { replace: true });
       }
     } catch (error) {
       // If auto-login fails, just close signup modal and let user login manually

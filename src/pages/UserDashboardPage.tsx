@@ -391,7 +391,7 @@ export default function UserDashboardPage() {
             <>
               {/* Categories Grid */}
               {activeView === "default" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-3">
                   {categories.map((category, index) => {
                     const assets = getCategoryAssets(index);
                     return (
@@ -431,7 +431,7 @@ export default function UserDashboardPage() {
                             {category.name}
                           </h3>
 
-                          <p className="text-sm text-[#052011] leading-relaxed px-2">
+                          <p className="text-sm text-[#052011] leading-normal px-2">
                             {category.description }
                           </p>
                         </div>

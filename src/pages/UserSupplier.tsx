@@ -353,7 +353,7 @@ const UserSupplier = () => {
                     }}
                   />
                 )}
-                <span className="text-[20px] font-[600] pl-2 figtree">
+                <span className="text-[18px] font-[600] pl-2 figtree">
                   {sub.subCategory}
                 </span>
               </button>
