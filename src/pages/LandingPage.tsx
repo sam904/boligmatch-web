@@ -549,7 +549,7 @@ useEffect(() => {
             {t("landing.mainTitle")}
           </h1>
           <div className="bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-0% w-full">
-            <h2 className="text-white md:text-[50px] text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F]   leading-[50px]  max-w-4xl tracking-[0%] text-center  md:mx-auto mx-8 pb-3 px-4 font-[800] plus-jakarta-sans">
+            <h2 className="text-white md:text-[60px] text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F]   leading-[64px]  max-w-4xl tracking-[0%] text-center  md:mx-auto mx-8 pb-3 px-4 font-[800] plus-jakarta-sans">
              {t("landing.subtitle")}
           </h2>
           </div>

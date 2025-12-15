@@ -46,7 +46,7 @@ function ParentSteperPara() {
     <div className="bg-[#01351F]">
       <div className="flex items-start justify-center px-4 sm:px-6">
         <div className="max-w-6xl mx-auto text-center">
-          <div className="space-y-0 md:mt-24">
+          <div className="space-y-0 md:mt-10 md:mb-20">
             <p className="text-white text-[16px] sm:text-[17px] md:text-[18px] leading-relaxed font-[300]  tracking-tight figtree">
               {t("partnerSteperPara.intro1")}
             </p>

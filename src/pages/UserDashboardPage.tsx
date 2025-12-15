@@ -404,7 +404,7 @@ export default function UserDashboardPage() {
                           <img
                             src={category.imageUrl || assets.image}
                             alt={category.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover object-top-left"
                             onError={(e) => {
                               e.currentTarget.src = assets.image;
                             }}
