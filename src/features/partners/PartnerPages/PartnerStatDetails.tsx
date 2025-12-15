@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import Footer from "../../../pages/Footer";
 
 function PartnerStatDetails({ partnerData }: { partnerData: any }) {
+  console.log(partnerData);
   const { t } = useTranslation();
   const [partnerCount, setPartnerCount] = useState<{
     totalPartnerIdPageVisit?: number;
