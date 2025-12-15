@@ -457,14 +457,14 @@ function PartnerProfileShortcut({
         <div className="grid md:grid-cols-3 grid-cols-1 gap-4 max-w-7xl">
           <div className="flex flex-col gap-6">
             <div className="md:w-[403px] w-full md:h-[859px] h-auto rounded-[10px] bg-white p-6 flex flex-col relative">
-              <div className=" flex justify-center p-2">
+              <div className=" flex justify-center items-end">
                 <img
                   className="w-[130px] h-[32px]"
                   src={trustPilotLogo}
                   alt=""
                 />
               </div>
-              <h3 className="text-[32px] font-[800] mb-5 text-center">
+              <h3 className="text-[32px] font-[800] mb-5 text-center leading-6.5">
                 {t("supplierProfile.reviewsTitle")}
               </h3>
               <div className="space-y-10">

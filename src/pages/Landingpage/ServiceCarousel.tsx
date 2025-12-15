@@ -98,7 +98,7 @@ export default function ServiceCarousel() {
 
   return (
     <div
-      className="w-full flex flex-col items-center justify-center bg-[#01351f] h-[60vh] md:min-h-screen relative overflow-hidden"
+      className="w-full flex flex-col items-center justify-center bg-[#01351f] h-[60vh] md:h-[90vh] relative overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -110,7 +110,7 @@ export default function ServiceCarousel() {
           return (
             <motion.div
               key={index}
-              className="absolute rounded-3xl shadow-xl cursor-grab"
+              className="absolute rounded-3xl shadow-xl shadow-black cursor-grab"
               animate={position}
               variants={IMAGE_VARIANTS}
               transition={{ duration: 0.5 }}
@@ -134,7 +134,7 @@ export default function ServiceCarousel() {
               />
 
               {/* Text */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-gradient-to-t from-black/40 to-transparent rounded-b-3xl text-center">
+              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 md:pb-12 bg-gradient-to-t from-black/40 to-transparent rounded-b-3xl text-center">
                 <img src={currentService.icon} className="w-12 h-12 mx-auto mb-2" />
                 <h3 className="text-white text-xl font-semibold">{currentService.title}</h3>
                 <p className="text-white/80 text-sm mt-1">{currentService.description}</p>

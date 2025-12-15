@@ -15,7 +15,7 @@ function Footer() {
 
   return (
     <>
-      <footer className="bg-[#01351f] text-white text-center p-4 md:p-4 pt-42">
+      <footer className="bg-[#01351f] h-[40vh] text-white text-center p-4 md:p-4 pt-42 flex flex-col items-center justify-end">
         <div className="flex flex-col items-center">
           <div className="text-center">
             <div className="mb-4">

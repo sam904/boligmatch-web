@@ -721,7 +721,7 @@
   },
   "supplierProfile": {
     "contactButton": "Kontakt Leverandør",
-    "saveFavoriteButton": "Gem som Favorit",
+    "saveFavoriteButton": "Gem som favorit",
     "removeFromFavorites": "Fjern fra favoritter",
     "removeFavoriteSuccess": "Fjernet fra favoritter",
     "favoriteNotFound": "Favorit blev ikke fundet.",
