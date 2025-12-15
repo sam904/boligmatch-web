@@ -697,7 +697,9 @@
     "moreInfo": "Læs mere",
     "partnerLabel": "Partner",
     "subjectLabel": "Emne",
-    "messageTitle": "Besked"
+    "messageTitle": "Besked",
+    "dateLabel": "Dato",
+    "descriptionLabel": "Beskrivelse"
   },
   "userSupplier": {
     "loadingSubcategories": "Indlæser underkategorier...",

@@ -17,6 +17,7 @@ function PartnerManageProfile() {
   const navigate = useNavigate();
 
   const [fullName, setFullName] = useState("");
+  console.log("fullName---", fullName)
   const [businessName, setBusinessName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -30,13 +31,6 @@ function PartnerManageProfile() {
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
-
-  // Validation function for name fields
-  const isValidName = (name: string): boolean => {
-    if (!name.trim()) return true;
-    const nameRegex = /^[a-zA-ZÀ-ÿÆØÅæøå\s'\-\.]+$/;
-    return nameRegex.test(name);
-  };
 
   // Validation function for business name (allows more characters like &, numbers, etc.)
   const isValidBusinessName = (name: string): boolean => {
@@ -125,11 +119,7 @@ function PartnerManageProfile() {
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate name fields
-    if (fullName.trim() && !isValidName(fullName)) {
-      showSignupErrorToast(t("manageProfile.toast.fullNameInvalid"));
-      return;
-    }
+    // Validate business name
     if (!isValidBusinessName(businessName)) {
       showSignupErrorToast(t("manageProfile.toast.businessNameInvalid"));
       return;
@@ -166,7 +156,7 @@ function PartnerManageProfile() {
       await partnerService.updateProfile(payload);
       await fetchPartnerProfile();
       showSignupSuccessToast(t("manageProfile.toast.profileUpdateSuccess"));
-        navigate("/partner/statistics");
+      navigate("/partner/statistics");
     } catch (error) {
       console.error("Failed to update partner profile", error);
       showSignupErrorToast("Failed to update partner profile");
