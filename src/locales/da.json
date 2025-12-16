@@ -80,6 +80,7 @@
     "preview": "Forhåndsvisning",
     "open": "Åbn",
     "download": "Download",
+    "downloadFile": "Hent fil",
     "enterEmailAddress": "Indtast e-mailadresse",
     "enterFullAddress": "Indtast fuld adresse",
     "errorLoading": "Fejl ved indlæsning:",
@@ -92,7 +93,7 @@
     "modified": "Ændret",
     "note": "Note",
     "displayed": "Vist",
-     "svgUploadSuccess": "SVG uploadet succesfuldt",
+    "svgUploadSuccess": "SVG uploadet succesfuldt",
     "svgUploadFailed": "Kunne ikke uploade SVG",
     "svgFile": "SVG-fil",
     "svgScalable": "Skalerbar vektorgrafik",
@@ -429,6 +430,8 @@
       "deleteDocumentButton": "Slet dokument",
       "documentDeleteError": "Kunne ikke slette dokumentet",
       "noDocumentsAdded": "Ingen dokumenter tilføjet",
+      "noDocuments": "Ingen dokumenter",
+      "failedToLoadDocuments": "Kunne ikke indlæse dokumenter",
       "documentsOptional": "Dokumenter er valgfrie",
       "waitEmailValidation": "Vent venligst på email validering afsluttes",
       "fixEmailErrors": "Ret venligst email valideringsfejl før du fortsætter",
@@ -630,7 +633,7 @@
     "acceptButton": "Acceptér",
     "nameRequired": "Navn er påkrævet",
     "postalCodeRequired": "Postnummer er påkrævet",
-    "postalCodeLength":"Postnummer skal være præcis 4 cifre",
+    "postalCodeLength": "Postnummer skal være præcis 4 cifre",
     "mobileRequired": "Mobilnummer er påkrævet",
     "emailRequired": "Email er påkrævet",
     "emailInvalid": "Ugyldig email adresse",
@@ -697,7 +700,9 @@
     "moreInfo": "Læs mere",
     "partnerLabel": "Partner",
     "subjectLabel": "Emne",
-    "messageTitle": "Besked"
+    "messageTitle": "Besked",
+    "dateLabel": "Dato",
+    "descriptionLabel": "Beskrivelse"
   },
   "userSupplier": {
     "loadingSubcategories": "Indlæser underkategorier...",
@@ -714,14 +719,15 @@
     },
     "stats": {
       "profileVisits": "Besøg på min profil",
-      "totalFavorites": "i alt Favoritter",
-      "totalMessages": "antal beskeder",
-      "totalRecommendations": "samlede anbefalinger"
-    }
+      "totalFavorites": "Gemt som favorit",
+      "totalMessages": "Afsendte forespørgsler",
+      "totalRecommendations": "Antal anbefalinger"
+    },
+    "description": "Sa dolut magnis ea sitas sed es ea verum rererum, et molorer itatecerovit venite cum qui nis nonecab orporuptam et ut ut endae pa dolorectem nus magnatium et quae magniste laborem imus et mi, inihiliamus ut poriam sendusam, conem ellor sitatem voluptatiae verat asperiate vendite volupta consectur maionseque ea quate volore doluptas aboreria isintotatem as nis que verum"
   },
   "supplierProfile": {
     "contactButton": "Kontakt Leverandør",
-    "saveFavoriteButton": "Gem som Favorit",
+    "saveFavoriteButton": "Gem som favorit",
     "removeFromFavorites": "Fjern fra favoritter",
     "removeFavoriteSuccess": "Fjernet fra favoritter",
     "favoriteNotFound": "Favorit blev ikke fundet.",
@@ -744,7 +750,9 @@
       "recommendPartnerMissing": "Kunne ikke indlæse partneroplysninger.",
       "recommendEmailMissing": "Indtast venligst en e-mailadresse.",
       "recommendUserMissing": "Bruger blev ikke fundet. Log venligst ind igen.",
-      "recommendSuccess": "Anbefaling sendt succesfuldt"
+      "recommendSuccess": "Anbefaling sendt succesfuldt",
+      "partnerLoginSuccess": "Partner login succesfuldt!",
+      "loginSuccess": "Login succesfuldt!"
     },
     "recommendModal": {
       "title": "Anbefal os til andre",
@@ -753,7 +761,7 @@
       "comment": "Kommentar",
       "send": "Send",
       "emailPlaceholder": "Indtast e-mail",
-      "commentPlaceholder":"Indtast kommentar"
+      "commentPlaceholder": "Indtast kommentar"
     },
     "contactModal": {
       "title": "Kontakt os",
@@ -762,8 +770,8 @@
       "body": "Beskrivelse",
       "send": "Send",
       "contactInfo": "Kontaktinformation",
-      "subjectPlaceholder":"Indtast emnet her",
-      "bodyPlaceholder":"Indtast beskrivelsen her"
+      "subjectPlaceholder": "Indtast emnet her",
+      "bodyPlaceholder": "Indtast beskrivelsen her"
     },
     "servicesFallback": {
       "fixingIssues": "Løsning af fejl og fejlfinding",
@@ -774,7 +782,7 @@
     "referencesTitle": "Referencer",
     "geographicalArea": "Geografisk område",
     "noReferencesAvailable": "Ingen referencer tilgængelige",
-    "reviewUsOnTrustpilot": "Anmeld os på Trustpilot"
+    "reviewUsOnTrustpilot": "Find os også på Trustpilot"
   },
   "recommendUser": {
     "introModal": {
@@ -785,7 +793,6 @@
       "partnerFallback": "Vores partner",
       "description": "Hvis det har din interesse, så klik på knappen herunder og opret dig nemt og gratis som bruger på Boligmatch+. Boligmatch+ er en digital platform med en nytænkende og brugervenlig tilgang, hvor alle boliginteresserede kan finde produkter og services til hjemmet blandt vores mange dygtige partnere.",
       "acceptButton": "Accepter anbefaling"
-     
     }
   },
   "sidebar": {

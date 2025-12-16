@@ -14,39 +14,39 @@ function ParentSteperPara() {
     {
       title: t("partnerSteperPara.benefits.1.title"),
       description: t("partnerSteperPara.benefits.1.description"),
-      img:ACP
+      img: ACP
     },
     {
       title: t("partnerSteperPara.benefits.2.title"),
       description: t("partnerSteperPara.benefits.2.description"),
-      img:visiblemarketing
+      img: visiblemarketing
     },
     {
       title: t("partnerSteperPara.benefits.3.title"),
       description: t("partnerSteperPara.benefits.3.description"),
-      img:focus
+      img: focus
     },
     {
       title: t("partnerSteperPara.benefits.4.title"),
       description: t("partnerSteperPara.benefits.4.description"),
-      img:networkgroup
+      img: networkgroup
     },
     {
       title: t("partnerSteperPara.benefits.5.title"),
       description: t("partnerSteperPara.benefits.5.description"),
-      img:discount
+      img: discount
     },
     {
       title: t("partnerSteperPara.benefits.6.title"),
       description: t("partnerSteperPara.benefits.6.description"),
-      img:reffer   
+      img: reffer
     },
   ];
   return (
     <div className="bg-[#01351F]">
       <div className="flex items-start justify-center px-4 sm:px-6">
         <div className="max-w-6xl mx-auto text-center">
-          <div className="space-y-0 md:mt-24">
+          <div className="space-y-0 md:mt-10 md:mb-20">
             <p className="text-white text-[16px] sm:text-[17px] md:text-[18px] leading-relaxed font-[300]  tracking-tight figtree">
               {t("partnerSteperPara.intro1")}
             </p>
@@ -65,7 +65,7 @@ function ParentSteperPara() {
             {benefits.map((benefit, index) => (
               <div
                 key={index}
-                className="p-4 sm:p-5 md:p-6 transition-colors duration-300 w-full h-full flex flex-col"
+                className="p-6 md:p-6 transition-colors duration-300 w-full h-full flex flex-col"
                 style={{
                   background:
                     "linear-gradient(155.76deg, #041412 2.48%, #013425 97.87%)",
@@ -93,35 +93,6 @@ function ParentSteperPara() {
           </div>
         </div>
       </div>
-      {/* <div className="bg-[#01351f] flex flex-col justify-center items-center py-8 sm:py-12 md:py-16 lg:py-22 space-y-2 px-4">
-        <div className="text-center">
-          <div className="mb-3 sm:mb-4">
-            <img
-              src={sampleImg}
-              alt="Boligmatch Logo"
-              className="h-auto w-auto max-w-[120px] sm:max-w-[150px] md:max-w-none"
-            />
-          </div>
-        </div>
-        <p className="text-white text-xs sm:text-sm text-center leading-relaxed">
-          Tørringvej 7 2610 Rødovre
-          <br className="sm:hidden" />
-          <span className="hidden sm:inline"> </span>Tlf{" "}
-          <a href="tel:70228288" className="text-[#91C73D] hover:underline">
-            70228288
-          </a>
-          <br className="sm:hidden" />
-          <span className="hidden sm:inline"> </span>
-          <a
-            href="mailto:info@boligmatch.dk"
-            className="text-[#91C73D] hover:underline"
-          >
-            info@boligmatch.dk
-          </a>
-          <br className="sm:hidden" />
-          <span className="hidden sm:inline"> </span>CVR 33160437
-        </p>
-      </div> */}
       <Footer />
     </div>
   );

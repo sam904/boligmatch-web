@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { userService } from "../../services/user.service";
 import type { CreateUserRequest } from "../../types/user";
 import logo from "/src/assets/userImages/boligmatchLogo2.svg";
@@ -22,6 +23,7 @@ export default function SignUpModal({
   onSwitchToLogin,
 }: SignUpModalProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const [shouldRender, setShouldRender] = useState(false);
@@ -474,7 +476,7 @@ export default function SignUpModal({
     if (emailValidation.checking || mobileValidation.checking) {
       showSignupErrorToast(
         t("validation.validationInProgress") ||
-          "Please wait for email/mobile validation to complete"
+        "Please wait for email/mobile validation to complete"
       );
       return;
     }
@@ -517,15 +519,17 @@ export default function SignUpModal({
       setMobileValidation({ checking: false, available: null, message: "" });
 
       // If onSignupSuccess callback is provided, call it with credentials for auto-login
+      // The callback will handle navigation
       if (onSignupSuccess) {
         setTimeout(() => {
           onSignupSuccess(data.email, data.password);
         }, 1000);
       } else {
-        // Close modal after a short delay to show success message (default behavior)
+        // Close modal and redirect to user profile
         setTimeout(() => {
           onClose();
-        }, 2000);
+          navigate("/user/profile", { replace: true });
+        }, 1500);
       }
     } catch (err: any) {
       const apiError = err?.response?.data;
@@ -570,29 +574,23 @@ export default function SignUpModal({
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center bg-black/50 z-50 transition-opacity duration-300 ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
+      className={`fixed inset-0 flex items-center justify-center bg-black/50 z-50 transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"
+        }`}
       style={{ pointerEvents: isVisible ? "auto" : "none" }}
     >
       <div
-        className={`w-full max-w-2xl rounded-lg shadow-xl mx-4 my-16 bg-[#EFEFEF] transform transition-all duration-300 ${
-          isVisible
+        className={`w-full max-w-2xl rounded-lg shadow-xl mx-8 my-16 bg-[#EFEFEF] transform transition-all duration-300 ${isVisible
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 translate-y-4"
-        }`}
+          }`}
       >
-        <div className="flex justify-center items-center p-4 pb-2 relative">
+        <div className="flex justify-center items-center p-4 pb-0 relative">
           <div className="flex items-center justify-center p-2">
             <div className="text-2xl font-bold">
               <img
                 src={logo}
                 alt=""
                 className="h-8 w-auto"
-                style={{
-                  filter:
-                    "brightness(0) saturate(100%) invert(8%) sepia(100%) saturate(1000%) hue-rotate(120deg) brightness(0.3) contrast(1.2)",
-                }}
               />
             </div>
           </div>
@@ -675,7 +673,7 @@ export default function SignUpModal({
                   className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
                     "postalCode"
                   )}`}
-                  maxLength={5}
+                  maxLength={4}
                   {...register("postalCode")}
                 />
                 {shouldShowError("postalCode") && (

@@ -198,7 +198,7 @@ function UserHeader({
                   }
                 }}
                 className={`duration-300 ${
-                  isScrolled ? "h-10" : "h-12"
+                  isScrolled ? "h-10" : "h-11"
                 } cursor-pointer`}
                 src={userLogo}
                 alt=""
@@ -304,7 +304,7 @@ function UserHeader({
                 <img
                   src={leftArrow}
                   alt="Tilbage"
-                  className="w-[51px] h-[51px]"
+                  className="md:w-[51px] md:h-[51px] w-[40px] h-[40px]"
                 />
               </button>
             </span>

@@ -68,7 +68,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
           <img
             src={logoUrl}
             alt={name || fullName || "Partner"}
-            className="w-[72px] h-[72px] md:w-[120px] md:h-[120px] object-contain"
+            className="w-[144px] h-[72px] md:w-[240px] md:h-[120px] object-contain"
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).src = JimmysELservice;
             }}
@@ -353,7 +353,7 @@ const UserSupplier = () => {
                     }}
                   />
                 )}
-                <span className="text-[20px] font-[600] pl-2 figtree">
+                <span className="text-[18px] font-[600] pl-2 figtree">
                   {sub.subCategory}
                 </span>
               </button>
@@ -365,7 +365,7 @@ const UserSupplier = () => {
       </div>
 
       {/* Fixed: Added overflow-visible and adjusted z-index to prevent clipping */}
-      <section className="bg-[#01351f] w-full flex justify-center pt-8 pb-8 md:pt-2 md:pb-30 relative -mt-0 md:-mt-32 overflow-visible z-20">
+      <section className="bg-[#01351f] w-full flex justify-center pt-0 pb-8 md:pt-2 md:pb-30 relative md:-mt-32 overflow-visible z-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-6 max-w-7xl px-4 md:px-7 w-full overflow-visible">
           {partnersLoading ? (
             <div className="col-span-3 flex justify-center items-center h-64">
@@ -406,8 +406,8 @@ const UserSupplier = () => {
       </section>
       
       {/* Fixed: Reduced negative margin and added z-index to prevent overlap */}
-      <div className="relative -mt-4 md:-mt-32 z-10">
-        <div className="pt-8 md:pt-0">
+      <div className="relative md:-mt-32 z-10">
+        <div className="pt-0 md:pt-0">
           <Footer />
         </div>
       </div>

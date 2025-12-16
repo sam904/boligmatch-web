@@ -82,6 +82,7 @@
     "preview": "Preview",
     "open": "Open",
     "download": "Download",
+    "downloadFile": "Download file",
     "enterEmailAddress": "Enter email address",
     "enterFullAddress": "Enter full address",
     "errorLoading": "Error loading:",
@@ -425,6 +426,8 @@
       "documentDeleteError": "Failed to delete document",
       "deletePartnerItem": "Partner: {{businessName}} (CVR: {{cvr}})",
       "noDocumentsAdded": "No documents added",
+      "noDocuments": "No documents",
+      "failedToLoadDocuments": "Failed to load documents",
       "documentsOptional": "Documents are optional",
       "waitEmailValidation": "Please wait for email validation to complete",
       "fixEmailErrors": "Please fix email validation errors before proceeding",
@@ -680,7 +683,9 @@
     "moreInfo": "More info",
     "partnerLabel": "Partner",
     "subjectLabel": "Subject",
-    "messageTitle": "Message"
+    "messageTitle": "Message",
+    "dateLabel": "Date",
+    "descriptionLabel": "Description"
   },
   "userSupplier": {
     "loadingSubcategories": "Loading subcategories...",
@@ -696,11 +701,12 @@
       "partners": "Partners"
     },
     "stats": {
-      "profileVisits": "Profile visits",
-      "totalFavorites": "Total favorites",
-      "totalMessages": "Total Messages",
-      "totalRecommendations": "Total recommendations"
-    }
+      "profileVisits": "Visit my profile",
+      "totalFavorites": "Saved as a favorite",
+      "totalMessages": "Sent inquiries",
+      "totalRecommendations": "Number of recommendations"
+    },
+    "description": "Sa dolut magnis ea sitas sed es ea verum rererum, et molorer itatecerovit venite cum qui nis nonecab orporuptam et ut ut endae pa dolorectem nus magnatium et quae magniste laborem imus et mi, inihiliamus ut poriam sendusam, conem ellor sitatem voluptatiae verat asperiate vendite volupta consectur maionseque ea quate volore doluptas aboreria isintotatem as nis que verum"
   },
   "supplierProfile": {
     "contactButton": "Contact Supplier",
@@ -761,7 +767,7 @@
     "referencesTitle": "References",
     "geographicalArea": "Geographical Area",
     "noReferencesAvailable": "No references available",
-    "reviewUsOnTrustpilot": "Review us on Trustpilot"
+    "reviewUsOnTrustpilot": "Find us also on Trustpilot"
   },
   "recommendUser": {
     "introModal": {

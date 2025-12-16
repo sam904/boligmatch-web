@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import Footer from "../../../pages/Footer";
 
 function PartnerStatDetails({ partnerData }: { partnerData: any }) {
+  console.log(partnerData);
   const { t } = useTranslation();
   const [partnerCount, setPartnerCount] = useState<{
     totalPartnerIdPageVisit?: number;
@@ -67,8 +68,8 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
 
   return (
     <>
-      <div className="bg-[#01351f] h-[450px]">
-        <div className="w-full max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4  mb-8 pt-[70px] md:pt-[20px] place-items-center">
+      <div className="bg-[#01351f] md:h-[450px] h-[350px]">
+        <div className="w-full max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4  md:mb-8 mb-4 md:pt-[20px] place-items-center gap-y-4 md:gap-y-0">
           {statistics.map((stat, index) => (
             <div key={index} className="flex flex-col items-center">
               <div className="flex flex-col items-center">
@@ -99,7 +100,7 @@ function PartnerStatDetails({ partnerData }: { partnerData: any }) {
         <div className="max-w-7xl mx-auto">
           <div className="p-4 md:p-8">
             <p className="text-white text-[10px] sm:text-[20px] leading-relaxed text-center">
-              {partnerData?.descriptionShort}
+              {t("partnerStatistics.description")}
             </p>
           </div>
         </div>

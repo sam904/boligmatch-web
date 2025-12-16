@@ -109,6 +109,9 @@ useEffect(() => {
       } else if (recommendationKey) {
         // Fallback to recommendation page if no partner ID
         navigate(`/user/recommenduser/${recommendationKey}`, { replace: true });
+      } else {
+        // Default redirect to user profile after successful signup
+        navigate("/user/profile", { replace: true });
       }
     } catch (error) {
       // If auto-login fails, just close signup modal and let user login manually
@@ -514,8 +517,8 @@ useEffect(() => {
           <div className="absolute z-10  bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-100%  w-full items-center justify-center flex flex-col">
            <button
             onClick={() => setShowSignUpModal(true)}
-            className="bg-[#91C73D]  w-[188px]
-                h-[55px] rounded-xl md:text-[18px] text-[16px] cursor-pointer px-7
+            className="bg-[#91C73D] md:w-[188px] w-[165px]
+                md:h-[55px] h-[48px] rounded-xl md:text-[18px] text-[16px] cursor-pointer px-7
             font-semibold  text-white hover:bg-[#7fb32d] transition-colors figtree"
           >
             {t("landing.signUpButton")}
@@ -549,7 +552,7 @@ useEffect(() => {
             {t("landing.mainTitle")}
           </h1>
           <div className="bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-0% w-full">
-            <h2 className="text-white md:text-[50px] text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F]   leading-[50px]  max-w-4xl tracking-[0%] text-center  md:mx-auto mx-8 pb-3 px-4 font-[800] plus-jakarta-sans">
+            <h2 className="text-white md:text-[60px] text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F]   leading-[64px]  max-w-4xl tracking-[0%] text-center  md:mx-auto mx-8 pb-3 px-4 font-[800] plus-jakarta-sans">
              {t("landing.subtitle")}
           </h2>
           </div>
@@ -565,7 +568,7 @@ useEffect(() => {
       </div>
       }
        <ServiceCarousel />
-        <div className="bg-[#01351f]">
+        <div className="bg-[#01351f] py-11">
         <h1 className="md:text-[64px] text-[42px] md:leading-[66px] leading-[42px] text-white text-center max-w-[845px] mx-auto font-[800] plus-jakarta-sans">
           {t("landing.transparentJourney")} 
         </h1>

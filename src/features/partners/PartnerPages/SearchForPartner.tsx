@@ -121,7 +121,7 @@ function SearchForPartner() {
                     <div
                       key={category.id}
                       onClick={() => handleCategoryClick(category)}
-                      className="w-[374px] h-[394px] md:w-auto md:h-auto mx-auto rounded-[18px] md:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
+                      className="w-full max-w-[374px] h-[394px] md:w-auto md:h-auto md:max-w-none mx-auto rounded-[18px] md:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
                     >
                       <div className="relative w-full h-[222px] md:h-56 lg:h-64 xl:h-72 rounded-t-[18px] md:rounded-t-xl overflow-hidden">
                         <img
@@ -132,14 +132,14 @@ function SearchForPartner() {
                             e.currentTarget.src = assets.image;
                           }}
                         />
-                        <div className="absolute bottom-0 left-0 right-0 h-[120px] sm:h-[50px] bg-gradient-to-t from-white to-transparent"></div>
+                        <div className="absolute bottom-0 left-0 right-0 h-[80px] sm:h-[50px] bg-gradient-to-t from-white to-transparent"></div>
                         <div className="absolute bottom-0 left-0 right-0">
-                          <img src={categoryGradientImg} alt="" />
+                          <img src={categoryGradientImg} alt="" className="w-full h-auto" />
                         </div>
                       </div>
 
                       <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center gap-2">
-                        <div className="w-16 h-12 sm:w-20 sm:h-14 flex items-center justify-center -mt-4 sm:-mt-6 mb-0">
+                        <div className="w-16 h-12 sm:w-20 sm:h-14 flex items-center justify-center -mt-2 sm:-mt-6 mb-0">
                           <img
                             src={category.iconUrl || assets.icon}
                             alt={category.name}

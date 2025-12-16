@@ -133,6 +133,7 @@ export default function UserDashboardPage() {
   // Helpers to safely read Category/Subcategory names from favourite payloads
   const getFavouriteCategory = (fav: FavouriteItem) => {
     return (
+      fav.categoriesName ||
       fav.categoryName ||
       fav.category ||
       fav.categorys ||
@@ -143,6 +144,7 @@ export default function UserDashboardPage() {
 
   const getFavouriteSubCategory = (fav: FavouriteItem) => {
     return (
+      fav.subCategoriesName ||
       fav.subCategoryName ||
       fav.subCategory ||
       fav.subCategories ||
@@ -389,20 +391,20 @@ export default function UserDashboardPage() {
             <>
               {/* Categories Grid */}
               {activeView === "default" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-3">
                   {categories.map((category, index) => {
                     const assets = getCategoryAssets(index);
                     return (
                       <div
                         key={category.id}
                         onClick={() => handleCategoryClick(category)}
-                        className="w-full h-[394px] sm:w-auto sm:h-auto mx-auto rounded-[18px] sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
+                        className="w-full h-[540px] mx-auto rounded-[18px] sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl flex flex-col"
                       >
-                        <div className="relative w-full h-[222px] sm:h-56 md:h-64 lg:h-72 rounded-t-[18px] sm:rounded-t-xl overflow-hidden">
+                        <div className="relative w-full flex-shrink-0 h-[340px] rounded-t-[18px] sm:rounded-t-xl overflow-hidden">
                           <img
                             src={category.imageUrl || assets.image}
                             alt={category.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover object-top-left"
                             onError={(e) => {
                               e.currentTarget.src = assets.image;
                             }}
@@ -413,12 +415,12 @@ export default function UserDashboardPage() {
                           </div>
                         </div>
 
-                        <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center gap-2">
-                          <div className="w-16 h-12 sm:w-20 sm:h-14 flex items-center justify-center -mt-4 sm:-mt-6 mb-0">
+                        <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center gap-2 flex-1 justify-center">
+                          <div className="w-[80px] h-[40px] sm:w-[100px] sm:h-[50px] flex items-center justify-center -mt-4 sm:-mt-6 mb-0">
                             <img
                               src={category.iconUrl || assets.icon}
                               alt={category.name}
-                              className="w-[60px] h-[55px] sm:w-14 sm:h-14 object-contain"
+                              className="w-[80px] h-[40px] sm:w-[100px] sm:h-[50px] object-contain"
                               onError={(e) => {
                                 e.currentTarget.src = assets.icon;
                               }}
@@ -429,7 +431,7 @@ export default function UserDashboardPage() {
                             {category.name}
                           </h3>
 
-                          <p className="text-sm text-[#052011] leading-relaxed px-2">
+                          <p className="text-sm text-[#052011] leading-normal px-2">
                             {category.description }
                           </p>
                         </div>
@@ -710,25 +712,25 @@ export default function UserDashboardPage() {
 
             <div className="space-y-4 text-[#052011]">
               <div>
-                <div className="text-sm font-extrabold">Dato</div>
+                <div className="text-sm font-extrabold">{t("userDashboard.dateLabel")}</div>
                 <div className="text-sm">
                   {formatConvDate(openConversation.createdDate)}
                 </div>
               </div>
               <div>
-                <div className="text-sm font-extrabold">Partner</div>
+                <div className="text-sm font-extrabold">{t("userDashboard.partnerLabel")}</div>
                 <div className="text-sm">
                   {openConversation.partnerName || "-"}
                 </div>
               </div>
               <div>
-                <div className="text-sm font-extrabold">Emne</div>
+                <div className="text-sm font-extrabold">{t("userDashboard.subjectLabel")}</div>
                 <div className="text-sm">
                   {openConversation.messageSubject || "-"}
                 </div>
               </div>
               <div>
-                <div className="text-sm font-extrabold">Beskrivelse</div>
+                <div className="text-sm font-extrabold">{t("userDashboard.descriptionLabel")}</div>
                 <div className="text-sm leading-relaxed">
                   {openConversation.messageContent || "-"}
                 </div>

@@ -271,7 +271,7 @@ export default function ManageProfile() {
     <>
       <div className="min-h-[100vh] bg-[#01351f]">
         <UserHeader fullHeight={false} />
-        <div className="max-w-5xl mx-auto px-5 py-4">
+        <div className="max-w-5xl mx-auto px-5 py-4 pt-2 md:pt-12">
           <div className="flex flex-col items-center">
             <img src={profileIcon} alt="" className="w-[40px] h-[78px] mb-3" />
             <h1 className="text-white text-[16px] font-[800]">
