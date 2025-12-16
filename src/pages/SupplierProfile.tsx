@@ -748,8 +748,6 @@ const SupplierProfile = () => {
           <div className="relative w-full h-full group">
             {/* Controls container - positioned higher up */}
             <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto `}>
-
-              {/* Main play/pause button - centered */}
               <div className="flex h-[368px] md:h-[100vh] items-end justify-center  w-full gap-6 transform translate-y-12 ">
                 <div className="flex items-end gap-12">
                   {/* Play / Pause button */}
@@ -759,13 +757,13 @@ const SupplierProfile = () => {
                         e.stopPropagation();
                         handlePlayClick();
                       }}
-                      className="text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-2 cursor-pointer"
+                      className="text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-1.5 md:p-2 cursor-pointer"
                       onMouseEnter={() => setShowControls(true)}
                     >
                       <img
                         src={PlayButton}
                         alt="Play"
-                        className="h-15 w-15 drop-shadow-2xl"
+                        className="w-10 h-10 md:w-16 md:h-16 drop-shadow-2xl"
                       />
                     </button>
                   ) : (
@@ -943,56 +941,6 @@ const SupplierProfile = () => {
                   </div>
                 </div>
 
-                {/* Mobile buttons (smaller, single-row without scrollbar) */}
-                <div className="w-full mx-auto px-4 flex justify-center items-end md:hidden">
-                  <div className="flex gap-1 justify-between w-full pb-3 z-40">
-                    {/* Show buttons only when video is NOT playing */}
-                    {!isPartner && (
-                      <>
-                        {/* Favorite Button */}
-                        <button
-                          className="bg-[#91C73D] text-white px-2.5 py-2 rounded-[11px] flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-[#7fb02f] transition-colors text-[11px] leading-tight font-[700] shadow-md max-w-[120px] h-[48px] opacity-100"
-                          onClick={handleToggleFavourite}
-                          disabled={isAddingToFavorites}
-                        >
-                          <img
-                            src={heartIcon}
-                            alt="Favorite"
-                            className="w-5 h-5 flex-shrink-0"
-                          />
-                          {String(partnerData?.isValidFavourite) === "True"
-                            ? t("supplierProfile.removeFromFavorites")
-                            : t("supplierProfile.saveFavoriteButton")}
-                        </button>
-
-                        <button
-                          className="bg-[#91C73D] text-white px-2.5 py-2 rounded-[11px] flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-[#7fb02f] transition-colors text-[11px] leading-tight font-[700] shadow-md max-w-[120px] h-[48px] opacity-100"
-                          onClick={() => setActiveModal("recommend")}
-                        >
-                          <img
-                            src={share}
-                            alt="Recommend"
-                            className="w-5 h-5 flex-shrink-0"
-                          />
-                          {t("supplierProfile.recommendation")}
-                        </button>
-
-                        {/* Contact Button */}
-                        <button
-                          className="bg-[#91C73D] text-white px-2.5 py-2 rounded-[11px] flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-[#7fb02f] transition-colors text-[11px] leading-tight font-[700] shadow-md max-w-[120px] h-[48px] opacity-100"
-                          onClick={() => setActiveModal("contact")}
-                        >
-                          <img
-                            src={chat}
-                            alt="Contact"
-                            className="w-5 h-5 flex-shrink-0"
-                          />
-                          {t("supplierProfile.conversation")}
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
               </div>
               <div className="bg-[#01351f] w-full">
                 <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white py-5">
@@ -1006,16 +954,67 @@ const SupplierProfile = () => {
 
         <UserHeader />
 
+        {/* Mobile buttons directly under hero image, before intro text */}
+        <div className="bg-[#01351f] md:hidden">
+          <div className="w-full mx-auto px-4 flex justify-center items-end">
+            <div className="flex gap-1 justify-between w-full pb-3 z-40">
+              {!isPartner && (
+                <>
+                  {/* Favorite Button */}
+                  <button
+                    className="bg-[#91C73D] text-white px-2.5 py-2 rounded-[11px] flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-[#7fb02f] transition-colors text-[11px] leading-tight font-[700] shadow-md max-w-[120px] h-[48px] opacity-100"
+                    onClick={handleToggleFavourite}
+                    disabled={isAddingToFavorites}
+                  >
+                    <img
+                      src={heartIcon}
+                      alt="Favorite"
+                      className="w-5 h-5 flex-shrink-0"
+                    />
+                    {String(partnerData?.isValidFavourite) === "True"
+                      ? t("supplierProfile.removeFromFavorites")
+                      : t("supplierProfile.saveFavoriteButton")}
+                  </button>
+
+                  <button
+                    className="bg-[#91C73D] text-white px-2.5 py-2 rounded-[11px] flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-[#7fb02f] transition-colors text-[11px] leading-tight font-[700] shadow-md max-w-[120px] h-[48px] opacity-100"
+                    onClick={() => setActiveModal("recommend")}
+                  >
+                    <img
+                      src={share}
+                      alt="Recommend"
+                      className="w-5 h-5 flex-shrink-0"
+                    />
+                    {t("supplierProfile.recommendation")}
+                  </button>
+
+                  {/* Contact Button */}
+                  <button
+                    className="bg-[#91C73D] text-white px-2.5 py-2 rounded-[11px] flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-[#7fb02f] transition-colors text-[11px] leading-tight font-[700] shadow-md max-w-[120px] h-[48px] opacity-100"
+                    onClick={() => setActiveModal("contact")}
+                  >
+                    <img
+                      src={chat}
+                      alt="Contact"
+                      className="w-5 h-5 flex-shrink-0"
+                    />
+                    {t("supplierProfile.conversation")}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
 
         <div className="bg-[#01351f]">
           <div className="max-w-6xl m-auto">
-            <p className="text-white font-[400] md:text-[18px] text-[12px] text-center px-8 leading-relaxed">
+            <p className="text-white font-[400] md:text-[18px] text-[12px] text-center px-8 leading-relaxed line-clamp-5 md:line-clamp-none">
               {partnerData?.textField1 || "Loading..."}
             </p>
           </div>
         </div>
 
-        <div className="bg-[#01351f] min-h-screen flex justify-center items-center p-8 md:pt-0 pt-28">
+        <div className="bg-[#01351f] min-h-screen flex justify-center items-center px-4 md:px-8 pt-28 md:pt-0 pb-8">
           <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-7xl bg-[#01351f]">
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">

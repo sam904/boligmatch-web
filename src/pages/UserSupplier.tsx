@@ -89,8 +89,8 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
         onClick={onMoreInfo}
         disabled={isLoading}
         className={`mt-auto font-bold text-[14px] md:text-[16px] cursor-pointer transition-all duration-200 ${isLoading
-            ? "text-gray-400 cursor-not-allowed font-semibold"
-            : "text-black hover:font-extrabold"
+          ? "text-gray-400 cursor-not-allowed font-semibold"
+          : "text-black hover:font-extrabold"
           }`}
       >
         {isLoading ? t("common.loading") : t("userDashboard.moreInfo")}
@@ -116,7 +116,7 @@ const UserSupplier = () => {
   const [loadingPartnerId, setLoadingPartnerId] = useState<number | null>(null);
   const mobileScrollRef = useRef<HTMLDivElement>(null);
   const [partnerData, setPartnerData] = useState<any | null>(null);
-  
+
   // Get the background image for the active subcategory
   const getBackgroundImage = () => {
     if (!active) return userDashboard;
@@ -133,7 +133,7 @@ const UserSupplier = () => {
       navigate("/");
     }
   }, []);
-  
+
   useEffect(() => {
     const checkPartnerData = () => {
       try {
@@ -154,7 +154,7 @@ const UserSupplier = () => {
     window.addEventListener("storage", checkPartnerData);
     return () => window.removeEventListener("storage", checkPartnerData);
   }, []);
-  
+
   // Load subcategories from localStorage
   useEffect(() => {
     const loadSubCategories = () => {
@@ -235,6 +235,7 @@ const UserSupplier = () => {
               h-[60vh] md:h-screen 
               bg-no-repeat md:bg-cover bg-cover
               md:bg-center bg-center
+              relative overflow-visible
             "
         style={{
           backgroundImage: `url(${getBackgroundImage()})`,
@@ -248,10 +249,10 @@ const UserSupplier = () => {
       `}</style>
         <UserHeader />
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 top-20 md:top-auto md:h-[400px] h-full"
+          className="pointer-events-none absolute inset-x-0 bottom-0 top-20 md:top-auto md:h-[400px] h-full z-0"
           style={{
             background:
-              "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, #01351F 100%)",
+              "linear-gradient(180deg, rgba(1, 53, 31, 0) 0%, rgba(1, 53, 31, 0.4) 40%, rgba(1, 53, 31, 0.8) 70%, #01351F 100%)",
           }}
         />
         {categoryName && (
@@ -262,11 +263,11 @@ const UserSupplier = () => {
           </div>
         )}
         {/* Mobile: horizontal scroll bar styled like the screenshot */}
-        <section className="absolute bottom-0 left-0 right-0 md:hidden pb-4">
-          <div className="bg-[#01351F] w-full py-3 px-4">
+        <section className="absolute bottom-0 left-0 right-0 md:hidden z-20 pointer-events-auto pb-4">
+          <div className="w-full py-3 px-4 relative">
             <div
               ref={mobileScrollRef}
-              className="flex items-center gap-3 overflow-x-auto no-scrollbar py-4 relative "
+              className="flex items-center gap-3 overflow-x-auto no-scrollbar py-4 relative"
             >
               {loading ? (
                 <div className="text-white text-sm">
@@ -404,7 +405,7 @@ const UserSupplier = () => {
           )}
         </div>
       </section>
-      
+
       {/* Fixed: Reduced negative margin and added z-index to prevent overlap */}
       <div className="relative md:-mt-32 z-10">
         <div className="pt-0 md:pt-0">
