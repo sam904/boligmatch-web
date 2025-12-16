@@ -184,11 +184,11 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
     <>
       <header className={`relative`}>
         <div
-          className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-2 z-50 transition-colors duration-300 ${
+          className={`fixed top-0 left-0 right-0 h-20 md:px-3 px-2 z-50 transition-colors duration-300 ${
             isScrolled ? "bg-[#06351E]" : "bg-transparent"
           }`}
         >
-          <div className="flex items-center justify-between h-full">
+          <div className="flex items-start justify-between h-full pt-2">
             <div className="flex flex-col items-start gap-1">
               <img
                 onClick={() => {
