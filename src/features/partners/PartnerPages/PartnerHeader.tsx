@@ -184,7 +184,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
     <>
       <header className={`relative`}>
         <div
-          className={`fixed top-0 left-0 right-0 h-20 md:px-3 px-2 z-50 transition-colors duration-300 ${
+          className={`fixed top-0 left-0 right-0 h-20 md:p-3 px-2 z-50 transition-colors duration-300 ${
             isScrolled ? "bg-[#06351E]" : "bg-transparent"
           }`}
         >
