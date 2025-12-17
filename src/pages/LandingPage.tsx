@@ -476,7 +476,7 @@ useEffect(() => {
         </div>
       )}
 
-      <div className="absolute md:top-28 top-28 lg:left-93 left-0 flex max-w-6xl mx-auto md:px-12 px-8 justify-between mt-0 md:h-[calc(100vh)]">
+      {/* <div className="absolute md:top-28 top-28 lg:left-93 left-0 flex max-w-6xl mx-auto md:px-12 px-8 justify-between mt-0 md:h-[calc(100vh)]">
         <div>
           <div className="md:w-[130px] w-[70px] flex justify-end">
             <img
@@ -507,7 +507,7 @@ useEffect(() => {
             />
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="pt-46 md:pt-0">
         
@@ -532,7 +532,7 @@ useEffect(() => {
              {t("landing.subtitle")}
           </h2>
           </div>
-           <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans">
+          <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
           {t("landing.description")}
         </p>
         
@@ -562,7 +562,7 @@ useEffect(() => {
       </div>
       {!isMobile && 
       <div className="bg-[#01351f] ">
-        <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans">
+        <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
           {t("landing.description")}
         </p>
       </div>
@@ -572,7 +572,7 @@ useEffect(() => {
         <h1 className="md:text-[64px] text-[42px] md:leading-[66px] leading-[42px] text-white text-center max-w-[845px] mx-auto font-[800] plus-jakarta-sans">
           {t("landing.transparentJourney")} 
         </h1>
-        <p className="text-white text-center md:text-[18px] text-[16px] mx-auto max-w-7xl py-4 px-4">
+        <p className="text-white text-center md:text-[18px] text-[16px] mx-auto max-w-7xl py-4 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
           {t("landing.futureDescription")}
         </p>
       </div>   
