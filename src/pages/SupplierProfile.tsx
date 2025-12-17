@@ -893,14 +893,14 @@ const SupplierProfile = () => {
 
               </div>
               <div className=" md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] pt-0 w-full">
-                <div className="w-full mx-auto px-12 flex justify-center items-end">
-                  <div className="flex md:gap-6 gap-3 justify-center  md:bottom-0 w-full  pb-0 z-40">
+                <div className="w-full mx-auto px-4 md:px-12 flex justify-center items-end max-w-7xl">
+                  <div className="flex md:gap-6 gap-2 justify-center  md:bottom-0 w-full  pb-0 z-40">
                     {/* Show buttons only when video is NOT playing */}
                     {!isPartner && (
                       <>
                         {/* Favorite Button */}
                         <button
-                          className="bg-[#91C73D] text-white px-7  py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md w-[100px] h-[30] md:w-auto md:h-auto opacity-100"
+                          className="bg-[#91C73D] text-white px-4 md:px-7 py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md w-[110px] h-[30] md:w-auto md:h-auto opacity-100"
                           onClick={handleToggleFavourite}
                           disabled={isAddingToFavorites}
                         >
@@ -915,7 +915,7 @@ const SupplierProfile = () => {
                         </button>
 
                         <button
-                          className="bg-[#91C73D] text-white px-7  py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md w-[100px] h-[30] md:w-auto md:h-auto opacity-100"
+                          className="bg-[#91C73D] text-white px-4 md:px-7 py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md w-[110px] h-[30] md:w-auto md:h-auto opacity-100"
                           onClick={() => setActiveModal("recommend")}
                         >
                           <img
@@ -928,7 +928,7 @@ const SupplierProfile = () => {
 
                         {/* Contact Button */}
                         <button
-                          className="bg-[#91C73D] text-white px-7  py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md w-[100px] h-[30] md:w-auto md:h-auto opacity-100"
+                          className="bg-[#91C73D] text-white px-4 md:px-7 py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md w-[110px] h-[30] md:w-auto md:h-auto opacity-100"
                           onClick={() => setActiveModal("contact")}
                         >
                           <img
@@ -957,21 +957,15 @@ const SupplierProfile = () => {
 
 
         <div className="bg-[#01351f]">
-          <div className="max-w-6xl m-auto px-4 md:px-8 py-6 md:py-8">
-            <h2 className="text-white font-extrabold md:text-4xl text-2xl text-center mb-6 md:mb-8">
-              {partnerData?.businessName || partnerData?.fullName || "Loading..."}
-            </h2>
-            <div className="flex justify-center mb-6 md:mb-8">
-              <div className="border-t border-dotted border-white/60 w-full max-w-[200px] md:max-w-[300px]"></div>
-            </div>
+          <div className="max-w-6xl m-auto px-4 md:px-8 py-4 md:py-8">
             <p className="text-white font-[400] md:text-[18px] text-[14px] text-left md:text-center px-4 md:px-8 leading-relaxed">
               {partnerData?.textField1 || "Loading..."}
             </p>
           </div>
         </div>
 
-        <div className="bg-[#01351f] min-h-screen flex justify-center items-center p-8">
-          <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-7xl bg-[#01351f]">
+        <div className="bg-[#01351f] min-h-screen flex justify-center items-center p-4 md:p-8">
+          <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-7xl w-full bg-[#01351f]">
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
               <div
@@ -1036,7 +1030,7 @@ const SupplierProfile = () => {
 
               <div
                 className={`md:w-[403px] w-full md:h-[432px] h-auto ${hasTrustPilotUrl ? "mt-[30px]" : "mt-[0px]"
-                  } rounded-[10px] flex justify-center items-center`}
+                  } rounded-[10px] flex justify-center items-center p-4 md:p-0`}
                 style={{
                   background:
                     "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
