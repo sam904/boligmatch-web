@@ -723,7 +723,7 @@ const SupplierProfile = () => {
       <div className="md:h-[100vh]">
         {/* Always render background image */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat md:h-[100vh] h-[368px]"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat md:h-[100vh] h-[350px]"
           style={{
             backgroundImage: `url(${getBackgroundImage()})`,
             display: showVideoElement ? "none" : "block",
@@ -743,13 +743,15 @@ const SupplierProfile = () => {
         </video>
 
         {/* Custom video controls - show on hover only */}
-        <div className="absolute inset-0 z-40 pointer-events-none video-controls-container">
+        <div className="absolute inset-0 z-40  video-controls-container">
           {/* Hover area - full video size */}
           <div className="relative w-full h-full group">
             {/* Controls container - positioned higher up */}
-            <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto `}>
-              <div className="flex h-[368px] md:h-[100vh] items-end justify-center  w-full gap-6 transform translate-y-12 ">
-                <div className="flex items-end gap-12">
+            <div className={`md:absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto `}>
+
+              {/* Main play/pause button - centered */}
+              <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
+                <div className="flex md:items-end gap-12">
                   {/* Play / Pause button */}
                   {!isVideoPlaying && partnerData?.videoUrl ? (
                     <button
@@ -757,13 +759,13 @@ const SupplierProfile = () => {
                         e.stopPropagation();
                         handlePlayClick();
                       }}
-                      className="text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-1.5 md:p-2 cursor-pointer"
+                      className="self-center text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-2 cursor-pointer"
                       onMouseEnter={() => setShowControls(true)}
                     >
                       <img
                         src={PlayButton}
                         alt="Play"
-                        className="w-10 h-10 md:w-16 md:h-16 drop-shadow-2xl"
+                        className="h-15 w-15 drop-shadow-2xl"
                       />
                     </button>
                   ) : (
@@ -772,7 +774,7 @@ const SupplierProfile = () => {
                         e.stopPropagation();
                         handlePauseClick();
                       }}
-                      className={`text-white hover:scale-125 transition-all duration-300 bg-black/50 rounded-full p-2 ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                      className={`self-center text-white hover:scale-125 transition-all duration-300 bg-black/50 rounded-full p-2 ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
                         }`}
                       onMouseEnter={() => setShowControls(true)}
                     >
@@ -785,7 +787,7 @@ const SupplierProfile = () => {
               {/* Bottom controls bar - ALWAYS show when hovered */}
               {isVideoPlaying && (
                 <div
-                  className="absolute bottom-60 left-0 right-0  p-4 pt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  className="absolute md:bottom-60 left-0 right-0  p-4 pt-8 md:opacity-0  md:group-hover:opacity-100 transition-opacity duration-300"
                   onMouseEnter={() => setShowControls(true)}
                   onMouseLeave={(e) => {
                     // Don't hide immediately when leaving controls
@@ -887,25 +889,25 @@ const SupplierProfile = () => {
                   </div>
                 </div>
               )}
-              <div className=" bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] h-[350px] w-full" >
+              <div className="md:bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] md:h-[368px] w-full mt-20" >
+
               </div>
-              <div className=" bg-[#01351f] pt-0 w-full">
-                {/* Desktop buttons (unchanged styles) */}
-                <div className="w-full mx-auto px-12 flex justify-center items-end hidden md:flex">
-                  <div className="flex md:gap-3 gap-1 justify-center md:bottom-0 w-full pb-0 z-40">
+              <div className=" md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] pt-0 w-full">
+                <div className="w-full mx-auto px-4 md:px-12 flex justify-center items-end max-w-7xl">
+                  <div className="flex md:gap-6 gap-2 justify-center  md:bottom-0 w-full  pb-0 z-40">
                     {/* Show buttons only when video is NOT playing */}
                     {!isPartner && (
                       <>
                         {/* Favorite Button */}
                         <button
-                          className="bg-[#91C73D] text-white px-7 py-[10px] rounded-[11px] flex items-center justify-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[260px] h-[62px] opacity-100"
+                          className="bg-[#91C73D] text-white px-4 md:px-7 py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md w-[110px] h-[30] md:w-auto md:h-auto opacity-100"
                           onClick={handleToggleFavourite}
                           disabled={isAddingToFavorites}
                         >
                           <img
                             src={heartIcon}
                             alt="Favorite"
-                            className="w-[35px] h-[35px] md:w-auto md:h-auto"
+                            className="w-[20px] h-[20px] md:w-auto md:h-auto"
                           />
                           {String(partnerData?.isValidFavourite) === "True"
                             ? t("supplierProfile.removeFromFavorites")
@@ -913,26 +915,26 @@ const SupplierProfile = () => {
                         </button>
 
                         <button
-                          className="bg-[#91C73D] text-white px-7 py-[10px] rounded-[11px] flex items-center justify-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[20px] leading-[100%] font-[700] shadow-md w-[260px] h-[62px] opacity-100"
+                          className="bg-[#91C73D] text-white px-4 md:px-7 py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md w-[110px] h-[30] md:w-auto md:h-auto opacity-100"
                           onClick={() => setActiveModal("recommend")}
                         >
                           <img
                             src={share}
                             alt="Recommend"
-                            className="w-[35px] h-[35px] md:w-auto md:h-auto"
+                            className="w-[20px] h-[20px] md:w-auto md:h-auto"
                           />
                           {t("supplierProfile.recommendation")}
                         </button>
 
                         {/* Contact Button */}
                         <button
-                          className="bg-[#91C73D] text-white px-7 py-[10px] rounded-[11px] flex items-center justify-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[22px] leading-[100%] font-[700] shadow-md w-[260px] h-[62px] opacity-100"
+                          className="bg-[#91C73D] text-white px-4 md:px-7 py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md w-[110px] h-[30] md:w-auto md:h-auto opacity-100"
                           onClick={() => setActiveModal("contact")}
                         >
                           <img
                             src={chat}
                             alt="Contact"
-                            className="w-[35px] h-[35px] md:w-auto md:h-auto"
+                            className="w-[20px] h-[20px] md:w-auto md:h-auto"
                           />
                           {t("supplierProfile.conversation")}
                         </button>
@@ -940,7 +942,6 @@ const SupplierProfile = () => {
                     )}
                   </div>
                 </div>
-
               </div>
               <div className="bg-[#01351f] w-full">
                 <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white py-5">
@@ -954,82 +955,31 @@ const SupplierProfile = () => {
 
         <UserHeader />
 
-        {/* Mobile buttons directly under hero image, before intro text */}
-        <div className="bg-[#01351f] md:hidden">
-          <div className="w-full mx-auto px-4 flex justify-center items-end">
-            <div className="flex gap-1 justify-between w-full pb-3 z-40">
-              {!isPartner && (
-                <>
-                  {/* Favorite Button */}
-                  <button
-                    className="bg-[#91C73D] text-white px-2.5 py-2 rounded-[11px] flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-[#7fb02f] transition-colors text-[11px] leading-tight font-[700] shadow-md max-w-[120px] h-[48px] opacity-100"
-                    onClick={handleToggleFavourite}
-                    disabled={isAddingToFavorites}
-                  >
-                    <img
-                      src={heartIcon}
-                      alt="Favorite"
-                      className="w-5 h-5 flex-shrink-0"
-                    />
-                    {String(partnerData?.isValidFavourite) === "True"
-                      ? t("supplierProfile.removeFromFavorites")
-                      : t("supplierProfile.saveFavoriteButton")}
-                  </button>
-
-                  <button
-                    className="bg-[#91C73D] text-white px-2.5 py-2 rounded-[11px] flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-[#7fb02f] transition-colors text-[11px] leading-tight font-[700] shadow-md max-w-[120px] h-[48px] opacity-100"
-                    onClick={() => setActiveModal("recommend")}
-                  >
-                    <img
-                      src={share}
-                      alt="Recommend"
-                      className="w-5 h-5 flex-shrink-0"
-                    />
-                    {t("supplierProfile.recommendation")}
-                  </button>
-
-                  {/* Contact Button */}
-                  <button
-                    className="bg-[#91C73D] text-white px-2.5 py-2 rounded-[11px] flex-1 flex items-center justify-center gap-1 cursor-pointer hover:bg-[#7fb02f] transition-colors text-[11px] leading-tight font-[700] shadow-md max-w-[120px] h-[48px] opacity-100"
-                    onClick={() => setActiveModal("contact")}
-                  >
-                    <img
-                      src={chat}
-                      alt="Contact"
-                      className="w-5 h-5 flex-shrink-0"
-                    />
-                    {t("supplierProfile.conversation")}
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
 
         <div className="bg-[#01351f]">
-          <div className="max-w-6xl m-auto">
-            <p className="text-white font-[400] md:text-[18px] text-[12px] text-center px-8 leading-relaxed line-clamp-5 md:line-clamp-none">
+          <div className="max-w-6xl m-auto px-4 md:px-8 py-4 md:py-8">
+            <p className="text-white font-[400] md:text-[18px] text-[14px] text-left md:text-center px-4 md:px-8 leading-relaxed">
               {partnerData?.textField1 || "Loading..."}
             </p>
           </div>
         </div>
 
-        <div className="bg-[#01351f] min-h-screen flex justify-center items-center px-4 md:px-8 pt-28 md:pt-0 pb-8">
-          <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-7xl bg-[#01351f]">
+        <div className="bg-[#01351f] min-h-screen flex justify-center items-center p-4 md:p-8">
+          <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-7xl w-full bg-[#01351f]">
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
               <div
                 className={`md:w-[403px] w-full ${hasTrustPilotUrl ? "md:h-[859px]" : "md:h-[890px]"
                   } h-auto rounded-[10px] bg-white p-6 flex flex-col relative`}
               >
-                <div className=" flex justify-center pb-0 pt-2">
+                <div className=" flex justify-center p-2">
                   <img
                     className="w-[130px] h-[32px]"
                     src={trustPilotLogo}
                     alt=""
                   />
                 </div>
-                <h3 className="text-[32px] font-[800] mt-0 mb-4 text-center">
+                <h3 className="text-[32px] font-[800] mb-5 text-center">
                   {t("supplierProfile.reviewsTitle")}
                 </h3>
                 <div className="space-y-10">
@@ -1044,7 +994,7 @@ const SupplierProfile = () => {
                           <div className="flex justify-center mb-3">
                             {renderRating(r, "w-[45px] h-[42px]", "gap-2")}
                           </div>
-                          <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6 line-clamp-5">
+                          <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6 line-clamp-3">
                             ”{rev?.test}”
                           </p>
                           <p className="text-sm font-bold text-black mt-3 text-start px-6">
@@ -1070,7 +1020,7 @@ const SupplierProfile = () => {
                       <img
                         src={startImg}
                         alt="rating"
-                        className="w-[38px] h-[38px] select-none"
+                        className="w-[33px] h-[33px] select-none"
                       />
                       {t("supplierProfile.reviewUsOnTrustpilot")}
                     </button>
@@ -1080,7 +1030,7 @@ const SupplierProfile = () => {
 
               <div
                 className={`md:w-[403px] w-full md:h-[432px] h-auto ${hasTrustPilotUrl ? "mt-[30px]" : "mt-[0px]"
-                  } rounded-[10px] flex justify-center items-center`}
+                  } rounded-[10px] flex justify-center items-center p-4 md:p-0`}
                 style={{
                   background:
                     "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
@@ -1158,18 +1108,13 @@ const SupplierProfile = () => {
 
             {/* Right Column */}
             <div className="flex flex-col gap-6">
-              <div className="bg-white rounded-[10px] md:w-[403px] w-full md:h-[432px] h-auto flex justify-center items-center">
+              <div className="bg-white rounded-[10px] md:w-[403px] w-full md:h-[432px] h-auto flex justify-center items-center p-6 md:p-8">
                 <div className="text-center">
                   <img
                     src={partnerData?.logoUrl || kabelLogoImg}
                     alt={partnerData?.businessName}
-                    className="w-full max-w-[1024px] aspect-[2/1] object-contain mx-auto"
+                    className="w-[177px] h-[164px] object-contain mx-auto"
                   />
-                  {/* <h2 className="font-extrabold text-[30px] leading-[76px] text-black text-center">
-                    {partnerData?.businessName ||
-                      partnerData?.fullName ||
-                      "Kabel-specialisten"}
-                  </h2> */}
                 </div>
               </div>
 
@@ -1454,21 +1399,19 @@ const SupplierProfile = () => {
                     </button>
                   </div>
 
-                  <div className="flex justify-center mt-2">
-                    <div className="text-center text-[14px] md:text-[16px] text-[#27323F]">
-                      <p className="mb-1 font-semibold">
-                        {t("supplierProfile.contactModal.contactInfo")}
-                      </p>
-                      <p className="font-extrabold">
-                        {partnerData?.businessName}
-                      </p>
-                      <p>{partnerData?.address}</p>
-                      <p>
-                        Tlf. {partnerData?.mobileNo || "56 34 12 67"}{" "}
-                        {partnerData?.cvr > 0 ? `, CVR ${partnerData.cvr}` : ""}
-                      </p>
-                      <p>{partnerData?.email}</p>
-                    </div>
+                  <div className="text-center text-[12px] text-[#27323F]">
+                    <p className="mb-1 font-semibold">
+                      {t("supplierProfile.contactModal.contactInfo")}
+                    </p>
+                    <p className="font-extrabold">
+                      {partnerData?.businessName}
+                    </p>
+                    <p>{partnerData?.address}</p>
+                    <p>
+                      Tlf. {partnerData?.mobileNo || "56 34 12 67"}{" "}
+                      {partnerData?.cvr > 0 ? `, CVR ${partnerData.cvr}` : ""}
+                    </p>
+                    <p>{partnerData?.email}</p>
                   </div>
                 </form>
               )}

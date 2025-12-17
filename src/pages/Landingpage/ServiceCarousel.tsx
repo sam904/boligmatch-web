@@ -102,7 +102,7 @@ export default function ServiceCarousel() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div ref={carouselRef} className="relative w-full h-full flex justify-center items-center">
+      <div ref={carouselRef} className="relative w-full  flex justify-center items-center">
         {IMAGES.map((image, index) => {
           const position = POSITIONS[positionIndexes[index]];
           const currentService = SERVICES[index];
@@ -110,7 +110,7 @@ export default function ServiceCarousel() {
           return (
             <motion.div
               key={index}
-              className="absolute rounded-3xl shadow-xl shadow-black cursor-grab"
+              className="absolute rounded-3xl shadow-lg shadow-black cursor-grab"
               animate={position}
               variants={IMAGE_VARIANTS}
               transition={{ duration: 0.5 }}

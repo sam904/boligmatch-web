@@ -391,48 +391,48 @@ export default function UserDashboardPage() {
             <>
               {/* Categories Grid */}
               {activeView === "default" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-4">
                   {categories.map((category, index) => {
                     const assets = getCategoryAssets(index);
                     return (
                       <div
                         key={category.id}
                         onClick={() => handleCategoryClick(category)}
-                        className="w-full h-[540px] mx-auto rounded-[18px] sm:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl flex flex-col"
+                        className="w-full max-w-[374px] h-[394px] md:w-auto md:h-auto md:max-w-none mx-auto rounded-[18px] md:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
                       >
-                        <div className="relative w-full flex-shrink-0 h-[340px] rounded-t-[18px] sm:rounded-t-xl overflow-hidden">
+                        <div className="relative w-full h-[222px] md:h-56 lg:h-64 xl:h-72 rounded-t-[18px] md:rounded-t-xl overflow-hidden">
                           <img
                             src={category.imageUrl || assets.image}
                             alt={category.name}
-                            className="w-full h-full object-cover object-top-left"
+                            className="w-full h-full object-cover"
                             onError={(e) => {
                               e.currentTarget.src = assets.image;
                             }}
                           />
-                          <div className="absolute bottom-0 left-0 right-0 h-[120px] sm:h-[50px] bg-gradient-to-t from-white to-transparent"></div>
+                          <div className="absolute bottom-0 left-0 right-0 h-[80px] sm:h-[50px] bg-gradient-to-t from-white to-transparent"></div>
                           <div className="absolute bottom-0 left-0 right-0">
-                            <img src={categoryGradientImg} alt="" />
+                            <img src={categoryGradientImg} alt="" className="w-full h-auto" />
                           </div>
                         </div>
 
-                        <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center gap-2 flex-1 justify-center">
-                          <div className="w-[80px] h-[40px] sm:w-[100px] sm:h-[50px] flex items-center justify-center -mt-4 sm:-mt-6 mb-0">
+                        <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center gap-2">
+                          <div className="w-16 h-12 sm:w-20 sm:h-14 flex items-center justify-center -mt-2 sm:-mt-6 mb-0">
                             <img
                               src={category.iconUrl || assets.icon}
                               alt={category.name}
-                              className="w-[80px] h-[40px] sm:w-[100px] sm:h-[50px] object-contain"
+                              className="w-[60px] h-[55px] sm:w-14 sm:h-14 object-contain"
                               onError={(e) => {
                                 e.currentTarget.src = assets.icon;
                               }}
                             />
                           </div>
 
-                          <h3 className="text-xl sm:text-2xl font-extrabold text-[#052011] -mb-1">
+                          <h3 className="text-xl sm:text-2xl font-extrabold text-[#052011] mb-1">
                             {category.name}
                           </h3>
 
-                          <p className="text-sm text-[#052011] leading-normal px-2">
-                            {category.description }
+                          <p className="text-sm sm:text-base text-[#052011] leading-relaxed px-2">
+                            {category.description}
                           </p>
                         </div>
                       </div>
