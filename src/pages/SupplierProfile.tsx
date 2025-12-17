@@ -894,13 +894,13 @@ const SupplierProfile = () => {
               </div>
               <div className=" md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] pt-0 w-full">
                 <div className="w-full mx-auto px-4 md:px-12 flex justify-center items-end max-w-7xl">
-                  <div className="flex md:gap-6 gap-2 justify-center  md:bottom-0 w-full  pb-0 z-40">
+                  <div className="flex md:gap-4 gap-1.5 justify-center  md:bottom-0 w-full  pb-0 z-40">
                     {/* Show buttons only when video is NOT playing */}
                     {!isPartner && (
                       <>
                         {/* Favorite Button */}
                         <button
-                          className="bg-[#91C73D] text-white px-4 md:px-7 py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md w-[110px] h-[30] md:w-auto md:h-auto opacity-100"
+                          className="bg-[#91C73D] text-white px-4 md:px-7 py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md flex-1 md:flex-1 opacity-100"
                           onClick={handleToggleFavourite}
                           disabled={isAddingToFavorites}
                         >
@@ -915,7 +915,7 @@ const SupplierProfile = () => {
                         </button>
 
                         <button
-                          className="bg-[#91C73D] text-white px-4 md:px-7 py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md w-[110px] h-[30] md:w-auto md:h-auto opacity-100"
+                          className="bg-[#91C73D] text-white px-4 md:px-7 py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md flex-1 md:flex-1 opacity-100"
                           onClick={() => setActiveModal("recommend")}
                         >
                           <img
@@ -928,7 +928,7 @@ const SupplierProfile = () => {
 
                         {/* Contact Button */}
                         <button
-                          className="bg-[#91C73D] text-white px-4 md:px-7 py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md w-[110px] h-[30] md:w-auto md:h-auto opacity-100"
+                          className="bg-[#91C73D] text-white px-4 md:px-7 py-[10px] rounded-[11px] flex justify-center items-center gap-[10px] cursor-pointer hover:bg-[#7fb02f] transition-colors text-[10px] md:text-[20px] leading-[100%] font-[700] shadow-md flex-1 md:flex-1 opacity-100"
                           onClick={() => setActiveModal("contact")}
                         >
                           <img
@@ -1199,14 +1199,14 @@ const SupplierProfile = () => {
               onMouseLeave={() => setIsDragging(false)}
             >
               <button
-                className="absolute right-4 top-1 text-black text-xl cursor-pointer hover:text-gray-700 z-[99999]"
+                className="absolute right-4 top-4 text-black text-xl cursor-pointer hover:text-gray-700 z-[99999]"
                 aria-label="Close"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleModalClose();
                 }}
               >
-                <IoClose className="w-[30px] h-[30px] cursor-pointer" />
+                <IoClose className="w-[36px] h-[36px] cursor-pointer" />
               </button>
 
               {modalRendered === "recommend" && (
