@@ -957,8 +957,14 @@ const SupplierProfile = () => {
 
 
         <div className="bg-[#01351f]">
-          <div className="max-w-6xl m-auto">
-            <p className="text-white font-[400] md:text-[18px] text-[12px] text-center px-8">
+          <div className="max-w-6xl m-auto px-4 md:px-8 py-6 md:py-8">
+            <h2 className="text-white font-extrabold md:text-4xl text-2xl text-center mb-6 md:mb-8">
+              {partnerData?.businessName || partnerData?.fullName || "Loading..."}
+            </h2>
+            <div className="flex justify-center mb-6 md:mb-8">
+              <div className="border-t border-dotted border-white/60 w-full max-w-[200px] md:max-w-[300px]"></div>
+            </div>
+            <p className="text-white font-[400] md:text-[18px] text-[14px] text-left md:text-center px-4 md:px-8 leading-relaxed">
               {partnerData?.textField1 || "Loading..."}
             </p>
           </div>
@@ -1108,19 +1114,13 @@ const SupplierProfile = () => {
 
             {/* Right Column */}
             <div className="flex flex-col gap-6">
-              <div className="bg-white rounded-[10px] md:w-[403px] w-full md:h-[432px] h-auto flex justify-center items-center">
+              <div className="bg-white rounded-[10px] md:w-[403px] w-full md:h-[432px] h-auto flex justify-center items-center p-6 md:p-8">
                 <div className="text-center">
                   <img
                     src={partnerData?.logoUrl || kabelLogoImg}
                     alt={partnerData?.businessName}
                     className="w-[177px] h-[164px] object-contain mx-auto"
                   />
-
-                  <h2 className="font-extrabold text-[30px] leading-[76px] text-black text-center">
-                    {partnerData?.businessName ||
-                      partnerData?.fullName ||
-                      "Kabel-specialisten"}
-                  </h2>
                 </div>
               </div>
 
