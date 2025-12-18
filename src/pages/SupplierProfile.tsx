@@ -896,10 +896,8 @@ const SupplierProfile = () => {
               <div className=" md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] pt-0 w-full">
                 <div className="w-full mx-auto px-4 md:px-12 flex justify-center items-end max-w-7xl">
                   <div className="flex md:gap-4 gap-1.5 justify-center  md:bottom-0 w-full  pb-0 z-40">
-                    {/* Show buttons only when video is NOT playing */}
                     {!isPartner && (
                       <>
-                        {/* Favorite Button */}
                         <button
                           onClick={handleToggleFavourite}
                           disabled={isAddingToFavorites}

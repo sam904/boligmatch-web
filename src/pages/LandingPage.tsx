@@ -31,7 +31,6 @@ export default function LandingPage() {
   // Get authentication status to detect login changes
   const token = useAppSelector((state) => state.auth.accessToken);
   const user = useAppSelector((state) => state.auth.user);
-  // Check both Redux state and localStorage for authentication
   const [localAuthStatus, setLocalAuthStatus] = useState(() => {
     try {
       const bmUser = typeof window !== "undefined" ? localStorage.getItem("bm_user") : null;

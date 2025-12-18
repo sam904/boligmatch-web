@@ -538,7 +538,7 @@ export default function UserDashboardPage() {
 
                               <h3 className="text-xl font-extrabold text-[#052011] mb-1">
                                 {favorite.partnerName ||
-                                  favorite.businessName }
+                                  favorite.businessName}
                               </h3>
 
                               <p className="text-sm text-[#052011] leading-relaxed px-2 line-clamp-3">
@@ -647,7 +647,7 @@ export default function UserDashboardPage() {
                                 }
                               >
                                 <span className="text-sm font-semibold">
-                                 {t("userDashboard.readMore")}
+                                  {t("userDashboard.readMore")}
                                 </span>
                                 <img
                                   src={chatModelImg}
@@ -685,11 +685,11 @@ export default function UserDashboardPage() {
       {/* Conversation Detail Modal */}
       {openConversation && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center">
-          <div 
-            className="absolute inset-0 bg-black/50 cursor-pointer" 
+          <div
+            className="absolute inset-0 bg-black/50 cursor-pointer"
             onClick={() => setOpenConversation(null)}
           />
-          <div 
+          <div
             className="relative z-[1001] w-[90%] max-w-md bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-[#1F7A58]/10"
             onClick={(e) => e.stopPropagation()}
           >
