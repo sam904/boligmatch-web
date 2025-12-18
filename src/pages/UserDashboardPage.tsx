@@ -320,64 +320,100 @@ export default function UserDashboardPage() {
         {/* Action Buttons */}
         <div className="absolute inset-x-0 bottom-0 z-10 pb-6 sm:pb-8 md:pb-10">
           <div className="px-4 sm:px-6 md:px-8">
-            <div className="flex flex-row sm:flex-row items-center justify-between sm:justify-center gap-3 md:gap-6 max-w-4xl mx-auto px-2">
+            <div className="flex flex-row items-center justify-between sm:justify-center gap-3 md:gap-6 max-w-4xl mx-auto px-2">
+
+              {/* Partners */}
               <button
                 onClick={handlePartnersClick}
-                className={`${activeView === "default"
-                  ? "bg-[#145939] text-white"
-                  : "bg-[#95c11f] text-white"
-                  } flex items-center justify-center gap-1 md:gap-3 md:rounded-xl rounded-xl px-7 shadow-lg sm:shadow-md  hover:opacity-90 transition cursor-pointer w-[188px] md:h-[55px] h-[42px]`}
                 type="button"
+                className={`
+      flex items-center justify-center
+      gap-1 md:gap-3
+      w-[272px] h-[42px] md:h-[55px]
+      px-5 sm:px-6 md:px-7
+      rounded-xl
+      shadow-lg sm:shadow-md
+      hover:opacity-90
+      transition
+      cursor-pointer
+      figtree
+      font-semibold md:text-lg text-[12px]
+      ${activeView === "default" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
+    `}
               >
                 <img
                   src={searchImg}
                   alt=""
-                  className="md:h-6 md:w-6 h-[18px] w-[18px]"
+                  className="h-[18px] w-[18px] md:h-6 md:w-6"
                 />
-                <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap figtree">
+                <span className="whitespace-nowrap">
                   {t("userDashboard.buttons.partners")}
                 </span>
               </button>
 
+              {/* Favorites */}
               <button
                 onClick={handleFavoritesClick}
-                className={`${activeView === "favorites"
-                  ? "bg-[#145939] text-white"
-                  : "bg-[#95c11f] text-white"
-                  } flex items-center justify-center gap-1 md:gap-3 rounded-xl md:rounded-xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition cursor-pointer w-[272px] md:h-[55px] h-[42px]`}
                 type="button"
+                className={`
+      flex items-center justify-center
+      gap-1 md:gap-3
+      w-[272px] h-[42px] md:h-[55px]
+      px-5 sm:px-6 md:px-7
+      rounded-xl
+      shadow-lg sm:shadow-md
+      hover:opacity-90
+      transition
+      cursor-pointer
+      figtree
+      font-semibold md:text-lg text-[12px]
+      ${activeView === "favorites" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
+    `}
               >
                 <img
                   src={favoriteImg}
                   alt=""
-                  className="md:h-6 md:w-6 h-[18px] w-[18px]"
+                  className="h-[18px] w-[18px] md:h-6 md:w-6"
                 />
-                <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap figtree hidden sm:inline">
+                <span className="whitespace-nowrap hidden sm:inline">
                   {t("userDashboard.buttons.favorites")}
                 </span>
-                <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap figtree sm:hidden">
+                <span className="whitespace-nowrap sm:hidden">
                   {t("userDashboard.buttons.favoritesMobile")}
                 </span>
               </button>
 
+              {/* Messages */}
               <button
                 onClick={handleMessagesClick}
-                className={`${activeView === "messages"
-                  ? "bg-[#145939] text-white"
-                  : "bg-[#95c11f] text-white"
-                  } flex items-center justify-center gap-1 md:gap-3 rounded-xl md:rounded-xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition font-medium cursor-pointer w-[272.38px] md:h-[55px] h-[42px]`}
                 type="button"
+                className={`
+      flex items-center justify-center
+      gap-1 md:gap-3
+      w-[272px] h-[42px] md:h-[55px]
+      px-5 sm:px-6 md:px-7
+      rounded-xl
+      shadow-lg sm:shadow-md
+      hover:opacity-90
+      transition
+      cursor-pointer
+      figtree
+      font-semibold md:text-lg text-[12px]
+      ${activeView === "messages" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
+    `}
               >
                 <img
                   src={commentImg}
                   alt=""
-                  className="md:h-6 md:w-6 h-[18px] w-[18px]"
+                  className="h-[18px] w-[18px] md:h-6 md:w-6"
                 />
-                <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap">
+                <span className="whitespace-nowrap">
                   {t("userDashboard.buttons.messages")}
                 </span>
               </button>
+
             </div>
+
           </div>
         </div>
       </div>
