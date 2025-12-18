@@ -168,7 +168,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
       if (saved && saved !== i18n.language) {
         i18n.changeLanguage(saved);
       }
-    } catch {}
+    } catch { }
   }, []);
 
   const activePartner =
@@ -184,9 +184,8 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
     <>
       <header className={`relative`}>
         <div
-          className={`fixed top-0 left-0 right-0 h-20 md:p-3 px-2 z-50 transition-colors duration-300 ${
-            isScrolled ? "bg-[#06351E]" : "bg-transparent"
-          }`}
+          className={`fixed top-0 left-0 right-0 h-20 md:p-3 md:px-12 px-2 z-50 transition-colors duration-300 ${isScrolled ? "bg-[#06351E]" : "bg-transparent"
+            }`}
         >
           <div className="flex items-start justify-between h-full pt-2">
             <div className="flex flex-col items-start gap-1">
@@ -200,9 +199,8 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     navigate("/");
                   }
                 }}
-                className={`duration-300 ${
-                  isScrolled ? "h-10" : "h-11"
-                } cursor-pointer`}
+                className={`duration-300 ${isScrolled ? "h-10" : "h-11"
+                  } cursor-pointer`}
                 src={userLogo}
                 alt=""
               />
@@ -228,9 +226,8 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                       <img
                         src={userHeader}
                         alt=""
-                        className={`duration-300 transition-all ease-out ${
-                          isScrolled ? "h-8" : "h-10"
-                        } cursor-pointer`}
+                        className={`duration-300 transition-all ease-out ${isScrolled ? "h-8" : "h-10"
+                          } cursor-pointer`}
                       />
                     </button>
                   )}
@@ -292,9 +289,9 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                 const hasState = location.state !== null && location.state !== undefined;
                 const hasLocationKey = location.key !== 'default' && location.key !== null;
                 const notOnHome = location.pathname !== '/';
-                
+
                 const canGoBack = hasHistory && (hasState || hasLocationKey || (notOnHome && window.history.length > 2));
-                
+
                 if (canGoBack) {
                   navigate(-1);
                 } else {
@@ -318,17 +315,15 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
         <div className="fixed inset-0 z-50">
           {/* Backdrop */}
           <div
-            className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
-              sidebarTransitionActive ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${sidebarTransitionActive ? "opacity-100" : "opacity-0"
+              }`}
             onClick={() => setShowSidebar(false)}
           />
 
           {/* Sidebar */}
           <div
-            className={`absolute right-0 top-0 h-full w-full md:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out ${
-              sidebarTransitionActive ? "translate-x-0" : "translate-x-full"
-            }`}
+            className={`absolute right-0 top-0 h-full w-full md:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out ${sidebarTransitionActive ? "translate-x-0" : "translate-x-full"
+              }`}
           >
             <div className="flex flex-col h-full">
               {/* Header */}
