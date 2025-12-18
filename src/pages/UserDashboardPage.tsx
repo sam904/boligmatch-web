@@ -337,7 +337,7 @@ export default function UserDashboardPage() {
       transition
       cursor-pointer
       figtree
-      font-semibold md:text-lg text-[12px]
+      font-semibold md:text-[20px] text-[12px]
       ${activeView === "default" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
     `}
               >
@@ -366,7 +366,7 @@ export default function UserDashboardPage() {
       transition
       cursor-pointer
       figtree
-      font-semibold md:text-lg text-[12px]
+      font-semibold md:text-[20px] text-[12px]
       ${activeView === "favorites" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
     `}
               >
@@ -398,7 +398,7 @@ export default function UserDashboardPage() {
       transition
       cursor-pointer
       figtree
-      font-semibold md:text-lg text-[12px]
+      font-semibold md:text-[20px] text-[12px]
       ${activeView === "messages" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
     `}
               >

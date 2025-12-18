@@ -95,93 +95,110 @@ function ParentStatistics() {
                 {t("partnerStatistics.title")}</h1>
               <h2 className="text-[24px] md:text-[55px] font-[500] tracking-tight [text-shadow:_0_4px_20px_rgba(0,0,0,0.8)]"> {partnerData?.businessName || "Business Name"}</h2>
             </div>
-            <div className="flex justify-center gap-2 md:gap-6 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full pt-8 md:pt-23 pb-8 md:pb-13">
-
+            <div className="flex justify-center md:gap-6 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full md:pt-23 pt-8 md:pb-13 pb-8 gap-2">
               <button
                 onClick={() => setActiveTab("statistik")}
-                type="button"
                 className={`
-      flex items-center justify-center
-      gap-1 md:gap-3
-      w-[272px] h-[42px] md:h-[55px]
-      px-5 sm:px-6 md:px-7
-      rounded-xl
-      shadow-lg sm:shadow-md
-      hover:opacity-90
-      transition
-      cursor-pointer
-      figtree
-      font-semibold text-[10px] md:text-[20px]
-      ${activeTab === "statistik" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
-    `}
+                flex items-center justify-center
+                md:w-[188px] w-[110px] h-[42px]
+                md:h-[55px] 
+                space-x-2 md:space-x-3 
+                px-7
+                text-white
+                rounded-[11px]
+                transition-all duration-200
+                cursor-pointer
+                font-['Plus_Jakarta_Sans'] font-semibold text-[20px]
+                ${activeTab === "statistik"
+                    ? "bg-[#07583A] shadow-lg"
+                    : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
+                  }
+              `}
               >
-                <img src={Statistik} alt="Statistics" className="h-[18px] w-[18px] md:h-6 md:w-6" />
-                <span className="whitespace-nowrap hidden sm:inline">
-                  {t("partnerStatistics.tabs.statistics")}
-                </span>
-                <span className="whitespace-nowrap sm:hidden">
+                {/* ICON PERFECTLY CENTERED */}
+                <div className="flex items-center justify-center md:w-[25px] md:h-[28px] w-[18px] h-[18px] shrink-0">
+                  <img
+                    src={Statistik}
+                    alt="Statistics"
+                    className="w-full h-full object-contain"
+                    style={{ display: 'block', maxWidth: '100%', maxHeight: '100%' }}
+                  />
+                </div>
+
+                {/* TEXT PERFECTLY CENTERED */}
+                <span className="flex items-center leading-none md:text-[20px] text-[13px]">
                   {t("partnerStatistics.tabs.statistics")}
                 </span>
               </button>
 
-              {/* Profile */}
               <button
                 onClick={() => setActiveTab("profil")}
-                type="button"
                 className={`
-      flex items-center justify-center
-      gap-1 md:gap-3
-      w-[272px] h-[42px] md:h-[55px]
-      px-5 sm:px-6 md:px-7
-      rounded-xl
-      shadow-lg sm:shadow-md
-      hover:opacity-90
-      transition
-      cursor-pointer
-      figtree
-      font-semibold text-[10px] md:text-[20px]
-      ${activeTab === "profil" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
-    `}
+                whitespace-nowrap 
+                flex items-center justify-center 
+                space-x-2 md:space-x-3 
+                md:w-[188px] w-[110px] h-[42px]
+                md:h-[55px]
+                px-7
+                text-white 
+                rounded-[11px] 
+                transition-all duration-200 
+                cursor-pointer 
+                font-['Plus_Jakarta_Sans'] font-semibold
+                text-[20px] leading-[100%]
+                ${activeTab === "profil"
+                    ? "bg-[#07583A] shadow-lg"
+                    : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
+                  }
+              `}
               >
-                <img src={MinProfil} alt="Profile" className="h-[18px] w-[18px] md:h-6 md:w-6" />
-                <span className="whitespace-nowrap hidden sm:inline">
-                  {t("partnerStatistics.tabs.profile")}
-                </span>
-                <span className="whitespace-nowrap sm:hidden">
+                <div className="flex items-center justify-center md:w-[25px] md:h-[28px] w-[18px] h-[18px] shrink-0">
+                  <img
+                    src={MinProfil}
+                    alt="Profile"
+                    className="w-full h-full object-contain"
+                    style={{ display: 'block', maxWidth: '100%', maxHeight: '100%' }}
+                  />
+                </div>
+                <span className="md:text-[20px] text-[13px] font-semibold tracking-[0%]">
                   {t("partnerStatistics.tabs.profile")}
                 </span>
               </button>
 
-              {/* Partners */}
               <button
                 onClick={() => setActiveTab("partnere")}
-                type="button"
                 className={`
-      flex items-center justify-center
-      gap-1 md:gap-3
-      w-[272px] h-[42px] md:h-[55px]
-      px-5 sm:px-6 md:px-7
-      rounded-xl
-      shadow-lg sm:shadow-md
-      hover:opacity-90
-      transition
-      cursor-pointer
-      figtree
-      font-semibold text-[10px] md:text-[20px]
-      ${activeTab === "partnere" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
-    `}
+                  whitespace-nowrap 
+                  flex items-center justify-center 
+                  space-x-2 md:space-x-3 
+                  md:w-[188px] w-[110px] h-[42px]
+                  md:h-[55px]
+                  px-7
+                  text-white 
+                  rounded-[11px] 
+                  transition-all duration-200 
+                  cursor-pointer 
+                  font-['Plus_Jakarta_Sans'] font-semibold
+                  leading-[100%]
+                  ${activeTab === "partnere"
+                    ? "bg-[#07583A] shadow-lg"
+                    : "bg-[#91C73D] hover:bg-[#7FB333] hover:shadow-md"
+                  }
+              `}
               >
-                <img src={Partnere} alt="Partners" className="h-[18px] w-[18px] md:h-6 md:w-6" />
-                <span className="whitespace-nowrap hidden sm:inline">
-                  {t("partnerStatistics.tabs.partners")}
-                </span>
-                <span className="whitespace-nowrap sm:hidden">
+                <div className="flex items-center justify-center md:w-[25px] md:h-[28px] w-[18px] h-[18px] shrink-0">
+                  <img
+                    src={Partnere}
+                    alt="Partners"
+                    className="w-full h-full object-contain"
+                    style={{ display: 'block', maxWidth: '100%', maxHeight: '100%' }}
+                  />
+                </div>
+                <span className="md:text-[20px] text-[13px] font-semibold tracking-[0%]">
                   {t("partnerStatistics.tabs.partners")}
                 </span>
               </button>
-
             </div>
-
           </div>
           <div className="h-full w-full bg-[#01351F] flex flex-col justify-center items-start">
             <div className="w-full">

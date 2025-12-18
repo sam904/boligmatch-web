@@ -903,19 +903,20 @@ const SupplierProfile = () => {
                           onClick={handleToggleFavourite}
                           disabled={isAddingToFavorites}
                           type="button"
-                          className="
-          bg-[#95c11f] text-white
-          flex items-center justify-start gap-[2px] md:gap-1
-          rounded-xl
-          px-5 sm:px-6 md:px-7
-          shadow-lg sm:shadow-md
-          hover:opacity-90 transition
-          cursor-pointer
-          w-[272px]
-          min-h-[42px] md:min-h-[55px]
-          figtree
-          disabled:opacity-60
-        "
+                          className={`
+    bg-[#95c11f] text-white
+    flex items-center justify-center gap-[2px] md:gap-2
+    rounded-xl
+    ${String(partnerData?.isValidFavourite) === "True" ? "px-1" : "px-5"}
+    sm:px-6 md:px-5
+    shadow-lg sm:shadow-md
+    hover:opacity-90 transition
+    cursor-pointer
+    w-[190px]
+    min-h-[42px] md:min-h-[55px]
+    figtree
+    disabled:opacity-60
+  `}
                         >
                           <img
                             src={heartIcon}
@@ -923,7 +924,7 @@ const SupplierProfile = () => {
                             className="w-[22px] h-[22px] md:w-[35px] md:h-[35px] flex-shrink-0"
                           />
 
-                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[20px] text-left break-words leading-tight">
+                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2.5vh] text-left break-words leading-tight">
                             {String(partnerData?.isValidFavourite) === "True"
                               ? t("supplierProfile.removeFromFavorites")
                               : t("supplierProfile.saveFavoriteButton")}
@@ -936,13 +937,13 @@ const SupplierProfile = () => {
                           type="button"
                           className="
           bg-[#95c11f] text-white
-          flex items-center justify-start gap-[2px] md:gap-1
+          flex items-center justify-center gap-[2px] md:gap-2
           rounded-xl
-          px-5 sm:px-6 md:px-7
+          px-5 sm:px-6 md:px-5
           shadow-lg sm:shadow-md
           hover:opacity-90 transition
           cursor-pointer
-          w-[272px]
+          w-[190px]
           min-h-[42px] md:min-h-[55px]
           figtree
         "
@@ -953,7 +954,7 @@ const SupplierProfile = () => {
                             className="w-[22px] h-[22px] md:w-[35px] md:h-[35px] flex-shrink-0"
                           />
 
-                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[20px] text-left break-words leading-tight">
+                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2.5vh] text-left break-words leading-tight">
                             {t("supplierProfile.recommendation")}
                           </span>
                         </button>
@@ -964,13 +965,13 @@ const SupplierProfile = () => {
                           type="button"
                           className="
           bg-[#95c11f] text-white
-          flex items-center justify-start gap-[2px] md:gap-1
+          flex items-center justify-start gap-[2px] md:gap-2
           rounded-xl
-          px-5 sm:px-6 md:px-7
+          px-5 sm:px-6 md:px-5
           shadow-lg sm:shadow-md
           hover:opacity-90 transition
           cursor-pointer
-          w-[272px]
+          w-[190px] 
           min-h-[42px] md:min-h-[55px]
           figtree
         "
@@ -981,7 +982,7 @@ const SupplierProfile = () => {
                             className="w-[22px] h-[22px] md:w-[35px] md:h-[35px] flex-shrink-0"
                           />
 
-                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[20px] text-left break-words leading-tight">
+                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2.5vh] text-left break-words leading-tight">
                             {t("supplierProfile.conversation")}
                           </span>
                         </button>
