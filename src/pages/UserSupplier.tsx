@@ -78,8 +78,8 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
           {name || fullName || "Partner"}
         </h3>
         {description && (
-          <div className="flex-1 flex items-start justify-center w-full mb-3 md:mb-6 overflow-hidden min-h-0">
-            <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-3 md:line-clamp-6">
+          <div className="flex items-start justify-center w-full mb-3 md:mb-6 overflow-hidden min-h-[84px] md:min-h-[112px]">
+            <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-5">
               {description}
             </p>
           </div>
