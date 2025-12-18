@@ -155,9 +155,6 @@ export default function UserModal({
           return;
         }
 
-        hasHandledLoginRef.current = true;
-        onClose();
-
         const isPartner =
           roleIds
             .split(",")
@@ -168,6 +165,46 @@ export default function UserModal({
             .split(",")
             .map((r: string) => r.trim())
             .includes("3") || roleName === "User";
+
+        // IMPORTANT: enforce the selected login role.
+        // - Partner login must be a "pure partner" account (role 2 only).
+        // - User login must not accept "pure partner" accounts.
+        const isPurePartner = isPartner && !isUser;
+        if (roleTarget === "partner" && !isPurePartner) {
+          showError(
+            t("auth.partnerAccessDenied") ||
+              t("auth.accessDenied") ||
+              "Access denied. Please log in using a Partner account."
+          );
+          try {
+            localStorage.removeItem("bm_access");
+            localStorage.removeItem("bm_user");
+            localStorage.removeItem("bm_partner");
+            localStorage.removeItem("bm_partnerId");
+          } catch {}
+          dispatch(logout());
+          // keep modal open for retry
+          return;
+        }
+        if (roleTarget === "user" && isPurePartner) {
+          showError(
+            t("auth.userAccessDenied") ||
+              t("auth.accessDenied") ||
+              "Access denied. Please log in using a User account."
+          );
+          try {
+            localStorage.removeItem("bm_access");
+            localStorage.removeItem("bm_user");
+            localStorage.removeItem("bm_partner");
+            localStorage.removeItem("bm_partnerId");
+          } catch {}
+          dispatch(logout());
+          // keep modal open for retry
+          return;
+        }
+
+        hasHandledLoginRef.current = true;
+        onClose();
 
         localStorage.setItem("bm_access", token);
         if (isPartner && !isUser) {

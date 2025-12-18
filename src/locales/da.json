@@ -152,6 +152,8 @@
     "rememberMe": "Husk i 30 dage",
     "adminAccessDenied": "Adgang nægtet. Denne portal er kun for administratorer.",
     "accessDenied": "Adgang Nægtet",
+    "partnerAccessDenied": "Adgang nægtet. Log venligst ind med en Partner-konto.",
+    "userAccessDenied": "Adgang nægtet. Log venligst ind med en Bruger-konto.",
     "adminPortalOnly": "Denne portal er kun for administratorer.",
     "returnToLogin": "Tilbage til Login",
     "forgotPassword": "Glemt adgangskode",
