@@ -992,11 +992,12 @@ const SupplierProfile = () => {
 
                 </div>
               </div>
-              <div className={`${!isPartner && 'bg-[#01351f] md:bg-[#01351f] '} md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full pt-[12px] md:pt-0 md:mt-[0px]`}>
-                <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white pt-1 pb-5 md:py-0">
+              <div className={`${!isPartner && 'bg-[#01351f] md:bg-[#01351f] '} md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full pt-[27px] md:mt-[0px]`}>
+                <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white md:py-5 py-0">
                   {partnerData?.businessName || partnerData?.fullName || "Loading..."}
                 </h1>
               </div>
+
             </div>
           </div>
         </div>
