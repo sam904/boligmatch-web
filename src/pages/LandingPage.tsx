@@ -15,6 +15,8 @@ import { loginThunk } from "../features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import axios from "axios";
 import boligmatchLogo from "/src/assets/userImages/loginModelLogo.svg";
+import steperBgMobile from "/src/assets/userImages/steper-mobile.svg";
+import stepperBg from "/src/assets/userImages/stepper.svg";
 
 
 export default function LandingPage() {
@@ -73,6 +75,19 @@ export default function LandingPage() {
   const calledRef = useRef(false);
   const previousAuthStatusRef = useRef<boolean>(false);
   const recommendationAcceptedRef = useRef(false);
+
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+      };
+  
+      handleResize();
+      window.addEventListener("resize", handleResize);
+  
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, []);
 
 useEffect(() => {
   const check = () => setIsMobile(window.innerWidth < 768);
@@ -575,7 +590,16 @@ useEffect(() => {
           {t("landing.futureDescription")}
         </p>
       </div>   
-      <Stepper currentStep={currentStep} onStepClick={setCurrentStep} />
+      {/* <Stepper currentStep={currentStep} onStepClick={setCurrentStep} /> */}
+       <div
+            className="flex items-center justify-center w-full h-[100vh] mx-auto md:p-14"
+            style={{
+              backgroundImage: `url(${isMobile ? steperBgMobile : stepperBg})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          ></div>
       <Footer />
     </div>
   );
