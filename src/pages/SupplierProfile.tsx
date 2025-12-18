@@ -720,7 +720,7 @@ const SupplierProfile = () => {
 
   return (
     <>
-      <div className="md:h-[100vh]">
+      <div className="md:h-[100vh] bg-[#01351f]">
         {/* Always render background image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat md:h-[100vh] h-[350px]"
@@ -992,8 +992,8 @@ const SupplierProfile = () => {
 
                 </div>
               </div>
-              <div className="bg-[#01351f] w-full">
-                <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white py-5">
+              <div className="md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full pt-[27px] md:mt-[0px]">
+                <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white md:py-5 py-0">
                   {partnerData?.businessName || partnerData?.fullName || "Loading..."}
                 </h1>
               </div>
