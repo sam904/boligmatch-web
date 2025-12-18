@@ -1,6 +1,6 @@
 import ServiceCarousel from "./Landingpage/ServiceCarousel";
 import { useEffect, useState, useRef } from "react";
-import Stepper from "./Landingpage/Stepper";
+// import Stepper from "./Landingpage/Stepper";
 import UserHeader from "../features/users/UserPages/UserHeader";
 // import landingPageIcons from "/src/assets/userImages/1.svg";
 // import landingPageIcons2 from "/src/assets/userImages/2.svg";
@@ -21,7 +21,7 @@ import stepperBg from "/src/assets/userImages/stepper.svg";
 
 export default function LandingPage() {
   const dispatch = useAppDispatch();
-  const [currentStep, setCurrentStep] = useState(1);
+  // const [currentStep, setCurrentStep] = useState(1);
 
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -416,7 +416,7 @@ useEffect(() => {
   return (
     <div
     className="
-    h-[418px]
+    h-[422px]
     md:h-[100vh] bg-cover bg-center bg-no-repeat
     bg-[url('/src/assets/userImages/landingImgMobile.png')]   // mobile default
     md:bg-[url('/src/assets/userImages/home_pageImg.png')]       // desktop
