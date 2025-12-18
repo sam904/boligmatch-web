@@ -15,6 +15,8 @@ import { loginThunk } from "../features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import axios from "axios";
 import boligmatchLogo from "/src/assets/userImages/loginModelLogo.svg";
+import steperBgMobile from "/src/assets/userImages/steper-mobile.svg";
+import stepperBg from "/src/assets/userImages/stepper.svg";
 
 
 export default function LandingPage() {
@@ -31,7 +33,6 @@ export default function LandingPage() {
   // Get authentication status to detect login changes
   const token = useAppSelector((state) => state.auth.accessToken);
   const user = useAppSelector((state) => state.auth.user);
-  // Check both Redux state and localStorage for authentication
   const [localAuthStatus, setLocalAuthStatus] = useState(() => {
     try {
       const bmUser = typeof window !== "undefined" ? localStorage.getItem("bm_user") : null;
@@ -74,6 +75,19 @@ export default function LandingPage() {
   const calledRef = useRef(false);
   const previousAuthStatusRef = useRef<boolean>(false);
   const recommendationAcceptedRef = useRef(false);
+
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+      };
+  
+      handleResize();
+      window.addEventListener("resize", handleResize);
+  
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, []);
 
 useEffect(() => {
   const check = () => setIsMobile(window.innerWidth < 768);
@@ -402,7 +416,7 @@ useEffect(() => {
   return (
     <div
     className="
-    h-[400px]
+    h-[418px]
     md:h-[100vh] bg-cover bg-center bg-no-repeat
     bg-[url('/src/assets/userImages/landingImgMobile.png')]   // mobile default
     md:bg-[url('/src/assets/userImages/home_pageImg.png')]       // desktop
@@ -576,7 +590,16 @@ useEffect(() => {
           {t("landing.futureDescription")}
         </p>
       </div>   
-      <Stepper currentStep={currentStep} onStepClick={setCurrentStep} />
+      {/* <Stepper currentStep={currentStep} onStepClick={setCurrentStep} /> */}
+       <div
+            className="flex items-center justify-center w-full h-[100vh] mx-auto md:p-14"
+            style={{
+              backgroundImage: `url(${isMobile ? steperBgMobile : stepperBg})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          ></div>
       <Footer />
     </div>
   );
