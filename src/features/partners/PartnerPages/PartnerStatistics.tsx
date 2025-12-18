@@ -84,8 +84,9 @@ function ParentStatistics() {
 
   return (
     <>
-      <div className="bg-cover bg-center bg-no-repeat h-[100vh]"
-        style={{ backgroundImage: `url(${parentStatisticsImg})` }}>
+      <div className="bg-cover bg-center bg-no-repeat md:h-[100vh] h-[50vh]"
+        style={{ backgroundImage: `url(${parentStatisticsImg})` }}
+        >
         <PartnerHeader />
 
         <div className="flex flex-col bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]">
