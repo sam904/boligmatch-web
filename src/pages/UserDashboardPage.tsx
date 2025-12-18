@@ -283,7 +283,7 @@ export default function UserDashboardPage() {
         className={`
               relative 
               h-[368px]      
-              md:h-[100vh]     
+              md:h-[80vh]     
               bg-no-repeat bg-cover bg-center
               bg-[url('/src/assets/userImages/profileResponsiveBanner.svg')] 
               md:bg-none       
@@ -295,7 +295,7 @@ export default function UserDashboardPage() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-[#01351f]/60 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#01351f]  pointer-events-none" />
 
         <UserHeader />
 
@@ -417,7 +417,9 @@ export default function UserDashboardPage() {
           </div>
         </div>
       </div>
-      <div className="bg-[#01351f] py-4 md:py-16 flex-1">
+        
+        {/* <div className="text-white w-full bg-gradient-to-t from-[#01351f]/60">Hello</div> */}
+      <div className="bg-[#01351f] py-4 md:py-10 flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
           {loading && activeView === "default" ? (
             <div className="flex justify-center items-center h-64">

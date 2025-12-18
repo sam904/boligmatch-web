@@ -416,7 +416,7 @@ useEffect(() => {
   return (
     <div
     className="
-    h-[400px]
+    h-[418px]
     md:h-[100vh] bg-cover bg-center bg-no-repeat
     bg-[url('/src/assets/userImages/landingImgMobile.png')]   // mobile default
     md:bg-[url('/src/assets/userImages/home_pageImg.png')]       // desktop
