@@ -929,6 +929,120 @@
     "paragraph2": "Brugere er ansvarlige for at verificere legitimitet og kvalitet af partnere før indgåelse af aftaler. Boligmatch+ fungerer som mellemmand og påtager sig ikke ansvar for aftaler, der indgås mellem brugere og partnere. Alle transaktioner sker direkte mellem brugeren og partneren, og Boligmatch+ er ikke part i disse aftaler.",
     "paragraph3": "Vi forbeholder os retten til at ændre disse vilkår og betingelser. Væsentlige ændringer vil blive meddelt brugere via email eller gennem platformen. Fortsat brug af tjenesten efter sådanne ændringer betyder accept af de opdaterede vilkår. For spørgsmål eller bekymringer, kontakt venligst vores support."
   },
+  "privacyPolicy": {
+    "title": "Privatlivspolitik",
+    "intro": "Denne privatlivspolitik beskriver, hvordan vi behandler dine personoplysninger, når du bruger Boligmatch+ platformen. Vores mål er at give dig en tryg og gennemsigtig oplevelse, og vi behandler kun dine oplysninger i overensstemmelse med gældende databeskyttelseslovgivning, herunder GDPR.",
+    "sections": {
+      "dataController": {
+        "title": "1. Dataansvarlig",
+        "company": "Boligmatch ApS",
+        "address": "Tørringvej 7",
+        "city": "2610 Rødovre",
+        "cvr": "CVR.: 41036877",
+        "email": "info@boligmatch.dk",
+        "responsibility": "Boligmatch er dataansvarlig for behandlingen af dine oplysninger."
+      },
+      "collectedData": {
+        "title": "2. Hvilke oplysninger indsamler vi?",
+        "providedByYou": {
+          "title": "Oplysninger du selv giver os",
+          "intro": "Når du registrerer dig, udfylder formularer eller bruger platformen, indsamler vi følgende:",
+          "items": {
+            "name": "Navn",
+            "email": "E-mailadresse",
+            "phone": "Telefonnummer",
+            "postalCode": "Postnummer",
+            "contactFormDetails": "Eventuelle oplysninger du sender i kontaktformularer til partnere (fx emne og beskedens indhold)"
+          }
+        },
+        "usageData": {
+          "title": "Oplysninger om din brug af platformen",
+          "intro": "For at forbedre vores service registrerer vi:",
+          "items": {
+            "profileVisits": "Hvilke partnerprofiler du besøger",
+            "favorites": "Hvilke partnere du markerer som favoritter",
+            "inquiries": "Hvilke henvendelser du sender til partnere",
+            "technical": "Tekniske oplysninger, herunder IP-adresse, enhedstype, browser og cookies (se afsnit 7)"
+          }
+        },
+        "noSensitiveData": "Vi indsamler ikke følsomme oplysninger."
+      },
+      "purposes": {
+        "title": "3. Hvad bruger vi dine oplysninger til?",
+        "items": {
+          "serviceDelivery": {
+            "title": "At levere vores tjeneste",
+            "body": "For at give dig adgang til partnerkataloget og dine personlige funktioner (favoritter, beskedhistorik mv.)."
+          },
+          "forwardInquiries": {
+            "title": "At sende dine henvendelser videre til partnere",
+            "body": "Når du kontakter en partner via platformen, videresender vi dine oplysninger til den relevante partner, så de kan besvare din forespørgsel."
+          },
+          "improvePlatform": {
+            "title": "At forbedre platformen",
+            "body": "Vi analyserer brugerdata for at forstå, hvordan platformen bruges, og hvordan vi kan gøre den bedre."
+          },
+          "communicate": {
+            "title": "At kommunikere med dig",
+            "body": "Vi kan sende dig servicemeddelelser – for eksempel kvitteringer, beskeder om ændringer i dine data eller information om nye funktioner."
+          }
+        }
+      },
+      "sharing": {
+        "title": "4. Hvem deler vi oplysninger med?",
+        "intro": "Vi deler kun personoplysninger med:",
+        "items": {
+          "partners": "Partnere, når du selv vælger at kontakte dem via platformen.",
+          "processors": "Tekniske tjenesteudbydere, som hjælper os med drift af systemet (fx hosting, e-mail udsendelse). Disse fungerer som databehandlere og behandler kun data efter vores instruks."
+        },
+        "noSelling": "Vi sælger aldrig dine oplysninger til tredjepart."
+      },
+      "retention": {
+        "title": "5. Hvor længe gemmer vi dine oplysninger?",
+        "intro": "Vi gemmer kun dine oplysninger så længe, det er nødvendigt for formålet:",
+        "items": {
+          "account": "Kontooplysninger gemmes, så længe du har en aktiv konto.",
+          "inquiries": "Henvendelser til partnere gemmes i din beskedhistorik, indtil du selv sletter din konto.",
+          "logs": "Tekniske logdata gemmes i en begrænset periode efter gældende sikkerhedsstandarder."
+        },
+        "deleteRequest": "Du kan altid kontakte os, hvis du ønsker dine oplysninger slettet."
+      },
+      "rights": {
+        "title": "6. Dine rettigheder",
+        "intro": "Du har følgende rettigheder efter GDPR:",
+        "items": {
+          "access": "Ret til indsigt i de oplysninger vi behandler om dig",
+          "rectification": "Ret til rettelse af urigtige oplysninger",
+          "erasure": "Ret til sletning",
+          "restriction": "Ret til begrænsning af behandling",
+          "objection": "Ret til indsigelse mod visse typer behandling",
+          "portability": "Ret til dataportabilitet",
+          "withdrawConsent": "Ret til at tilbagekalde samtykke"
+        },
+        "contact": "Ønsker du at gøre brug af dine rettigheder, kan du kontakte os på info@boligmatch.dk"
+      },
+      "cookies": {
+        "title": "7. Cookies",
+        "body": "Boligmatch bruger cookies til at forbedre din oplevelse, huske dine indstillinger og analysere brugsmønstre på platformen.",
+        "browserSettings": "Du kan til enhver tid ændre dine cookie-indstillinger i din browser."
+      },
+      "security": {
+        "title": "8. Sikkerhed",
+        "body": "Vi beskytter dine oplysninger gennem tekniske og organisatoriske sikkerhedsforanstaltninger, herunder kryptering, adgangskontrol og løbende sikkerhedsopdateringer."
+      },
+      "changes": {
+        "title": "9. Ændringer i privatlivspolitikken",
+        "body": "Vi kan opdatere denne privatlivspolitik løbende. Ved væsentlige ændringer vil du blive informeret på platformen eller via e-mail."
+      },
+      "contact": {
+        "title": "10. Kontakt",
+        "intro": "Har du spørgsmål til denne privatlivspolitik eller vores behandling af dine data, er du velkommen til at kontakte os:",
+        "name": "Rasmus Kirkeby",
+        "email": "info@boligmatch.dk",
+        "phone": "+45 70 22 82 88"
+      }
+    }
+  },
   "cookieConsent": {
     "message": "Vi bruger cookies til at forbedre din oplevelse. Ved at fortsætte accepterer du cookies.",
     "accept": "Accepter alle cookies"

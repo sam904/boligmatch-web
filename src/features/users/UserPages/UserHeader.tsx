@@ -17,6 +17,7 @@ import docsIcon from "/src/assets/userImages/docsIcon.svg";
 import becomePartnerIcon from "/src/assets/userImages/becomePartner.svg";
 import aboutBoligmatchIcon from "/src/assets/userImages/aboutBoligmatch.svg";
 import termsConditionIcon from "/src/assets/userImages/termsAndCondi.svg";
+import privacyPolicyIcon from "/src/assets/userImages/Privacypolicy.svg";
 import signOutIcon from "/src/assets/userImages/signOut.svg";
 
 function UserHeader({
@@ -552,6 +553,22 @@ function UserHeader({
                       {t("sidebar.privacyPolicy")}
                     </span>
                   </button> */}
+                  <button
+                    onClick={() => {
+                      setShowSidebar(false);
+                      navigate("/privacy");
+                    }}
+                    className="w-full text-left px-3 py-2.5 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2 cursor-pointer">
+                      <img
+                        src={privacyPolicyIcon}
+                        alt=""
+                        className="w-[30px] h-[30px] filter brightness-0 invert"
+                      />
+                      {t("sidebar.privacyPolicy")}
+                    </span>
+                  </button>
                   <button
                     onClick={() => {
                       setShowSidebar(false);

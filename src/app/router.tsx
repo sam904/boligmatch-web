@@ -26,6 +26,7 @@ import DashboardPage from "../features/admin/dashboard/DashboardPage";
 import TestimonialPage from "../features/admin/testimonial/TestimonialPage";
 import AboutBoligmatch from "../pages/AboutBoligmatch";
 import TermsAndConditions from "../pages/TermsAndConditions";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
 import RecommendUser from "../pages/RecommendUser";
 import ManageProfile from "../pages/ManageProfile";
 
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       { path: "home-page", element: <HomePage /> },
       { path: "about", element: <AboutBoligmatch /> },
       { path: "terms", element: <TermsAndConditions /> },
+      { path: "privacy", element: <PrivacyPolicy /> },
       { path: "becomePartner", element: <PartnerDashboard /> },
       { path: "login", element: <LoginPage /> },
       { path: "*", element: <NotFound /> },
