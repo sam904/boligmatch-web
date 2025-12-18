@@ -895,46 +895,65 @@ const SupplierProfile = () => {
               <div className="md:bg-[#01351f] w-full md:h-16"></div>
               <div className=" md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] pt-0 w-full">
                 <div className="w-full mx-auto px-4 md:px-12 flex justify-center items-end max-w-7xl">
-                  <div className="flex md:gap-4 gap-1.5 justify-center  md:bottom-0 w-full  pb-0 z-40">
+                  <div className="flex md:gap-4 gap-1.5 justify-center md:bottom-0 w-full pb-0 z-40">
                     {!isPartner && (
                       <>
+                        {/* Favorite Button */}
                         <button
                           onClick={handleToggleFavourite}
                           disabled={isAddingToFavorites}
-                          className="bg-[#95c11f] text-white flex items-center justify-center gap-1 md:gap-3 rounded-xl md:rounded-xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition cursor-pointer w-[272px] md:h-[55px] h-[42px] figtree disabled:opacity-60"
                           type="button"
+                          className="
+          bg-[#95c11f] text-white
+          flex items-center justify-start gap-[2px] md:gap-1
+          rounded-xl
+          px-5 sm:px-6 md:px-7
+          shadow-lg sm:shadow-md
+          hover:opacity-90 transition
+          cursor-pointer
+          w-[272px]
+          min-h-[42px] md:min-h-[55px]
+          figtree
+          disabled:opacity-60
+        "
                         >
                           <img
                             src={heartIcon}
                             alt="Favorite"
-                            className="md:h-6 md:w-6 h-[18px] w-[18px]"
+                            className="w-[22px] h-[22px] md:w-[35px] md:h-[35px] flex-shrink-0"
                           />
-                          <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap hidden sm:inline">
-                            {String(partnerData?.isValidFavourite) === "True"
-                              ? t("supplierProfile.removeFromFavorites")
-                              : t("supplierProfile.saveFavoriteButton")}
-                          </span>
-                          <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap sm:hidden">
+
+                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[20px] text-left break-words leading-tight">
                             {String(partnerData?.isValidFavourite) === "True"
                               ? t("supplierProfile.removeFromFavorites")
                               : t("supplierProfile.saveFavoriteButton")}
                           </span>
                         </button>
 
+                        {/* Recommend Button */}
                         <button
                           onClick={() => setActiveModal("recommend")}
-                          className={`bg-[#95c11f] text-white flex items-center justify-center gap-1 md:gap-3 rounded-xl md:rounded-xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition cursor-pointer w-[272px] md:h-[55px] h-[42px] figtree`}
                           type="button"
+                          className="
+          bg-[#95c11f] text-white
+          flex items-center justify-start gap-[2px] md:gap-1
+          rounded-xl
+          px-5 sm:px-6 md:px-7
+          shadow-lg sm:shadow-md
+          hover:opacity-90 transition
+          cursor-pointer
+          w-[272px]
+          min-h-[42px] md:min-h-[55px]
+          figtree
+        "
                         >
                           <img
                             src={share}
                             alt="Recommend"
-                            className="md:h-6 md:w-6 h-[18px] w-[18px]"
+                            className="w-[22px] h-[22px] md:w-[35px] md:h-[35px] flex-shrink-0"
                           />
-                          <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap hidden sm:inline">
-                            {t("supplierProfile.recommendation")}
-                          </span>
-                          <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap sm:hidden">
+
+                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[20px] text-left break-words leading-tight">
                             {t("supplierProfile.recommendation")}
                           </span>
                         </button>
@@ -942,25 +961,34 @@ const SupplierProfile = () => {
                         {/* Contact Button */}
                         <button
                           onClick={() => setActiveModal("contact")}
-                          className="bg-[#95c11f] text-white flex items-center justify-center gap-1 md:gap-3 rounded-xl md:rounded-xl px-5 sm:px-6 md:px-7 shadow-lg sm:shadow-md hover:opacity-90 transition cursor-pointer w-[272px] md:h-[55px] h-[42px] figtree"
                           type="button"
+                          className="
+          bg-[#95c11f] text-white
+          flex items-center justify-start gap-[2px] md:gap-1
+          rounded-xl
+          px-5 sm:px-6 md:px-7
+          shadow-lg sm:shadow-md
+          hover:opacity-90 transition
+          cursor-pointer
+          w-[272px]
+          min-h-[42px] md:min-h-[55px]
+          figtree
+        "
                         >
                           <img
                             src={chat}
                             alt="Contact"
-                            className="md:h-6 md:w-6 h-[18px] w-[18px]"
+                            className="w-[22px] h-[22px] md:w-[35px] md:h-[35px] flex-shrink-0"
                           />
-                          <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap hidden sm:inline">
-                            {t("supplierProfile.conversation")}
-                          </span>
-                          <span className="font-semibold md:text-lg text-[12px] whitespace-nowrap sm:hidden">
+
+                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[20px] text-left break-words leading-tight">
                             {t("supplierProfile.conversation")}
                           </span>
                         </button>
-
                       </>
                     )}
                   </div>
+
                 </div>
               </div>
               <div className="bg-[#01351f] w-full">

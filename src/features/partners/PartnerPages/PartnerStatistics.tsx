@@ -95,35 +95,27 @@ function ParentStatistics() {
                 {t("partnerStatistics.title")}</h1>
               <h2 className="text-[24px] md:text-[55px] font-[500] tracking-tight [text-shadow:_0_4px_20px_rgba(0,0,0,0.8)]"> {partnerData?.businessName || "Business Name"}</h2>
             </div>
-            <div className="flex justify-center md:gap-6 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full md:pt-23 pt-8 md:pb-13 pb-8 gap-2">
+            <div className="flex justify-center gap-2 md:gap-6 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full pt-8 md:pt-23 pb-8 md:pb-13">
+
               <button
                 onClick={() => setActiveTab("statistik")}
                 type="button"
                 className={`
-              flex items-center justify-center
-              gap-1 md:gap-3
-              w-[272px] h-[42px] md:h-[55px]
-              px-5 sm:px-6 md:px-7
-              text-white
-              rounded-xl
-              shadow-lg sm:shadow-md
-              hover:opacity-90
-              transition
-              cursor-pointer
-              figtree
-              font-semibold md:text-lg text-[12px]
-              ${activeTab === "statistik"
-                    ? "bg-[#145939]"
-                    : "bg-[#95c11f]"
-                  }
-            `}
+      flex items-center justify-center
+      gap-1 md:gap-3
+      w-[272px] h-[42px] md:h-[55px]
+      px-5 sm:px-6 md:px-7
+      rounded-xl
+      shadow-lg sm:shadow-md
+      hover:opacity-90
+      transition
+      cursor-pointer
+      figtree
+      font-semibold text-[10px] md:text-[20px]
+      ${activeTab === "statistik" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
+    `}
               >
-                <img
-                  src={Statistik}
-                  alt="Statistics"
-                  className="md:h-6 md:w-6 h-[18px] w-[18px]"
-                />
-
+                <img src={Statistik} alt="Statistics" className="h-[18px] w-[18px] md:h-6 md:w-6" />
                 <span className="whitespace-nowrap hidden sm:inline">
                   {t("partnerStatistics.tabs.statistics")}
                 </span>
@@ -132,35 +124,26 @@ function ParentStatistics() {
                 </span>
               </button>
 
-
+              {/* Profile */}
               <button
                 onClick={() => setActiveTab("profil")}
                 type="button"
                 className={`
-              flex items-center justify-center
-              gap-1 md:gap-3
-              w-[272px] h-[42px] md:h-[55px]
-              px-5 sm:px-6 md:px-7
-              text-white
-              rounded-xl
-              shadow-lg sm:shadow-md
-              hover:opacity-90
-              transition
-              cursor-pointer
-              figtree
-              font-semibold md:text-lg text-[12px]
-              ${activeTab === "profil"
-                    ? "bg-[#145939]"
-                    : "bg-[#95c11f]"
-                  }
-            `}
+      flex items-center justify-center
+      gap-1 md:gap-3
+      w-[272px] h-[42px] md:h-[55px]
+      px-5 sm:px-6 md:px-7
+      rounded-xl
+      shadow-lg sm:shadow-md
+      hover:opacity-90
+      transition
+      cursor-pointer
+      figtree
+      font-semibold text-[10px] md:text-[20px]
+      ${activeTab === "profil" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
+    `}
               >
-                <img
-                  src={MinProfil}
-                  alt="Profile"
-                  className="md:h-6 md:w-6 h-[18px] w-[18px]"
-                />
-
+                <img src={MinProfil} alt="Profile" className="h-[18px] w-[18px] md:h-6 md:w-6" />
                 <span className="whitespace-nowrap hidden sm:inline">
                   {t("partnerStatistics.tabs.profile")}
                 </span>
@@ -169,34 +152,26 @@ function ParentStatistics() {
                 </span>
               </button>
 
+              {/* Partners */}
               <button
                 onClick={() => setActiveTab("partnere")}
                 type="button"
                 className={`
-              flex items-center justify-center
-              gap-1 md:gap-3
-              w-[272px] h-[42px] md:h-[55px]
-              px-5 sm:px-6 md:px-7
-              text-white
-              rounded-xl
-              shadow-lg sm:shadow-md
-              hover:opacity-90
-              transition
-              cursor-pointer
-              figtree
-              font-semibold md:text-lg text-[12px]
-              ${activeTab === "partnere"
-                    ? "bg-[#145939]"
-                    : "bg-[#95c11f]"
-                  }
-            `}
+      flex items-center justify-center
+      gap-1 md:gap-3
+      w-[272px] h-[42px] md:h-[55px]
+      px-5 sm:px-6 md:px-7
+      rounded-xl
+      shadow-lg sm:shadow-md
+      hover:opacity-90
+      transition
+      cursor-pointer
+      figtree
+      font-semibold text-[10px] md:text-[20px]
+      ${activeTab === "partnere" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
+    `}
               >
-                <img
-                  src={Partnere}
-                  alt="Partners"
-                  className="md:h-6 md:w-6 h-[18px] w-[18px]"
-                />
-
+                <img src={Partnere} alt="Partners" className="h-[18px] w-[18px] md:h-6 md:w-6" />
                 <span className="whitespace-nowrap hidden sm:inline">
                   {t("partnerStatistics.tabs.partners")}
                 </span>
@@ -206,6 +181,7 @@ function ParentStatistics() {
               </button>
 
             </div>
+
           </div>
           <div className="h-full w-full bg-[#01351F] flex flex-col justify-center items-start">
             <div className="w-full">
