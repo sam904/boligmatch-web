@@ -936,28 +936,37 @@ const SupplierProfile = () => {
                           onClick={() => setActiveModal("recommend")}
                           type="button"
                           className="
-          bg-[#95c11f] text-white
-          flex items-center justify-center gap-[2px] md:gap-2
-          rounded-xl
-          px-5 sm:px-6 md:px-5
-          shadow-xl sm:shadow-md
-          hover:opacity-90 transition
-          cursor-pointer
-          w-[190px]
-          min-h-[42px] md:min-h-[55px]
-          figtree
-        "
+    bg-[#95c11f] text-white
+    flex items-center justify-center gap-2
+    rounded-xl
+    px-5 sm:px-6 md:px-5
+    shadow-xl sm:shadow-md
+    hover:opacity-90 transition
+    cursor-pointer
+    w-[190px]
+    min-h-[42px] md:min-h-[55px]
+    figtree
+  "
                         >
                           <img
                             src={share}
                             alt="Recommend"
-                            className="w-[22px] h-[22px] md:w-[35px] md:h-[35px] flex-shrink-0"
+                            className="w-[22px] h-[22px] md:w-[30px] md:h-[30px] flex-shrink-0"
                           />
 
-                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2.2vh] text-left break-words leading-tight">
+                          <span
+                            className="
+      font-semibold
+      text-[10px] md:text-[14px] lg:text-[16px]
+      leading-[1.2]
+      text-center
+      whitespace-normal
+    "
+                          >
                             {t("supplierProfile.recommendation")}
                           </span>
                         </button>
+
 
                         {/* Contact Button */}
                         <button
