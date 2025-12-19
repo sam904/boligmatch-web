@@ -909,7 +909,7 @@ const SupplierProfile = () => {
     rounded-xl
     ${String(partnerData?.isValidFavourite) === "True" ? "px-1" : "px-5"}
     sm:px-6 md:px-5
-    shadow-lg sm:shadow-md
+    shadow-xl sm:shadow-md
     hover:opacity-90 transition
     cursor-pointer
     w-[190px]
@@ -940,7 +940,7 @@ const SupplierProfile = () => {
           flex items-center justify-center gap-[2px] md:gap-2
           rounded-xl
           px-5 sm:px-6 md:px-5
-          shadow-lg sm:shadow-md
+          shadow-xl sm:shadow-md
           hover:opacity-90 transition
           cursor-pointer
           w-[190px]
@@ -968,7 +968,7 @@ const SupplierProfile = () => {
           flex items-center justify-start gap-[2px] md:gap-2
           rounded-xl
           px-5 sm:px-6 md:px-5
-          shadow-lg sm:shadow-md
+          shadow-xl sm:shadow-md
           hover:opacity-90 transition
           cursor-pointer
           w-[190px] 
@@ -1019,7 +1019,7 @@ const SupplierProfile = () => {
             <div className="flex flex-col gap-6">
               <div
                 className={`md:w-[403px] w-full ${hasTrustPilotUrl ? "md:h-[859px]" : "md:h-[890px]"
-                  } h-auto rounded-[10px] bg-white p-6 flex flex-col relative`}
+                  } h-auto rounded-[10px] bg-white p-6 flex flex-col relative shadow-xl`}
               >
                 <div className=" flex justify-center p-2">
                   <img
@@ -1043,7 +1043,7 @@ const SupplierProfile = () => {
                           <div className="flex justify-center mb-3">
                             {renderRating(r, "w-[45px] h-[42px]", "gap-2")}
                           </div>
-                          <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6 line-clamp-3">
+                          <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6 line-clamp-5">
                             ”{rev?.test}”
                           </p>
                           <p className="text-sm font-bold text-black mt-3 text-start px-6">
@@ -1079,7 +1079,7 @@ const SupplierProfile = () => {
 
               <div
                 className={`md:w-[403px] w-full md:h-[432px] h-auto ${hasTrustPilotUrl ? "mt-[30px]" : "mt-[0px]"
-                  } rounded-[10px] flex justify-center items-center p-4 md:p-0`}
+                  } rounded-[10px] flex justify-center items-center p-4 md:p-0 shadow-xl`}
                 style={{
                   background:
                     "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
@@ -1107,7 +1107,7 @@ const SupplierProfile = () => {
 
             {/* Middle Section */}
             <div className="flex flex-col gap-6">
-              <div className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] overflow-hidden">
+              <div className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] overflow-hidden shadow-xl">
                 <img
                   src={partnerData?.imageUrl2}
                   alt={partnerData?.businessName}
@@ -1116,7 +1116,7 @@ const SupplierProfile = () => {
               </div>
 
               <div
-                className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] p-[53px_34px] gap-[10px] flex flex-col items-center justify-start"
+                className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] p-[53px_34px] gap-[10px] flex flex-col items-center justify-start shadow-xl"
                 style={{
                   background:
                     "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
@@ -1137,7 +1137,7 @@ const SupplierProfile = () => {
                 </div>
               </div>
               {/* className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] p-[53px_34px] gap-[10px] flex flex-col items-center justify-start" */}
-              <div className="rounded-2xl pt-[53px] px-8 pb-8 md:w-[403px] w-full md:h-[432px] h-auto"
+              <div className="rounded-2xl pt-[53px] px-8 pb-8 md:w-[403px] w-full md:h-[432px] h-auto shadow-xl"
                 style={{
                   background:
                     "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
@@ -1157,7 +1157,7 @@ const SupplierProfile = () => {
 
             {/* Right Column */}
             <div className="flex flex-col gap-6">
-              <div className="bg-white rounded-[10px] md:w-[403px] w-full md:h-[432px] h-auto flex justify-center items-center p-6 md:p-8">
+              <div className="bg-white rounded-[10px] md:w-[403px] w-full md:h-[432px] h-auto flex justify-center items-center p-6 md:p-8 shadow-xl">
                 <div className="text-center">
                   <img
                     src={partnerData?.logoUrl || kabelLogoImg}
@@ -1168,7 +1168,7 @@ const SupplierProfile = () => {
               </div>
 
               <div
-                className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] flex flex-col items-center gap-[10px] p-[53px_34px]"
+                className="md:w-[403px] w-full md:h-[432px] h-auto rounded-[10px] flex flex-col items-center gap-[10px] p-[53px_34px] shadow-xl"
                 style={{
                   background:
                     "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
@@ -1184,7 +1184,7 @@ const SupplierProfile = () => {
                   {t("supplierProfile.factsTitle")}
                 </h2>
 
-                <div className="text-white text-sm space-y-2 w-full text-left leading-[31px]">
+                <div className="text-white text-[16px] space-y-2 w-full text-left leading-[31px]">
                   {partnerData?.textField2 && (
                     <div
                       className="text-left"
@@ -1196,7 +1196,7 @@ const SupplierProfile = () => {
                 </div>
               </div>
 
-              <div className="rounded-[10px] flex justify-center items-center overflow-hidden md:w-[403px] w-full md:h-[432px] h-auto">
+              <div className="rounded-[10px] flex justify-center items-center overflow-hidden md:w-[403px] w-full md:h-[432px] h-auto shadow-xl">
                 <img
                   src={
                     partnerData?.imageUrl3 ||
