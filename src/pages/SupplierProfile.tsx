@@ -913,7 +913,7 @@ const SupplierProfile = () => {
     hover:opacity-90 transition
     cursor-pointer
     w-[190px]
-    min-h-[42px] md:min-h-[55px]
+    min-h-[42px] md:min-h-[64px]
     figtree
     disabled:opacity-60
   `}
@@ -953,7 +953,7 @@ const SupplierProfile = () => {
     hover:opacity-90 transition
     cursor-pointer
     w-[190px]
-    min-h-[42px] md:min-h-[55px]
+    min-h-[42px] md:min-h-[64px]
     figtree
   "
                         >
@@ -990,7 +990,7 @@ const SupplierProfile = () => {
     hover:opacity-90 transition
     cursor-pointer
     w-[190px]
-    min-h-[42px] md:min-h-[55px]
+    min-h-[42px] md:min-h-[64px]
     figtree
   "
                         >
