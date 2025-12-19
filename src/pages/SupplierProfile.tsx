@@ -921,15 +921,15 @@ const SupplierProfile = () => {
                           <img
                             src={heartIcon}
                             alt="Favorite"
-                            className="w-[22px] h-[22px] md:w-[30px] md:h-[30px] flex-shrink-0"
+                            className="w-[22px] h-[22px] md:w-[38px] md:h-[33px] flex-shrink-0"
                           />
 
                           <span
                             className="
-      font-[700]
+      font-[600]
       text-[10px] md:text-[14px] lg:text-[20px]
       leading-[1.2]
-      text-center
+      text-start
       whitespace-normal
     "
                           >
@@ -960,7 +960,7 @@ const SupplierProfile = () => {
                           <img
                             src={share}
                             alt="Recommend"
-                            className="w-[22px] h-[22px] md:w-[30px] md:h-[30px] flex-shrink-0"
+                            className="w-[22px] h-[22px] md:w-[38px] md:h-[33px] flex-shrink-0"
                           />
 
                           <span
@@ -968,7 +968,7 @@ const SupplierProfile = () => {
       font-[700]
       text-[10px] md:text-[14px] lg:text-[20px]
       leading-[1.2]
-      text-center
+      text-start
       whitespace-normal
     "
                           >
@@ -997,7 +997,7 @@ const SupplierProfile = () => {
                           <img
                             src={chat}
                             alt="Contact"
-                            className="w-[22px] h-[22px] md:w-[30px] md:h-[30px] flex-shrink-0"
+                            className="w-[22px] h-[22px] md:w-[38px] md:h-[33px] flex-shrink-0"
                           />
 
                           <span
@@ -1005,7 +1005,7 @@ const SupplierProfile = () => {
       font-[700]
       text-[10px] md:text-[14px] lg:text-[20px]
       leading-[1.2]
-      text-center
+      text-start
       whitespace-normal
     "
                           >
