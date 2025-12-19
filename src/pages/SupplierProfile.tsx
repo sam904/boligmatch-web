@@ -924,7 +924,7 @@ const SupplierProfile = () => {
                             className="w-[22px] h-[22px] md:w-[35px] md:h-[35px] flex-shrink-0"
                           />
 
-                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2.5vh] text-left break-words leading-tight">
+                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2.2vh] text-left break-words leading-tight">
                             {String(partnerData?.isValidFavourite) === "True"
                               ? t("supplierProfile.removeFromFavorites")
                               : t("supplierProfile.saveFavoriteButton")}
@@ -954,7 +954,7 @@ const SupplierProfile = () => {
                             className="w-[22px] h-[22px] md:w-[35px] md:h-[35px] flex-shrink-0"
                           />
 
-                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2.5vh] text-left break-words leading-tight">
+                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2.2vh] text-left break-words leading-tight">
                             {t("supplierProfile.recommendation")}
                           </span>
                         </button>
@@ -982,7 +982,7 @@ const SupplierProfile = () => {
                             className="w-[22px] h-[22px] md:w-[35px] md:h-[35px] flex-shrink-0"
                           />
 
-                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2.5vh] text-left break-words leading-tight">
+                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2.2vh] text-left break-words leading-tight">
                             {t("supplierProfile.conversation")}
                           </span>
                         </button>
