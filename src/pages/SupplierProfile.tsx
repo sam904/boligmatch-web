@@ -1019,7 +1019,7 @@ const SupplierProfile = () => {
 
                 </div>
               </div>
-              <div className={`${!isPartner && 'bg-[#01351f] md:bg-[#01351f] '} md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full pt-[27px] md:mt-[0px]`}>
+              <div className={`${!isPartner && 'bg-[#01351f] md:bg-[#01351f] '} md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full pt-[62px] md:pt-[27px] md:mt-[0px]`}>
                 <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white md:py-5 py-0">
                   {partnerData?.businessName || partnerData?.fullName || "Loading..."}
                 </h1>
@@ -1041,7 +1041,7 @@ const SupplierProfile = () => {
         </div>
 
         <div className="bg-[#01351f] min-h-screen flex justify-center items-center p-4 md:p-8">
-          <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-7xl w-full bg-[#01351f]">
+         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl w-full mx-auto">n
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
               <div

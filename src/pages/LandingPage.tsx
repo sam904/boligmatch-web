@@ -523,7 +523,7 @@ useEffect(() => {
         </div>
       </div> */}
 
-      <div className="pt-46 md:pt-0">
+      <div className="pt-46 bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-10% md:pt-0">
         
         <div  style={{top: isMobile ? "350px" : "", }} className="md:absolute md:bottom-0 md:h-[350px] h-[350px]  flex flex-col items-center justify-end bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] w-full ">
          {isMobile ? 
