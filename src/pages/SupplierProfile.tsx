@@ -905,15 +905,15 @@ const SupplierProfile = () => {
                           type="button"
                           className={`
     bg-[#95c11f] text-white
-    flex items-center justify-center gap-[2px] md:gap-2
+    flex items-center justify-center gap-2
     rounded-xl
-    ${String(partnerData?.isValidFavourite) === "True" ? "px-1" : "px-5"}
+    ${String(partnerData?.isValidFavourite) === "True" ? "px-3" : "px-5"}
     sm:px-6 md:px-5
     shadow-xl sm:shadow-md
     hover:opacity-90 transition
     cursor-pointer
     w-[190px]
-    min-h-[42px] md:min-h-[55px]
+    min-h-[42px] md:min-h-[64px]
     figtree
     disabled:opacity-60
   `}
@@ -921,15 +921,24 @@ const SupplierProfile = () => {
                           <img
                             src={heartIcon}
                             alt="Favorite"
-                            className="w-[22px] h-[22px] md:w-[35px] md:h-[35px] flex-shrink-0"
+                            className="w-[22px] h-[22px] md:w-[38px] md:h-[33px] flex-shrink-0"
                           />
 
-                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2vh] text-left break-words leading-tight">
+                          <span
+                            className="
+      font-[600]
+      text-[10px] md:text-[14px] lg:text-[20px]
+      leading-[1.2]
+      text-start
+      whitespace-normal
+    "
+                          >
                             {String(partnerData?.isValidFavourite) === "True"
                               ? t("supplierProfile.removeFromFavorites")
                               : t("supplierProfile.saveFavoriteButton")}
                           </span>
                         </button>
+
 
                         {/* Recommend Button */}
                         <button
@@ -944,17 +953,25 @@ const SupplierProfile = () => {
     hover:opacity-90 transition
     cursor-pointer
     w-[190px]
-    min-h-[42px] md:min-h-[55px]
+    min-h-[42px] md:min-h-[64px]
     figtree
   "
                         >
                           <img
                             src={share}
                             alt="Recommend"
-                            className="w-[22px] h-[22px] md:w-[30px] md:h-[30px] flex-shrink-0"
+                            className="w-[22px] h-[22px] md:w-[38px] md:h-[33px] flex-shrink-0"
                           />
 
-                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2vh] text-left break-words leading-tight">
+                          <span
+                            className="
+      font-[700]
+      text-[10px] md:text-[14px] lg:text-[20px]
+      leading-[1.2]
+      text-start
+      whitespace-normal
+    "
+                          >
                             {t("supplierProfile.recommendation")}
                           </span>
                         </button>
@@ -965,28 +982,37 @@ const SupplierProfile = () => {
                           onClick={() => setActiveModal("contact")}
                           type="button"
                           className="
-          bg-[#95c11f] text-white
-          flex items-center justify-start gap-[2px] md:gap-2
-          rounded-xl
-          px-5 sm:px-6 md:px-5
-          shadow-xl sm:shadow-md
-          hover:opacity-90 transition
-          cursor-pointer
-          w-[190px] 
-          min-h-[42px] md:min-h-[55px]
-          figtree
-        "
+    bg-[#95c11f] text-white
+    flex items-center justify-center gap-2
+    rounded-xl
+    px-5 sm:px-6 md:px-5
+    shadow-xl sm:shadow-md
+    hover:opacity-90 transition
+    cursor-pointer
+    w-[190px]
+    min-h-[42px] md:min-h-[64px]
+    figtree
+  "
                         >
                           <img
                             src={chat}
                             alt="Contact"
-                            className="w-[22px] h-[22px] md:w-[35px] md:h-[35px] flex-shrink-0"
+                            className="w-[22px] h-[22px] md:w-[38px] md:h-[33px] flex-shrink-0"
                           />
 
-                          <span className="flex-1 min-w-0 font-semibold text-[10px] md:text-[2.2vh] text-left break-words leading-tight">
+                          <span
+                            className="
+      font-[700]
+      text-[10px] md:text-[14px] lg:text-[20px]
+      leading-[1.2]
+      text-start
+      whitespace-normal
+    "
+                          >
                             {t("supplierProfile.conversation")}
                           </span>
                         </button>
+
                       </>
                     )}
                   </div>
