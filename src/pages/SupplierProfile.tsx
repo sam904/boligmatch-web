@@ -1015,7 +1015,7 @@ const SupplierProfile = () => {
         </div>
 
         <div className="bg-[#01351f] min-h-screen flex justify-center items-center p-4 md:p-8">
-          <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-7xl w-full bg-[#01351f]">
+         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl w-full mx-auto">n
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
               <div
