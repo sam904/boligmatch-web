@@ -458,7 +458,8 @@ function PartnerProfileShortcut({
       <div className="min-h-screen flex justify-center items-center md:p-8 p-4 bg-[#01351F]">
         <div className="grid md:grid-cols-3 grid-cols-1 gap-4 max-w-7xl">
           <div className="flex flex-col gap-6">
-            <div className="md:w-[403px] w-full md:h-[859px] h-auto rounded-[10px] bg-white p-6 flex flex-col relative">
+            <div className={`md:w-[403px] w-full ${hasTrustPilotUrl ? "md:h-[859px]" : "md:h-[890px]"
+                  } h-auto rounded-[10px] bg-white p-6 flex flex-col relative`}>
               <div className=" flex justify-center items-end">
                 <img
                   className="w-[130px] h-[32px]"
@@ -482,7 +483,7 @@ function PartnerProfileShortcut({
                           {renderRating(r, "w-[45px] h-[42px]", "gap-2")}
                         </div>
                         <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6 line-clamp-3">
-                          ”{rev?.test}”
+                          "{rev?.test}"
                         </p>
                         <p className="text-sm font-bold text-black mt-3 text-start px-6">
                           {rev?.customerName}
@@ -497,24 +498,27 @@ function PartnerProfileShortcut({
                 )}
               </div>
 
-              <div className="left-[25%] flex justify-center pt-2 mt-auto">
-                <button
-                  type="button"
-                  onClick={handleOpenTrustPilot}
-                  className="absolute w-[160px] md:w-[202px] h-[50px] md:h-[66px] bg-[#95C11F] flex items-center justify-center gap-1.5 md:gap-2 text-white rounded-[11px] px-3 md:px-4 text-base md:text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]"
-                >
-                  <img
-                    src={startImg}
-                    alt="rating"
-                    className="w-6 h-6 md:w-[33px] md:h-[33px] select-none"
-                  />
-                  {t("supplierProfile.reviewUsOnTrustpilot")}
-                </button>
-              </div>
+              {hasTrustPilotUrl && (
+                <div className="left-[25%] flex justify-center pt-2 mt-auto">
+                  <button
+                    type="button"
+                    onClick={handleOpenTrustPilot}
+                    className="absolute w-[160px] md:w-[202px] h-[50px] md:h-[66px] bg-[#95C11F] flex items-center justify-center gap-1.5 md:gap-2 text-white rounded-[11px] px-3 md:px-4 text-base md:text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]"
+                  >
+                    <img
+                      src={startImg}
+                      alt="rating"
+                      className="w-6 h-6 md:w-[33px] md:h-[33px] select-none"
+                    />
+                    {t("supplierProfile.reviewUsOnTrustpilot")}
+                  </button>
+                </div>
+              )}
             </div>
 
             <div
-              className="md:w-[403px] w-full md:h-[432px] h-auto mt-[30px] rounded-[10px] flex justify-center items-center"
+              className={`md:w-[403px] w-full md:h-[432px] h-auto ${hasTrustPilotUrl ? "mt-[30px]" : "mt-[0px]"
+                  } rounded-[10px] flex justify-center items-center`}
               style={{
                 background:
                   "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
