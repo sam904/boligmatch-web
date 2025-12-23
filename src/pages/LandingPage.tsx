@@ -29,7 +29,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   const [isMobile, setIsMobile] = useState(false);
-  
+
   // Get authentication status to detect login changes
   const token = useAppSelector((state) => state.auth.accessToken);
   const user = useAppSelector((state) => state.auth.user);
@@ -43,7 +43,7 @@ export default function LandingPage() {
     }
   });
   const isAuthenticated = Boolean(token || user || localAuthStatus);
-  
+
   // Recommendation modal state
   type PartnerInfo = {
     businessNameLocalized?: any;
@@ -52,7 +52,7 @@ export default function LandingPage() {
     partnerName?: string;
     fullName?: string;
   };
-  
+
   type RecommendationData = ({
     partner?: PartnerInfo;
     user?: {
@@ -67,7 +67,7 @@ export default function LandingPage() {
     patnerId?: number;
     partnerId?: number;
   } & Partial<PartnerInfo>) | null;
-  
+
   const [showRecommendationModal, setShowRecommendationModal] = useState(false);
   const [recommendationData, setRecommendationData] = useState<RecommendationData>(null);
   const [recommendationKey, setRecommendationKey] = useState<string | null>(null);
@@ -76,25 +76,25 @@ export default function LandingPage() {
   const previousAuthStatusRef = useRef<boolean>(false);
   const recommendationAcceptedRef = useRef(false);
 
-    useEffect(() => {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth < 768);
-      };
-  
-      handleResize();
-      window.addEventListener("resize", handleResize);
-  
-      return () => {
-        window.removeEventListener("resize", handleResize);
-      };
-    }, []);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
 
-useEffect(() => {
-  const check = () => setIsMobile(window.innerWidth < 768);
-  check();
-  window.addEventListener("resize", check);
-  return () => window.removeEventListener("resize", check);
-}, []);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const handleSignupSuccess = async (email: string, password: string) => {
     // Auto-login after successful signup
@@ -102,7 +102,7 @@ useEffect(() => {
       await dispatch(loginThunk({ userName: email, password }));
       setShowSignUpModal(false);
       setShowRecommendationModal(false);
-      
+
       // Navigate to supplier profile page if partner ID exists
       const partnerId = sessionStorage.getItem("bm_recommendation_partner_id");
       if (partnerId) {
@@ -168,10 +168,10 @@ useEffect(() => {
         fetchRecommendation(storedKey);
       }
     };
-    
+
     // Check periodically for new recommendation keys
     const interval = setInterval(checkForRecommendationKey, 500);
-    
+
     return () => clearInterval(interval);
   }, [recommendationKey]);
 
@@ -187,13 +187,13 @@ useEffect(() => {
         setLocalAuthStatus(false);
       }
     };
-    
+
     // Check immediately
     checkAuth();
-    
+
     // Check periodically to detect login (since storage event only fires in other tabs)
     const interval = setInterval(checkAuth, 300);
-    
+
     return () => {
       clearInterval(interval);
     };
@@ -204,7 +204,7 @@ useEffect(() => {
     const storedKey = sessionStorage.getItem("bm_recommendation_key");
     const wasNotAuthenticated = !previousAuthStatusRef.current;
     const isNowAuthenticated = isAuthenticated;
-    
+
     // If user just logged in and we have a recommendation key, show the modal
     if (wasNotAuthenticated && isNowAuthenticated && storedKey && !showRecommendationModal) {
       // Reset calledRef to allow fetching again if needed
@@ -217,7 +217,7 @@ useEffect(() => {
         setShowRecommendationModal(true);
       }
     }
-    
+
     // Also check if user is already authenticated and has a recommendation key
     // This handles the case when authenticated user opens recommendation link
     if (isAuthenticated && storedKey && !showRecommendationModal) {
@@ -231,7 +231,7 @@ useEffect(() => {
         setShowRecommendationModal(true);
       }
     }
-    
+
     // Update previous auth status
     previousAuthStatusRef.current = isAuthenticated;
   }, [isAuthenticated, showRecommendationModal, recommendationData]);
@@ -282,7 +282,7 @@ useEffect(() => {
         const partnerId = firstEntry?.patnerId || firstEntry?.partnerId || null;
         if (partnerId) {
           sessionStorage.setItem("bm_recommendation_partner_id", partnerId.toString());
-          
+
           // If authenticated, fetch partner data and store it for later navigation
           if (isAuthenticated) {
             try {
@@ -302,7 +302,7 @@ useEffect(() => {
           setCurrentLocale(firstEntry.locale as "en" | "da");
           i18n.changeLanguage(firstEntry.locale);
         }
-        
+
         // Always show modal after data is loaded (for both authenticated and non-authenticated users)
         setShowRecommendationModal(true);
       }
@@ -332,10 +332,10 @@ useEffect(() => {
   const handleAcceptRecommendation = async () => {
     // Mark recommendation as accepted to prevent reopening
     recommendationAcceptedRef.current = true;
-    
+
     // Close the recommendation modal first
     setShowRecommendationModal(false);
-    
+
     // Small delay to ensure modal closes before opening signup modal
     setTimeout(() => {
       // If user is already authenticated, navigate to supplier profile
@@ -384,10 +384,10 @@ useEffect(() => {
       recommendationData?.user ??
       (recommendationData
         ? {
-            fullName: recommendationData.userName,
-            email: recommendationData.userEmail,
-            mobileNo: recommendationData.userMobileNo,
-          }
+          fullName: recommendationData.userName,
+          email: recommendationData.userEmail,
+          mobileNo: recommendationData.userMobileNo,
+        }
         : null)
     );
   };
@@ -415,7 +415,7 @@ useEffect(() => {
   };
   return (
     <div
-    className="
+      className="
     h-[422px]
     md:h-[100vh] bg-cover bg-center bg-no-repeat
     bg-[url('/src/assets/userImages/landingImgMobile.png')]   // mobile default
@@ -453,7 +453,7 @@ useEffect(() => {
         showSignUp={false}
         enableAutoLoginAfterSignup={false}
       />
-      
+
       {/* Recommendation Modal */}
       {showRecommendationModal && recommendationData && !showSignUpModal && !showLoginModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4">
@@ -524,82 +524,82 @@ useEffect(() => {
       </div> */}
 
       <div className="pt-46 bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-10% md:pt-0">
-        
-        <div  style={{top: isMobile ? "350px" : "", }} className="md:absolute md:bottom-0 md:h-[350px] h-[350px]  flex flex-col items-center justify-end bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] w-full ">
-         {isMobile ? 
-         <>
-          <div className="absolute z-10  bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-100%  w-full items-center justify-center flex flex-col">
-           <button
-            onClick={() => setShowSignUpModal(true)}
-            className="bg-[#91C73D] md:w-[188px] w-[165px]
+
+        <div style={{ top: isMobile ? "350px" : "", }} className="md:absolute md:bottom-0 md:h-[350px] h-[350px]  flex flex-col items-center justify-end bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] w-full ">
+          {isMobile ?
+            <>
+              <div className="absolute z-10  bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-100%  w-full items-center justify-center flex flex-col">
+                <button
+                  onClick={() => setShowSignUpModal(true)}
+                  className="bg-[#91C73D] md:w-[188px] w-[165px]
                 md:h-[55px] h-[48px] rounded-xl md:text-[18px] text-[16px] cursor-pointer px-7
             font-semibold  text-white hover:bg-[#7fb32d] transition-colors figtree"
-          >
-            {t("landing.signUpButton")}
-          </button>
-          <div className="bg-[#01351f]">
-             <h1 className="md:text-[66px] leading-15 text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-98%   w-full text-white  text-center rosting-script font-[400] px-4">
-            {t("landing.mainTitle")}
-          </h1>
-          <div className=" w-full ">
-            <h2 className="text-white md:text-[50px] text-[40px]   leading-[50px]  max-w-4xl tracking-[0%] text-center  md:mx-auto mx-8 pb-3 px-4 font-[800] plus-jakarta-sans">
-             {t("landing.subtitle")}
-          </h2>
-          </div>
-          <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
-          {t("landing.description")}
-        </p>
-        
-          </div>
-          </div> 
-         
-         </>
-         : <> <button
-            onClick={() => setShowSignUpModal(true)}
-            className="bg-[#91C73D]  w-[188px]
+                >
+                  {t("landing.signUpButton")}
+                </button>
+                <div className="bg-[#01351f]">
+                  <h1 className="md:text-[66px] leading-15 text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-98%   w-full text-white  text-center rosting-script font-[400] px-4">
+                    {t("landing.mainTitle")}
+                  </h1>
+                  <div className=" w-full ">
+                    <h2 className="text-white md:text-[50px] text-[36px] md:leading-[50px] leading-[38px] max-w-4xl tracking-[0%] text-center md:mx-auto mx-0 pb-3 px-1 font-[800] plus-jakarta-sans">
+                      {t("landing.subtitle")}
+                    </h2>
+                  </div>
+                  <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
+                    {t("landing.description")}
+                  </p>
+
+                </div>
+              </div>
+
+            </>
+            : <> <button
+              onClick={() => setShowSignUpModal(true)}
+              className="bg-[#91C73D]  w-[188px]
                 h-[55px] rounded-xl md:text-[18px] text-[16px] cursor-pointer px-7
             font-semibold  text-white hover:bg-[#7fb32d] transition-colors figtree"
-          >
-            {t("landing.signUpButton")}
-          </button>
-           <h1 className="md:text-[66px] leading-15 text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-98%   w-full text-white  text-center rosting-script font-[400] px-4">
-            {t("landing.mainTitle")}
-          </h1>
-          <div className="bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-0% w-full">
-            <h2 className="text-white md:text-[60px] text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F]   leading-[64px]  max-w-4xl tracking-[0%] text-center  md:mx-auto mx-8 pb-3 px-4 font-[800] plus-jakarta-sans">
-             {t("landing.subtitle")}
-          </h2>
-          </div>
-          </>
+            >
+              {t("landing.signUpButton")}
+            </button>
+              <h1 className="md:text-[66px] leading-15 text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-98%   w-full text-white  text-center rosting-script font-[400] px-4">
+                {t("landing.mainTitle")}
+              </h1>
+              <div className="bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-0% w-full">
+                <h2 className="text-white md:text-[60px] text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F]  leading-[64px]  max-w-4xl tracking-[0%] text-center  md:mx-auto mx-8 pb-3 px-4 font-[800] plus-jakarta-sans">
+                  {t("landing.subtitle")}
+                </h2>
+              </div>
+            </>
           }
         </div>
       </div>
-      {!isMobile && 
-      <div className="bg-[#01351f] ">
-        <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
-          {t("landing.description")}
-        </p>
-      </div>
+      {!isMobile &&
+        <div className="bg-[#01351f] ">
+          <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
+            {t("landing.description")}
+          </p>
+        </div>
       }
-       <ServiceCarousel />
-        <div className="bg-[#01351f] mt-11">
-        <h1 className="md:text-[64px] text-[42px] md:leading-[66px] leading-[42px] text-white text-center max-w-[845px] mx-auto font-[800] plus-jakarta-sans">
-          {t("landing.transparentJourney")} 
+      <ServiceCarousel />
+      <div className="bg-[#01351f] mt-11">
+        <h1 className="md:text-[64px] text-[36px] md:leading-[66px] leading-[42px] text-white text-center max-w-[845px] mx-auto font-[800] plus-jakarta-sans">
+          {t("landing.transparentJourney")}
         </h1>
         <p className="text-white text-center md:text-[18px] text-[16px] mx-auto max-w-7xl py-4 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
           {t("landing.futureDescription")}
         </p>
-      </div>   
+      </div>
       {/* <Stepper currentStep={currentStep} onStepClick={setCurrentStep} /> */}
-       <div
-            className="flex items-center justify-center w-full h-[100vh] mx-auto md:p-14"
-            style={{
-              backgroundImage: `url(${isMobile ? steperBgMobile : stepperBg})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
-          ></div>
+      <div
+        className="flex items-center justify-center w-full h-[100vh] mx-auto md:p-14"
+        style={{
+          backgroundImage: `url(${isMobile ? steperBgMobile : stepperBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      ></div>
       <Footer />
     </div>
   );

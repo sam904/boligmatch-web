@@ -982,17 +982,17 @@ const SupplierProfile = () => {
                           onClick={() => setActiveModal("contact")}
                           type="button"
                           className="
-    bg-[#95c11f] text-white
-    flex items-center justify-center gap-2
-    rounded-xl
-    px-5 sm:px-6 md:px-5
-    shadow-xl sm:shadow-md
-    hover:opacity-90 transition
-    cursor-pointer
-    w-[190px]
-    min-h-[42px] md:min-h-[64px]
-    figtree
-  "
+                                      bg-[#95c11f] text-white
+                                      flex items-center justify-center gap-2
+                                      rounded-xl
+                                      px-5 sm:px-6 md:px-5
+                                      shadow-xl sm:shadow-md
+                                      hover:opacity-90 transition
+                                      cursor-pointer
+                                      w-[190px]
+                                      min-h-[42px] md:min-h-[64px]
+                                      figtree
+                                    "
                         >
                           <img
                             src={chat}
@@ -1002,12 +1002,12 @@ const SupplierProfile = () => {
 
                           <span
                             className="
-      font-[700]
-      text-[10px] md:text-[14px] lg:text-[20px]
-      leading-[1.2]
-      text-start
-      whitespace-normal
-    "
+                                  font-[700]
+                                  text-[10px] md:text-[14px] lg:text-[20px]
+                                  leading-[1.2]
+                                  text-start
+                                  whitespace-normal
+                                "
                           >
                             {t("supplierProfile.conversation")}
                           </span>
@@ -1033,7 +1033,7 @@ const SupplierProfile = () => {
 
 
         <div className="bg-[#01351f]">
-          <div className="max-w-6xl m-auto px-4 md:px-8 py-4 md:py-8">
+          <div className="max-w-6xl m-auto px-4 md:px-8 py-10 md:py-8">
             <p className="text-white font-[400] md:text-[18px] text-[14px] text-left md:text-center px-4 md:px-8 leading-relaxed">
               {partnerData?.textField1 || "Loading..."}
             </p>
@@ -1041,7 +1041,7 @@ const SupplierProfile = () => {
         </div>
 
         <div className="bg-[#01351f] min-h-screen flex justify-center items-center p-4 md:p-8">
-         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl w-full mx-auto">n
+         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl w-full mx-auto">
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
               <div

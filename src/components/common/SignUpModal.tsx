@@ -579,57 +579,57 @@ export default function SignUpModal({
       style={{ pointerEvents: isVisible ? "auto" : "none" }}
     >
       <div
-        className={`w-full max-w-2xl rounded-lg shadow-xl mx-8 my-16 bg-[#EFEFEF] transform transition-all duration-300 ${isVisible
+        className={`w-full max-w-2xl rounded-lg shadow-xl mx-4 md:mx-8 my-4 md:my-16 bg-[#EFEFEF] transform transition-all duration-300 ${isVisible
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 translate-y-4"
           }`}
       >
-        <div className="flex justify-center items-center p-4 pb-0 relative">
+        <div className="flex justify-center items-center p-3 md:p-4 pb-0 relative">
           <div className="flex items-center justify-center p-2">
             <div className="text-2xl font-bold">
               <img
                 src={logo}
                 alt=""
-                className="h-8 w-auto"
+                className="h-6 md:h-8 w-auto"
               />
             </div>
           </div>
           {/* Only this button closes the modal */}
           <button
             onClick={onClose}
-            className="absolute right-6 text-black hover:text-gray-600 transition-colors text-xl font-bold cursor-pointer"
+            className="absolute right-3 md:right-6 text-black hover:text-gray-600 transition-colors text-lg md:text-xl font-bold cursor-pointer"
           >
             ✕
           </button>
         </div>
 
-        <div className="px-6 pb-2">
-          <h2 className="text-[20px] font-[800] text-[#000000] text-center">
+        <div className="px-4 md:px-6 pb-2">
+          <h2 className="text-[18px] md:text-[20px] font-[800] text-[#000000] text-center">
             {t("signup.title")}
           </h2>
         </div>
 
-        <div className="px-6 pb-4">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="px-4 md:px-6 pb-4 max-h-[calc(100vh-120px)] overflow-y-auto">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 md:space-y-3">
             {/* First Row - First Name and Last Name */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div>
                 <label
                   htmlFor="firstName"
-                  className="block text-sm font-normal text-black mb-2"
+                  className="block text-xs md:text-sm font-normal text-black mb-1.5 md:mb-2"
                 >
                   {t("signup.firstName")}
                 </label>
                 <input
                   id="firstName"
                   type="text"
-                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
+                  className={`w-full bg-white border-0 rounded px-3 py-2.5 md:py-2 text-sm md:text-base focus:outline-none focus:ring-2 ${getInputBorderColor(
                     "firstName"
                   )}`}
                   {...register("firstName")}
                 />
                 {shouldShowError("firstName") && (
-                  <p className="text-xs text-red-600 mt-1">
+                  <p className="text-[10px] md:text-xs text-red-600 mt-1">
                     {errors.firstName?.message}
                   </p>
                 )}
@@ -638,20 +638,20 @@ export default function SignUpModal({
               <div>
                 <label
                   htmlFor="lastName"
-                  className="block text-sm font-normal text-black mb-2"
+                  className="block text-xs md:text-sm font-normal text-black mb-1.5 md:mb-2"
                 >
                   {t("signup.lastName")}
                 </label>
                 <input
                   id="lastName"
                   type="text"
-                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
+                  className={`w-full bg-white border-0 rounded px-3 py-2.5 md:py-2 text-sm md:text-base focus:outline-none focus:ring-2 ${getInputBorderColor(
                     "lastName"
                   )}`}
                   {...register("lastName")}
                 />
                 {shouldShowError("lastName") && (
-                  <p className="text-xs text-red-600 mt-1">
+                  <p className="text-[10px] md:text-xs text-red-600 mt-1">
                     {errors.lastName?.message}
                   </p>
                 )}
@@ -659,25 +659,25 @@ export default function SignUpModal({
             </div>
 
             {/* Second Row - Postal Code and Mobile Number */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div>
                 <label
                   htmlFor="postalCode"
-                  className="block text-sm font-normal text-black mb-2"
+                  className="block text-xs md:text-sm font-normal text-black mb-1.5 md:mb-2"
                 >
                   {t("signup.postalCode")}
                 </label>
                 <input
                   id="postalCode"
                   type="text"
-                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
+                  className={`w-full bg-white border-0 rounded px-3 py-2.5 md:py-2 text-sm md:text-base focus:outline-none focus:ring-2 ${getInputBorderColor(
                     "postalCode"
                   )}`}
                   maxLength={4}
                   {...register("postalCode")}
                 />
                 {shouldShowError("postalCode") && (
-                  <p className="text-xs text-red-600 mt-1">
+                  <p className="text-[10px] md:text-xs text-red-600 mt-1">
                     {errors.postalCode?.message}
                   </p>
                 )}
@@ -686,14 +686,14 @@ export default function SignUpModal({
               <div>
                 <label
                   htmlFor="mobileNumber"
-                  className="block text-sm font-normal text-black mb-2"
+                  className="block text-xs md:text-sm font-normal text-black mb-1.5 md:mb-2"
                 >
                   {t("signup.mobileNumber")}
                 </label>
                 <input
                   id="mobileNumber"
                   type="tel"
-                  className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
+                  className={`w-full bg-white border-0 rounded px-3 py-2.5 md:py-2 text-sm md:text-base focus:outline-none focus:ring-2 ${getInputBorderColor(
                     "mobileNumber",
                     mobileValidation
                   )}`}
@@ -708,20 +708,20 @@ export default function SignUpModal({
                 {/* For mobile validation - available text */}
                 {mobileValidation.available === true &&
                   !mobileValidation.checking && (
-                    <div className="text-[#91C73D] text-xs mt-1 flex items-center gap-1">
+                    <div className="text-[#91C73D] text-[10px] md:text-xs mt-1 flex items-center gap-1">
                       {t("admin.partners.mobileAvailable") ||
                         "Mobile number is available"}
                     </div>
                   )}
                 {mobileValidation.available === false &&
                   !mobileValidation.checking && (
-                    <div className="text-red-600 text-xs mt-1 flex items-center gap-1">
+                    <div className="text-red-600 text-[10px] md:text-xs mt-1 flex items-center gap-1">
                       {mobileValidation.message}
                     </div>
                   )}
                 {shouldShowError("mobileNumber") &&
                   mobileValidation.available !== false && (
-                    <div className="text-red-600 text-xs mt-1 flex items-center gap-1">
+                    <div className="text-red-600 text-[10px] md:text-xs mt-1 flex items-center gap-1">
                       {errors.mobileNumber?.message}
                     </div>
                   )}
@@ -732,14 +732,14 @@ export default function SignUpModal({
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-normal text-black mb-2"
+                className="block text-xs md:text-sm font-normal text-black mb-1.5 md:mb-2"
               >
                 {t("signup.email")}
               </label>
               <input
                 id="email"
                 type="email"
-                className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
+                className={`w-full bg-white border-0 rounded px-3 py-2.5 md:py-2 text-sm md:text-base focus:outline-none focus:ring-2 ${getInputBorderColor(
                   "email",
                   emailValidation
                 )}`}
@@ -752,19 +752,19 @@ export default function SignUpModal({
               {/* For email validation - available text */}
               {emailValidation.available === true &&
                 !emailValidation.checking && (
-                  <div className="text-[#91C73D] text-xs mt-1 flex items-center gap-1">
+                  <div className="text-[#91C73D] text-[10px] md:text-xs mt-1 flex items-center gap-1">
                     {t("admin.partners.emailAvailable") || "Email is available"}
                   </div>
                 )}
               {emailValidation.available === false &&
                 !emailValidation.checking && (
-                  <div className="text-red-600 text-xs mt-1 flex items-center gap-1">
+                  <div className="text-red-600 text-[10px] md:text-xs mt-1 flex items-center gap-1">
                     {emailValidation.message}
                   </div>
                 )}
               {shouldShowError("email") &&
                 emailValidation.available !== false && (
-                  <div className="text-red-600 text-xs mt-1 flex items-center gap-1">
+                  <div className="text-red-600 text-[10px] md:text-xs mt-1 flex items-center gap-1">
                     {errors.email?.message}
                   </div>
                 )}
@@ -774,42 +774,42 @@ export default function SignUpModal({
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-normal text-black mb-2"
+                className="block text-xs md:text-sm font-normal text-black mb-1.5 md:mb-2"
               >
                 {t("signup.password")}
               </label>
               <input
                 id="password"
                 type="password"
-                className={`w-full bg-white border-0 rounded px-3 py-2 focus:outline-none focus:ring-2 ${getInputBorderColor(
+                className={`w-full bg-white border-0 rounded px-3 py-2.5 md:py-2 text-sm md:text-base focus:outline-none focus:ring-2 ${getInputBorderColor(
                   "password"
                 )}`}
                 {...register("password")}
               />
               {shouldShowError("password") && (
-                <p className="text-xs text-red-600 mt-1">
+                <p className="text-[10px] md:text-xs text-red-600 mt-1">
                   {errors.password?.message}
                 </p>
               )}
             </div>
 
             {/* Password Requirements */}
-            <div className="text-xs text-black">
+            <div className="text-[10px] md:text-xs text-black">
               <p>{t("signup.passwordRequirements")}</p>
             </div>
 
             {/* Terms and Conditions */}
-            <div className="text-xs text-black space-y-2 bg-gray-50 p-3 rounded">
+            <div className="text-[10px] md:text-xs text-black space-y-1.5 md:space-y-2 bg-gray-50 p-2.5 md:p-3 rounded">
               <p>{t("signup.termsText1")}</p>
               <p>{t("signup.termsText2")}</p>
             </div>
 
             {/* Sign Up Button */}
-            <div className="pt-4">
+            <div className="pt-3 md:pt-4">
               <button
                 type="submit"
                 disabled={isLoading || !canSubmitForm()}
-                className="w-full cursor-pointer bg-[#91C73D] hover:bg-[#7fb32d] text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+                className="w-full cursor-pointer bg-[#91C73D] hover:bg-[#7fb32d] text-white font-semibold py-2.5 md:py-3 px-6 rounded-lg transition-colors text-sm md:text-base"
               >
                 {isLoading ? (
                   <span className="flex items-center justify-center">
@@ -842,8 +842,8 @@ export default function SignUpModal({
 
             {/* Already have an account link */}
             {onSwitchToLogin && (
-              <div className="pt-4 text-center">
-                <p className="text-sm text-black">
+              <div className="pt-3 md:pt-0 text-center">
+                <p className="text-xs md:text-sm text-black">
                   {t("signup.alreadyHaveAccount") || "Already have an account?"}{" "}
                   <button
                     type="button"

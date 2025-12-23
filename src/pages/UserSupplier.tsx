@@ -62,7 +62,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 w-full  h-[262px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-6 md:px-8 md:py-10 text-center justify-between">
+    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 w-full h-[268px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-4 md:px-8 md:py-10 text-center justify-between">
       <div className="flex flex-col items-center w-full">
         <div className="mb-3 md:mb-6">
           <img
@@ -256,7 +256,7 @@ const UserSupplier = () => {
           }}
         />
         {categoryName && (
-          <div className="absolute z-10 pointer-events-none inset-x-0 top-32 md:inset-0 md:flex md:items-center md:justify-center px-4">
+          <div className="absolute z-10 pointer-events-none inset-x-0 top-42 md:inset-0 md:flex md:items-center md:justify-center px-4">
             <h1 className="text-white text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
               {categoryName}
             </h1>
