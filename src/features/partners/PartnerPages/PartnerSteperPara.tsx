@@ -1,9 +1,12 @@
-import ACP from "/src/assets/userImages/accesstoplatform.svg";
-import visiblemarketing from "/src/assets/userImages/visiblemarketing.svg";
-import focus from "/src/assets/userImages/focus.svg";
-import networkgroup from "/src/assets/userImages/networkgroup.svg";
-import discount from "/src/assets/userImages/discount.svg";
-import reffer from "/src/assets/userImages/reffer.svg";
+import ACP from "/src/assets/userImages/partnerSteperPara1.svg";
+import visiblemarketing from "/src/assets/userImages/partnerSteperPara2.svg";
+import focus from "/src/assets/userImages/partnerSteperPara3.svg";
+import networkgroup from "/src/assets/userImages/partnerSteperPara4.svg";
+import discount from "/src/assets/userImages/partnerSteperPara5.svg";
+import reffer from "/src/assets/userImages/partnerSteperPara6.svg";
+import PlayButton from "/src/assets/userImages/partnerSteperPara7.svg";
+import share from "/src/assets/userImages/partnerSteperPara8.svg";
+import star from "/src/assets/userImages/partnerSteperPara9.svg";
 // import sampleImg from "/src/assets/userImages/footerLogo.svg";
 import { useTranslation } from "react-i18next";
 import Footer from "../../../pages/Footer";
@@ -40,6 +43,21 @@ function ParentSteperPara() {
       title: t("partnerSteperPara.benefits.6.title"),
       description: t("partnerSteperPara.benefits.6.description"),
       img: reffer
+    },
+    {
+      title: t("partnerSteperPara.benefits.7.title"),
+      description: t("partnerSteperPara.benefits.7.description"),
+      img: PlayButton
+    },
+    {
+      title: t("partnerSteperPara.benefits.8.title"),
+      description: t("partnerSteperPara.benefits.8.description"),
+      img: share
+    },
+    {
+      title: t("partnerSteperPara.benefits.9.title"),
+      description: t("partnerSteperPara.benefits.9.description"),
+      img: star
     },
   ];
   return (

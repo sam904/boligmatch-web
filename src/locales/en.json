@@ -899,6 +899,18 @@
       "6": {
         "title": "Kick-back for referring customers",
         "description": "If you bring a new housing customer to Boligmatch, we reward you with 10% of the fee, which is transferred to your account in the Boligmatch+ benefits program."
+      },
+      "7": {
+        "title": "Profile video and photos",
+        "description": "Professionally produced film and pictures of your company and employees in action. Completely free."
+      },
+      "8": {
+        "title": "Marketing on SoMe",
+        "description": "Promotion of your company on our social media channels (Facebook, Instagram and LinkedIn) gradually throughout the year."
+      },
+      "9": {
+        "title": "No referral fee",
+        "description": "To make it more competitive for our partners, we have chosen to waive the original 10% fee for referrals."
       }
     }
   },
