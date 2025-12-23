@@ -912,6 +912,18 @@
       "6": {
         "title": "Kick-back ved henvisning af kunder",
         "description": "Skaffer du en ny boligkunde til Boligmatch kvitterer vi med 10% af salæret, som overføres til din konto i Boligmatch+ fordelsprogrammet."
+      },
+      "7": {
+        "title": "Profilvideo og fotos",
+        "description": "Professionelt produceret film og billeder af jeres virksomhed og medarbejdere i funktion. Ganske gratis."
+      },
+      "8": {
+        "title": "Markedsføring på SoMe",
+        "description": "Promovering af jeres virksomhed på vores sociale mediekanaler (Facebook, Instagram og LinkedIn) drypvis hen over året."
+      },
+      "9": {
+        "title": "Ingen henvisnings-honorar",
+        "description": "For at gøre det mere konkurrencedygtigt for vores partnere, har vi valgt at sløjfe det oprindelige gebyr på 10% ved henvisninger."
       }
     }
   },
