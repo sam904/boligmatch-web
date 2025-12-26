@@ -303,7 +303,7 @@ const UserSupplier = () => {
                   </button>
                 ))
               ) : (
-                <div className="text-white text-sm">
+                <div className="text-white text-sm text-center w-full flex justify-center">
                   {t("userSupplier.noSubcategories")}
                 </div>
               )}
@@ -398,7 +398,7 @@ const UserSupplier = () => {
             </>
           ) : (
             <div className="col-span-3 flex justify-center items-center h-64">
-              <div className="text-white text-lg">
+              <div className="text-white text-lg text-center">
                 {t("userSupplier.noPartners")}
               </div>
             </div>
