@@ -72,6 +72,7 @@ html {
        url("/src/assets/fonts/Roasting Script.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
+  font-display: block;
 }
 
 .rosting-script {
@@ -84,6 +85,7 @@ html {
   src: url("/src/assets/fonts/PlusJakartaSans-VariableFont_wght.ttf") format("truetype");
   font-weight: 100 900;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -119,4 +121,8 @@ body {
 
 .figtree {
   font-family: "Figtree", sans-serif;
+}
+
+.plus-jakarta-sans {
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
