@@ -433,7 +433,7 @@ function PartnerProfileShortcut({
               <div className="bg-[#043428] pt-0 w-full">
                 <div className="w-full mx-auto  flex justify-center items-end">
                   <div className="bg-[#01351F] w-full">
-                    <h1 className="w-full font-extrabold md:text-6xl text-[24px] md:text-[32px] text-center text-white py-3 md:py-5">
+                    <h1 className="w-full font-extrabold md:text-6xl text-[24px] md:text-[32px] text-center text-white py-3 md:py-5 px-4 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
                       {partnerData?.businessName || partnerData?.fullName || "Loading..."}
                     </h1>
                   </div>
@@ -595,14 +595,14 @@ function PartnerProfileShortcut({
 
           <div className="flex flex-col gap-6">
             <div className="bg-white rounded-[10px] md:w-[403px] w-full md:h-[432px] h-auto flex justify-center items-center">
-              <div className="text-center p-4">
+              <div className="text-center p-4 w-full max-w-full overflow-hidden">
                 <img
                   src={partnerData?.logoUrl || kabelLogoImg}
                   alt={partnerData?.businessName}
                   className="w-[177px] h-[164px] object-contain mx-auto"
                 />
 
-                <h2 className="font-extrabold text-[30px] leading-[76px] text-black text-center">
+                <h2 className="font-extrabold text-[30px] leading-[76px] text-black text-center w-full overflow-hidden text-ellipsis whitespace-nowrap">
                   {partnerData?.businessName ||
                     partnerData?.fullName ||
                     "Kabel-specialisten"}

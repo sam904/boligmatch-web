@@ -55,7 +55,7 @@ function PartnerSteper() {
             {t("partnerStepper.cta")}
           </button>
           </div>
-            <div className=" z-20 bg-[#01351F] w-full py-4">
+            <div className=" z-20 bg-[#01351F] w-full py-2">
             <h1 className="text-[16px] md:text-[52px] lg:text-[36px] xl:text-6xl font-[800] text-white md:tracking-tight md:leading-tighter sm:leading-14 px-2 max-w-4xl mx-auto text-center">
               {t("partnerStepper.heroTitle")}
             </h1>

@@ -94,7 +94,7 @@ function ParentStatistics() {
             <div className="text-white text-center md:text-left pt-46 md:pl-28">
               <h1 className="text-[24px] md:text-[60px] font-[800] tracking-tight leading-[45px] [text-shadow:_0_4px_20px_rgba(0,0,0,0.8)]">
                 {t("partnerStatistics.title")}</h1>
-              <h2 className="text-[24px] md:text-[66px] font-[500] tracking-tight [text-shadow:_0_4px_20px_rgba(0,0,0,0.8)]"> {partnerData?.businessName || "Business Name"}</h2>
+              <h2 className="text-[24px] md:text-[66px] font-[500] tracking-tight [text-shadow:_0_4px_20px_rgba(0,0,0,0.8)] px-4 overflow-hidden text-ellipsis whitespace-nowrap max-w-full"> {partnerData?.businessName || "Business Name"}</h2>
             </div>
             <div className="flex justify-center md:gap-6 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full md:pt-23 pt-8 md:pb-13 pb-8 gap-2">
               <button
