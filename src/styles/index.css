@@ -33,6 +33,10 @@ html {
   scroll-behavior: smooth;
 }
 
+body {
+  background-color: #01351f;
+}
+
 /* Landing Page Styles */
 .landing-bg {
   background-image: url('/landing_img.png');
@@ -69,7 +73,7 @@ html {
 @font-face {
   font-family: "Roasting Script";
   src: url("/src/assets/fonts/Roasting Script.woff") format("woff"),
-       url("/src/assets/fonts/Roasting Script.otf") format("opentype");
+    url("/src/assets/fonts/Roasting Script.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -108,7 +112,7 @@ body {
   overflow-x: hidden;
 }
 
-.railways{
+.railways {
   font-family: "Raileway", sans-serif;
 }
 
