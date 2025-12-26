@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 function Footer() {
   const { t } = useTranslation();
-  
+  // check
  
   const contactParts = [
     { type: 'street', text: t("footer.street") },
