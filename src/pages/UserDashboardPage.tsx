@@ -301,15 +301,15 @@ export default function UserDashboardPage() {
 
         {/* Welcome Text */}
         {userData && (
-          <div className="absolute top-40 sm:top-48 md:top-52 lg:top-60 z-10 px-4 sm:px-6 md:px-8 lg:px-24 mt-auto mb-32 sm:mb-36 md:mb-40 lg:mb-44">
+          <div className="absolute left-0 right-0 top-[140px] sm:top-[160px] md:top-[180px] lg:top-[200px] xl:top-[220px] bottom-[100px] sm:bottom-[110px] md:bottom-[130px] lg:bottom-[150px] z-10 px-4 sm:px-6 md:px-8 lg:px-24 flex flex-col justify-end">
             <div className="text-white">
               <div className="max-w-[722px]">
                 <h1 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-0 md:mb-0.5 leading-tight">
                   Mit Boligmatch+
                 </h1>
               </div>
-              <div className="max-w-[561px] mx-auto">
-                <h2 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-medium leading-tight text-center break-words">
+              <div className="max-w-[561px] mt-2 md:mt-3">
+                <h2 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-medium leading-tight break-words">
                   {userData.firstName} {userData.lastName}
                 </h2>
               </div>
@@ -634,13 +634,14 @@ export default function UserDashboardPage() {
                                   {conversation.partnerName || "-"}
                                 </div>
                               </div>
-                              <div
-                                className="flex items-center gap-2 text-[#01351f] cursor-pointer"
+                              <button
+                                type="button"
+                                className="flex items-center gap-2 text-[#01351f] cursor-pointer hover:opacity-80 transition-opacity bg-transparent border-none p-0"
                                 onClick={() =>
                                   setOpenConversation(conversation)
                                 }
                               >
-                                <span className="text-sm font-semibold">
+                                <span className="text-sm font-semibold whitespace-nowrap">
                                   {t("userDashboard.readMore")}
                                 </span>
                                 <img
@@ -648,7 +649,7 @@ export default function UserDashboardPage() {
                                   alt="Chat"
                                   className="w-5 h-5"
                                 />
-                              </div>
+                              </button>
                             </div>
                             <div className="mt-1">
                               <div className="text-sm font-extrabold text-[#052011] mb-1">
@@ -678,21 +679,24 @@ export default function UserDashboardPage() {
                                   {conversation.partnerName || "-"}
                                 </div>
                               </div>
-                              <div
-                                className="flex items-center gap-2 text-[#01351f] cursor-pointer"
-                                onClick={() =>
-                                  setOpenConversation(conversation)
-                                }
+                              <button
+                                type="button"
+                                className="flex items-center gap-2 text-[#01351f] cursor-pointer hover:opacity-80 transition-opacity bg-transparent border-none p-0 relative z-10 flex-shrink-0"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setOpenConversation(conversation);
+                                }}
                               >
-                                <span className="text-sm font-semibold">
+                                <span className="text-sm font-semibold whitespace-nowrap">
                                   {t("userDashboard.readMore")}
                                 </span>
                                 <img
                                   src={chatModelImg}
                                   alt="Chat"
-                                  className="w-5 h-5"
+                                  className="w-5 h-5 flex-shrink-0"
                                 />
-                              </div>
+                              </button>
                             </div>
                             <div>
                               <div className="text-base font-extrabold text-[#052011] mb-1">

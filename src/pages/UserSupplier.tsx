@@ -62,9 +62,9 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 w-full h-[268px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-4 md:px-8 md:py-10 text-center justify-between">
-      <div className="flex flex-col items-center w-full">
-        <div className="mb-3 md:mb-6">
+    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 w-full h-[320px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-4 md:px-8 md:py-10 text-center justify-between">
+      <div className="flex flex-col items-center w-full flex-1 min-h-0 overflow-hidden">
+        <div className="mb-2 md:mb-6 flex-shrink-0">
           <img
             src={logoUrl}
             alt={name || fullName || "Partner"}
@@ -74,12 +74,12 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
             }}
           />
         </div>
-        <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-4 px-4">
+        <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-4 px-4 flex-shrink-0">
           {name || fullName || "Partner"}
         </h3>
         {description && (
-          <div className="flex items-start justify-center w-full mb-3 md:mb-6 overflow-hidden min-h-[84px] md:min-h-[112px]">
-            <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-5">
+          <div className="flex items-start justify-center w-full mb-2 md:mb-6 overflow-hidden flex-1 min-h-0">
+            <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-4 md:line-clamp-5">
               {description}
             </p>
           </div>
@@ -88,7 +88,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
       <button
         onClick={onMoreInfo}
         disabled={isLoading}
-        className={`mt-auto font-bold text-[14px] md:text-[16px] cursor-pointer transition-all duration-200 ${isLoading
+        className={`flex-shrink-0 mt-auto font-bold text-[14px] md:text-[16px] cursor-pointer transition-all duration-200 ${isLoading
           ? "text-gray-400 cursor-not-allowed font-semibold"
           : "text-black hover:font-extrabold"
           }`}

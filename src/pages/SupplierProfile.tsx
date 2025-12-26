@@ -1020,7 +1020,7 @@ const SupplierProfile = () => {
                 </div>
               </div>
               <div className={`${!isPartner && 'bg-[#01351f] md:bg-[#01351f] '} md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full pt-[62px] md:pt-[27px] md:mt-[0px]`}>
-                <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white md:py-5 py-0">
+                <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white md:py-5 py-0 px-4 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
                   {partnerData?.businessName || partnerData?.fullName || "Loading..."}
                 </h1>
               </div>
