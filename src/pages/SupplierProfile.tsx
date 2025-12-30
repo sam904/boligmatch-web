@@ -1091,7 +1091,7 @@ const SupplierProfile = () => {
                     <button
                       type="button"
                       onClick={handleOpenTrustPilot}
-                      className="absolute w-[202px] h-[66px] bg-[#95C11F] flex items-center justify-center gap-2 text-white rounded-[11px] px-4 text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]"
+                      className="absolute w-[202px] h-[66px] bg-[#95C11F] flex items-center justify-center gap-2 text-white rounded-[11px] px-4 text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[15px]"
                     >
                       <img
                         src={startImg}

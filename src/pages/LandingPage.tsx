@@ -582,7 +582,7 @@ export default function LandingPage() {
         </div>
       }
       <ServiceCarousel />
-      <div className="bg-[#01351f] mt-11">
+      <div className="bg-[#01351f] py-20">
         <h1 className="md:text-[64px] text-[36px] md:leading-[66px] leading-[42px] text-white text-center max-w-[845px] mx-auto font-[800] plus-jakarta-sans">
           {t("landing.transparentJourney")}
         </h1>
