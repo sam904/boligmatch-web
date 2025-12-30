@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-
-// Import images
 import swaperImg1 from "/src/assets/userImages/swiper5.png";
 import swaperImg2 from "/src/assets/userImages/swiper4.png";
 import swaperImg3 from "/src/assets/userImages/swiper1.png";

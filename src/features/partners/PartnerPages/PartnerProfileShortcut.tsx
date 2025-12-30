@@ -482,7 +482,7 @@ function PartnerProfileShortcut({
                         <div className="flex justify-center mb-3">
                           {renderRating(r, "w-[45px] h-[42px]", "gap-2")}
                         </div>
-                        <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6 line-clamp-3">
+                        <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6 line-clamp-5">
                           "{rev?.test}"
                         </p>
                         <p className="text-sm font-bold text-black mt-3 text-start px-6">
