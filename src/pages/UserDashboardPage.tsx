@@ -308,7 +308,7 @@ export default function UserDashboardPage() {
                   Mit Boligmatch+
                 </h1>
               </div>
-              <div className="max-w-[561px] mt-2 md:mt-3">
+              <div className="max-w-[561px] mt-2 md:mt-2.5">
                 <h2 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-medium leading-tight break-words">
                   {userData.firstName} {userData.lastName}
                 </h2>
