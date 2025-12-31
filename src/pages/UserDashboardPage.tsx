@@ -301,15 +301,15 @@ export default function UserDashboardPage() {
 
         {/* Welcome Text */}
         {userData && (
-          <div className="absolute left-0 right-0 top-[140px] sm:top-[160px] md:top-[180px] lg:top-[200px] xl:top-[220px] bottom-[100px] sm:bottom-[110px] md:bottom-[130px] lg:bottom-[150px] z-10 px-4 sm:px-6 md:px-8 lg:px-24 flex flex-col justify-end">
+          <div className="absolute left-0 right-0 top-[140px] sm:top-[160px] md:top-[180px] lg:top-[140px] xl:top-[140px] bottom-[100px] sm:bottom-[110px] md:bottom-[130px] lg:bottom-[150px] z-10 px-4 sm:px-6 md:px-8 lg:px-24 flex flex-col justify-center">
             <div className="text-white">
               <div className="max-w-[722px]">
                 <h1 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-0 md:mb-0.5 leading-tight">
                   Mit Boligmatch+
                 </h1>
               </div>
-              <div className="max-w-[561px] mt-2 md:mt-2.5">
-                <h2 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-medium leading-tight break-words">
+              <div className="max-w-[561px]">
+                <h2 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-medium leading-15 break-words">
                   {userData.firstName} {userData.lastName}
                 </h2>
               </div>

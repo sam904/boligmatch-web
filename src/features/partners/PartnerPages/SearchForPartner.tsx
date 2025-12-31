@@ -119,46 +119,69 @@ function SearchForPartner() {
                   const assets = getCategoryAssets(index);
                   return (
                     <div
-                      key={category.id}
-                      onClick={() => handleCategoryClick(category)}
-                      className="w-full max-w-[374px] h-[394px] md:w-auto md:h-auto md:max-w-none mx-auto rounded-[18px] md:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
-                    >
-                      <div className="relative w-full h-[222px] md:h-56 lg:h-64 xl:h-72 rounded-t-[18px] md:rounded-t-xl overflow-hidden">
-                        <img
-                          src={category.imageUrl || assets.image}
-                          alt={category.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.src = assets.image;
-                          }}
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 h-[80px] sm:h-[50px] bg-gradient-to-t from-white to-transparent"></div>
-                        <div className="absolute bottom-0 left-0 right-0">
-                          <img src={categoryGradientImg} alt="" className="w-full h-auto" />
-                        </div>
-                      </div>
+  key={category.id}
+  onClick={() => handleCategoryClick(category)}
+  className="
+    w-[360px] 
+    h-[420px]
+    md:w-[374px]
+    md:h-[540px]
+    mx-auto
+    rounded-xl
+    bg-white
+    transition-all
+    duration-300
+    cursor-pointer
+    overflow-hidden
+    hover:shadow-xl
+    flex
+    flex-col
+  "
+>
+  {/* IMAGE SECTION */}
+  <div className="relative h-[340px] w-full overflow-hidden">
+    <img
+      src={category.imageUrl || assets.image}
+      alt={category.name}
+      className="w-full h-full object-cover"
+      onError={(e) => {
+        e.currentTarget.src = assets.image;
+      }}
+    />
 
-                      <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center gap-2">
-                        <div className="w-16 h-12 sm:w-20 sm:h-14 flex items-center justify-center -mt-2 sm:-mt-6 mb-0">
-                          <img
-                            src={category.iconUrl || assets.icon}
-                            alt={category.name}
-                            className="w-[60px] h-[55px] sm:w-14 sm:h-14 object-contain"
-                            onError={(e) => {
-                              e.currentTarget.src = assets.icon;
-                            }}
-                          />
-                        </div>
+    <div className="absolute bottom-0 left-0 right-0 h-[80px] bg-gradient-to-t from-white to-transparent"></div>
 
-                        <h3 className="text-xl sm:text-2xl font-extrabold text-[#052011] mb-1">
-                          {category.name}
-                        </h3>
+    <div className="absolute bottom-0 left-0 right-0">
+      <img src={categoryGradientImg} alt="" className="w-full h-auto" />
+    </div>
+  </div>
 
-                        <p className="text-sm sm:text-base text-[#052011] leading-[20px] px-2">
-                          {category.description}
-                        </p>
-                      </div>
-                    </div>
+  {/* CONTENT SECTION */}
+  <div className="flex-1 p-5 text-center flex flex-col items-center justify-center gap-2">
+    {/* ICON */}
+    <div className="w-16 h-14 flex items-center justify-center -mt-6">
+      <img
+        src={category.iconUrl || assets.icon}
+        alt={category.name}
+        className="w-14 h-14 object-contain"
+        onError={(e) => {
+          e.currentTarget.src = assets.icon;
+        }}
+      />
+    </div>
+
+    {/* TITLE */}
+    <h3 className="text-xl font-extrabold text-[#052011] line-clamp-1">
+      {category.name}
+    </h3>
+
+    {/* DESCRIPTION */}
+    <p className="text-sm text-[#052011] leading-[20px] px-2 line-clamp-3">
+      {category.description}
+    </p>
+  </div>
+</div>
+
                   );
                 })}
               </div>
