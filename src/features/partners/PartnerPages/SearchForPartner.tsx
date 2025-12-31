@@ -154,7 +154,7 @@ function SearchForPartner() {
                           {category.name}
                         </h3>
 
-                        <p className="text-sm sm:text-base text-[#052011] leading-relaxed px-2">
+                        <p className="text-sm sm:text-base text-[#052011] leading-[20px] px-2">
                           {category.description}
                         </p>
                       </div>
