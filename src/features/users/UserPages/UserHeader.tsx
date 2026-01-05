@@ -129,8 +129,8 @@ function UserHeader({
       if (saved && saved !== i18n.language) {
         i18n.changeLanguage(saved);
       }
-    } catch {}
-  }, []);
+    } catch { /* empty */ }
+  }, [i18n]);
 
   // Add this function to determine user type
   const getUserType = () => {

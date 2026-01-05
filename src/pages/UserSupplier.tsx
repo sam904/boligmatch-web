@@ -74,7 +74,7 @@ const PartnerCard: React.FC<PartnerCardProps> = ({
             }}
           />
         </div>
-        <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-4 px-4 flex-shrink-0">
+        <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-5 px-4 flex-shrink-0">
           {name || fullName || "Partner"}
         </h3>
         {description && (
