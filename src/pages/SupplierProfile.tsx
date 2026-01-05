@@ -750,7 +750,7 @@ const SupplierProfile = () => {
             <div className={`md:absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto `}>
 
               {/* Main play/pause button - centered */}
-              <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
+              {partnerData?.videoUrl && <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
                 <div className="flex md:items-end gap-12">
                   {/* Play / Pause button */}
                   {!isVideoPlaying && partnerData?.videoUrl ? (
@@ -782,7 +782,8 @@ const SupplierProfile = () => {
                     </button>
                   )}
                 </div>
-              </div>
+              </div> }
+              
 
               {/* Bottom controls bar - ALWAYS show when hovered */}
               {isVideoPlaying && (

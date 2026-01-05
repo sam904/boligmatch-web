@@ -292,6 +292,7 @@ function PartnerProfileShortcut({
             <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto`}>
 
               {/* Main play/pause button - centered */}
+              {partnerData?.videoUrl && 
               <div className="flex md:h-[683px] h-[400px] items-end justify-center w-full gap-6 md:transform md:-translate-y-12 -translate-y-8">
                 <div className="flex items-end gap-12">
                   {/* Play / Pause button */}
@@ -322,7 +323,8 @@ function PartnerProfileShortcut({
                     </button>
                   )}
                 </div>
-              </div>
+              </div>}
+              
 
               {/* Bottom controls bar */}
               {isVideoPlaying && (

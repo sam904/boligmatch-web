@@ -301,15 +301,15 @@ export default function UserDashboardPage() {
 
         {/* Welcome Text */}
         {userData && (
-          <div className="absolute left-0 right-0 top-[140px] sm:top-[160px] md:top-[180px] lg:top-[200px] xl:top-[220px] bottom-[100px] sm:bottom-[110px] md:bottom-[130px] lg:bottom-[150px] z-10 px-4 sm:px-6 md:px-8 lg:px-24 flex flex-col justify-end">
+          <div className="absolute left-0 right-0 top-[140px] sm:top-[160px] md:top-[180px] lg:top-[140px] xl:top-[140px] bottom-[100px] sm:bottom-[110px] md:bottom-[130px] lg:bottom-[150px] z-10 px-4 sm:px-6 md:px-8 lg:px-24 flex flex-col justify-center">
             <div className="text-white">
               <div className="max-w-[722px]">
                 <h1 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-0 md:mb-0.5 leading-tight">
                   Mit Boligmatch+
                 </h1>
               </div>
-              <div className="max-w-[561px] mt-2 md:mt-2.5">
-                <h2 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-medium leading-tight break-words">
+              <div className="max-w-[561px]">
+                <h2 className="text-[28px] md:text-5xl lg:text-6xl xl:text-7xl font-medium leading-15 break-words">
                   {userData.firstName} {userData.lastName}
                 </h2>
               </div>
@@ -436,9 +436,24 @@ export default function UserDashboardPage() {
                       <div
                         key={category.id}
                         onClick={() => handleCategoryClick(category)}
-                        className="w-full max-w-[374px] h-[394px] md:w-auto md:h-auto md:max-w-none mx-auto rounded-[18px] md:rounded-xl bg-white transition-all duration-300 cursor-pointer overflow-hidden hover:shadow-xl"
+                        className="
+                        w-[360px] 
+                        h-[420px]
+                        md:w-[374px]
+                        md:h-[540px]
+                        mx-auto
+                        rounded-xl
+                      bg-white
+                        transition-all
+                        duration-300
+                        cursor-pointer
+                        overflow-hidden
+                        hover:shadow-xl
+                        flex
+                        flex-col
+                        "
                       >
-                        <div className="relative w-full h-[222px] md:h-56 lg:h-64 xl:h-72 rounded-t-[18px] md:rounded-t-xl overflow-hidden">
+                        <div className="relative w-full h-[340px] md:h-[340px] lg:h-[340px] xl:h-[340px] rounded-t-[18px] md:rounded-t-xl overflow-hidden">
                           <img
                             src={category.imageUrl || assets.image}
                             alt={category.name}
@@ -453,7 +468,7 @@ export default function UserDashboardPage() {
                           </div>
                         </div>
 
-                        <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center gap-2">
+                        <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center  gap-2">
                           <div className="w-16 h-12 sm:w-20 sm:h-14 flex items-center justify-center -mt-2 sm:-mt-6 mb-0">
                             <img
                               src={category.iconUrl || assets.icon}
