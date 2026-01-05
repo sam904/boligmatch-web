@@ -604,11 +604,11 @@ function PartnerProfileShortcut({
                   className="w-[177px] h-[164px] object-contain mx-auto"
                 />
 
-                <h2 className="font-extrabold text-[30px] leading-[76px] text-black text-center w-full overflow-hidden text-ellipsis whitespace-nowrap">
+                {/* <h2 className="font-extrabold text-[30px] leading-[76px] text-black text-center w-full overflow-hidden text-ellipsis whitespace-nowrap">
                   {partnerData?.businessName ||
                     partnerData?.fullName ||
                     "Kabel-specialisten"}
-                </h2>
+                </h2> */}
               </div>
             </div>
             <div
