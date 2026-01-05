@@ -539,7 +539,17 @@ export default function LandingPage() {
                 </button>
                 <div className="bg-[#01351f]">
                   <h1 className="md:text-[66px] leading-15 text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-98%   w-full text-white  text-center rosting-script font-[400] px-4">
-                    {t("landing.mainTitle")}
+                   {(() => {
+    const title = t("landing.mainTitle");
+    const [firstWord, ...rest] = title.split(" ");
+
+    return (
+      <>
+        <span className="text-[#9dc123]">{firstWord}</span>{" "}
+        {rest.join(" ")}
+      </>
+    );
+  })()}
                   </h1>
                   <div className=" w-full ">
                     <h2 className="text-white md:text-[50px] text-[36px] md:leading-[50px] leading-[38px] max-w-4xl tracking-[0%] text-center md:mx-auto mx-0 pb-3 px-1 font-[800] plus-jakarta-sans">
@@ -563,7 +573,17 @@ export default function LandingPage() {
               {t("landing.signUpButton")}
             </button>
               <h1 className="md:text-[66px] leading-15 text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-98%   w-full text-white  text-center rosting-script font-[400] px-4">
-                {t("landing.mainTitle")}
+                 {(() => {
+    const title = t("landing.mainTitle");
+    const [firstWord, ...rest] = title.split(" ");
+
+    return (
+      <>
+        <span className="text-[#9dc123]">{firstWord}</span>{" "}
+        {rest.join(" ")}
+      </>
+    );
+  })()}
               </h1>
               <div className="bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F] to-0% w-full">
                 <h2 className="text-white md:text-[60px] text-[40px] bg-gradient-to-b from-[rgba(1,53,31,0)] to-[#01351F]  leading-[64px]  max-w-4xl tracking-[0%] text-center  md:mx-auto mx-8 pb-3 px-4 font-[800] plus-jakarta-sans">
