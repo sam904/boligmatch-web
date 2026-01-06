@@ -782,8 +782,8 @@ const SupplierProfile = () => {
                     </button>
                   )}
                 </div>
-              </div> }
-              
+              </div>}
+
 
               {/* Bottom controls bar - ALWAYS show when hovered */}
               {isVideoPlaying && (
@@ -1041,7 +1041,7 @@ const SupplierProfile = () => {
         </div>
 
         <div className="bg-[#01351f] min-h-screen flex justify-center items-center p-4 md:p-8">
-         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl w-full mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl w-full mx-auto">
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
               <div
@@ -1258,12 +1258,11 @@ const SupplierProfile = () => {
             />
 
             <div
-              className={`relative z-50 w-[320px] sm:w-[360px] md:w-[420px] bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-gray-400/10 transform transition-all duration-300 ease-out my-auto ${isModalVisible
+              className={`relative z-50 w-[320px] sm:w-[360px] md:w-[420px] bg-[#E6E7E9] rounded-[18px] shadow-xl p-6 border border-gray-400/10 transform transition-all duration-300 ease-out my-auto ${isModalVisible
                 ? "opacity-100 scale-100 translate-y-0"
                 : "opacity-0 scale-95 translate-y-4"
                 }`}
               onClick={(e) => e.stopPropagation()}
-              // Prevent form closing on drag
               onMouseDown={(e) => {
                 e.stopPropagation();
                 setIsDragging(true);
@@ -1301,10 +1300,10 @@ const SupplierProfile = () => {
                       className="w-[63px] h-[76px]"
                     />
                   </div>
-                  <h3 className="text-center font-extrabold text-lg mb-1">
+                  <h3 className="text-center font-extrabold text-[20px] mb-1 text-[#000000]">
                     {t("supplierProfile.recommendModal.title")}
                   </h3>
-                  <p className="text-center text-[13px] text-[#27323F] leading-snug mb-4">
+                  <p className="text-center text-[16px] text-[#000000] leading-snug mb-4">
                     {t("supplierProfile.recommendModal.description")}
                   </p>
 
@@ -1402,17 +1401,17 @@ const SupplierProfile = () => {
                   onMouseDown={(e) => e.stopPropagation()}
                   onMouseUp={(e) => e.stopPropagation()}
                 >
-                  <div className="flex justify-center mb-4">
+                  <div className="flex justify-center">
                     <img
                       src={chatModel}
                       alt="chat"
-                      className="w-[112px] h-[89px]"
+                      className="w-[100px] h-[79px]"
                     />
                   </div>
-                  <h3 className="text-center font-extrabold text-lg mb-1">
+                  <h3 className="text-center font-extrabold text-[20px] mb-1 text-[#000000]">
                     {t("supplierProfile.contactModal.title")}
                   </h3>
-                  <p className="text-center text-[13px] text-[#27323F] leading-snug mb-4">
+                  <p className="text-center text-[16px] text-[#000000] leading-snug mb-4">
                     {t("supplierProfile.contactModal.description")}
                   </p>
 
@@ -1434,18 +1433,19 @@ const SupplierProfile = () => {
                       },
                     })}
                   />
-                  {contactErrors.subject && (
+                  {/* {contactErrors.subject && (
                     <p className="text-red-500 text-xs mb-2">
                       {t(contactErrors.subject.message || "")}
                     </p>
-                  )}
+                  )} */}
 
                   <label className="text-sm font-semibold mb-1">
                     {t("supplierProfile.contactModal.body")}
                     <span className="text-red-500 ml-1">*</span>
                   </label>
                   <textarea
-                    className={`w-full rounded-[10px] bg-white h-28 px-3 py-2 outline-none resize-none ${contactErrors.body ? "border border-red-500" : ""
+                  rows={6}
+                    className={`w-full rounded-[10px] bg-white  px-3  outline-none resize-none ${contactErrors.body ? "border border-red-500" : ""
                       }`}
                     placeholder={
                       t("supplierProfile.contactModal.bodyPlaceholder") ||

@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg";
 import { partnerService } from "../services/partner.service";
 import Footer from "./Footer";
-import closeImg from "/src/assets/userImages/close.svg"
+import closeImg from "/src/assets/userImages/close.svg";
 
 interface FavouriteItem {
   id?: number;
@@ -299,7 +299,6 @@ export default function UserDashboardPage() {
 
         <UserHeader />
 
-        {/* Welcome Text */}
         {userData && (
           <div className="absolute left-0 right-0 top-[140px] sm:top-[160px] md:top-[180px] lg:top-[140px] xl:top-[140px] bottom-[100px] sm:bottom-[110px] md:bottom-[130px] lg:bottom-[150px] z-10 px-4 sm:px-6 md:px-8 lg:px-24 flex flex-col justify-center">
             <div className="text-white">
@@ -317,12 +316,9 @@ export default function UserDashboardPage() {
           </div>
         )}
 
-        {/* Action Buttons */}
         <div className="absolute inset-x-0 bottom-0 z-10 pb-6 sm:pb-8 md:pb-10">
           <div className="px-4 sm:px-6 md:px-8">
             <div className="flex flex-row items-center justify-between sm:justify-center gap-3 md:gap-6 max-w-4xl mx-auto px-2">
-
-              {/* Partners */}
               <button
                 onClick={handlePartnersClick}
                 type="button"
@@ -351,7 +347,6 @@ export default function UserDashboardPage() {
                 </span>
               </button>
 
-              {/* Favorites */}
               <button
                 onClick={handleFavoritesClick}
                 type="button"
@@ -383,24 +378,23 @@ export default function UserDashboardPage() {
                 </span>
               </button>
 
-              {/* Messages */}
               <button
                 onClick={handleMessagesClick}
                 type="button"
                 className={`
-      flex items-center justify-center
-      gap-1 md:gap-3
-      w-[272px] h-[42px] md:h-[55px]
-      px-5 sm:px-6 md:px-7
-      rounded-xl
-      shadow-lg sm:shadow-md
-      hover:opacity-90
-      transition
-      cursor-pointer
-      figtree
-      font-semibold md:text-[20px] text-[12px]
-      ${activeView === "messages" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
-    `}
+                            flex items-center justify-center
+                            gap-1 md:gap-3
+                            w-[272px] h-[42px] md:h-[55px]
+                            px-5 sm:px-6 md:px-7
+                            rounded-xl
+                            shadow-lg sm:shadow-md
+                            hover:opacity-90
+                            transition
+                            cursor-pointer
+                            figtree
+                            font-semibold md:text-[20px] text-[12px]
+                            ${activeView === "messages" ? "bg-[#145939] text-white" : "bg-[#95c11f] text-white"}
+                          `}
               >
                 <img
                   src={commentImg}
@@ -411,14 +405,11 @@ export default function UserDashboardPage() {
                   {t("userDashboard.buttons.messages")}
                 </span>
               </button>
-
             </div>
-
           </div>
         </div>
       </div>
-        
-        {/* <div className="text-white w-full bg-gradient-to-t from-[#01351f]/60">Hello</div> */}
+
       <div className="bg-[#01351f] py-4 md:py-10 flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
           {loading && activeView === "default" ? (
@@ -427,7 +418,6 @@ export default function UserDashboardPage() {
             </div>
           ) : (
             <>
-              {/* Categories Grid */}
               {activeView === "default" && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-4">
                   {categories.map((category, index) => {
@@ -494,137 +484,70 @@ export default function UserDashboardPage() {
                 </div>
               )}
 
-              {/* Favorites View */}
               {activeView === "favorites" && (
-                <div className="space-y-4">
-                  {/* <h2 className="text-white text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-                    {t("userDashboard.favoritesTitle")}
-                  </h2> */}
-                  {favoritesLoading ? (
-                    <div className="flex justify-center items-center h-64">
-                      <div className="text-white text-base sm:text-lg">
-                        {t("userDashboard.loadingFavorites")}
+                <>
+                  <div className="md:hidden space-y-3">
+                    {favoritesLoading ? (
+                      <div className="flex justify-center items-center h-64">
+                        <div className="text-white text-base sm:text-lg">
+                          {t("userDashboard.loadingFavorites")}
+                        </div>
                       </div>
-                    </div>
-                  ) : favorites.length > 0 ? (
-                    <>
-                      {/* Mobile List View */}
-                      <div className="md:hidden space-y-3">
-                        {favorites.map((favorite) => (
-                          <div
-                            key={favorite.id}
-                            className="bg-white rounded-lg p-3 flex items-center gap-3 border border-gray-100 cursor-pointer"
-                            onClick={() => handleFavoriteMoreInfo(favorite)}
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" || e.key === " ") {
-                                e.preventDefault();
-                                handleFavoriteMoreInfo(favorite);
-                              }
-                            }}
-                          >
-                            <div className="w-12 h-12 flex items-center justify-center flex-shrink-0 bg-white rounded">
-                              {favorite.logoUrl && (
-                                <img
-                                  className="w-12 h-12 object-contain"
-                                  src={favorite.logoUrl}
-                                  alt=""
-                                />
-                              )}
-                            </div>
-
-                            <div className="flex-1 min-w-0">
-                              <div className="flex flex-col gap-1">
-                                <span className="text-sm font-extrabold text-[#000000] truncate">
-                                  {favorite.partnerName ||
-                                    favorite.businessName ||
-                                    "N/A"}
-                                </span>
-                                <span className="text-[11px] text-[#6b7280] truncate">
-                                  {getFavouriteCategory(favorite)}
-                                </span>
-                                <span className="text-[12px] font-semibold text-[#000000] truncate">
-                                  {getFavouriteSubCategory(favorite)}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Desktop Card View */}
-                      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {favorites.map((favorite) => (
-                          <div
-                            key={favorite.id}
-                            className="bg-white rounded-xl overflow-hidden flex flex-col h-[330px]"
-                          >
-                            {/* <div className="relative w-full h-64 overflow-hidden bg-gray-100">
+                    ) : favorites.length > 0 ? (
+                      favorites.map((favorite) => (
+                        <div
+                          key={favorite.id}
+                          className="bg-white rounded-lg p-3 flex items-center gap-3 border border-gray-100 cursor-pointer"
+                          onClick={() => handleFavoriteMoreInfo(favorite)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              handleFavoriteMoreInfo(favorite);
+                            }
+                          }}
+                        >
+                          <div className="w-12 h-12 flex items-center justify-center flex-shrink-0 bg-white rounded">
+                            {favorite.logoUrl && (
                               <img
-                                src={
-                                  favorite.thumbnail ||
-                                  favorite.logoUrl ||
-                                  dashboard1
-                                }
-                                alt={
-                                  favorite.partnerName || favorite.businessName
-                                }
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  e.currentTarget.src = dashboard1;
-                                }}
+                                className="w-12 h-12 object-contain"
+                                src={favorite.logoUrl}
+                                alt=""
                               />
-                              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent"></div>
-                            </div> */}
+                            )}
+                          </div>
 
-                            <div className="p-5 text-center flex flex-col items-center gap-4 flex-1">
-                              <div className="w-[83px] h-[77px] flex items-center justify-center mt-4 mb-1 bg-white rounded-lg">
-                                {favorite.logoUrl && (
-                                  <img
-                                    src={favorite.logoUrl}
-                                    alt="Business logo"
-                                    className="w-[83px] h-[77px] object-contain"
-                                  />
-                                )}
-                              </div>
-
-                              <h3 className="text-xl font-extrabold text-[#052011] mb-1">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-col gap-1">
+                              <span className="text-sm font-extrabold text-[#000000] truncate">
                                 {favorite.partnerName ||
-                                  favorite.businessName}
-                              </h3>
-
-                              <p className="text-sm text-[#052011] leading-relaxed px-2 line-clamp-3">
-                                {favorite.descriptionShort}
-                              </p>
-
-                              <button
-                                onClick={() => handleFavoriteMoreInfo(favorite)}
-                                className="mt-auto text-sm font-semibold text-[#01351f] hover:text-[#145939] transition cursor-pointer"
-                              >
-                                {t("userDashboard.moreInfo")}
-                              </button>
+                                  favorite.businessName ||
+                                  "N/A"}
+                              </span>
+                              <span className="text-[11px] text-[#6b7280] truncate">
+                                {getFavouriteCategory(favorite)}
+                              </span>
+                              <span className="text-[12px] font-semibold text-[#000000] truncate">
+                                {getFavouriteSubCategory(favorite)}
+                              </span>
                             </div>
                           </div>
-                        ))}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="flex justify-center items-center h-64">
+                        <div className="text-white text-base sm:text-lg text-center">
+                          {t("userDashboard.noFavorites")}
+                        </div>
                       </div>
-                    </>
-                  ) : (
-                    <div className="flex justify-center items-center h-64">
-                      <div className="text-white text-base sm:text-lg text-center">
-                        {t("userDashboard.noFavorites")}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                </>
               )}
 
-              {/* Messages View */}
               {activeView === "messages" && (
                 <div className="space-y-4">
-                  {/* <h2 className="text-white text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-                    {t("userDashboard.conversationsTitle")}
-                  </h2> */}
                   {conversationsLoading ? (
                     <div className="flex justify-center items-center h-64">
                       <div className="text-white text-base sm:text-lg">
@@ -633,7 +556,6 @@ export default function UserDashboardPage() {
                     </div>
                   ) : conversations.length > 0 ? (
                     <>
-                      {/* Mobile List View */}
                       <div className="md:hidden space-y-3">
                         {conversations.map((conversation) => (
                           <div
@@ -678,7 +600,6 @@ export default function UserDashboardPage() {
                         ))}
                       </div>
 
-                      {/* Desktop Card View */}
                       <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {conversations.map((conversation) => (
                           <div
@@ -737,9 +658,71 @@ export default function UserDashboardPage() {
             </>
           )}
         </div>
+
+        {activeView === "favorites" && (
+          <section className="hidden md:block bg-[#01351f] w-full flex justify-center pt-0 pb-8 md:pt-2 md:pb-30 px-30 relative overflow-visible z-20">
+            {favoritesLoading ? (
+              <div className="col-span-3 flex justify-center items-center h-64">
+                <div className="text-white text-lg">
+                  {t("userDashboard.loadingFavorites")}
+                </div>
+              </div>
+            ) : favorites.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-6 max-w-7xl px-4 md:px-7 w-full overflow-visible">
+                {favorites.map((favorite) => (
+                  <div
+                    key={favorite.id}
+                    className="flex justify-center overflow-visible"
+                  >
+                    <div
+                      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 w-full h-[320px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-4 md:px-8 md:py-10 text-center justify-between"
+                    >
+                      <div className="flex flex-col items-center w-full flex-1 min-h-0 overflow-hidden">
+                        <div className="mb-2 md:mb-6 flex-shrink-0">
+                          <img
+                            src={favorite.logoUrl}
+                            alt={favorite.partnerName || favorite.businessName || "Partner"}
+                            className="w-[144px] h-[72px] md:w-[240px] md:h-[120px] object-contain"
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).src = dashboard1;
+                            }}
+                          />
+                        </div>
+                        <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-5 px-4 flex-shrink-0">
+                          {favorite.partnerName ||
+                            favorite.businessName}
+                        </h3>
+                        {favorite.descriptionShort && (
+                          <div className="flex items-start justify-center w-full mb-2 md:mb-6 overflow-hidden flex-1 min-h-0">
+                            <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-4 md:line-clamp-5">
+                              {favorite.descriptionShort}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => handleFavoriteMoreInfo(favorite)}
+                        className="flex-shrink-0 mt-auto font-bold text-[14px] md:text-[16px] cursor-pointer transition-all duration-200 text-black hover:font-extrabold"
+                      >
+                        {t("userDashboard.moreInfo")}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-6 max-w-7xl px-4 md:px-7 w-full overflow-visible">
+                <div className="col-span-3 flex justify-center items-center h-64">
+                  <div className="text-white text-lg text-center">
+                    {t("userDashboard.noFavorites")}
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
       </div>
 
-      {/* Conversation Detail Modal */}
       {openConversation && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center">
           <div
@@ -796,25 +779,6 @@ export default function UserDashboardPage() {
           </div>
         </div>
       )}
-
-      {/* Footer */}
-      {/* <footer className="bg-[#01351f] text-white text-center p-4 sm:p-6">
-        <div className="flex flex-col items-center">
-          <div className="mb-6 sm:mb-8">
-            <div className="w-40 sm:w-48 md:w-52 h-10 sm:h-11 mx-auto">
-              <img
-                src={footerLogo}
-                alt="Boligmatch Logo"
-                className="w-full h-full object-contain"
-              />
-            </div>
-          </div>
-          <p className="text-white text-xs sm:text-sm md:text-base figtree font-normal text-center px-4">
-            Tørringvej 7 2610 Rødovre Tlf 70228288 info@boligmatch.dk CVR
-            33160437
-          </p>
-        </div>
-      </footer> */}
       <Footer />
     </div>
   );
