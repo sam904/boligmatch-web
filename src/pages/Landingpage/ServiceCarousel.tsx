@@ -108,7 +108,7 @@ export default function ServiceCarousel() {
           return (
             <motion.div
               key={index}
-              className="absolute rounded-3xl shadow-lg shadow-black cursor-grab"
+              className="absolute rounded-3xl shadow-xl  cursor-grab"
               animate={position}
               variants={IMAGE_VARIANTS}
               transition={{ duration: 0.5 }}
