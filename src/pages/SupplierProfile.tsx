@@ -941,7 +941,6 @@ const SupplierProfile = () => {
                         </button>
 
 
-                        {/* Recommend Button */}
                         <button
                           onClick={() => setActiveModal("recommend")}
                           type="button"
