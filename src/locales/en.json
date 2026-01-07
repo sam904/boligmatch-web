@@ -103,7 +103,7 @@
     "svgSmallSize": "✓ Small file size",
     "fileSizeExceeded": "File size should be less than {sizeLimit}",
     "svgNotePreview": "SVG files are vector graphics that can be scaled without losing quality.",
-    "backgroundImage": "Background ImageUrl"
+    "backgroundImage": "Background Image"
   
   
   },
@@ -285,7 +285,8 @@
       "enterCategoryDescription": "Enter category description",
       "cannotDeleteInvalidId": "Cannot delete category: Invalid ID",
       "unexpectedError": "An unexpected error occurred",
-      "backgroundImageUrl":"Background ImageUrl"
+      "backgroundImageUrl":"Background ImageUrl",
+      "backgroundImagePreview":"background ImagePreview"
 
     },
     "subcategories": {
