@@ -556,7 +556,7 @@ export default function LandingPage() {
                       {t("landing.subtitle")}
                     </h2>
                   </div>
-                  <p className="text-[#FFFFFF] text-center md:text-[20px] text-[16px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
+                  <p className="text-[#FFFFFF] text-center md:text-[18px] text-[16px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
                     {t("landing.description")}
                   </p>
 
@@ -596,7 +596,7 @@ export default function LandingPage() {
       </div>
       {!isMobile &&
         <div className="bg-[#01351f] ">
-          <p className="text-[#FFFFFF] text-center md:text-[20px] text-[13px] mx-auto max-w-7xl md:py-4 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
+          <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-4 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
             {t("landing.description")}
           </p>
         </div>
@@ -606,7 +606,7 @@ export default function LandingPage() {
         <h1 className="md:text-[64px] text-[36px] md:leading-[66px] leading-[42px] text-white text-center max-w-[845px] mx-auto font-[800] plus-jakarta-sans">
           {t("landing.transparentJourney")}
         </h1>
-        <p className="text-white text-center md:text-[20px] text-[16px] mx-auto max-w-7xl py-4 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
+        <p className="text-white text-center md:text-[18px] text-[16px] mx-auto max-w-7xl py-4 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
           {t("landing.futureDescription")}
         </p>
       </div>
