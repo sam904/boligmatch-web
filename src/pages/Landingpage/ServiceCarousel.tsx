@@ -63,62 +63,70 @@ export default function ServiceCarousel() {
   const SWIPE_THRESHOLD = 50;
   const VELOCITY_THRESHOLD = 500;
 
- const SERVICES = [
+  const SERVICES = [
     {
       id: 1,
       title: "Flytning og opbevaring",
-      description: "Olore dolupta tquatet magnimus eos etus vel et molut quis coratem hilicae vele",
+      description: "Flytning, opbevaring",
       icon: swaperIcons5,
     },
     {
       id: 2,
       title: "Byg og anlæg",
-      description: "Eque illecus quunt ut volorit ut volore eum volore quatemperis quam erum et ut",
+      description: "Tag og facade, port og hegn, kloak og jord, bortskaffelse, stillads",
       icon: swaperIcons4,
     },
     {
       id: 3,
       title: "Håndværkere",
-      description: "Tømrer, murer, elektriker, VVS, maler, glarmester, handyman, fugemand",
+      description:
+        "Tømrer, murer, elektriker, VVS, maler, glarmester, handyman, fugemand, isolering",
       icon: swaperIcons3,
     },
     {
       id: 4,
       title: "Indretning",
-      description: "cus quunt ut volorit ut volore eum volore quatemperis quam erum et ut",
+      description:
+        "Køkken, bad, gulv, tæpper, gardiner og markiser",
       icon: swaperIcons2,
     },
     {
       id: 5,
       title: "Rådgivning",
-      description: "dolupta tquatet magnimus eos etus vel et molut quis coratem hilicae velectu",
+      description:
+        "Arkitekt, byggerådgivning, advokat, forsikring, bank, indretningsarkitekt",
       icon: swaperIcons1,
     },
     {
       id: 6,
       title: "Hus og have",
-      description: "Biti is seque remporem faccusa ea pror sequibus. Hitior solupta tempel im vitati",
+      description:
+        "Skadesservice, alarm og sikring, skadedyrsbekæmpelse, anlægsgartner, gartner, pool og spa",
       icon: swaperIcons6,
     },
     {
       id: 7,
       title: "Rengøring og vedligehold",
-      description: "Ehenti ra conese pa doluptatio optatum nobit latinti onserspis",
+      description:
+        "Rengøring, vinduespolering, tag- og fliserens",
       icon: swaperIcons7,
     },
     {
       id: 8,
       title: "Energi og opvarmning",
-      description: "Aquatur alit, consequo voluptam, sequiberrum faceperum",
+      description:
+        "EL-forsyning, solceller",
       icon: swaperIcons8,
     },
     {
       id: 9,
       title: "Fritid",
-      description: "Daecus volo eic temolore nullaudam, odis sit qui nis es que adicima dipsunt aperro bernam, vellani anduci ulla que deliqui o",
+      description:
+        "Biler, cykler",
       icon: swaperIcons9,
     },
   ];
+
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev + 1) % TOTAL_ITEMS);
@@ -196,7 +204,7 @@ export default function ServiceCarousel() {
         </div>
       </div>
 
-      
+
 
       {/* Navigation Dots */}
       {/* <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
