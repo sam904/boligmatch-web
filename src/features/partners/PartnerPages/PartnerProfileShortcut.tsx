@@ -457,7 +457,202 @@ function PartnerProfileShortcut({
         </div>
       </div>
 
-      <div className="min-h-screen flex justify-center items-center md:p-8 p-4 bg-[#01351F]">
+      {/* Mobile layout with ordered cards */}
+      <div className="min-h-screen flex md:hidden justify-center items-center p-4 bg-[#01351F]">
+        <div className="flex flex-col gap-6 w-full max-w-7xl">
+          {/* 1. ImageUrl2 card */}
+          <div className="w-full h-auto rounded-[10px] overflow-hidden shadow-xl">
+            <img
+              src={partnerData?.imageUrl2}
+              alt={partnerData?.businessName}
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* 2. Logo card */}
+          <div className="bg-white rounded-[10px] w-full h-auto flex justify-center items-center p-6 shadow-xl">
+            <div className="text-center p-4 w-full max-w-full overflow-hidden">
+              <img
+                src={partnerData?.logoUrl || kabelLogoImg}
+                alt={partnerData?.businessName}
+                className="w-[177px] h-[164px] object-contain mx-auto"
+              />
+            </div>
+          </div>
+
+          {/* 3. Services card */}
+          <div
+            className="w-full h-auto rounded-[10px] p-[53px_34px] gap-[10px] flex flex-col items-center justify-start shadow-xl"
+            style={{
+              background:
+                "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
+            }}
+          >
+            <img
+              src={servicesImg}
+              alt="Services"
+              className="w-[88px] h-[77px] select-none"
+            />
+
+            <h2 className="text-white text-[28px] font-[700] py-4">
+              {t("supplierProfile.servicesTitle")}
+            </h2>
+
+            <div className="text-white w-full text-left services-container leading-[31px]">
+              {renderServicesContent()}
+            </div>
+          </div>
+
+          {/* 4. Facts card */}
+          <div
+            className="w-full h-auto rounded-[10px] flex flex-col items-center gap-[10px] p-[53px_34px] shadow-xl"
+            style={{
+              background:
+                "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
+            }}
+          >
+            <img
+              src={factsImg}
+              alt="Fakta"
+              className="w-[88px] h-[77px] select-none"
+            />
+            <h2 className="text-white text-[28px] font-[700] py-4">
+              {t("supplierProfile.factsTitle")}
+            </h2>
+            <div className="text-white text-sm space-y-2 w-full text-left leading-[31px]">
+              {partnerData?.textField2 && (
+                <div
+                  className="text-left"
+                  dangerouslySetInnerHTML={{
+                    __html: partnerData.textField2,
+                  }}
+                ></div>
+              )}
+            </div>
+          </div>
+
+          {/* 5. References card */}
+          <div
+            className="rounded-2xl p-8 w-full h-auto shadow-xl"
+            style={{
+              background:
+                "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
+            }}
+          >
+            <div className="flex flex-col items-center gap-2 mb-2">
+              <img src={referancesImg} alt="" />
+              <h3 className="text-3xl font-semibold text-white py-4">
+                {t("supplierProfile.referencesTitle")}
+              </h3>
+            </div>
+            <div className="text-white references-container leading-[31px]">
+              {renderReferencesContent()}
+            </div>
+          </div>
+
+          {/* 6. ImageUrl3 card */}
+          <div className="w-full h-auto rounded-[10px] overflow-hidden shadow-xl">
+            <img
+              src={
+                partnerData?.imageUrl3 ||
+                "/src/assets/userImages/subcategoryDetailImg.png"
+              }
+              alt="Work"
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* 7. Geographical area (textField5) card */}
+          <div
+            className="w-full h-auto rounded-[10px] flex justify-center items-center shadow-xl p-4"
+            style={{
+              background:
+                "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
+            }}
+          >
+            <div className="relative flex items-center justify-center">
+              <img
+                src={circlePartner}
+                alt="Geografisk område"
+                className="w-[300px] h-[300px] object-contain p-4 md:p-4"
+              />
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <h2 className="text-white text-center text-[30px] font-semibold leading-tight">
+                  Geografisk <br /> område
+                </h2>
+                <div className="max-w-[151px] mt-4">
+                  <p className="text-white text-center text-[16px] leading-tight">
+                    {partnerData?.textField5}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 8. Reviews card */}
+          <div
+            className={`w-full rounded-[10px] bg-white p-6 flex flex-col relative shadow-xl`}
+          >
+            <div className=" flex justify-center items-end">
+              <img
+                className="w-[130px] h-[32px]"
+                src={trustPilotLogo}
+                alt=""
+              />
+            </div>
+            <h3 className="text-[32px] font-[800] mb-5 text-center leading-6.5">
+              {t("supplierProfile.reviewsTitle")}
+            </h3>
+            <div className="space-y-10">
+              {reviews.length > 0 ? (
+                reviews.map((rev: any) => {
+                  const r = Math.max(
+                    0,
+                    Math.min(5, Number(rev?.rating) || 0)
+                  );
+                  return (
+                    <div key={rev.id} className="">
+                      <div className="flex justify-center mb-3">
+                        {renderRating(r, "w-[45px] h-[42px]", "gap-2")}
+                      </div>
+                      <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6 line-clamp-5">
+                        "{rev?.test}"
+                      </p>
+                      <p className="text-sm font-bold text-black mt-3 text-start px-6">
+                        {rev?.customerName}
+                      </p>
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="text-sm font-semibold text-black mt-3">
+                  {t("supplierProfile.noReviewsYet")}
+                </p>
+              )}
+            </div>
+
+            {hasTrustPilotUrl && (
+              <div className="left-[25%] flex justify-center pt-2 mt-auto">
+                <button
+                  type="button"
+                  onClick={handleOpenTrustPilot}
+                  className="absolute w-[160px] md:w-[202px] h-[50px] md:h-[66px] bg-[#95C11F] flex items-center justify-center gap-1.5 md:gap-2 text-white rounded-[11px] px-3 md:px-4 text-base md:text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]"
+                >
+                  <img
+                    src={startImg}
+                    alt="rating"
+                    className="w-6 h-6 md:w-[33px] md:h-[33px] select-none"
+                  />
+                  {t("supplierProfile.reviewUsOnTrustpilot")}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop / tablet layout */}
+      <div className="min-h-screen hidden md:flex justify-center items-center md:p-8 p-4 bg-[#01351F]">
         <div className="grid md:grid-cols-3 grid-cols-1 gap-4 max-w-7xl">
           <div className="flex flex-col gap-6">
             <div className={`md:w-[403px] w-full ${hasTrustPilotUrl ? "md:h-[859px]" : "md:h-[890px]"

@@ -212,25 +212,7 @@ export default function ServiceCarousel() {
         </div>
       </div>
 
-      {/* Navigation Arrows */}
-      <div className="absolute top-1/2 left-4 right-4 transform -translate-y-1/2 flex justify-between pointer-events-none">
-        <button
-          className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 md:p-3 pointer-events-auto transition-all duration-300"
-          onClick={handlePrev}
-        >
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <button
-          className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 md:p-3 pointer-events-auto transition-all duration-300"
-          onClick={handleNext}
-        >
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
+      
 
       {/* Navigation Dots */}
       {/* <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
