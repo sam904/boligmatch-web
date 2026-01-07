@@ -102,7 +102,8 @@
     "fileSizeExceeded": "Filstørrelsen skal være mindre end {sizeLimit}",
     "svgNotePreview": "SVG-filer er vektorgrafik, der kan skaleres uden at miste kvalitet.",
     "invalidImageFile": "Vælg venligst en gyldig billedfil (JPEG, PNG, SVG osv.)",
-    "supportedFormats": "PNG, JPG, JPEG, WebP, SVG"
+    "supportedFormats": "PNG, JPG, JPEG, WebP, SVG",
+    "backgroundImage": "Upload baggrundsbillede"
   },
   "videoUpload": {
     "uploadVideo": "Upload video",
@@ -282,7 +283,9 @@
       "enterCategoryName": "Indtast kategorinavn",
       "enterCategoryDescription": "Indtast kategori beskrivelse",
       "cannotDeleteInvalidId": "Kan ikke slette kategori: Ugyldigt ID",
-      "unexpectedError": "En uventet fejl opstod"
+      "unexpectedError": "En uventet fejl opstod",
+      "backgroundImageUrl":"Upload baggrundsbillede",
+      "backgroundImagePreview":"Forhåndsvisning af baggrundsbillede"
     },
     "subcategories": {
       "title": "Underkategorier",
