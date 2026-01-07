@@ -5,11 +5,19 @@ import swaperImg2 from "/src/assets/userImages/swiper4.png";
 import swaperImg3 from "/src/assets/userImages/swiper1.png";
 import swaperImg4 from "/src/assets/userImages/swiper2.png";
 import swaperImg5 from "/src/assets/userImages/swiper3.png";
+import swaperImg6 from "/src/assets/userImages/swiper6.png";
+import swaperImg7 from "/src/assets/userImages/swaperImg7.png";
+import swaperImg8 from "/src/assets/userImages/swaperImg8.png";
+import swaperImg9 from "/src/assets/userImages/swaperImg9.png";
 import swaperIcons1 from "/src/assets/userImages/swaperIcon1.svg";
 import swaperIcons2 from "/src/assets/userImages/swaperIcon2.svg";
 import swaperIcons3 from "/src/assets/userImages/swaperIcon3.svg";
 import swaperIcons4 from "/src/assets/userImages/swaperIcon4.svg";
 import swaperIcons5 from "/src/assets/userImages/swaperIcon5.svg";
+import swaperIcons6 from "/src/assets/userImages/swaperIcons6.svg";
+import swaperIcons7 from "/src/assets/userImages/swaperIcons7.svg";
+import swaperIcons8 from "/src/assets/userImages/swaperIcons8.svg";
+import swaperIcons9 from "/src/assets/userImages/swaperIcons9.svg";
 
 export default function ServiceCarousel() {
   const [positionIndexes, setPositionIndexes] = useState<number[]>([0, 1, 2, 3, 4]);
@@ -20,7 +28,7 @@ export default function ServiceCarousel() {
   const autoSlideRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const activeDragIndexRef = useRef<number | null>(null);
 
-  const IMAGES = [swaperImg1, swaperImg2, swaperImg3, swaperImg4, swaperImg5];
+  const IMAGES = [swaperImg1, swaperImg2, swaperImg3, swaperImg4, swaperImg5, swaperImg6];
 
   const isMobile = window.innerWidth < 768;
 
@@ -68,6 +76,12 @@ export default function ServiceCarousel() {
       title: "Rådgivning",
       description: "dolupta tquatet magnimus eos etus vel et molut quis coratem hilicae velectu",
       icon: swaperIcons1,
+    },
+    {
+      id: 6,
+      title: "Hus og have",
+      description: "Biti is seque remporem faccusa ea pror sequibus. Hitior solupta tempel im vitati",
+      icon: swaperIcons6,
     },
   ];
 
@@ -141,7 +155,7 @@ export default function ServiceCarousel() {
           );
         })}
       </div>
-      
+
     </div>
   );
 }
