@@ -475,7 +475,7 @@ function PartnerProfileShortcut({
               <img
                 src={partnerData?.logoUrl || kabelLogoImg}
                 alt={partnerData?.businessName}
-                className="w-[177px] h-[164px] object-contain mx-auto"
+                className="w-[240px] h-[120px] object-contain mx-auto"
               />
             </div>
           </div>
@@ -796,7 +796,7 @@ function PartnerProfileShortcut({
                 <img
                   src={partnerData?.logoUrl || kabelLogoImg}
                   alt={partnerData?.businessName}
-                  className="w-[177px] h-[164px] object-contain mx-auto"
+                  className="w-[240px] h-[120px] object-contain mx-auto"
                 />
 
                 {/* <h2 className="font-extrabold text-[30px] leading-[76px] text-black text-center w-full overflow-hidden text-ellipsis whitespace-nowrap">

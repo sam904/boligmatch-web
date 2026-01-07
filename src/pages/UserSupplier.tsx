@@ -281,8 +281,9 @@ const UserSupplier = () => {
                   <button
                     key={sub.id}
                     onClick={() => setActive(sub.id)}
-                    className={`flex flex-col items-center gap-1 py-2  rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent md:min-w-[80px]
-                        ? "bg-[#95C11F] text-white shadow-md px-3"
+                    className={`flex flex-col items-center gap-1 py-2 rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent md:min-w-[80px]
+                        ${active === sub.id
+                        ? "bg-[#95C11F] text-white px-3"
                         : "bg-transparent text-white hover:bg-white/10 px-3"
                       }`}
                     aria-pressed={active === sub.id}
