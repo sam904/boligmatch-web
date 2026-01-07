@@ -85,12 +85,12 @@ function ParentSteperPara() {
                 key={index}
                 className="p-6 md:p-6 transition-colors duration-300 w-full h-full flex flex-col"
                 style={{
-                  background:
-                    "linear-gradient(155.76deg, #041412 2.48%, #013425 97.87%)",
+                  // background:
+                  //   "linear-gradient(155.76deg, #041412 2.48%, #013425 97.87%)",
                   borderRadius: "10px",
                   opacity: 1,
                   minHeight: "350px",
-                  boxShadow: "0px 7px 16.6px 1px #00000040",
+                  // boxShadow: "0px 7px 16.6px 1px #00000040",
                 }}
               >
                 <div className="mb-3 sm:mb-4 flex justify-center flex-shrink-0">
