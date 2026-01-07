@@ -141,7 +141,7 @@ export default function ServiceCarousel() {
       return;
     }
 
-    autoSlideRef.current = setInterval(handleNext, 3000);
+    autoSlideRef.current = setInterval(handleNext, 1000);
     return () => clearInterval(autoSlideRef.current || 0);
   }, [isHovered, isDragging]);
 
