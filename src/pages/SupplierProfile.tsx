@@ -750,33 +750,33 @@ const SupplierProfile = () => {
             <div className={`md:absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto `}>
 
               {/* Main play/pause button - centered */}
-               <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
+              <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
                 <div className="flex md:items-end  ">
                   {/* Play / Pause button */}
                   {partnerData?.videoUrl && showControls && (
-  <div className="flex justify-center">
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        isVideoPlaying ? handlePauseClick() : handlePlayClick();
-      }}
-      className="text-white hover:scale-125 transition-all duration-300
+                    <div className="flex justify-center">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                          isVideoPlaying ? handlePauseClick() : handlePlayClick();
+                        }}
+                        className="text-white hover:scale-125 transition-all duration-300
                  bg-black/50 rounded-full p-3 cursor-pointer"
-      onMouseEnter={() => setShowControls(true)}
-    >
-      {isVideoPlaying ? (
-        <FaPauseCircle className="h-16 w-16 drop-shadow-2xl" />
-      ) : (
-        <img
-          src={PlayButton}
-          alt="Play"
-          className="h-16 w-16 drop-shadow-2xl"
-        />
-      )}
-    </button>
-  </div>
-)}
+                        onMouseEnter={() => setShowControls(true)}
+                      >
+                        {isVideoPlaying ? (
+                          <FaPauseCircle className="h-16 w-16 drop-shadow-2xl" />
+                        ) : (
+                          <img
+                            src={PlayButton}
+                            alt="Play"
+                            className="h-16 w-16 drop-shadow-2xl"
+                          />
+                        )}
+                      </button>
+                    </div>
+                  )}
 
                 </div>
               </div>
@@ -1381,7 +1381,7 @@ const SupplierProfile = () => {
                   <img
                     src={partnerData?.logoUrl || kabelLogoImg}
                     alt={partnerData?.businessName}
-                    className="w-[177px] h-[164px] object-contain mx-auto"
+                    className="w-[240px] h-[120px] object-contain mx-auto"
                   />
                 </div>
               </div>
@@ -1636,7 +1636,7 @@ const SupplierProfile = () => {
                     <span className="text-red-500 ml-1">*</span>
                   </label>
                   <textarea
-                  rows={6}
+                    rows={6}
                     className={`w-full rounded-[10px] bg-white  px-3  outline-none resize-none ${contactErrors.body ? "border border-red-500" : ""
                       }`}
                     placeholder={

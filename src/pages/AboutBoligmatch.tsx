@@ -45,7 +45,7 @@ export default function AboutBoligmatch() {
             {t("aboutBoligmatch.title")}
           </h1>
 
-          <div className="space-y-5 text-sm sm:text-base leading-relaxed text-white/90">
+          <div className="space-y-5 text-base md:text-[18px] leading-relaxed text-white/90">
             <p>{t("aboutBoligmatch.paragraph1")}</p>
             <p>{t("aboutBoligmatch.paragraph2")}</p>
             <p>{t("aboutBoligmatch.paragraph3")}</p>

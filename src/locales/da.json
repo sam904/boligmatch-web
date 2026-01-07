@@ -284,8 +284,8 @@
       "enterCategoryDescription": "Indtast kategori beskrivelse",
       "cannotDeleteInvalidId": "Kan ikke slette kategori: Ugyldigt ID",
       "unexpectedError": "En uventet fejl opstod",
-      "backgroundImageUrl":"Upload baggrundsbillede",
-      "backgroundImagePreview":"Forhåndsvisning af baggrundsbillede"
+      "backgroundImageUrl": "Upload baggrundsbillede",
+      "backgroundImagePreview": "Forhåndsvisning af baggrundsbillede"
     },
     "subcategories": {
       "title": "Underkategorier",
@@ -632,9 +632,9 @@
     "mobileNumber": "Mobilnr.",
     "email": "Email",
     "password": "Adgangskode",
-    "passwordRequirements": "Brug mindst 6 tegn (der skelnes mellem store og små bogstaver) med mindst et tal eller specialtegn.",
-    "termsText1": "Ved at oprette dig som bruger på Boligmatch+ accepterer du, at Boligmatch må kontakte dig om køb, salg og rådgivning om bolighandel via email, og sende nyhedsbreve med tilbud og fordele",
-    "termsText2": "Du accepterer samtidig vores vilkår og betingelser for opbevaring og behandling af data",
+    "passwordRequirements": "Koden skal bestå af mindst 6 tegn og indeholde både store og små bogstaver samt mindst ét tal eller ét specialtegn.",
+    "termsText1": "Ved at oprette en Boligmatch+ konto giver du samtykke til at modtage e-mails om køb og salg af bolig, boligrådgivning og tilbud samt til vores vilkår for opbevaring og behandling af data.",
+    "termsText2": "",
     "acceptButton": "Acceptér",
     "nameRequired": "Navn er påkrævet",
     "postalCodeRequired": "Postnummer er påkrævet",

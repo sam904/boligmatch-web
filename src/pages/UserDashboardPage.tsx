@@ -432,22 +432,22 @@ export default function UserDashboardPage() {
                         md:w-[374px]
                         md:h-[540px]
                         mx-auto
-                        rounded-xl
-                      bg-white
+                        rounded-[12px]
                         transition-all
                         duration-300
                         cursor-pointer
                         overflow-hidden
                         hover:shadow-xl
                         flex
+                        bg-white
                         flex-col
                         "
                       >
-                        <div className="relative w-full h-[340px] md:h-[340px] lg:h-[340px] xl:h-[340px] rounded-t-[18px] md:rounded-t-xl overflow-hidden">
+                        <div className="relative w-full h-[340px] md:h-[340px] lg:h-[340px] xl:h-[340px] overflow-hidden">
                           <img
                             src={category.imageUrl || assets.image}
                             alt={category.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover "
                             onError={(e) => {
                               e.currentTarget.src = assets.image;
                             }}
