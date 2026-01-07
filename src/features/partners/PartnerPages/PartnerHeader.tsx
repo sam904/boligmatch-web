@@ -57,8 +57,7 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalRole, setModalRole] = useState<"user" | "partner">("user");
   const [isChoiceModalOpen, setIsChoiceModalOpen] = useState(false);
-  const [showLangDropdown, setShowLangDropdown] = useState(false);
-  console.log("showLangDropdown", showLangDropdown);
+  // const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [sidebarRendered, setSidebarRendered] = useState(false);
   const [sidebarTransitionActive, setSidebarTransitionActive] = useState(false);
@@ -168,9 +167,13 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
       const saved = localStorage.getItem("bm_lang");
       if (saved && saved !== i18n.language) {
         i18n.changeLanguage(saved);
+      } else if (!saved) {
+        // Set default to Danish if no language is saved
+        i18n.changeLanguage("da");
+        localStorage.setItem("bm_lang", "da");
       }
     } catch { }
-  }, []);
+  }, [i18n]);
 
   const activePartner =
     partnerLocalData && !userLocalData ? partnerLocalData : null;
@@ -234,7 +237,8 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                   )}
                 </>
               )}
-              <div className="relative">
+              {/* Language Dropdown - Commented out */}
+              {/* <div className="relative">
                 <button
                   onClick={() => setShowLangDropdown((v) => !v)}
                   className="px-2 py-1 rounded-md bg-white/10 text-white text-xs md:text-sm font-semibold hover:bg-white/20 transition-colors cursor-pointer min-w-[44px] text-center"
@@ -265,11 +269,11 @@ function PartnerHeader({ fullHeight = true }: { fullHeight?: boolean }) {
                     </button>
                   </div>
                 )}
-              </div>
+              </div> */}
 
               <button
                 onClick={() => {
-                  setShowLangDropdown(false);
+                  // setShowLangDropdown(false);
                   setShowSidebar(true);
                 }}
                 className="p-2 text-white transition-colors"

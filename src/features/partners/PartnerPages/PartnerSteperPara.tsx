@@ -79,7 +79,7 @@ function ParentSteperPara() {
           <h2 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 md:mb-16 figtree">
             {t("partnerSteperPara.heading")}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
             {benefits.map((benefit, index) => (
               <div
                 key={index}
@@ -103,7 +103,7 @@ function ParentSteperPara() {
                 <h3 className="text-white text-lg sm:text-xl font-bold mb-2 sm:mb-3  text-center flex-shrink-0 figtree">
                   {benefit.title}
                 </h3>
-                <p className="text-white text-xs sm:text-sm leading-relaxed  text-center flex-grow figtree">
+                <p className="text-white md:text-md sm:text-sm leading-relaxed  text-center flex-grow figtree">
                   {benefit.description}
                 </p>
               </div>
