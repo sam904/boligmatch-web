@@ -7,6 +7,7 @@ export type Category = {
   description?: string;
   imageUrl?: string;
   iconUrl?: string;
+  bgImageUrl?: string;  // Add this field
   isActive: boolean;
 };
 
