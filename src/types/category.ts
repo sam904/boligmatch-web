@@ -5,6 +5,7 @@ export interface Category {
   name: string;
   description?: string;
   imageUrl?: string;
+  bgImageUrl?: string; 
   iconUrl?: string;
   isActive: boolean;
 }
@@ -14,6 +15,7 @@ export interface CategoryDto {
   name: string;
   description?: string;
   imageUrl?: string;
+  bgImageUrl?: string; 
   iconUrl?: string;
   isActive: boolean;
 }

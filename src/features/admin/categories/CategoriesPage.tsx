@@ -1,3 +1,979 @@
+// // src/features/admin/categories/CategoriesPage.tsx
+// import { useState, useEffect } from "react";
+// import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+// import { categoryService } from "../../../services/category.service";
+// import DataTable from "../../../components/common/DataTable/DataTable";
+// import Pagination from "../../../components/common/Pagination";
+// import SearchBar from "../../../components/common/SearchBar";
+// import Modal from "../../../components/common/Modal";
+// import Button from "../../../components/common/Button";
+// import Input from "../../../components/common/Input";
+// import ImageUpload from "../../../components/common/ImageUpload";
+// import AdminToast from "../../../components/common/AdminToast";
+// import DeleteConfirmation from "../../../components/common/DeleteConfirmation";
+// import type { AdminToastType } from "../../../components/common/AdminToast";
+// import { useForm } from "react-hook-form";
+// import type { SubmitHandler } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import { z } from "zod";
+// import { useTranslation } from "react-i18next";
+// import { useDbTranslation } from "../../../hooks/useDbTranslation";
+// import { useDebounce } from "../../../hooks/useDebounce";
+// import type { ColumnDef } from "@tanstack/react-table";
+// import type { Category } from "../../../types/category";
+// import ToggleSwitch from "../../../components/common/ToggleSwitch";
+// import TextArea from "../../../components/common/TextArea";
+// import {
+//   IconTrash,
+//   IconPencil,
+//   IconPlus,
+//   IconNoRecords,
+// } from "../../../components/common/Icons/Index";
+// import { FilterDropdown } from "../../../components/common/FilterDropdown";
+
+// // Enhanced validation schema with dimension validation
+// const categorySchema = z.object({
+//   name: z.string().min(1, "validation.categoryNameRequired"),
+//   description: z.string().optional(),
+//   imageUrl: z
+//     .string()
+//     .min(1, "validation.imageRequired")
+//     .url("validation.invalidImageUrl"),
+//   iconUrl: z
+//     .string()
+//     .min(1, "validation.iconRequired")
+//     .url("validation.invalidIconUrl"),
+//   isActive: z.boolean(),
+//   status: z.enum(["Active", "InActive"]),
+// });
+
+// type CategoryFormData = z.infer<typeof categorySchema>;
+
+// // Toast state interface
+// interface ToastState {
+//   id: string;
+//   type: AdminToastType;
+//   message: string;
+//   title?: string;
+//   subtitle?: string;
+//   open: boolean;
+// }
+
+// // Fixed Image Preview Modal Component
+// function ImagePreviewModal({
+//   imageUrl,
+//   isOpen,
+//   onClose,
+// }: {
+//   imageUrl: string;
+//   isOpen: boolean;
+//   onClose: () => void;
+// }) {
+//   const { t } = useTranslation();
+//   const isSVG = imageUrl.toLowerCase().endsWith(".svg");
+
+//   if (!isOpen) return null;
+
+//   return (
+//     <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center bg-black/50 z-50 p-4 cursor-pointer">
+//       <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full">
+//         <div className="flex justify-between items-center p-4 border-b">
+//           <div>
+//             <h3 className="text-lg font-semibold">
+//               {t("common.imagePreview") || "Image Preview"}
+//             </h3>
+//           </div>
+//           <button
+//             onClick={onClose}
+//             className="text-[#171717] border border-[#171717] hover:bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center transition-colors cursor-pointer"
+//           >
+//             ✕
+//           </button>
+//         </div>
+//         <div className="p-4 flex justify-center items-center max-h-[70vh] overflow-auto">
+//           {isSVG ? (
+//             <div className="w-full h-full flex items-center justify-center">
+//               <div className="text-center p-8">
+//                 {/* You can render the SVG directly if it's safe */}
+//                 <img
+//                   src={imageUrl}
+//                   alt="SVG Preview"
+//                   className="max-w-full max-h-full object-contain cursor-pointer"
+//                 />
+//               </div>
+//             </div>
+//           ) : (
+//             <img
+//               src={imageUrl}
+//               alt="Preview"
+//               className="max-w-full max-h-full object-contain cursor-pointer"
+//             />
+//           )}
+//         </div>
+//         <div className="p-4 border-t text-left">
+//           <a
+//             href={imageUrl}
+//             target="_blank"
+//             rel="noopener noreferrer"
+//             className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
+//           >
+//             {t("common.openInNewTab") || "Open in new tab"}
+//           </a>
+         
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default function CategoriesPage() {
+//   const { t } = useTranslation();
+//   const { translateCategory } = useDbTranslation();
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const [pageSize] = useState(10);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [statusFilter, setStatusFilter] = useState<
+//     "All" | "Active" | "InActive"
+//   >("All");
+//   const [previewImage, setPreviewImage] = useState<{
+//     url: string;
+//     isOpen: boolean;
+//   }>({
+//     url: "",
+//     isOpen: false,
+//   });
+//   const [toasts, setToasts] = useState<ToastState[]>([]);
+//   const [deleteConfirmation, setDeleteConfirmation] = useState<{
+//     isOpen: boolean;
+//     category: Category | null;
+//   }>({
+//     isOpen: false,
+//     category: null,
+//   });
+//   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+//   const queryClient = useQueryClient();
+
+//   // Toast management functions
+//   const showToast = (
+//     type: AdminToastType,
+//     message: string,
+//     title?: string,
+//     subtitle?: string
+//   ) => {
+//     const id = Math.random().toString(36).substring(2, 9);
+//     const newToast: ToastState = {
+//       id,
+//       type,
+//       message,
+//       title,
+//       subtitle,
+//       open: true,
+//     };
+
+//     setToasts((prev) => [...prev, newToast]);
+//     return id;
+//   };
+
+//   const hideToast = (id: string) => {
+//     setToasts((prev) =>
+//       prev.map((toast) => (toast.id === id ? { ...toast, open: false } : toast))
+//     );
+
+//     // Remove toast from state after animation
+//     setTimeout(() => {
+//       setToasts((prev) => prev.filter((toast) => toast.id !== id));
+//     }, 300);
+//   };
+
+//   const toast = {
+//     success: (message: string, title?: string, subtitle?: string) =>
+//       showToast("success", message, title, subtitle),
+//     error: (message: string, title?: string, subtitle?: string) =>
+//       showToast("error", message, title, subtitle),
+//     info: (message: string, title?: string, subtitle?: string) =>
+//       showToast("info", message, title, subtitle),
+//   };
+
+//   // Helper function to extract error message
+//   const getErrorMessage = (error: unknown, defaultMessage: string): string => {
+//     if (typeof error === "string") return error;
+//     if (error instanceof Error) return error.message;
+//     if (typeof error === "object" && error !== null) {
+//       const apiError = error as any;
+//       return (
+//         apiError?.message || apiError?.response?.data?.message || defaultMessage
+//       );
+//     }
+//     return defaultMessage;
+//   };
+
+//   // Fetch categories with server-side pagination, search and status filter
+//   const {
+//     data: paginatedData,
+//     isLoading,
+//     error: fetchError,
+//     isError: isFetchError,
+//   } = useQuery({
+//     queryKey: [
+//       "categories",
+//       currentPage,
+//       pageSize,
+//       debouncedSearchTerm,
+//       statusFilter,
+//     ],
+//     queryFn: () =>
+//       categoryService.getPaginated({
+//         page: currentPage,
+//         pageSize,
+//         searchTerm: debouncedSearchTerm || undefined,
+//         status: statusFilter === "All" ? "All" : statusFilter,
+//         sortDirection: "desc",
+//         sortField: "id",
+//       }),
+//     retry: 1,
+//     staleTime: 5 * 60 * 1000,
+//   });
+
+//   // Get data from API response
+//   const categories = paginatedData?.items || [];
+//   const totalItems = paginatedData?.total || 0;
+//   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+
+//   // Check if there are any records to display
+//   const hasRecords = categories.length > 0;
+
+//   // Show fetch error toast
+//   useEffect(() => {
+//     if (isFetchError && fetchError) {
+//       const errorMessage = getErrorMessage(
+//         fetchError,
+//         t("admin.categories.createError") || "Failed to load categories"
+//       );
+//       toast.error(errorMessage);
+//     }
+//   }, [isFetchError, fetchError]);
+
+//   const {
+//     register,
+//     handleSubmit,
+//     formState: { errors },
+//     reset,
+//     setValue,
+//     watch,
+//     trigger,
+//     setError,
+//     clearErrors,
+//   } = useForm<CategoryFormData>({
+//     resolver: zodResolver(categorySchema),
+//     mode: "onChange",
+//     defaultValues: {
+//       name: "",
+//       isActive: true,
+//       description: "",
+//       imageUrl: "",
+//       iconUrl: "",
+//       status: "Active",
+//     },
+//   });
+
+//   // Watch the form values
+//   const imageUrlValue = watch("imageUrl");
+//   const iconUrlValue = watch("iconUrl");
+//   const isActiveValue = watch("isActive");
+
+//   // Add dimension validation function
+//   const validateImageDimensions = async (
+//     imageUrl: string,
+//     requiredWidth: number,
+//     requiredHeight: number
+//   ): Promise<boolean> => {
+//     return new Promise((resolve) => {
+//       const img = new Image();
+//       img.onload = function () {
+//         const isValid =
+//           img.width === requiredWidth && img.height === requiredHeight;
+//         resolve(isValid);
+//       };
+//       img.onerror = function () {
+//         resolve(false);
+//       };
+//       img.src = imageUrl;
+//     });
+//   };
+
+//   useEffect(() => {
+//     if (editingCategory) {
+//       reset({
+//         name: editingCategory.name,
+//         description: editingCategory.description || "",
+//         imageUrl: editingCategory.imageUrl || "",
+//         iconUrl: editingCategory.iconUrl || "",
+//         isActive: editingCategory.isActive,
+//         status: editingCategory.isActive ? "Active" : "InActive",
+//       });
+//     } else {
+//       reset({
+//         name: "",
+//         description: "",
+//         imageUrl: "",
+//         iconUrl: "",
+//         isActive: true,
+//         status: "Active",
+//       });
+//     }
+//   }, [editingCategory, reset]);
+
+//   // Create mutation with error handling
+//   const createMutation = useMutation({
+//     mutationFn: categoryService.add,
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["categories"], exact: false });
+//       toast.success(
+//         t("admin.categories.createSuccess") || "Category created successfully"
+//       );
+//       setIsModalOpen(false);
+//       reset();
+//     },
+//     onError: (error: any) => {
+//       const errorMessage = getErrorMessage(
+//         error,
+//         t("admin.categories.createError") || "Failed to create category"
+//       );
+//       toast.error(errorMessage);
+
+//       // Handle backend validation errors
+//       if (error?.response?.data?.errors) {
+//         const backendErrors = error.response.data.errors;
+//         Object.keys(backendErrors).forEach((key) => {
+//           setError(key as keyof CategoryFormData, {
+//             type: "server",
+//             message: backendErrors[key][0],
+//           });
+//         });
+//       }
+//     },
+//   });
+
+//   // Update mutation with error handling
+  // const updateMutation = useMutation({
+  //   mutationFn: categoryService.update,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["categories"], exact: false });
+  //     toast.success(
+  //       t("admin.categories.updateSuccess") || "Category updated successfully"
+  //     );
+  //     setIsModalOpen(false);
+  //     setEditingCategory(null);
+  //     reset();
+  //   },
+  //   onError: (error: any) => {
+  //     const errorMessage = getErrorMessage(
+  //       error,
+  //       t("admin.categories.updateError") || "Failed to update category"
+  //     );
+  //     toast.error(errorMessage);
+
+  //     // Handle backend validation errors
+  //     if (error?.response?.data?.errors) {
+  //       const backendErrors = error.response.data.errors;
+  //       Object.keys(backendErrors).forEach((key) => {
+  //         setError(key as keyof CategoryFormData, {
+  //           type: "server",
+  //           message: backendErrors[key][0],
+  //         });
+  //       });
+  //     }
+  //   },
+  // });
+
+//   // Delete mutation with error handling
+//   const deleteMutation = useMutation({
+//     mutationFn: categoryService.remove,
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["categories"], exact: false });
+//       toast.success(
+//         t("admin.categories.deleteSuccess") || "Category deleted successfully"
+//       );
+//       setDeleteConfirmation({ isOpen: false, category: null });
+//     },
+//     onError: (error: any) => {
+//       const errorMessage = getErrorMessage(
+//         error,
+//         t("admin.categories.deleteError") || "Failed to delete category"
+//       );
+//       toast.error(errorMessage);
+//       setDeleteConfirmation({ isOpen: false, category: null });
+//     },
+//   });
+
+//   // Fixed onSubmit function
+//   const onSubmit: SubmitHandler<CategoryFormData> = async (data) => {
+//     try {
+//       // Check if mutations are in progress
+//       if (createMutation.isPending || updateMutation.isPending) {
+//         toast.error(
+//           t("common.currentOperation") ||
+//             "Please wait for the current operation to complete"
+//         );
+//         return;
+//       }
+
+//       // Final validation check - but don't block if there are minor issues
+//       const isFormValid = await trigger();
+//       if (!isFormValid) {
+//         // Instead of blocking, show what needs to be fixed
+//         const errorFields = Object.keys(errors);
+//         if (errorFields.length > 0) {
+//           toast.error(`Please fix errors in: ${errorFields.join(", ")}`);
+//         }
+//         return;
+//       }
+
+//       // Validate image dimensions before submission - but make it non-blocking for existing images
+//       if (data.imageUrl) {
+//         // Only validate dimensions for new images or if image has changed
+//         const isNewImage =
+//           !editingCategory || data.imageUrl !== editingCategory.imageUrl;
+//         if (isNewImage) {
+//           const isImageValid = await validateImageDimensions(
+//             data.imageUrl,
+//             374,
+//             340
+//           );
+//           if (!isImageValid) {
+//             const errorMessage =
+//               t("admin.categories.imageMustBeDimensions", {
+//                 width: 374,
+//                 height: 340,
+//               }) || "Main image must be exactly 374 × 340 pixels";
+//             toast.error(errorMessage);
+//             setError("imageUrl", {
+//               type: "manual",
+//               message: errorMessage,
+//             });
+//             return;
+//           }
+//         }
+//       }
+
+//       // Validate icon dimensions before submission - but make it non-blocking for existing icons
+//       if (data.iconUrl) {
+//         // Only validate dimensions for new icons or if icon has changed
+//         const isNewIcon =
+//           !editingCategory || data.iconUrl !== editingCategory.iconUrl;
+//         if (isNewIcon) {
+//           const isIconValid = await validateImageDimensions(
+//             data.iconUrl,
+//             512,
+//             512
+//           );
+//           if (!isIconValid) {
+//             const errorMessage =
+//               t("admin.categories.iconMustBeDimensions", {
+//                 width: 512,
+//                 height: 512,
+//               }) || "Icon must be exactly 512 × 512 pixels";
+//             toast.error(errorMessage);
+//             setError("iconUrl", {
+//               type: "manual",
+//               message: errorMessage,
+//             });
+//             return;
+//           }
+//         }
+//       }
+
+//       // All validations passed, proceed with submission
+//       if (editingCategory) {
+//         updateMutation.mutate({ ...data, id: editingCategory.id });
+//       } else {
+//         createMutation.mutate(data);
+//       }
+//     } catch (error) {
+//       console.error("Form submission error:", error);
+//       toast.error(
+//         t("admin.categories.unexpectedError") || "An unexpected error occurred"
+//       );
+//     }
+//   };
+
+//   const handlePageChange = (page: number) => {
+//     setCurrentPage(page);
+//   };
+
+//   const handleSearchChange = (term: string) => {
+//     setSearchTerm(term);
+//     setCurrentPage(1);
+//   };
+
+//   const handleStatusFilterChange = (filter: "All" | "Active" | "InActive") => {
+//     setStatusFilter(filter);
+//     setCurrentPage(1); // Reset to first page when filter changes
+//   };
+
+//   const handleDeleteCategory = (category: Category) => {
+//     if (!category.id) {
+//       toast.error(
+//         t("admin.categories.cannotDeleteInvalidId") ||
+//           "Cannot delete category: Invalid ID"
+//       );
+//       return;
+//     }
+
+//     // Show delete confirmation modal
+//     setDeleteConfirmation({
+//       isOpen: true,
+//       category: category,
+//     });
+//   };
+
+//   const handleConfirmDelete = () => {
+//     if (deleteConfirmation.category?.id) {
+//       deleteMutation.mutate(deleteConfirmation.category.id);
+//     } else {
+//       toast.error(
+//         t("admin.categories.cannotDeleteInvalidId") ||
+//           "Cannot delete category: Invalid ID"
+//       );
+//       setDeleteConfirmation({ isOpen: false, category: null });
+//     }
+//   };
+
+//   const handleCancelDelete = () => {
+//     setDeleteConfirmation({ isOpen: false, category: null });
+//   };
+
+//   const handleModalClose = () => {
+//     setIsModalOpen(false);
+//     setEditingCategory(null);
+//     clearErrors();
+//     reset();
+//   };
+
+//   const columns: ColumnDef<Category>[] = [
+//     {
+//       accessorKey: "id",
+//       header: t("admin.categories.id") || "ID",
+//     },
+//     {
+//       accessorKey: "name",
+//       header: t("admin.categories.name") || "Name",
+//       cell: ({ row }) => translateCategory(row.original.name),
+//     },
+//     {
+//       accessorKey: "description",
+//       header: t("admin.categories.description") || "Description",
+//       cell: ({ row }) => {
+//         const description = row.original.description;
+//         if (!description) return "-";
+
+//         return description.length > 50
+//           ? `${description.substring(0, 50)}...`
+//           : description;
+//       },
+//     },
+//     {
+//       accessorKey: "imageUrl",
+//       header: t("common.image") || "Image",
+//       enableSorting: false,
+//       cell: ({ row }) => {
+//         const imageUrl = row.original.imageUrl;
+//         if (!imageUrl) return "-";
+
+//         return (
+//           <div className="flex flex-col gap-1">
+//             <button
+//               onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
+//               className="underline text-sm font-medium text-left cursor-pointer"
+//             >
+//               {t("common.image") || "Image"}
+//             </button>
+//           </div>
+//         );
+//       },
+//     },
+//     {
+//       accessorKey: "iconUrl",
+//       header: t("common.icon") || "Icon",
+//       enableSorting: false,
+//       cell: ({ row }) => {
+//         const iconUrl = row.original.iconUrl;
+//         if (!iconUrl) return "-";
+
+//         return (
+//           <div className="flex flex-col gap-1">
+//             <button
+//               onClick={() => setPreviewImage({ url: iconUrl, isOpen: true })}
+//               className="underline text-sm font-medium text-left cursor-pointer"
+//             >
+//               {t("common.icon") || "Icon"}
+//             </button>
+//           </div>
+//         );
+//       },
+//     },
+//     {
+//       accessorKey: "isActive",
+//       header: t("common.status") || "Status",
+//       enableSorting: false,
+//       cell: ({ row }) => (
+//         <span
+//           className="px-2 py-1 rounded-full text-xs text-white font-medium"
+//           style={{
+//             backgroundColor: row.original.isActive
+//               ? "var(--color-secondary)"
+//               : "var(--color-neutral)",
+//           }}
+//         >
+//           {row.original.isActive
+//             ? t("common.active") || "Active"
+//             : t("common.inactive") || "Inactive"}
+//         </span>
+//       ),
+//     },
+//     {
+//       id: "actions",
+//       header: t("common.actions") || "Actions",
+//       cell: ({ row }) => (
+//         <div className="flex gap-2">
+//           <button
+//             type="button"
+//             onClick={() => {
+//               setEditingCategory(row.original);
+//               setIsModalOpen(true);
+//             }}
+//             className="p-2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+//             title={t("common.edit") || "Edit category"}
+//             disabled={updateMutation.isPending}
+//           >
+//             <IconPencil />
+//           </button>
+//           <button
+//             type="button"
+//             onClick={() => handleDeleteCategory(row.original)}
+//             className="p-2 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+//             title={t("common.delete") || "Delete category"}
+//             disabled={deleteMutation.isPending}
+//           >
+//             <IconTrash />
+//           </button>
+//         </div>
+//       ),
+//     },
+//   ];
+
+//   return (
+//     <div className="p-3">
+//       {/* Render Toast Banners */}
+//       {toasts.map((toastItem) => (
+//         <AdminToast
+//           key={toastItem.id}
+//           type={toastItem.type}
+//           message={toastItem.message}
+//           onClose={() => hideToast(toastItem.id)}
+//           autoDismissMs={5000}
+//         />
+//       ))}
+
+//       {/* Delete Confirmation Modal using common component */}
+//       <DeleteConfirmation
+//         open={deleteConfirmation.isOpen}
+//         onClose={handleCancelDelete}
+//         onConfirm={handleConfirmDelete}
+//         itemName={
+//           deleteConfirmation.category
+//             ? `${t("nav.categories") || "Category"}: ${translateCategory(
+//                 deleteConfirmation.category.name
+//               )}`
+//             : undefined
+//         }
+//         confirmationMessage={
+//           t("admin.categories.deleteConfirm") ||
+//           "Are you sure you want to delete this category?"
+//         }
+//         isLoading={deleteMutation.isPending}
+//         title={t("deleteConfirmation.title") || "Confirm Deletion"}
+//         confirmButtonText={t("deleteConfirmation.confirmButton") || "Delete"}
+//         cancelButtonText={t("deleteConfirmation.cancelButton") || "Cancel"}
+//       />
+
+//       {/* Header Section */}
+//       <div className="p-2 mb-2">
+//         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+//           <div className="font-figtree flex justify-center lg:justify-start">
+//             <Button
+//               variant="primary"
+//               size="md"
+//               onClick={() => {
+//                 setEditingCategory(null);
+//                 setIsModalOpen(true);
+//               }}
+//               icon={IconPlus}
+//               iconPosition="left"
+//               iconSize="w-5 h-5"
+//               disabled={createMutation.isPending}
+//               className="cursor-pointer"
+//             >
+//               {t("admin.categories.addCategory") || "Add Category"}
+//             </Button>
+//           </div>
+
+//           {/* Right side: Filters and Search */}
+//           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+//             {/* Status Filter Dropdown */}
+//             <div className="w-full sm:w-auto">
+//               <FilterDropdown
+//                 value={statusFilter}
+//                 onChange={handleStatusFilterChange}
+//                 className="w-full sm:w-auto"
+//               />
+//             </div>
+
+//             {/* Search Bar */}
+//             <div className="w-full sm:flex-1 lg:w-64">
+//               <SearchBar
+//                 searchTerm={searchTerm}
+//                 onSearchChange={handleSearchChange}
+//               />
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Loading State */}
+//       {isLoading ? (
+//         <div className="bg-white rounded-lg shadow p-8 text-center">
+//           <div
+//             className="inline-block animate-spin rounded-full h-8 w-8 border-b-2"
+//             style={{ borderColor: "var(--color-primary)" }}
+//           ></div>
+//           <p className="mt-3 text-sm text-gray-600">
+//             {t("common.loading") || "Loading..."}
+//           </p>
+//         </div>
+//       ) : (
+//         /* Data Table or No Records Message */
+//         <div className="bg-white rounded-lg shadow overflow-hidden">
+//           {hasRecords ? (
+//             <>
+//               <DataTable data={categories} columns={columns} />
+//               {/* Only show pagination if there are records and more than one page */}
+//               {hasRecords && totalPages > 1 && (
+//                 <div className="px-4 pb-4">
+//                   <Pagination
+//                     currentPage={currentPage}
+//                     totalPages={totalPages}
+//                     totalItems={totalItems}
+//                     pageSize={pageSize}
+//                     onPageChange={handlePageChange}
+//                   />
+//                 </div>
+//               )}
+//             </>
+//           ) : (
+//             /* No Records Found Message */
+//             <div className="p-8 text-center">
+//               <div className="flex flex-col items-center justify-center">
+//                 <IconNoRecords className="w-16 h-16 text-gray-400 mb-4" />
+//                 <h3 className="text-lg font-medium text-gray-900 mb-2">
+//                   {t("common.noRecordsFound") || "No records found"}
+//                 </h3>
+//                 <p className="text-gray-500 text-sm mb-4">
+//                   {searchTerm || statusFilter !== "All"
+//                     ? "Try adjusting your search or filter criteria"
+//                     : "No categories have been created yet"}
+//                 </p>
+//               </div>
+//             </div>
+//           )}
+//         </div>
+//       )}
+
+//       {/* Category Form Modal */}
+//       <Modal
+//         open={isModalOpen}
+//         title={
+//           editingCategory
+//             ? t("admin.categories.editCategory") || "Edit Category"
+//             : t("admin.categories.addCategory") || "Add Category"
+//         }
+//         onClose={handleModalClose}
+//         maxWidth="max-w-3xl"
+//       >
+//         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+//           <Input
+//             label={
+//               <>
+//                 {t("admin.categories.name") || "Category Name"}
+//                 <span className="text-red-500 ml-1">*</span>
+//               </>
+//             }
+//             error={errors.name?.message && t(errors.name.message)}
+//             {...register("name")}
+//             required
+//             maxLength={100}
+//             placeholder={
+//               t("admin.categories.enterCategoryName") || "Enter category name"
+//             }
+//             disabled={createMutation.isPending || updateMutation.isPending}
+//           />
+
+//           {/* Description TextArea */}
+//           <TextArea
+//             label={t("admin.categories.description") || "Description"}
+//             error={errors.description?.message}
+//             {...register("description")}
+//             maxLength={500}
+//             placeholder={
+//               t("admin.categories.enterCategoryDescription") ||
+//               "Enter category description"
+//             }
+//             rows={4}
+//             disabled={createMutation.isPending || updateMutation.isPending}
+//           />
+
+//           {/* Image Upload for Category Image with 374x340 validation */}
+//           <div
+//             className={
+//               createMutation.isPending || updateMutation.isPending
+//                 ? "opacity-50 pointer-events-none"
+//                 : ""
+//             }
+//           >
+//             <ImageUpload
+//               label={
+//                 <>
+//                   {t("admin.categories.imageUrl") || "Image Upload"}
+//                   <span className="text-red-500 ml-1">*</span>
+//                 </>
+//               }
+//               value={imageUrlValue}
+//               onChange={(url) => {
+//                 setValue("imageUrl", url, { shouldValidate: true });
+//                 // Force validation of all fields after a short delay
+//                 setTimeout(() => trigger(), 50);
+//               }}
+//               onPreview={(url) => setPreviewImage({ url, isOpen: true })}
+//               folder="categories/images"
+//               error={errors.imageUrl?.message && t(errors.imageUrl.message)}
+//               exactDimensions={{ width: 374, height: 340 }}
+//               showDimensionValidation={true}
+//             />
+//           </div>
+
+//           {/* Image Upload for Category Icon with 512x512 validation */}
+//           <div
+//             className={
+//               createMutation.isPending || updateMutation.isPending
+//                 ? "opacity-50 pointer-events-none"
+//                 : ""
+//             }
+//           >
+//             <ImageUpload
+//               label={
+//                 <>
+//                   {t("admin.categories.iconUrl") || "Icon Upload"}
+//                   <span className="text-red-500 ml-1">*</span>
+//                 </>
+//               }
+//               value={iconUrlValue}
+//               onChange={(url) => {
+//                 setValue("iconUrl", url, { shouldValidate: true });
+//                 // Force validation of all fields after a short delay
+//                 setTimeout(() => trigger(), 50);
+//               }}
+//               onPreview={(url) => setPreviewImage({ url, isOpen: true })}
+//               folder="categories/icons"
+//               error={errors.iconUrl?.message && t(errors.iconUrl.message)}
+//               exactDimensions={{ width: 512, height: 512 }}
+//               showDimensionValidation={true}
+//             />
+//           </div>
+
+//           <ToggleSwitch
+//             label={t("common.active") || "Active"}
+//             checked={isActiveValue}
+//             onChange={(checked) => {
+//               setValue("isActive", checked);
+//               setValue("status", checked ? "Active" : "InActive", {
+//                 shouldValidate: true,
+//               });
+//               trigger();
+//             }}
+//           />
+
+//           {/* Form validation summary */}
+//           {Object.keys(errors).length > 0 && (
+//             <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+//               <div className="flex items-center gap-2 text-red-800 text-sm font-medium">
+//                 <svg
+//                   className="w-4 h-4"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   viewBox="0 0 24 24"
+//                 >
+//                   <path
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                     strokeWidth={2}
+//                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+//                   />
+//                 </svg>
+//                 {t("common.pleaseFixErrors") ||
+//                   "Please fix the following errors:"}
+//               </div>
+//               <ul className="text-red-700 text-sm mt-1 list-disc list-inside">
+//                 {errors.name && <li>{t(errors.name.message || "")}</li>}
+//                 {errors.description && <li>{errors.description.message}</li>}
+//                 {errors.imageUrl && <li>{t(errors.imageUrl.message || "")}</li>}
+//                 {errors.iconUrl && <li>{t(errors.iconUrl.message || "")}</li>}
+//                 {errors.isActive && <li>{errors.isActive.message}</li>}
+//                 {errors.status && <li>{errors.status.message}</li>}
+//               </ul>
+//             </div>
+//           )}
+
+//           <div className="flex gap-3">
+//             <Button
+//               type="button"
+//               variant="outline"
+//               onClick={handleModalClose}
+//               className="flex-1 cursor-pointer"
+//               disabled={createMutation.isPending || updateMutation.isPending}
+//             >
+//               {t("common.cancel") || "Cancel"}
+//             </Button>
+//             <Button
+//               type="submit"
+//               variant="secondary"
+//               disabled={createMutation.isPending || updateMutation.isPending}
+//               className="flex-1 cursor-pointer"
+//             >
+//               {createMutation.isPending || updateMutation.isPending
+//                 ? t("common.Submitting") || "Submitting..."
+//                 : editingCategory
+//                 ? t("common.update") || "Update"
+//                 : t("common.create") || "Create"}
+//             </Button>
+//           </div>
+//         </form>
+//       </Modal>
+
+//       {/* Image Preview Modal */}
+//       <ImagePreviewModal
+//         imageUrl={previewImage.url}
+//         isOpen={previewImage.isOpen}
+//         onClose={() => setPreviewImage({ url: "", isOpen: false })}
+//       />
+//     </div>
+//   );
+// }
+
+
+
+
 // src/features/admin/categories/CategoriesPage.tsx
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -31,13 +1007,17 @@ import {
 } from "../../../components/common/Icons/Index";
 import { FilterDropdown } from "../../../components/common/FilterDropdown";
 
-// Enhanced validation schema with dimension validation
+// Enhanced validation schema with dimension validation including background image
 const categorySchema = z.object({
   name: z.string().min(1, "validation.categoryNameRequired"),
   description: z.string().optional(),
   imageUrl: z
     .string()
     .min(1, "validation.imageRequired")
+    .url("validation.invalidImageUrl"),
+  bgImageUrl: z
+    .string()
+    .min(1, "validation.backgroundImageRequired")
     .url("validation.invalidImageUrl"),
   iconUrl: z
     .string()
@@ -64,10 +1044,12 @@ function ImagePreviewModal({
   imageUrl,
   isOpen,
   onClose,
+  title,
 }: {
   imageUrl: string;
   isOpen: boolean;
   onClose: () => void;
+  title?: string;
 }) {
   const { t } = useTranslation();
   const isSVG = imageUrl.toLowerCase().endsWith(".svg");
@@ -80,7 +1062,7 @@ function ImagePreviewModal({
         <div className="flex justify-between items-center p-4 border-b">
           <div>
             <h3 className="text-lg font-semibold">
-              {t("common.imagePreview") || "Image Preview"}
+              {title || t("common.imagePreview") || "Image Preview"}
             </h3>
           </div>
           <button
@@ -94,7 +1076,6 @@ function ImagePreviewModal({
           {isSVG ? (
             <div className="w-full h-full flex items-center justify-center">
               <div className="text-center p-8">
-                {/* You can render the SVG directly if it's safe */}
                 <img
                   src={imageUrl}
                   alt="SVG Preview"
@@ -119,7 +1100,6 @@ function ImagePreviewModal({
           >
             {t("common.openInNewTab") || "Open in new tab"}
           </a>
-         
         </div>
       </div>
     </div>
@@ -140,9 +1120,11 @@ export default function CategoriesPage() {
   const [previewImage, setPreviewImage] = useState<{
     url: string;
     isOpen: boolean;
+    title?: string;
   }>({
     url: "",
     isOpen: false,
+    title: "",
   });
   const [toasts, setToasts] = useState<ToastState[]>([]);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
@@ -273,6 +1255,7 @@ export default function CategoriesPage() {
       isActive: true,
       description: "",
       imageUrl: "",
+      bgImageUrl: "",
       iconUrl: "",
       status: "Active",
     },
@@ -280,6 +1263,7 @@ export default function CategoriesPage() {
 
   // Watch the form values
   const imageUrlValue = watch("imageUrl");
+  const bgImageUrlValue = watch("bgImageUrl");
   const iconUrlValue = watch("iconUrl");
   const isActiveValue = watch("isActive");
 
@@ -309,6 +1293,7 @@ export default function CategoriesPage() {
         name: editingCategory.name,
         description: editingCategory.description || "",
         imageUrl: editingCategory.imageUrl || "",
+        bgImageUrl: editingCategory.bgImageUrl || "",
         iconUrl: editingCategory.iconUrl || "",
         isActive: editingCategory.isActive,
         status: editingCategory.isActive ? "Active" : "InActive",
@@ -318,6 +1303,7 @@ export default function CategoriesPage() {
         name: "",
         description: "",
         imageUrl: "",
+        bgImageUrl: "",
         iconUrl: "",
         isActive: true,
         status: "Active",
@@ -325,9 +1311,17 @@ export default function CategoriesPage() {
     }
   }, [editingCategory, reset]);
 
-  // Create mutation with error handling
+  // Create mutation with error handling - FIXED to include both status and isActive
   const createMutation = useMutation({
-    mutationFn: categoryService.add,
+    mutationFn: (data: {
+      name: string;
+      description?: string;
+      imageUrl: string;
+      bgImageUrl: string;
+      iconUrl: string;
+      status: string;
+      isActive: boolean;
+    }) => categoryService.add(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"], exact: false });
       toast.success(
@@ -356,8 +1350,7 @@ export default function CategoriesPage() {
     },
   });
 
-  // Update mutation with error handling
-  const updateMutation = useMutation({
+    const updateMutation = useMutation({
     mutationFn: categoryService.update,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"], exact: false });
@@ -387,7 +1380,6 @@ export default function CategoriesPage() {
       }
     },
   });
-
   // Delete mutation with error handling
   const deleteMutation = useMutation({
     mutationFn: categoryService.remove,
@@ -408,7 +1400,7 @@ export default function CategoriesPage() {
     },
   });
 
-  // Fixed onSubmit function
+  // Fixed onSubmit function with proper API data format
   const onSubmit: SubmitHandler<CategoryFormData> = async (data) => {
     try {
       // Check if mutations are in progress
@@ -420,10 +1412,9 @@ export default function CategoriesPage() {
         return;
       }
 
-      // Final validation check - but don't block if there are minor issues
+      // Final validation check
       const isFormValid = await trigger();
       if (!isFormValid) {
-        // Instead of blocking, show what needs to be fixed
         const errorFields = Object.keys(errors);
         if (errorFields.length > 0) {
           toast.error(`Please fix errors in: ${errorFields.join(", ")}`);
@@ -431,9 +1422,8 @@ export default function CategoriesPage() {
         return;
       }
 
-      // Validate image dimensions before submission - but make it non-blocking for existing images
+      // Validate image dimensions before submission
       if (data.imageUrl) {
-        // Only validate dimensions for new images or if image has changed
         const isNewImage =
           !editingCategory || data.imageUrl !== editingCategory.imageUrl;
         if (isNewImage) {
@@ -458,9 +1448,34 @@ export default function CategoriesPage() {
         }
       }
 
-      // Validate icon dimensions before submission - but make it non-blocking for existing icons
+      // Validate background image dimensions before submission
+      if (data.bgImageUrl) {
+        const isNewBgImage =
+          !editingCategory || data.bgImageUrl !== editingCategory.bgImageUrl;
+        if (isNewBgImage) {
+          const isBgImageValid = await validateImageDimensions(
+            data.bgImageUrl,
+            1440,
+            710
+          );
+          if (!isBgImageValid) {
+            const errorMessage =
+              t("admin.categories.backgroundImageMustBeDimensions", {
+                width: 1440,
+                height: 710,
+              }) || "Background image must be exactly 1440 × 710 pixels";
+            toast.error(errorMessage);
+            setError("bgImageUrl", {
+              type: "manual",
+              message: errorMessage,
+            });
+            return;
+          }
+        }
+      }
+
+      // Validate icon dimensions before submission
       if (data.iconUrl) {
-        // Only validate dimensions for new icons or if icon has changed
         const isNewIcon =
           !editingCategory || data.iconUrl !== editingCategory.iconUrl;
         if (isNewIcon) {
@@ -489,7 +1504,15 @@ export default function CategoriesPage() {
       if (editingCategory) {
         updateMutation.mutate({ ...data, id: editingCategory.id });
       } else {
-        createMutation.mutate(data);
+        createMutation.mutate({
+          name: data.name,
+          description: data.description,
+          imageUrl: data.imageUrl,
+          bgImageUrl: data.bgImageUrl,
+          iconUrl: data.iconUrl,
+          status: data.status, // Send status as string
+          isActive: data.isActive, // Send isActive as boolean
+        });
       }
     } catch (error) {
       console.error("Form submission error:", error);
@@ -510,7 +1533,7 @@ export default function CategoriesPage() {
 
   const handleStatusFilterChange = (filter: "All" | "Active" | "InActive") => {
     setStatusFilter(filter);
-    setCurrentPage(1); // Reset to first page when filter changes
+    setCurrentPage(1);
   };
 
   const handleDeleteCategory = (category: Category) => {
@@ -522,7 +1545,6 @@ export default function CategoriesPage() {
       return;
     }
 
-    // Show delete confirmation modal
     setDeleteConfirmation({
       isOpen: true,
       category: category,
@@ -585,10 +1607,38 @@ export default function CategoriesPage() {
         return (
           <div className="flex flex-col gap-1">
             <button
-              onClick={() => setPreviewImage({ url: imageUrl, isOpen: true })}
+              onClick={() => setPreviewImage({ 
+                url: imageUrl, 
+                isOpen: true,
+                title: t("admin.categories.mainImagePreview") || "Main Image Preview"
+              })}
               className="underline text-sm font-medium text-left cursor-pointer"
             >
               {t("common.image") || "Image"}
+            </button>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "bgImageUrl",
+      header: t("common.backgroundImage") || "Background Image",
+      enableSorting: false,
+      cell: ({ row }) => {
+        const bgImageUrl = row.original.bgImageUrl;
+        if (!bgImageUrl) return "-";
+
+        return (
+          <div className="flex flex-col gap-1">
+            <button
+              onClick={() => setPreviewImage({ 
+                url: bgImageUrl, 
+                isOpen: true,
+                title: t("admin.categories.backgroundImagePreview") || "Background Image Preview"
+              })}
+              className="underline text-sm font-medium text-left cursor-pointer"
+            >
+              {t("common.backgroundImage") || "Background Image"}
             </button>
           </div>
         );
@@ -605,7 +1655,11 @@ export default function CategoriesPage() {
         return (
           <div className="flex flex-col gap-1">
             <button
-              onClick={() => setPreviewImage({ url: iconUrl, isOpen: true })}
+              onClick={() => setPreviewImage({ 
+                url: iconUrl, 
+                isOpen: true,
+                title: t("admin.categories.iconPreview") || "Icon Preview"
+              })}
               className="underline text-sm font-medium text-left cursor-pointer"
             >
               {t("common.icon") || "Icon"}
@@ -677,7 +1731,7 @@ export default function CategoriesPage() {
         />
       ))}
 
-      {/* Delete Confirmation Modal using common component */}
+      {/* Delete Confirmation Modal */}
       <DeleteConfirmation
         open={deleteConfirmation.isOpen}
         onClose={handleCancelDelete}
@@ -852,13 +1906,48 @@ export default function CategoriesPage() {
               value={imageUrlValue}
               onChange={(url) => {
                 setValue("imageUrl", url, { shouldValidate: true });
-                // Force validation of all fields after a short delay
                 setTimeout(() => trigger(), 50);
               }}
-              onPreview={(url) => setPreviewImage({ url, isOpen: true })}
+              onPreview={(url) => setPreviewImage({ 
+                url, 
+                isOpen: true,
+                title: t("admin.categories.mainImagePreview") || "Main Image Preview"
+              })}
               folder="categories/images"
               error={errors.imageUrl?.message && t(errors.imageUrl.message)}
               exactDimensions={{ width: 374, height: 340 }}
+              showDimensionValidation={true}
+            />
+          </div>
+
+          {/* Image Upload for Background Image with 1440x710 validation */}
+          <div
+            className={
+              createMutation.isPending || updateMutation.isPending
+                ? "opacity-50 pointer-events-none"
+                : ""
+            }
+          >
+            <ImageUpload
+              label={
+                <>
+                  {t("admin.categories.backgroundImageUrl") || "Background Image Upload"}
+                  <span className="text-red-500 ml-1">*</span>
+                </>
+              }
+              value={bgImageUrlValue}
+              onChange={(url) => {
+                setValue("bgImageUrl", url, { shouldValidate: true });
+                setTimeout(() => trigger(), 50);
+              }}
+              onPreview={(url) => setPreviewImage({ 
+                url, 
+                isOpen: true,
+                title: t("admin.categories.backgroundImagePreview") || "Background Image Preview"
+              })}
+              folder="categories/backgrounds"
+              error={errors.bgImageUrl?.message && t(errors.bgImageUrl.message)}
+              exactDimensions={{ width: 1440, height: 710 }}
               showDimensionValidation={true}
             />
           </div>
@@ -881,10 +1970,13 @@ export default function CategoriesPage() {
               value={iconUrlValue}
               onChange={(url) => {
                 setValue("iconUrl", url, { shouldValidate: true });
-                // Force validation of all fields after a short delay
                 setTimeout(() => trigger(), 50);
               }}
-              onPreview={(url) => setPreviewImage({ url, isOpen: true })}
+              onPreview={(url) => setPreviewImage({ 
+                url, 
+                isOpen: true,
+                title: t("admin.categories.iconPreview") || "Icon Preview"
+              })}
               folder="categories/icons"
               error={errors.iconUrl?.message && t(errors.iconUrl.message)}
               exactDimensions={{ width: 512, height: 512 }}
@@ -928,6 +2020,7 @@ export default function CategoriesPage() {
                 {errors.name && <li>{t(errors.name.message || "")}</li>}
                 {errors.description && <li>{errors.description.message}</li>}
                 {errors.imageUrl && <li>{t(errors.imageUrl.message || "")}</li>}
+                {errors.bgImageUrl && <li>{t(errors.bgImageUrl.message || "")}</li>}
                 {errors.iconUrl && <li>{t(errors.iconUrl.message || "")}</li>}
                 {errors.isActive && <li>{errors.isActive.message}</li>}
                 {errors.status && <li>{errors.status.message}</li>}
@@ -965,7 +2058,8 @@ export default function CategoriesPage() {
       <ImagePreviewModal
         imageUrl={previewImage.url}
         isOpen={previewImage.isOpen}
-        onClose={() => setPreviewImage({ url: "", isOpen: false })}
+        onClose={() => setPreviewImage({ url: "", isOpen: false, title: "" })}
+        title={previewImage.title}
       />
     </div>
   );
