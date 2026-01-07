@@ -751,39 +751,33 @@ const SupplierProfile = () => {
 
               {/* Main play/pause button - centered */}
                <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
-                <div className="flex md:items-end gap-12">
+                <div className="flex md:items-end  ">
                   {/* Play / Pause button */}
-                  {partnerData?.videoUrl && (
-  <>
-    {/* Play Button - shown when video is NOT playing */}
+                  {partnerData?.videoUrl && showControls && (
+  <div className="flex justify-center">
     <button
       onClick={(e) => {
         e.stopPropagation();
-        handlePlayClick();
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        isVideoPlaying ? handlePauseClick() : handlePlayClick();
       }}
-      className={`self-center text-white hover:scale-125 transition-all duration-300 bg-black/50 rounded-full p-2 cursor-pointer ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+      className="text-white hover:scale-125 transition-all duration-300
+                 bg-black/50 rounded-full p-3 cursor-pointer"
       onMouseEnter={() => setShowControls(true)}
     >
-      <img
-        src={PlayButton}
-        alt="Play"
-        className="h-15 w-15 drop-shadow-2xl"
-      />
+      {isVideoPlaying ? (
+        <FaPauseCircle className="h-16 w-16 drop-shadow-2xl" />
+      ) : (
+        <img
+          src={PlayButton}
+          alt="Play"
+          className="h-16 w-16 drop-shadow-2xl"
+        />
+      )}
     </button>
-    
-    {/* Pause Button - shown when video IS playing */}
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        handlePauseClick();
-      }}
-      className={`self-center text-white hover:scale-125 transition-all duration-300 bg-black/50 rounded-full p-2 cursor-pointer ${!isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-      onMouseEnter={() => setShowControls(true)}
-    >
-      <FaPauseCircle className="h-15 w-15 drop-shadow-2xl" />
-    </button>
-  </>
+  </div>
 )}
+
                 </div>
               </div>
 
