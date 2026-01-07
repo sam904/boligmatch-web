@@ -128,7 +128,7 @@ export default function ServiceCarousel() {
     setCurrentIndex((prev) => (prev - 1 + TOTAL_ITEMS) % TOTAL_ITEMS);
   };
 
-  const handleDragEnd = (index: number, _: any, info: any) => {
+  const handleDragEnd = (_: any, info: any) => {
     if (Math.abs(info.offset.x) > SWIPE_THRESHOLD || Math.abs(info.velocity.x) > VELOCITY_THRESHOLD) {
       info.offset.x > 0 ? handlePrev() : handleNext();
     }
@@ -145,22 +145,6 @@ export default function ServiceCarousel() {
     return () => clearInterval(autoSlideRef.current || 0);
   }, [isHovered, isDragging]);
 
-  // Navigation dots
-  const renderNavigationDots = () => {
-    return (
-      <div className="flex space-x-2 mt-4 md:mt-8">
-        {Array.from({ length: TOTAL_ITEMS }).map((_, index) => (
-          <button
-            key={index}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === currentIndex ? "bg-white w-6" : "bg-white/40"
-            }`}
-            onClick={() => setCurrentIndex(index)}
-          />
-        ))}
-      </div>
-    );
-  };
 
   return (
     <div
@@ -186,7 +170,7 @@ export default function ServiceCarousel() {
                 onDragStart={() => {
                   setIsDragging(true);
                 }}
-                onDragEnd={(e, info) => handleDragEnd(itemIndex, e, info)}
+                onDragEnd={handleDragEnd}
                 style={{
                   width: "clamp(300px, 70vw, 360px)",
                   height: "clamp(440px, 80vw, 520px)",
