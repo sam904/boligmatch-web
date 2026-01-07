@@ -284,7 +284,8 @@
       "enterCategoryDescription": "Indtast kategori beskrivelse",
       "cannotDeleteInvalidId": "Kan ikke slette kategori: Ugyldigt ID",
       "unexpectedError": "En uventet fejl opstod",
-      "backgroundImageUrl":"Upload baggrundsbillede"
+      "backgroundImageUrl":"Upload baggrundsbillede",
+      "backgroundImagePreview":"Forhåndsvisning af baggrundsbillede"
     },
     "subcategories": {
       "title": "Underkategorier",
