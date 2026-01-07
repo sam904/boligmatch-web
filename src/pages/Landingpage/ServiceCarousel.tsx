@@ -20,33 +20,50 @@ import swaperIcons8 from "/src/assets/userImages/swaperIcons8.svg";
 import swaperIcons9 from "/src/assets/userImages/swaperIcons9.svg";
 
 export default function ServiceCarousel() {
-  const [positionIndexes, setPositionIndexes] = useState<number[]>([0, 1, 2, 3, 4]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   const carouselRef = useRef<HTMLDivElement>(null);
   const autoSlideRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const activeDragIndexRef = useRef<number | null>(null);
 
-  const IMAGES = [swaperImg1, swaperImg2, swaperImg3, swaperImg4, swaperImg5, swaperImg6];
+  const IMAGES = [swaperImg1, swaperImg2, swaperImg3, swaperImg4, swaperImg5, swaperImg6, swaperImg7, swaperImg8, swaperImg9];
+  const TOTAL_ITEMS = IMAGES.length;
 
   const isMobile = window.innerWidth < 768;
 
-  const POSITIONS = ["center", "left1", "left", "right", "right1"] as const;
+  // Get visible items (5 items centered around currentIndex)
+  const getVisibleItems = () => {
+    const visibleIndices = [];
+    for (let i = -2; i <= 2; i++) {
+      let index = currentIndex + i;
+      if (index < 0) {
+        index = TOTAL_ITEMS + index; // Wrap to end
+      } else if (index >= TOTAL_ITEMS) {
+        index = index % TOTAL_ITEMS; // Wrap to beginning
+      }
+      visibleIndices.push(index);
+    }
+    return visibleIndices;
+  };
+
+  const visibleItems = getVisibleItems();
+
+  const POSITIONS = ["left", "left1", "center", "right1", "right"] as const;
 
   // Responsive position map
   const IMAGE_VARIANTS = {
-    center: { x: "0%", scale: isMobile ? 1 : 1.05, zIndex: 5 },
-    left1: { x: isMobile ? "-75%" : "-92%", scale: isMobile ? 0.90 : 0.94, zIndex: 3 },
-    left: { x: isMobile ? "-140%" : "-168%", scale: isMobile ? 0.84 : 0.88, zIndex: 2 },
-    right: { x: isMobile ? "140%" : "168%", scale: isMobile ? 0.84 : 0.88, zIndex: 2 },
-    right1: { x: isMobile ? "75%" : "92%", scale: isMobile ? 0.90 : 0.94, zIndex: 3 },
+    center: { x: "0%", scale: isMobile ? 1 : 1.05, zIndex: 5, opacity: 1 },
+    left1: { x: isMobile ? "-75%" : "-92%", scale: isMobile ? 0.90 : 0.94, zIndex: 3, opacity: 1 },
+    left: { x: isMobile ? "-140%" : "-168%", scale: isMobile ? 0.84 : 0.88, zIndex: 2, opacity: 1 },
+    right: { x: isMobile ? "140%" : "168%", scale: isMobile ? 0.84 : 0.88, zIndex: 2, opacity: 1 },
+    right1: { x: isMobile ? "75%" : "92%", scale: isMobile ? 0.90 : 0.94, zIndex: 3, opacity: 1 },
   };
 
   const SWIPE_THRESHOLD = 50;
   const VELOCITY_THRESHOLD = 500;
 
-  const SERVICES = [
+ const SERVICES = [
     {
       id: 1,
       title: "Flytning og opbevaring",
@@ -83,30 +100,67 @@ export default function ServiceCarousel() {
       description: "Biti is seque remporem faccusa ea pror sequibus. Hitior solupta tempel im vitati",
       icon: swaperIcons6,
     },
+    {
+      id: 7,
+      title: "Rengøring og vedligehold",
+      description: "Ehenti ra conese pa doluptatio optatum nobit latinti onserspis",
+      icon: swaperIcons7,
+    },
+    {
+      id: 8,
+      title: "Energi og opvarmning",
+      description: "Aquatur alit, consequo voluptam, sequiberrum faceperum",
+      icon: swaperIcons8,
+    },
+    {
+      id: 9,
+      title: "Fritid",
+      description: "Daecus volo eic temolore nullaudam, odis sit qui nis es que adicima dipsunt aperro bernam, vellani anduci ulla que deliqui o",
+      icon: swaperIcons9,
+    },
   ];
 
   const handleNext = () => {
-    setPositionIndexes((prev) => prev.map((i) => (i + 1) % IMAGES.length));
+    setCurrentIndex((prev) => (prev + 1) % TOTAL_ITEMS);
   };
 
   const handlePrev = () => {
-    setPositionIndexes((prev) => prev.map((i) => (i + IMAGES.length - 1) % IMAGES.length));
+    setCurrentIndex((prev) => (prev - 1 + TOTAL_ITEMS) % TOTAL_ITEMS);
   };
 
-  const handleDragEnd = (_index: number, _: any, info: any) => {
+  const handleDragEnd = (index: number, _: any, info: any) => {
     if (Math.abs(info.offset.x) > SWIPE_THRESHOLD || Math.abs(info.velocity.x) > VELOCITY_THRESHOLD) {
       info.offset.x > 0 ? handlePrev() : handleNext();
     }
     setIsDragging(false);
-    activeDragIndexRef.current = null;
   };
 
   useEffect(() => {
-    if (isHovered || isDragging) return clearInterval(autoSlideRef.current || 0);
+    if (isHovered || isDragging) {
+      clearInterval(autoSlideRef.current || 0);
+      return;
+    }
 
     autoSlideRef.current = setInterval(handleNext, 3000);
     return () => clearInterval(autoSlideRef.current || 0);
   }, [isHovered, isDragging]);
+
+  // Navigation dots
+  const renderNavigationDots = () => {
+    return (
+      <div className="flex space-x-2 mt-4 md:mt-8">
+        {Array.from({ length: TOTAL_ITEMS }).map((_, index) => (
+          <button
+            key={index}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              index === currentIndex ? "bg-white w-6" : "bg-white/40"
+            }`}
+            onClick={() => setCurrentIndex(index)}
+          />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div
@@ -114,48 +168,74 @@ export default function ServiceCarousel() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div ref={carouselRef} className="relative w-full  flex justify-center items-center">
-        {IMAGES.map((image, index) => {
-          const position = POSITIONS[positionIndexes[index]];
-          const currentService = SERVICES[index];
+      <div className="relative w-full max-w-6xl mx-auto flex justify-center items-center h-full">
+        <div ref={carouselRef} className="relative w-full flex justify-center items-center h-full">
+          {visibleItems.map((itemIndex, positionIndex) => {
+            const position = POSITIONS[positionIndex];
+            const currentService = SERVICES[itemIndex];
 
-          return (
-            <motion.div
-              key={index}
-              className="absolute rounded-3xl shadow-xl  cursor-grab"
-              animate={position}
-              variants={IMAGE_VARIANTS}
-              transition={{ duration: 0.5 }}
-              drag="x"
-              dragElastic={0.2}
-              onDragStart={() => {
-                setIsDragging(true);
-                activeDragIndexRef.current = index;
-              }}
-              onDragEnd={(e, info) => handleDragEnd(index, e, info)}
-              style={{
-                width: "clamp(300px, 70vw, 360px)",
-                height: "clamp(440px, 80vw, 520px)",
-                touchAction: "pan-y pinch-zoom",
-              }}
-            >
-              <img
-                src={image}
-                className="w-full h-full object-cover rounded-3xl"
-                draggable="false"
-              />
+            return (
+              <motion.div
+                key={itemIndex}
+                className="absolute rounded-3xl shadow-xl cursor-grab overflow-hidden"
+                animate={position}
+                variants={IMAGE_VARIANTS}
+                transition={{ duration: 0.5 }}
+                drag="x"
+                dragElastic={0.2}
+                onDragStart={() => {
+                  setIsDragging(true);
+                }}
+                onDragEnd={(e, info) => handleDragEnd(itemIndex, e, info)}
+                style={{
+                  width: "clamp(300px, 70vw, 360px)",
+                  height: "clamp(440px, 80vw, 520px)",
+                  touchAction: "pan-y pinch-zoom",
+                }}
+              >
+                <img
+                  src={IMAGES[itemIndex]}
+                  className="w-full h-full object-cover rounded-3xl"
+                  draggable="false"
+                  alt={currentService.title}
+                />
 
-              {/* Text */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 md:pb-12 bg-gradient-to-t from-black/40 to-transparent rounded-b-3xl text-center">
-                <img src={currentService.icon} className="w-12 h-12 mx-auto mb-2" />
-                <h3 className="text-white text-xl font-semibold">{currentService.title}</h3>
-                <p className="text-white/80 text-sm mt-1">{currentService.description}</p>
-              </div>
-            </motion.div>
-          );
-        })}
+                {/* Text */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 md:pb-12 bg-gradient-to-t from-black/40 to-transparent rounded-b-3xl text-center">
+                  <img src={currentService.icon} className="w-12 h-12 mx-auto mb-2" alt="icon" />
+                  <h3 className="text-white text-xl font-semibold">{currentService.title}</h3>
+                  <p className="text-white/80 text-sm mt-1">{currentService.description}</p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
 
+      {/* Navigation Arrows */}
+      <div className="absolute top-1/2 left-4 right-4 transform -translate-y-1/2 flex justify-between pointer-events-none">
+        <button
+          className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 md:p-3 pointer-events-auto transition-all duration-300"
+          onClick={handlePrev}
+        >
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 md:p-3 pointer-events-auto transition-all duration-300"
+          onClick={handleNext}
+        >
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Navigation Dots */}
+      {/* <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+        {renderNavigationDots()}
+      </div> */}
     </div>
   );
 }
