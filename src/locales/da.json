@@ -893,40 +893,40 @@
     "heading": "Hvilke fordele får du som Boligmatch+ partner?",
     "benefits": {
       "1": {
-        "title": "Adgang til vores platform",
-        "description": "Boligmatch+ giver dig eksklusiv adgang til en platform fyldt med købsparate kunder med et behov for produkter og services relateret til bolig og fritid."
+        "title": "Adgang til Boligmatch+",
+        "description": "Eksklusiv adgang til en platform fyldt med købsparate kunder med et behov for produkter og services relateret til bolig og fritid."
       },
       "2": {
-        "title": "Synlighed og markedsføring",
-        "description": "På Boligmatch+ får jeres virksomhed synlighed døgnet rundt, hele året. I får egen mini-hjemmeside med en professionelt produceret profilfilm, en beskrivelse af virksomheden og dens kompetencer samt visning af Trustpilot-anmeldelser. Aktiviteterne kan følges på jeres eget dashboard."
+        "title": "Synlighed på platformen",
+        "description": "Synlighed døgnet rundt, hele året på egen micro hjemmeside med profilfilm, fotos, beskrivelse og integreret Trustpilot anmeldelser."
       },
       "3": {
-        "title": "Fokus ved fremvisninger",
-        "description": "Vi bringer partnerne i spil ved åbne huse og fremvisninger ved at fokusere på udviklingsmulighederne i den enkelte bolig, og fremhæve hvilke partnere der kan hjælpe køberne. Dette giver jer et væsentlig forspring ifht. konkurrenterne."
-      },
-      "4": {
-        "title": "Gratis deltagelse i vores netværksgruppe",
-        "description": "Som partner bliver du også en del af vores B2B-netværk. Her kan du bygge stærke relationer, dele viden og skabe nye forretningsmuligheder i et dynamisk og inspirerende miljø, og få adgang til spændende fordele og events."
-      },
-      "5": {
-        "title": "Rabat hos Boligmatch til jeres ansatte",
-        "description": "Alle de af jeres ansatte, som melder sig ind i Boligmatch+ får 20% i rabat hos Boligmatch."
-      },
-      "6": {
-        "title": "Kick-back ved henvisning af kunder",
-        "description": "Skaffer du en ny boligkunde til Boligmatch kvitterer vi med 10% af salæret, som overføres til din konto i Boligmatch+ fordelsprogrammet."
-      },
-      "7": {
         "title": "Profilvideo og fotos",
         "description": "Professionelt produceret film og billeder af jeres virksomhed og medarbejdere i funktion. Ganske gratis."
       },
-      "8": {
+      "4": {
         "title": "Markedsføring på SoMe",
         "description": "Promovering af jeres virksomhed på vores sociale mediekanaler (Facebook, Instagram og LinkedIn) drypvis hen over året."
       },
-      "9": {
+      "5": {
+        "title": "Fokus ved fremvisninger",
+        "description": "Partnerne bringes i spil ved åbne huse, fremvisninger og over for dem vi hjælper med at finde nyt hjem til."
+      },
+      "6": {
+        "title": "Boligmatch+ Netværket",
+        "description": "Skab nye forretningsmuligheder og byg relationer. Som partner bliver du helt gratis en del af vores dynamiske B2B-netværk."
+      },
+      "7": {
         "title": "Ingen henvisnings-honorar",
-        "description": "For at gøre det mere konkurrencedygtigt for vores partnere, har vi valgt at sløjfe det oprindelige gebyr på 10% ved henvisninger."
+        "description": "For at gøre det mere konkurrence-dygtigt for vores partnere, har vi valgt at sløjfe det oprindelige gebyr på 10% ved henvisninger."
+      },
+      "8": {
+        "title": "No cure no pay",
+        "description": "Vi tror så meget på konceptet, at vi forlænger jeres abonnement gratis, hvis omsætningen ikke når abonnementets pris, når året er omme."
+      },
+      "9": {
+        "title": "Kick back og rabatter",
+        "description": "Jeres ansatte får 20% rabat hos os, hvis de melder sig ind i Boligmatch+. Henviser I en ny boligkunde giver vi et tilgodehavende på 10% af salæret."
       }
     }
   },
