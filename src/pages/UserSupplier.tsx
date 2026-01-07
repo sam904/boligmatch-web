@@ -18,6 +18,7 @@ interface SubCategoryData {
   categoryDescription: string;
   subCategory: string;
   subCategoryDescription: string;
+  bgImageUrl?: string;
   categoryIconUrl?: string;
   subCategoryIconUrl?: string;
   subCategoryImageUrl?: string;
@@ -119,10 +120,12 @@ const UserSupplier = () => {
 
   // Get the background image for the active subcategory
   const getBackgroundImage = () => {
-    if (!active) return userDashboard;
+    if (!subCategories.length) return userDashboard;
 
-    const activeSubCategory = subCategories.find((sub) => sub.id === active);
-    return activeSubCategory?.subCategoryImageUrl || userDashboard;
+    const activeSubCategory =
+      subCategories.find((sub) => sub.id === active) || subCategories[0];
+
+    return activeSubCategory?.bgImageUrl || userDashboard;
   };
 
   useEffect(() => {
