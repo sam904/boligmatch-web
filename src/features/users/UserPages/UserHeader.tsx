@@ -125,12 +125,12 @@ function UserHeader({
   useEffect(() => {
     try {
       const saved = localStorage.getItem("bm_lang");
-      if (saved && saved !== i18n.language) {
-        i18n.changeLanguage(saved);
-      } else if (!saved) {
-        // Set default to Danish if no language is saved
+      // Always default to Danish - if no language is saved or if English is saved, set to Danish
+      if (!saved || saved === "en") {
         i18n.changeLanguage("da");
         localStorage.setItem("bm_lang", "da");
+      } else if (saved && saved !== i18n.language) {
+        i18n.changeLanguage(saved);
       }
     } catch { /* empty */ }
   }, [i18n]);
