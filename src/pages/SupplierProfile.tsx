@@ -750,39 +750,42 @@ const SupplierProfile = () => {
             <div className={`md:absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto `}>
 
               {/* Main play/pause button - centered */}
-              {partnerData?.videoUrl && <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
+               <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
                 <div className="flex md:items-end gap-12">
                   {/* Play / Pause button */}
-                  {!isVideoPlaying && partnerData?.videoUrl ? (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePlayClick();
-                      }}
-                      className="self-center text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-2 cursor-pointer"
-                      onMouseEnter={() => setShowControls(true)}
-                    >
-                      <img
-                        src={PlayButton}
-                        alt="Play"
-                        className="h-15 w-15 drop-shadow-2xl"
-                      />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePauseClick();
-                      }}
-                      className={`self-center text-white hover:scale-125 transition-all duration-300 bg-black/50 rounded-full p-2 ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
-                        }`}
-                      onMouseEnter={() => setShowControls(true)}
-                    >
-                      <FaPauseCircle className="h-15 w-15 drop-shadow-2xl" />
-                    </button>
-                  )}
+                  {partnerData?.videoUrl && (
+  <>
+    {/* Play Button - shown when video is NOT playing */}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        handlePlayClick();
+      }}
+      className={`self-center text-white hover:scale-125 transition-all duration-300 bg-black/50 rounded-full p-2 cursor-pointer ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+      onMouseEnter={() => setShowControls(true)}
+    >
+      <img
+        src={PlayButton}
+        alt="Play"
+        className="h-15 w-15 drop-shadow-2xl"
+      />
+    </button>
+    
+    {/* Pause Button - shown when video IS playing */}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        handlePauseClick();
+      }}
+      className={`self-center text-white hover:scale-125 transition-all duration-300 bg-black/50 rounded-full p-2 cursor-pointer ${!isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+      onMouseEnter={() => setShowControls(true)}
+    >
+      <FaPauseCircle className="h-15 w-15 drop-shadow-2xl" />
+    </button>
+  </>
+)}
                 </div>
-              </div>}
+              </div>
 
 
               {/* Bottom controls bar - ALWAYS show when hovered */}
