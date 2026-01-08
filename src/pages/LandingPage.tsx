@@ -6,7 +6,7 @@ import UserHeader from "../features/users/UserPages/UserHeader";
 // import landingPageIcons2 from "/src/assets/userImages/2.svg";
 // import landingPageIcons3 from "/src/assets/userImages/3.svg";
 // import landingPageIcons4 from "/src/assets/userImages/4.svg";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import SignUpModal from "../components/common/SignUpModal";
 import UserModal from "../components/common/UserModal";
 import { useNavigate } from "react-router-dom";
@@ -556,8 +556,13 @@ export default function LandingPage() {
                       {t("landing.subtitle")}
                     </h2>
                   </div>
-                  <p className="text-[#FFFFFF] text-center md:text-[18px] text-[16px] mx-auto max-w-7xl md:py-8 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
-                    {t("landing.description")}
+                  <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-4 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
+                    <Trans
+                      i18nKey="landing.description"
+                      components={{
+                        bold: <span className="font-semibold" />
+                      }}
+                    />
                   </p>
 
                 </div>
@@ -597,7 +602,12 @@ export default function LandingPage() {
       {!isMobile &&
         <div className="bg-[#01351f] ">
           <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-4 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
-            {t("landing.description")}
+            <Trans
+              i18nKey="landing.description"
+              components={{
+                bold: <span className="font-semibold" />
+              }}
+            />
           </p>
         </div>
       }
@@ -607,7 +617,12 @@ export default function LandingPage() {
           {t("landing.transparentJourney")}
         </h1>
         <p className="text-white text-center md:text-[18px] text-[16px] mx-auto max-w-7xl py-4 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
-          {t("landing.futureDescription")}
+          <Trans
+            i18nKey="landing.futureDescription"
+            components={{
+              br: <br />
+            }}
+          />
         </p>
       </div>
       {/* <Stepper currentStep={currentStep} onStepClick={setCurrentStep} /> */}
