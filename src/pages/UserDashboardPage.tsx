@@ -439,7 +439,7 @@ export default function UserDashboardPage() {
                         overflow-hidden
                         hover:shadow-xl
                         flex
-                        bg-white
+                        bg-gradient-to-t from-white via-white to-transparent
                         flex-col
                         "
                       >
