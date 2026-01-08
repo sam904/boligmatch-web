@@ -128,7 +128,7 @@ function SearchForPartner() {
     md:h-[540px]
     mx-auto
     rounded-xl
-    bg-white
+    bg-gradient-to-t from-white via-white to-transparent
     transition-all
     duration-300
     cursor-pointer
