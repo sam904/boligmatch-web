@@ -560,7 +560,8 @@ export default function LandingPage() {
                     <Trans
                       i18nKey="landing.description"
                       components={{
-                        bold: <span className="font-semibold" />
+                        bold: <span className="font-semibold" />,
+                        br: <span className="block mt-3" />
                       }}
                     />
                   </p>
@@ -605,7 +606,8 @@ export default function LandingPage() {
             <Trans
               i18nKey="landing.description"
               components={{
-                bold: <span className="font-semibold" />
+                bold: <span className="font-semibold" />,
+                br: <span className="block mt-3" />
               }}
             />
           </p>
@@ -619,11 +621,18 @@ export default function LandingPage() {
         <p className="text-white text-center md:text-[18px] text-[16px] mx-auto max-w-7xl py-4 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
           <Trans
             i18nKey="landing.futureDescription"
-            components={{
-              br: <br />
-            }}
+            components={[
+              <span className="block mt-3" />, 
+              <a
+                href="https://www.boligmatch.dk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold underline hover:text-gray-300 transition cursor-pointer"
+              />
+            ]}
           />
         </p>
+
       </div>
       {/* <Stepper currentStep={currentStep} onStepClick={setCurrentStep} /> */}
       <div
