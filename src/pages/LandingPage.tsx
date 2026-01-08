@@ -556,7 +556,7 @@ export default function LandingPage() {
                       {t("landing.subtitle")}
                     </h2>
                   </div>
-                  <p className="text-[#FFFFFF] text-center md:text-[18px] text-[13px] mx-auto max-w-7xl md:py-4 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
+                  <p className="text-[#FFFFFF] text-center md:text-[18px] text-[16px] mx-auto max-w-7xl md:py-4 py-2 px-4 plus-jakarta-sans font-[300] tracking-[-0.4px]">
                     <Trans
                       i18nKey="landing.description"
                       components={{
