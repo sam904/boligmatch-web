@@ -757,38 +757,27 @@ const SupplierProfile = () => {
           Your browser does not support the video tag.
         </video>
 
-        {/* Custom video controls - show on hover only */}
         <div className="absolute inset-0 z-40  video-controls-container">
-          {/* Hover area - full video size */}
           <div className="relative w-full h-full group">
-            {/* Controls container - positioned higher up */}
             <div className={`md:absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto `}>
 
-              {/* Main play/pause button - centered */}
-              <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
+              <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10 md:w-full gap-6 transform translate-y-12 ">
                 <div className="flex md:items-end  ">
-                  {/* Play / Pause button */}
-                  {partnerData?.videoUrl && (!isVideoPlaying || showControls) && (
-                  // {/* {partnerData?.videoUrl && showControls && !isVideoPlaying && ( */}
-                    < div className="flex justify-center">
+                  {partnerData?.videoUrl && !isVideoPlaying && (
+                    <div className="flex justify-center">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          isVideoPlaying ? handlePauseClick() : handlePlayClick();
+                          handlePlayClick();
                         }}
-                        className="text-white hover:scale-125 transition-all duration-300
-                 bg-black/50 rounded-full p-3 cursor-pointer h-20 w-20"
+                        className="text-white hover:scale-125 active:scale-110 transition-transform bg-black/50 rounded-full p-2 cursor-pointer touch-manipulation h-16 md:h-auto"
                         onMouseEnter={() => setShowControls(true)}
                       >
-                        {!isVideoPlaying ? (
-                          <img
-                            src={PlayButton}
-                            alt="Play"
-                            className="h-14 w-14 drop-shadow-2xl"
-                          />
-                        ) : (
-                          <FaPauseCircle className="h-14 w-14 drop-shadow-2xl" />
-                        )}
+                        <img
+                          src={PlayButton}
+                          alt="Play"
+                          className="md:h-15 md:w-15 h-12 w-12 drop-shadow-2xl"
+                        />
                       </button>
                     </div>
                   )}
