@@ -721,7 +721,6 @@ const SupplierProfile = () => {
   return (
     <>
       <div className="md:h-[100vh] bg-[#01351f]">
-        {/* Always render background image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat md:h-[100vh] h-[350px]"
           style={{
@@ -730,7 +729,6 @@ const SupplierProfile = () => {
           }}
         ></div>
 
-        {/* Always render video element but control visibility */}
         <video
           ref={videoRef}
           className="absolute inset-0 w-full md:h-full h-[368px] object-cover"
@@ -758,23 +756,31 @@ const SupplierProfile = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                           isVideoPlaying ? handlePauseClick() : handlePlayClick();
                         }}
-                        className="text-white hover:scale-125 transition-all duration-300
-                 bg-black/50 rounded-full p-3 cursor-pointer"
                         onMouseEnter={() => setShowControls(true)}
+                        className="
+                        flex items-center justify-center
+                        h-20 w-20
+                        rounded-full
+                        bg-black/60
+                        text-white
+                        hover:scale-110
+                        transition-all duration-300
+                        cursor-pointer
+                      "
                       >
                         {isVideoPlaying ? (
-                          <FaPauseCircle className="h-16 w-16 drop-shadow-2xl" />
+                          <FaPauseCircle className="h-12 w-12 drop-shadow-2xl" />
                         ) : (
                           <img
                             src={PlayButton}
                             alt="Play"
-                            className="h-16 w-16 drop-shadow-2xl"
+                            className="h-12 w-12 drop-shadow-2xl"
                           />
                         )}
                       </button>
+
                     </div>
                   )}
 
@@ -1113,7 +1119,6 @@ const SupplierProfile = () => {
               </div>
             </div>
 
-            {/* 5. References card */}
             <div
               className="rounded-2xl pt-[53px] px-8 pb-8 w-full h-auto shadow-xl"
               style={{
@@ -1132,7 +1137,6 @@ const SupplierProfile = () => {
               </div>
             </div>
 
-            {/* 6. ImageUrl3 card */}
             <div className="rounded-[10px] flex justify-center items-center overflow-hidden w-full h-auto shadow-xl">
               <img
                 src={partnerData?.imageUrl3 || "/src/assets/userImages/subcategoryDetailImg.png"}
@@ -1141,7 +1145,6 @@ const SupplierProfile = () => {
               />
             </div>
 
-            {/* 7. Geographical area (textField5) card */}
             <div
               className="w-full h-auto rounded-[10px] flex justify-center items-center p-4 shadow-xl"
               style={{
@@ -1168,7 +1171,6 @@ const SupplierProfile = () => {
               </div>
             </div>
 
-            {/* 8. Reviews card */}
             <div
               className={`w-full ${hasTrustPilotUrl ? "h-auto" : "h-auto"
                 } rounded-[10px] bg-white p-6 flex flex-col relative shadow-xl`}
@@ -1231,10 +1233,8 @@ const SupplierProfile = () => {
           </div>
         </div>
 
-        {/* Desktop / tablet layout */}
         <div className="bg-[#01351f] min-h-screen hidden md:flex justify-center items-center p-4 md:p-8">
           <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl w-full mx-auto">
-            {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
               <div
                 className={`md:w-[403px] w-full ${hasTrustPilotUrl ? "md:h-[859px]" : "md:h-[890px]"
