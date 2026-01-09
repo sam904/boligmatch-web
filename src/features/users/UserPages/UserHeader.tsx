@@ -42,13 +42,12 @@ function UserHeader({
   const { i18n, t } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
   console.log(isMobile);
-  const isHomePage = location.pathname === "/";
+
   const userData = useAppSelector((state) => state.auth.user);
 
   const currentLang = i18n.language || "en";
   console.log(currentLang);
 
-  // const mobileHeightClass = isHomePage ? "h-[508px]" : "h-[366px]";
   // Check for partner data in localStorage
   useEffect(() => {
     const checkPartnerData = () => {
@@ -177,22 +176,18 @@ function UserHeader({
       ? `${partnerData?.firstName} ${partnerData?.lastName}`
       : `${partnerData?.businessName}`
     : activeUser
-      ? `${activeUser.firstName} ${activeUser.lastName}`
-      : null;
+    ? `${activeUser.firstName} ${activeUser.lastName}`
+    : null;
 
   return (
     <>
       <header
-        className={`${fullHeight
-          ? "md:h-[100vh] h-[510px]"
-          : isHomePage
-            ? "h-[508px]"
-            : "h-[366px]"
-          } relative`}
+        className={`${fullHeight ? "md:h-[100vh] h-[366px]" : "h-20"} relative`}
       >
         <div
-          className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-4 z-50 transition-colors duration-300 ${isScrolled ? "bg-[#06351E]" : "bg-transparent"
-            }`}
+          className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-4 z-50 transition-colors duration-300 ${
+            isScrolled ? "bg-[#06351E]" : "bg-transparent"
+          }`}
         >
           <div className="flex items-center justify-between h-full">
             <div className="flex flex-col items-start gap-1">
@@ -206,8 +201,9 @@ function UserHeader({
                     navigate("/");
                   }
                 }}
-                className={`duration-300 ${isScrolled ? "h-10" : "h-11"
-                  } cursor-pointer`}
+                className={`duration-300 ${
+                  isScrolled ? "h-10" : "h-11"
+                } cursor-pointer`}
                 src={userLogo}
                 alt=""
               />
@@ -233,8 +229,9 @@ function UserHeader({
                       <img
                         src={userHeader}
                         alt=""
-                        className={`duration-300 transition-all ease-out ${isScrolled ? "h-8" : "h-10"
-                          } cursor-pointer`}
+                        className={`duration-300 transition-all ease-out ${
+                          isScrolled ? "h-8" : "h-10"
+                        } cursor-pointer`}
                       />
                     </button>
                   )}
@@ -298,9 +295,9 @@ function UserHeader({
                   const hasState = location.state !== null && location.state !== undefined;
                   const hasLocationKey = location.key !== 'default' && location.key !== null;
                   const notOnHome = location.pathname !== '/';
-
+                  
                   const canGoBack = hasHistory && (hasState || hasLocationKey || (notOnHome && window.history.length > 2));
-
+                  
                   if (canGoBack) {
                     navigate(-1);
                   } else {
@@ -325,15 +322,17 @@ function UserHeader({
         <div className="fixed inset-0 z-50">
           {/* Backdrop */}
           <div
-            className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${sidebarTransitionActive ? "opacity-100" : "opacity-0"
-              }`}
+            className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
+              sidebarTransitionActive ? "opacity-100" : "opacity-0"
+            }`}
             onClick={() => setShowSidebar(false)}
           />
 
           {/* Sidebar */}
           <div
-            className={`absolute right-0 top-0 h-full w-full md:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out ${sidebarTransitionActive ? "translate-x-0" : "translate-x-full"
-              }`}
+            className={`absolute right-0 top-0 h-full w-full md:w-80 bg-[#01351f] shadow-2xl transform transition-all duration-500 ease-out ${
+              sidebarTransitionActive ? "translate-x-0" : "translate-x-full"
+            }`}
           >
             <div className="flex flex-col h-full">
               {/* Header */}
