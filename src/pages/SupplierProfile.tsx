@@ -768,8 +768,8 @@ const SupplierProfile = () => {
               <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
                 <div className="flex md:items-end  ">
                   {/* Play / Pause button */}
-                  {/* {partnerData?.videoUrl && (!isVideoPlaying || showControls) && ( */}
-                  {partnerData?.videoUrl && showControls && !isVideoPlaying && (
+                  {partnerData?.videoUrl && (!isVideoPlaying || showControls) && (
+                  // {/* {partnerData?.videoUrl && showControls && !isVideoPlaying && ( */}
                     < div className="flex justify-center">
                       <button
                         onClick={(e) => {
