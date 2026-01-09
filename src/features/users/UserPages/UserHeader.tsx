@@ -184,7 +184,7 @@ function UserHeader({
     <>
       <header
         className={`${fullHeight
-          ? "md:h-[100vh] h-[480px]"
+          ? "md:h-[100vh] h-[510px]"
           : isHomePage
             ? "h-[508px]"
             : "h-[366px]"
