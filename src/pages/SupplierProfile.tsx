@@ -170,24 +170,38 @@ const SupplierProfile = () => {
     let mouseLeaveTimeout: ReturnType<typeof setTimeout>;
     let isMouseOverControls = false;
 
+    // const showControlsTemporarily = () => {
+    //   setShowControls(true);
+    //   clearTimeout(hideTimeout);
+
+    //   if (!isMouseOverControls && isVideoPlaying) {
+    //     hideTimeout = setTimeout(() => {
+    //       setShowControls(false);
+    //     }, 3000);
+    //   }
+    // };
+
     const showControlsTemporarily = () => {
       setShowControls(true);
       clearTimeout(hideTimeout);
 
-      // Only hide if mouse is not over controls and video is playing
-      if (!isMouseOverControls && isVideoPlaying) {
+      if (isVideoPlaying) {
         hideTimeout = setTimeout(() => {
           setShowControls(false);
         }, 3000);
       }
     };
 
-    // Show controls on mouse move
+    if (!isVideoPlaying) {
+    setShowControls(true);
+  } else {
+    // If playing, start the timer to hide them
+    showControlsTemporarily();
+  }
+
     const handleMouseMove = () => {
       showControlsTemporarily();
     };
-
-    // Track when mouse enters/leaves the controls area
     const handleMouseEnterControls = () => {
       isMouseOverControls = true;
       clearTimeout(hideTimeout);
@@ -196,7 +210,6 @@ const SupplierProfile = () => {
 
     const handleMouseLeaveControls = () => {
       isMouseOverControls = false;
-      // Small delay before starting hide timeout when leaving controls
       mouseLeaveTimeout = setTimeout(() => {
         if (isVideoPlaying) {
           hideTimeout = setTimeout(() => {
@@ -206,7 +219,6 @@ const SupplierProfile = () => {
       }, 500);
     };
 
-    // Show controls on video play/pause
     if (videoRef.current) {
       videoRef.current.addEventListener('play', showControlsTemporarily);
       videoRef.current.addEventListener('pause', showControlsTemporarily);
@@ -214,7 +226,6 @@ const SupplierProfile = () => {
 
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Add event listeners to the controls container
     const controlsContainer = document.querySelector('.video-controls-container');
     if (controlsContainer) {
       controlsContainer.addEventListener('mouseenter', handleMouseEnterControls);
@@ -751,7 +762,8 @@ const SupplierProfile = () => {
               <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
                 <div className="flex md:items-end  ">
                   {/* Play / Pause button */}
-                  {partnerData?.videoUrl && showControls && (
+                  {/* {partnerData?.videoUrl && showControls && !isVideoPlaying &&  ( */}
+                  {partnerData?.videoUrl && (!isVideoPlaying || showControls) && (
                     <div className="flex justify-center">
                       <button
                         onClick={(e) => {
@@ -762,14 +774,14 @@ const SupplierProfile = () => {
                  bg-black/50 rounded-full p-3 cursor-pointer h-20 w-20"
                         onMouseEnter={() => setShowControls(true)}
                       >
-                        {isVideoPlaying ? (
-                          <FaPauseCircle className="h-14 w-14 drop-shadow-2xl" />
-                        ) : (
+                        {!isVideoPlaying ? (
                           <img
                             src={PlayButton}
                             alt="Play"
                             className="h-14 w-14 drop-shadow-2xl"
                           />
+                        ) : (
+                          <FaPauseCircle className="h-14 w-14 drop-shadow-2xl" />
                         )}
                       </button>
                     </div>
