@@ -745,9 +745,27 @@ const SupplierProfile = () => {
         {/* Custom video controls - show on hover only */}
         <div className="absolute inset-0 z-40  video-controls-container">
           {/* Hover area - full video size */}
-          <div className="relative w-full h-full group">
+          <div
+            className={`relative w-full md:h-full
+               ${((!isPartner && partnerData?.videoUrl)
+                && 'h-[50%]')}
+               ${((!isPartner && !partnerData?.videoUrl)
+                && 'h-[70%]'
+              )
+              }
+
+
+               ${((isPartner && partnerData?.videoUrl)
+                && 'h-[48%]')}
+               ${((isPartner && !partnerData?.videoUrl)
+                && 'h-[65%]'
+              )
+              }
+            group
+          `}
+          >
             {/* Controls container - positioned higher up */}
-            <div className={`md:absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto `}>
+            <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto`}>
 
               {/* Main play/pause button - centered */}
               {partnerData?.videoUrl && <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
@@ -1019,7 +1037,22 @@ const SupplierProfile = () => {
 
                 </div>
               </div>
-              <div className={`${!isPartner && 'bg-[#01351f] md:bg-[#01351f] '} md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full pt-[62px] md:mt-[0px]`}>
+              <div className={`${!isPartner && 'bg-[#01351f] md:bg-[#01351f] '} md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full  
+              ${((!isPartner && partnerData?.videoUrl)
+                  && 'pt-[20px] ')}
+               ${((!isPartner && !partnerData?.videoUrl)
+                  && 'pt-[20px] '
+                )
+                }
+
+                ${((isPartner && partnerData?.videoUrl)
+                  && 'pt-[10px] ')}
+               ${((isPartner && !partnerData?.videoUrl)
+                  && 'pt-[30px] '
+                )
+                }
+                
+                md:mt-[0px]`}>
                 <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white md:py-5 py-0 px-4 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
                   {partnerData?.businessName || partnerData?.fullName || "Loading..."}
                 </h1>
@@ -1033,7 +1066,22 @@ const SupplierProfile = () => {
 
 
         <div className="bg-[#01351f]">
-          <div className="max-w-6xl m-auto px-4 md:px-8 py-10 md:py-8">
+          <div className={`max-w-6xl m-auto px-4 md:px-8 pb-4
+              ${((!isPartner && partnerData?.videoUrl)
+              && 'pt-12')}
+               ${((!isPartner && !partnerData?.videoUrl)
+              && 'pt-16'
+            )
+            }
+
+                ${((isPartner && partnerData?.videoUrl)
+              && 'pt-6')}
+               ${((isPartner && !partnerData?.videoUrl)
+              && 'pt-4'
+            )
+            }
+            
+             md:py-8`}>
             <p className="text-white font-[400] md:text-[18px] text-[14px] text-left md:text-center px-4 md:px-8 leading-relaxed">
               {partnerData?.textField1 || "Loading..."}
             </p>
