@@ -174,12 +174,7 @@ const SupplierProfile = () => {
       setShowControls(true);
       clearTimeout(hideTimeout);
 
-      if (isVideoPlaying) {
-        hideTimeout = setTimeout(() => {
-          setShowControls(false);
-        }, 3000);
-      }
-
+      // Only hide if mouse is not over controls and video is playing
       if (!isMouseOverControls && isVideoPlaying) {
         hideTimeout = setTimeout(() => {
           setShowControls(false);
@@ -187,27 +182,12 @@ const SupplierProfile = () => {
       }
     };
 
-    // const showControlsTemporarily = () => {
-    //   setShowControls(true);
-    //   clearTimeout(hideTimeout);
-
-    //   if (isVideoPlaying) {
-    //     hideTimeout = setTimeout(() => {
-    //       setShowControls(false);
-    //     }, 3000);
-    //   }
-    // };
-
-    if (!isVideoPlaying) {
-      setShowControls(true);
-    } else {
-      // If playing, start the timer to hide them
-      showControlsTemporarily();
-    }
-
+    // Show controls on mouse move
     const handleMouseMove = () => {
       showControlsTemporarily();
     };
+
+    // Track when mouse enters/leaves the controls area
     const handleMouseEnterControls = () => {
       isMouseOverControls = true;
       clearTimeout(hideTimeout);
@@ -216,6 +196,7 @@ const SupplierProfile = () => {
 
     const handleMouseLeaveControls = () => {
       isMouseOverControls = false;
+      // Small delay before starting hide timeout when leaving controls
       mouseLeaveTimeout = setTimeout(() => {
         if (isVideoPlaying) {
           hideTimeout = setTimeout(() => {
@@ -225,6 +206,7 @@ const SupplierProfile = () => {
       }, 500);
     };
 
+    // Show controls on video play/pause
     if (videoRef.current) {
       videoRef.current.addEventListener('play', showControlsTemporarily);
       videoRef.current.addEventListener('pause', showControlsTemporarily);
@@ -232,6 +214,7 @@ const SupplierProfile = () => {
 
     window.addEventListener('mousemove', handleMouseMove);
 
+    // Add event listeners to the controls container
     const controlsContainer = document.querySelector('.video-controls-container');
     if (controlsContainer) {
       controlsContainer.addEventListener('mouseenter', handleMouseEnterControls);
@@ -738,6 +721,7 @@ const SupplierProfile = () => {
   return (
     <>
       <div className="md:h-[100vh] bg-[#01351f]">
+        {/* Always render background image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat md:h-[100vh] h-[350px]"
           style={{
@@ -746,6 +730,7 @@ const SupplierProfile = () => {
           }}
         ></div>
 
+        {/* Always render video element but control visibility */}
         <video
           ref={videoRef}
           className="absolute inset-0 w-full md:h-full h-[368px] object-cover"
@@ -757,33 +742,47 @@ const SupplierProfile = () => {
           Your browser does not support the video tag.
         </video>
 
+        {/* Custom video controls - show on hover only */}
         <div className="absolute inset-0 z-40  video-controls-container">
+          {/* Hover area - full video size */}
           <div className="relative w-full h-full group">
+            {/* Controls container - positioned higher up */}
             <div className={`md:absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto `}>
 
-              <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10 md:w-full gap-6 transform translate-y-12 ">
-                <div className="flex md:items-end  ">
-                  {partnerData?.videoUrl && !isVideoPlaying && (
-                    <div className="flex justify-center">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handlePlayClick();
-                        }}
-                        className="text-white hover:scale-125 active:scale-110 transition-transform bg-black/50 rounded-full p-2 cursor-pointer touch-manipulation h-16 md:h-auto"
-                        onMouseEnter={() => setShowControls(true)}
-                      >
-                        <img
-                          src={PlayButton}
-                          alt="Play"
-                          className="md:h-15 md:w-15 h-12 w-12 drop-shadow-2xl"
-                        />
-                      </button>
-                    </div>
+              {/* Main play/pause button - centered */}
+              {partnerData?.videoUrl && <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
+                <div className="flex md:items-end gap-12">
+                  {/* Play / Pause button */}
+                  {!isVideoPlaying && partnerData?.videoUrl ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePlayClick();
+                      }}
+                      className="self-center text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-2 cursor-pointer"
+                      onMouseEnter={() => setShowControls(true)}
+                    >
+                      <img
+                        src={PlayButton}
+                        alt="Play"
+                        className="h-15 w-15 drop-shadow-2xl"
+                      />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePauseClick();
+                      }}
+                      className={`self-center text-white hover:scale-125 transition-all duration-300 bg-black/50 rounded-full p-2 ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                        }`}
+                      onMouseEnter={() => setShowControls(true)}
+                    >
+                      <FaPauseCircle className="h-15 w-15 drop-shadow-2xl" />
+                    </button>
                   )}
-
                 </div>
-              </div>
+              </div>}
 
 
               {/* Bottom controls bar - ALWAYS show when hovered */}
@@ -1041,9 +1040,9 @@ const SupplierProfile = () => {
           </div>
         </div>
 
-        {/* Mobile layout with updated card order */}
-        <div className="bg-[#01351f] min-h-screen flex md:hidden justify-center items-center p-4">
-          <div className="flex flex-col gap-6 max-w-7xl w-full mx-auto">
+        {/* Mobile layout with ordered cards */}
+        <div className="min-h-screen flex md:hidden justify-center items-center p-4 bg-[#01351F]">
+          <div className="flex flex-col gap-6 w-full max-w-7xl">
             {/* 1. ImageUrl2 card */}
             <div className="w-full h-auto rounded-[10px] overflow-hidden shadow-xl">
               <img
@@ -1055,11 +1054,11 @@ const SupplierProfile = () => {
 
             {/* 2. Logo card */}
             <div className="bg-white rounded-[10px] w-full h-auto flex justify-center items-center p-6 shadow-xl">
-              <div className="text-center">
+              <div className="text-center p-4 w-full max-w-full overflow-hidden">
                 <img
                   src={partnerData?.logoUrl || kabelLogoImg}
                   alt={partnerData?.businessName}
-                  className="w-[177px] h-[164px] object-contain mx-auto"
+                  className="w-[240px] h-[120px] object-contain mx-auto"
                 />
               </div>
             </div>
@@ -1078,7 +1077,7 @@ const SupplierProfile = () => {
                 className="w-[88px] h-[77px] select-none"
               />
 
-              <h2 className="text-white text-[28px] font-[700] py-3.5">
+              <h2 className="text-white text-[28px] font-[700] py-4">
                 {t("supplierProfile.servicesTitle")}
               </h2>
 
@@ -1100,12 +1099,10 @@ const SupplierProfile = () => {
                 alt="Fakta"
                 className="w-[88px] h-[77px] select-none"
               />
-
-              <h2 className="text-white text-[28px] font-[700] font- py-4">
+              <h2 className="text-white text-[28px] font-[700] py-4">
                 {t("supplierProfile.factsTitle")}
               </h2>
-
-              <div className="text-white text-[16px] space-y-2 w-full text-left leading-[31px]">
+              <div className="text-white text-sm space-y-2 w-full text-left leading-[31px]">
                 {partnerData?.textField2 && (
                   <div
                     className="text-left"
@@ -1117,34 +1114,40 @@ const SupplierProfile = () => {
               </div>
             </div>
 
+            {/* 5. References card */}
             <div
-              className="rounded-2xl pt-[53px] px-8 pb-8 w-full h-auto shadow-xl"
+              className="rounded-2xl p-8 w-full h-auto shadow-xl"
               style={{
                 background:
                   "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
               }}
             >
               <div className="flex flex-col items-center gap-2 mb-2">
-                <img src={referancesImg} alt="" className="w-[88px] h-[59px] select-none" />
+                <img src={referancesImg} alt="" />
                 <h3 className="text-3xl font-semibold text-white py-4">
                   {t("supplierProfile.referencesTitle")}
                 </h3>
               </div>
-              <div className="text-white references-container leading-[31px] ">
+              <div className="text-white references-container leading-[31px]">
                 {renderReferencesContent()}
               </div>
             </div>
 
-            <div className="rounded-[10px] flex justify-center items-center overflow-hidden w-full h-auto shadow-xl">
+            {/* 6. ImageUrl3 card */}
+            <div className="w-full h-auto rounded-[10px] overflow-hidden shadow-xl">
               <img
-                src={partnerData?.imageUrl3 || "/src/assets/userImages/subcategoryDetailImg.png"}
+                src={
+                  partnerData?.imageUrl3 ||
+                  "/src/assets/userImages/subcategoryDetailImg.png"
+                }
                 alt="Work"
                 className="w-full h-full object-cover"
               />
             </div>
 
+            {/* 7. Geographical area (textField5) card */}
             <div
-              className="w-full h-auto rounded-[10px] flex justify-center items-center p-4 shadow-xl"
+              className="w-full h-auto rounded-[10px] flex justify-center items-center shadow-xl p-4"
               style={{
                 background:
                   "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
@@ -1154,7 +1157,7 @@ const SupplierProfile = () => {
                 <img
                   src={circlePartner}
                   alt="Geografisk område"
-                  className="w-[300px] h-[300px] object-contain"
+                  className="w-[300px] h-[300px] object-contain p-4 md:p-4"
                 />
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <h2 className="text-white text-center text-[30px] font-semibold leading-tight">
@@ -1169,18 +1172,18 @@ const SupplierProfile = () => {
               </div>
             </div>
 
+            {/* 8. Reviews card */}
             <div
-              className={`w-full ${hasTrustPilotUrl ? "h-auto" : "h-auto"
-                } rounded-[10px] bg-white p-6 flex flex-col relative shadow-xl`}
+              className={`w-full rounded-[10px] bg-white p-6 flex flex-col relative shadow-xl`}
             >
-              <div className=" flex justify-center p-2">
+              <div className=" flex justify-center items-end">
                 <img
                   className="w-[130px] h-[32px]"
                   src={trustPilotLogo}
                   alt=""
                 />
               </div>
-              <h3 className="text-[32px] font-[800] mb-5 text-center">
+              <h3 className="text-[32px] font-[800] mb-5 text-center leading-6.5">
                 {t("supplierProfile.reviewsTitle")}
               </h3>
               <div className="space-y-10">
@@ -1196,7 +1199,7 @@ const SupplierProfile = () => {
                           {renderRating(r, "w-[45px] h-[42px]", "gap-2")}
                         </div>
                         <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6 line-clamp-5">
-                          ”{rev?.test}”
+                          "{rev?.test}"
                         </p>
                         <p className="text-sm font-bold text-black mt-3 text-start px-6">
                           {rev?.customerName}
@@ -1216,12 +1219,12 @@ const SupplierProfile = () => {
                   <button
                     type="button"
                     onClick={handleOpenTrustPilot}
-                    className="absolute w-[202px] h-[66px] bg-[#95C11F] flex items-center justify-center gap-2 text-white rounded-[11px] px-4 text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[15px]"
+                    className="absolute w-[160px] md:w-[202px] h-[50px] md:h-[66px] bg-[#95C11F] flex items-center justify-center gap-1.5 md:gap-2 text-white rounded-[11px] px-3 md:px-4 text-base md:text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]"
                   >
                     <img
                       src={startImg}
                       alt="rating"
-                      className="w-[33px] h-[33px] select-none"
+                      className="w-6 h-6 md:w-[33px] md:h-[33px] select-none"
                     />
                     {t("supplierProfile.reviewUsOnTrustpilot")}
                   </button>
@@ -1231,8 +1234,10 @@ const SupplierProfile = () => {
           </div>
         </div>
 
+        {/* Desktop / tablet layout */}
         <div className="bg-[#01351f] min-h-screen hidden md:flex justify-center items-center p-4 md:p-8">
           <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl w-full mx-auto">
+            {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
               <div
                 className={`md:w-[403px] w-full ${hasTrustPilotUrl ? "md:h-[859px]" : "md:h-[890px]"
@@ -1379,7 +1384,7 @@ const SupplierProfile = () => {
                   <img
                     src={partnerData?.logoUrl || kabelLogoImg}
                     alt={partnerData?.businessName}
-                    className="w-[240px] h-[120px] object-contain mx-auto"
+                    className="w-[177px] h-[164px] object-contain mx-auto"
                   />
                 </div>
               </div>
@@ -1684,7 +1689,7 @@ const SupplierProfile = () => {
             </div>
           </div>
         )}
-      </div >
+      </div>
     </>
   );
 };
