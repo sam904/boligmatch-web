@@ -758,29 +758,20 @@ const SupplierProfile = () => {
                           e.stopPropagation();
                           isVideoPlaying ? handlePauseClick() : handlePlayClick();
                         }}
+                        className="text-white hover:scale-125 transition-all duration-300
+                 bg-black/50 rounded-full p-3 cursor-pointer h-20 w-20"
                         onMouseEnter={() => setShowControls(true)}
-                        className="
-                        flex items-center justify-center
-                        h-20 w-20
-                        rounded-full
-                        bg-black/60
-                        text-white
-                        hover:scale-110
-                        transition-all duration-300
-                        cursor-pointer
-                      "
                       >
                         {isVideoPlaying ? (
-                          <FaPauseCircle className="h-12 w-12 drop-shadow-2xl" />
+                          <FaPauseCircle className="h-14 w-14 drop-shadow-2xl" />
                         ) : (
                           <img
                             src={PlayButton}
                             alt="Play"
-                            className="h-12 w-12 drop-shadow-2xl"
+                            className="h-14 w-14 drop-shadow-2xl"
                           />
                         )}
                       </button>
-
                     </div>
                   )}
 
