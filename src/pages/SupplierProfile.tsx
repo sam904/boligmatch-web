@@ -170,17 +170,6 @@ const SupplierProfile = () => {
     let mouseLeaveTimeout: ReturnType<typeof setTimeout>;
     let isMouseOverControls = false;
 
-    // const showControlsTemporarily = () => {
-    //   setShowControls(true);
-    //   clearTimeout(hideTimeout);
-
-    //   if (!isMouseOverControls && isVideoPlaying) {
-    //     hideTimeout = setTimeout(() => {
-    //       setShowControls(false);
-    //     }, 3000);
-    //   }
-    // };
-
     const showControlsTemporarily = () => {
       setShowControls(true);
       clearTimeout(hideTimeout);
@@ -190,14 +179,31 @@ const SupplierProfile = () => {
           setShowControls(false);
         }, 3000);
       }
+
+      if (!isMouseOverControls && isVideoPlaying) {
+        hideTimeout = setTimeout(() => {
+          setShowControls(false);
+        }, 3000);
+      }
     };
 
+    // const showControlsTemporarily = () => {
+    //   setShowControls(true);
+    //   clearTimeout(hideTimeout);
+
+    //   if (isVideoPlaying) {
+    //     hideTimeout = setTimeout(() => {
+    //       setShowControls(false);
+    //     }, 3000);
+    //   }
+    // };
+
     if (!isVideoPlaying) {
-    setShowControls(true);
-  } else {
-    // If playing, start the timer to hide them
-    showControlsTemporarily();
-  }
+      setShowControls(true);
+    } else {
+      // If playing, start the timer to hide them
+      showControlsTemporarily();
+    }
 
     const handleMouseMove = () => {
       showControlsTemporarily();
@@ -762,9 +768,9 @@ const SupplierProfile = () => {
               <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
                 <div className="flex md:items-end  ">
                   {/* Play / Pause button */}
-                  {/* {partnerData?.videoUrl && showControls && !isVideoPlaying &&  ( */}
-                  {partnerData?.videoUrl && (!isVideoPlaying || showControls) && (
-                    <div className="flex justify-center">
+                  {/* {partnerData?.videoUrl && (!isVideoPlaying || showControls) && ( */}
+                  {partnerData?.videoUrl && showControls && !isVideoPlaying && (
+                    < div className="flex justify-center">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -1689,7 +1695,7 @@ const SupplierProfile = () => {
             </div>
           </div>
         )}
-      </div>
+      </div >
     </>
   );
 };
