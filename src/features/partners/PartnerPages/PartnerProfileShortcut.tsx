@@ -289,42 +289,42 @@ function PartnerProfileShortcut({
         {/* Custom video controls - Exactly like SupplierProfile */}
         <div className="absolute inset-0 z-40 pointer-events-none video-controls-container">
           <div className="relative w-full h-full group">
-            <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto`}>
+            <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto  ${!partnerData?.videoUrl && "top-65 md:top-98"}`}>
 
               {/* Main play/pause button - centered */}
-              {partnerData?.videoUrl && 
-              <div className="flex md:h-[683px] h-[400px] items-end justify-center w-full gap-6 md:transform md:-translate-y-12 -translate-y-8">
-                <div className="flex items-end gap-12">
-                  {/* Play / Pause button */}
-                  {!isVideoPlaying && partnerData?.videoUrl ? (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePlayClick();
-                      }}
-                      className="text-white hover:scale-125 active:scale-110 transition-transform bg-black/50 rounded-full p-2 cursor-pointer touch-manipulation"
-                    >
-                      <img
-                        src={PlayButton}
-                        alt="Play"
-                        className="md:h-15 md:w-15 h-12 w-12 drop-shadow-2xl"
-                      />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePauseClick();
-                      }}
-                      className={`text-white hover:scale-125 active:scale-110 transition-all duration-300 bg-black/50 rounded-full p-2 cursor-pointer touch-manipulation ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
-                        }`}
-                    >
-                      <FaPauseCircle className="md:h-15 md:w-15 h-12 w-12 drop-shadow-2xl" />
-                    </button>
-                  )}
-                </div>
-              </div>}
-              
+              {partnerData?.videoUrl &&
+                <div className="flex md:h-[683px] h-[400px] items-end justify-center w-full gap-6 md:transform md:-translate-y-12 -translate-y-8">
+                  <div className="flex items-end gap-12">
+                    {/* Play / Pause button */}
+                    {!isVideoPlaying && partnerData?.videoUrl ? (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePlayClick();
+                        }}
+                        className="text-white hover:scale-125 active:scale-110 transition-transform bg-black/50 rounded-full p-2 cursor-pointer touch-manipulation"
+                      >
+                        <img
+                          src={PlayButton}
+                          alt="Play"
+                          className="md:h-15 md:w-15 h-12 w-12 drop-shadow-2xl"
+                        />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePauseClick();
+                        }}
+                        className={`text-white hover:scale-125 active:scale-110 transition-all duration-300 bg-black/50 rounded-full p-2 cursor-pointer touch-manipulation ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                          }`}
+                      >
+                        <FaPauseCircle className="md:h-15 md:w-15 h-12 w-12 drop-shadow-2xl" />
+                      </button>
+                    )}
+                  </div>
+                </div>}
+
 
               {/* Bottom controls bar */}
               {isVideoPlaying && (
@@ -656,7 +656,7 @@ function PartnerProfileShortcut({
         <div className="grid md:grid-cols-3 grid-cols-1 gap-4 max-w-7xl">
           <div className="flex flex-col gap-6">
             <div className={`md:w-[403px] w-full ${hasTrustPilotUrl ? "md:h-[859px]" : "md:h-[890px]"
-                  } h-auto rounded-[10px] bg-white p-6 flex flex-col relative`}>
+              } h-auto rounded-[10px] bg-white p-6 flex flex-col relative`}>
               <div className=" flex justify-center items-end">
                 <img
                   className="w-[130px] h-[32px]"
@@ -715,7 +715,7 @@ function PartnerProfileShortcut({
 
             <div
               className={`md:w-[403px] w-full md:h-[432px] h-auto ${hasTrustPilotUrl ? "mt-[30px]" : "mt-[0px]"
-                  } rounded-[10px] flex justify-center items-center`}
+                } rounded-[10px] flex justify-center items-center`}
               style={{
                 background:
                   "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
