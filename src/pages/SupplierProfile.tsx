@@ -737,7 +737,7 @@ const SupplierProfile = () => {
           style={{
             display: showVideoElement ? "block" : "none",
           }}
-          playsInline
+          playsInline={false}
         >
           <source src={partnerData?.videoUrl} type="video/mp4" />
           Your browser does not support the video tag.
