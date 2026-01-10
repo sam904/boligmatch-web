@@ -196,7 +196,7 @@ function UserHeader({
                   if (isPartner) {
                     navigate("/partner/statistics");
                   } else if (isUser) {
-                    navigate("/");
+                    navigate("/user/profile");
                   } else {
                     navigate("/");
                   }
