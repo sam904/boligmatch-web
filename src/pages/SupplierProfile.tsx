@@ -745,68 +745,45 @@ const SupplierProfile = () => {
         {/* Custom video controls - show on hover only */}
         <div className="absolute inset-0 z-40  video-controls-container">
           {/* Hover area - full video size */}
-          <div
-            className={`relative w-full md:h-full
-               ${((!isPartner && partnerData?.videoUrl)
-                && 'h-[50%]')}
-               ${((!isPartner && !partnerData?.videoUrl)
-                && 'h-[70%]'
-              )
-              }
-
-
-               ${((isPartner && partnerData?.videoUrl)
-                && 'h-[48%]')}
-               ${((isPartner && !partnerData?.videoUrl)
-                && 'h-[65%]'
-              )
-              }
-            group
-          `}
-          >
+          <div className="relative w-full h-full group">
             {/* Controls container - positioned higher up */}
-            <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto`}>
+            <div className={`md:absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto `}>
 
               {/* Main play/pause button - centered */}
-              {partnerData?.videoUrl && <div className=" flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
-                <div className="flex md:items-end gap-12">
+              <div className=" md:flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
+                <div className="flex md:items-end  ">
                   {/* Play / Pause button */}
-                  {!isVideoPlaying && partnerData?.videoUrl ? (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePlayClick();
-                      }}
-                      className="self-center text-white hover:scale-125 transition-transform bg-black/50 rounded-full p-2 cursor-pointer"
-                      onMouseEnter={() => setShowControls(true)}
-                    >
-                      <img
-                        src={PlayButton}
-                        alt="Play"
-                        className="h-15 w-15 drop-shadow-2xl"
-                      />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePauseClick();
-                      }}
-                      className={`self-center text-white hover:scale-125 transition-all duration-300 bg-black/50 rounded-full p-2 ${isVideoPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
-                        }`}
-                      onMouseEnter={() => setShowControls(true)}
-                    >
-                      <FaPauseCircle className="h-15 w-15 drop-shadow-2xl" />
-                    </button>
+                  {partnerData?.videoUrl && (
+                    <div className={`flex justify-center ${isPartner ? " md:pt-0 pt-16" : " "}  `}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          isVideoPlaying ? handlePauseClick() : handlePlayClick();
+                        }}
+                        className={`text-white hover:scale-125 transition-all duration-300 
+                 ${!isVideoPlaying ? " bg-black/50" : ""} rounded-full p-3 cursor-pointer`}
+                        onMouseEnter={() => setShowControls(true)}
+                      >
+                        {!isVideoPlaying &&
+                          // <FaPauseCircle className="h-16 w-16 drop-shadow-2xl" />
+                          <img
+                            src={PlayButton}
+                            alt="Play"
+                            className="h-16 w-16 drop-shadow-2xl"
+                          />
+                        }
+                      </button>
+                    </div>
                   )}
+
                 </div>
-              </div>}
+              </div>
 
 
               {/* Bottom controls bar - ALWAYS show when hovered */}
               {isVideoPlaying && (
                 <div
-                  className="absolute md:bottom-60 left-0 right-0  p-4 pt-8 md:opacity-0  md:group-hover:opacity-100 transition-opacity duration-300"
+                  className={`absolute  ${isPartner ? " md:top-92 top-60" : " md:bottom-60"}  left-0 right-0  p-4 pt-8 md:opacity-0  md:group-hover:opacity-100 transition-opacity duration-300`}
                   onMouseEnter={() => setShowControls(true)}
                   onMouseLeave={(e) => {
                     // Don't hide immediately when leaving controls
@@ -1037,22 +1014,7 @@ const SupplierProfile = () => {
 
                 </div>
               </div>
-              <div className={`${!isPartner && 'bg-[#01351f] md:bg-[#01351f] '} md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full  
-              ${((!isPartner && partnerData?.videoUrl)
-                  && 'pt-[20px] ')}
-               ${((!isPartner && !partnerData?.videoUrl)
-                  && 'pt-[20px] '
-                )
-                }
-
-                ${((isPartner && partnerData?.videoUrl)
-                  && 'pt-[10px] ')}
-               ${((isPartner && !partnerData?.videoUrl)
-                  && 'pt-[30px] '
-                )
-                }
-                
-                md:mt-[0px]`}>
+              <div className={`${!isPartner && 'bg-[#01351f] md:bg-[#01351f] '} md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full ${isPartner ? "pt-[80px]" : " pt-[62px]"} md:mt-[0px]`}>
                 <h1 className="font-extrabold md:text-6xl text-[32px] text-center text-white md:py-5 py-0 px-4 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
                   {partnerData?.businessName || partnerData?.fullName || "Loading..."}
                 </h1>
@@ -1066,31 +1028,16 @@ const SupplierProfile = () => {
 
 
         <div className="bg-[#01351f]">
-          <div className={`max-w-6xl m-auto px-4 md:px-8 pb-4
-              ${((!isPartner && partnerData?.videoUrl)
-              && 'pt-12')}
-               ${((!isPartner && !partnerData?.videoUrl)
-              && 'pt-16'
-            )
-            }
-
-                ${((isPartner && partnerData?.videoUrl)
-              && 'pt-6')}
-               ${((isPartner && !partnerData?.videoUrl)
-              && 'pt-4'
-            )
-            }
-            
-             md:py-8`}>
+          <div className="max-w-6xl m-auto px-4 md:px-8 py-10 md:py-8">
             <p className="text-white font-[400] md:text-[18px] text-[14px] text-left md:text-center px-4 md:px-8 leading-relaxed">
               {partnerData?.textField1 || "Loading..."}
             </p>
           </div>
         </div>
 
-        {/* Mobile layout with ordered cards */}
-        <div className="min-h-screen flex md:hidden justify-center items-center p-4 bg-[#01351F]">
-          <div className="flex flex-col gap-6 w-full max-w-7xl">
+        {/* Mobile layout with updated card order */}
+        <div className="bg-[#01351f] min-h-screen flex md:hidden justify-center items-center p-4">
+          <div className="flex flex-col gap-6 max-w-7xl w-full mx-auto">
             {/* 1. ImageUrl2 card */}
             <div className="w-full h-auto rounded-[10px] overflow-hidden shadow-xl">
               <img
@@ -1102,11 +1049,11 @@ const SupplierProfile = () => {
 
             {/* 2. Logo card */}
             <div className="bg-white rounded-[10px] w-full h-auto flex justify-center items-center p-6 shadow-xl">
-              <div className="text-center p-4 w-full max-w-full overflow-hidden">
+              <div className="text-center">
                 <img
                   src={partnerData?.logoUrl || kabelLogoImg}
                   alt={partnerData?.businessName}
-                  className="w-[240px] h-[120px] object-contain mx-auto"
+                  className="w-[177px] h-[164px] object-contain mx-auto"
                 />
               </div>
             </div>
@@ -1125,7 +1072,7 @@ const SupplierProfile = () => {
                 className="w-[88px] h-[77px] select-none"
               />
 
-              <h2 className="text-white text-[28px] font-[700] py-4">
+              <h2 className="text-white text-[28px] font-[700] py-3.5">
                 {t("supplierProfile.servicesTitle")}
               </h2>
 
@@ -1147,10 +1094,12 @@ const SupplierProfile = () => {
                 alt="Fakta"
                 className="w-[88px] h-[77px] select-none"
               />
-              <h2 className="text-white text-[28px] font-[700] py-4">
+
+              <h2 className="text-white text-[28px] font-[700] font- py-4">
                 {t("supplierProfile.factsTitle")}
               </h2>
-              <div className="text-white text-sm space-y-2 w-full text-left leading-[31px]">
+
+              <div className="text-white text-[16px] space-y-2 w-full text-left leading-[31px]">
                 {partnerData?.textField2 && (
                   <div
                     className="text-left"
@@ -1164,30 +1113,27 @@ const SupplierProfile = () => {
 
             {/* 5. References card */}
             <div
-              className="rounded-2xl p-8 w-full h-auto shadow-xl"
+              className="rounded-2xl pt-[53px] px-8 pb-8 w-full h-auto shadow-xl"
               style={{
                 background:
                   "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%), linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2))",
               }}
             >
               <div className="flex flex-col items-center gap-2 mb-2">
-                <img src={referancesImg} alt="" />
+                <img src={referancesImg} alt="" className="w-[88px] h-[59px] select-none" />
                 <h3 className="text-3xl font-semibold text-white py-4">
                   {t("supplierProfile.referencesTitle")}
                 </h3>
               </div>
-              <div className="text-white references-container leading-[31px]">
+              <div className="text-white references-container leading-[31px] ">
                 {renderReferencesContent()}
               </div>
             </div>
 
             {/* 6. ImageUrl3 card */}
-            <div className="w-full h-auto rounded-[10px] overflow-hidden shadow-xl">
+            <div className="rounded-[10px] flex justify-center items-center overflow-hidden w-full h-auto shadow-xl">
               <img
-                src={
-                  partnerData?.imageUrl3 ||
-                  "/src/assets/userImages/subcategoryDetailImg.png"
-                }
+                src={partnerData?.imageUrl3 || "/src/assets/userImages/subcategoryDetailImg.png"}
                 alt="Work"
                 className="w-full h-full object-cover"
               />
@@ -1195,7 +1141,7 @@ const SupplierProfile = () => {
 
             {/* 7. Geographical area (textField5) card */}
             <div
-              className="w-full h-auto rounded-[10px] flex justify-center items-center shadow-xl p-4"
+              className="w-full h-auto rounded-[10px] flex justify-center items-center p-4 shadow-xl"
               style={{
                 background:
                   "linear-gradient(135.54deg, #041412 1.6%, rgba(1, 52, 37, 0.86) 89.27%)",
@@ -1205,7 +1151,7 @@ const SupplierProfile = () => {
                 <img
                   src={circlePartner}
                   alt="Geografisk område"
-                  className="w-[300px] h-[300px] object-contain p-4 md:p-4"
+                  className="w-[300px] h-[300px] object-contain"
                 />
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <h2 className="text-white text-center text-[30px] font-semibold leading-tight">
@@ -1222,16 +1168,17 @@ const SupplierProfile = () => {
 
             {/* 8. Reviews card */}
             <div
-              className={`w-full rounded-[10px] bg-white p-6 flex flex-col relative shadow-xl`}
+              className={`w-full ${hasTrustPilotUrl ? "h-auto" : "h-auto"
+                } rounded-[10px] bg-white p-6 flex flex-col relative shadow-xl`}
             >
-              <div className=" flex justify-center items-end">
+              <div className=" flex justify-center p-2">
                 <img
                   className="w-[130px] h-[32px]"
                   src={trustPilotLogo}
                   alt=""
                 />
               </div>
-              <h3 className="text-[32px] font-[800] mb-5 text-center leading-6.5">
+              <h3 className="text-[32px] font-[800] mb-5 text-center">
                 {t("supplierProfile.reviewsTitle")}
               </h3>
               <div className="space-y-10">
@@ -1247,7 +1194,7 @@ const SupplierProfile = () => {
                           {renderRating(r, "w-[45px] h-[42px]", "gap-2")}
                         </div>
                         <p className="text-[14px] italic text-[#000000] leading-relaxed text-start font-[500] px-6 line-clamp-5">
-                          "{rev?.test}"
+                          ”{rev?.test}”
                         </p>
                         <p className="text-sm font-bold text-black mt-3 text-start px-6">
                           {rev?.customerName}
@@ -1267,12 +1214,12 @@ const SupplierProfile = () => {
                   <button
                     type="button"
                     onClick={handleOpenTrustPilot}
-                    className="absolute w-[160px] md:w-[202px] h-[50px] md:h-[66px] bg-[#95C11F] flex items-center justify-center gap-1.5 md:gap-2 text-white rounded-[11px] px-3 md:px-4 text-base md:text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[10px]"
+                    className="absolute w-[202px] h-[66px] bg-[#95C11F] flex items-center justify-center gap-2 text-white rounded-[11px] px-4 text-[20px] font-semibold figtree cursor-pointer opacity-100 leading-tight -mt-[15px]"
                   >
                     <img
                       src={startImg}
                       alt="rating"
-                      className="w-6 h-6 md:w-[33px] md:h-[33px] select-none"
+                      className="w-[33px] h-[33px] select-none"
                     />
                     {t("supplierProfile.reviewUsOnTrustpilot")}
                   </button>
@@ -1432,7 +1379,7 @@ const SupplierProfile = () => {
                   <img
                     src={partnerData?.logoUrl || kabelLogoImg}
                     alt={partnerData?.businessName}
-                    className="w-[177px] h-[164px] object-contain mx-auto"
+                    className="w-[240px] h-[120px] object-contain mx-auto"
                   />
                 </div>
               </div>
