@@ -278,15 +278,15 @@ export default function UserDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div
+   <>
+   <div className="min-h-screen">
+     <div
         className={`
               relative 
-              h-[368px]      
-              md:h-[80vh]     
-              bg-no-repeat bg-cover bg-center
-              bg-[url('/src/assets/userImages/profileResponsiveBanner.svg')] 
-              md:bg-none       
+              h-[50vh]      
+              md:h-[calc(100vh-90px)]     
+              bg-cover md:bg-center bg-right
+              bg-[url('/src/assets/userImages/profileResponsiveBanner.svg')]       
   `}
         style={{
           backgroundImage: `url(${userDashboard})`,
@@ -294,12 +294,10 @@ export default function UserDashboardPage() {
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-[#01351f]  pointer-events-none" />
-
+        >
         <UserHeader />
 
-        {userData && (
+         {userData && (
           <div className="absolute left-0 right-0 top-[140px] sm:top-[160px] md:top-[180px] lg:top-[140px] xl:top-[140px] bottom-[100px] sm:bottom-[110px] md:bottom-[130px] lg:bottom-[150px] z-10 px-4 sm:px-6 md:px-8 lg:px-24 flex flex-col justify-center">
             <div className="text-white">
               <div className="max-w-[722px]">
@@ -316,16 +314,14 @@ export default function UserDashboardPage() {
           </div>
         )}
 
-        <div className="absolute inset-x-0 bottom-0 z-10 pb-6 sm:pb-8 md:pb-10">
-          <div className="px-4 sm:px-6 md:px-8">
-            <div className="flex flex-row items-center justify-between sm:justify-center gap-3 md:gap-6 max-w-4xl mx-auto px-2">
-              <button
+         <div className="absolute bottom-0 flex justify-center w-full gap-3 px-4">
+          <button
                 onClick={handlePartnersClick}
                 type="button"
                 className={`
       flex items-center justify-center
       gap-1 md:gap-3
-      w-[272px] h-[42px] md:h-[55px]
+      py-3
       px-5 sm:px-6 md:px-7
       rounded-xl
       shadow-lg sm:shadow-md
@@ -353,7 +349,7 @@ export default function UserDashboardPage() {
                 className={`
       flex items-center justify-center
       gap-1 md:gap-3
-      w-[272px] h-[42px] md:h-[55px]
+      py-3
       px-5 sm:px-6 md:px-7
       rounded-xl
       shadow-lg sm:shadow-md
@@ -384,7 +380,7 @@ export default function UserDashboardPage() {
                 className={`
                             flex items-center justify-center
                             gap-1 md:gap-3
-                            w-[272px] h-[42px] md:h-[55px]
+                            py-3
                             px-5 sm:px-6 md:px-7
                             rounded-xl
                             shadow-lg sm:shadow-md
@@ -405,381 +401,332 @@ export default function UserDashboardPage() {
                   {t("userDashboard.buttons.messages")}
                 </span>
               </button>
-            </div>
-          </div>
         </div>
+        </div>
+   <div className="bg-[#01351f] py-4 md:py-10 flex-1">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {loading && activeView === "default" ? (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="text-white text-base md:text-lg">{t("userDashboard.loading")}</div>
       </div>
-
-      <div className="bg-[#01351f] py-4 md:py-10 flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
-          {loading && activeView === "default" ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="text-white text-lg">{t("userDashboard.loading")}</div>
-            </div>
-          ) : (
-            <>
-              {activeView === "default" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-4">
-                  {categories.map((category, index) => {
-                    const assets = getCategoryAssets(index);
-                    return (
-                      <div
-                        key={category.id}
-                        onClick={() => handleCategoryClick(category)}
-                        className="
-                        w-[360px] 
-                        h-[420px]
-                        md:w-[374px]
-                        md:h-[540px]
-                        mx-auto
-                        rounded-[12px]
-                        transition-all
-                        duration-300
-                        cursor-pointer
-                        overflow-hidden
-                        hover:shadow-xl
-                        flex
-                        bg-gradient-to-t from-white via-white to-transparent
-                        flex-col
-                        "
-                      >
-                        <div className="relative w-full h-[340px] md:h-[340px] lg:h-[340px] xl:h-[340px] overflow-hidden">
-                          <img
-                            src={category.imageUrl || assets.image}
-                            alt={category.name}
-                            className="w-full h-full object-cover "
-                            onError={(e) => {
-                              e.currentTarget.src = assets.image;
-                            }}
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 h-[80px] sm:h-[50px] bg-gradient-to-t from-white to-transparent"></div>
-                          <div className="absolute bottom-0 left-0 right-0">
-                            <img src={categoryGradientImg} alt="" className="w-full h-auto" />
-                          </div>
-                        </div>
-
-                        <div className="p-4 sm:p-5 md:p-6 text-center flex flex-col items-center  gap-2">
-                          <div className="w-16 h-12 sm:w-20 sm:h-14 flex items-center justify-center -mt-2 sm:-mt-6 mb-0">
-                            <img
-                              src={category.iconUrl || assets.icon}
-                              alt={category.name}
-                              className="w-[60px] h-[55px] sm:w-14 sm:h-14 object-contain"
-                              onError={(e) => {
-                                e.currentTarget.src = assets.icon;
-                              }}
-                            />
-                          </div>
-
-                          <h3 className="text-xl sm:text-2xl font-extrabold text-[#052011] mb-1">
-                            {category.name}
-                          </h3>
-
-                          <p className="text-sm sm:text-base text-[#052011] leading-[20px] px-2">
-                            {category.description}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {activeView === "favorites" && (
-                <>
-                  <div className="md:hidden space-y-3">
-                    {favoritesLoading ? (
-                      <div className="flex justify-center items-center h-64">
-                        <div className="text-white text-base sm:text-lg">
-                          {t("userDashboard.loadingFavorites")}
-                        </div>
-                      </div>
-                    ) : favorites.length > 0 ? (
-                      favorites.map((favorite) => (
-                        <div
-                          key={favorite.id}
-                          className="bg-white rounded-lg p-3 flex items-center gap-3 border border-gray-100 cursor-pointer"
-                          onClick={() => handleFavoriteMoreInfo(favorite)}
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
-                              handleFavoriteMoreInfo(favorite);
-                            }
-                          }}
-                        >
-                          <div className="w-12 h-12 flex items-center justify-center flex-shrink-0 bg-white rounded">
-                            {favorite.logoUrl && (
-                              <img
-                                className="w-12 h-12 object-contain"
-                                src={favorite.logoUrl}
-                                alt=""
-                              />
-                            )}
-                          </div>
-
-                          <div className="flex-1 min-w-0">
-                            <div className="flex flex-col gap-1">
-                              <span className="text-sm font-extrabold text-[#000000] truncate">
-                                {favorite.partnerName ||
-                                  favorite.businessName ||
-                                  "N/A"}
-                              </span>
-                              <span className="text-[11px] text-[#6b7280] truncate">
-                                {getFavouriteCategory(favorite)}
-                              </span>
-                              <span className="text-[12px] font-semibold text-[#000000] truncate">
-                                {getFavouriteSubCategory(favorite)}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="flex justify-center items-center h-64">
-                        <div className="text-white text-base sm:text-lg text-center">
-                          {t("userDashboard.noFavorites")}
-                        </div>
-                      </div>
-                    )}
+    ) : (
+      <>
+        {/* DEFAULT VIEW - Categories */}
+        {activeView === "default" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {categories.map((category, index) => {
+              const assets = getCategoryAssets(index);
+              return (
+                <div
+                  key={category.id}
+                  onClick={() => handleCategoryClick(category)}
+                  className="
+                    w-full
+                    max-w-[360px]
+                    md:max-w-none
+                    mx-auto
+                    md:h-[530px]
+                    rounded-xl
+                    transition-all
+                    duration-300
+                    cursor-pointer
+                    overflow-hidden
+                    hover:shadow-xl
+                    hover:scale-[1.02]
+                    flex
+                    flex-col
+                    bg-gradient-to-t from-white via-white to-transparent
+                  "
+                >
+                  {/* Image Section */}
+                  <div className="relative w-full aspect-[4/3] overflow-hidden">
+                    <img
+                      src={category.imageUrl || assets.image}
+                      alt={category.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = assets.image;
+                      }}
+                    />
+                    {/* Gradient Overlays */}
+                    <div className="absolute bottom-0 left-0 right-0 h-16 md:h-20 bg-gradient-to-t from-white to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0">
+                      <img src={categoryGradientImg} alt="" className="w-full h-auto" />
+                    </div>
                   </div>
-                </>
-              )}
 
-              {activeView === "messages" && (
-                <div className="space-y-4">
-                  {conversationsLoading ? (
-                    <div className="flex justify-center items-center h-64">
-                      <div className="text-white text-base sm:text-lg">
-                        {t("userDashboard.loadingConversations")}
-                      </div>
+                  {/* Content Section */}
+                  <div className="p-4 md:p-6 text-center flex flex-col items-center gap-2">
+                    {/* Icon */}
+                    <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center -mt-8 md:-mt-10 mb-1">
+                      <img
+                        src={category.iconUrl || assets.icon}
+                        alt={category.name}
+                        className="w-12 h-12 md:w-14 md:h-14 object-contain"
+                        onError={(e) => {
+                          e.currentTarget.src = assets.icon;
+                        }}
+                      />
                     </div>
-                  ) : conversations.length > 0 ? (
-                    <>
-                      <div className="md:hidden space-y-3">
-                        {conversations.map((conversation) => (
-                          <div
-                            key={conversation.id}
-                            className="bg-white rounded-xl p-4 border border-gray-200"
-                          >
-                            <div className="flex items-start justify-between mb-3">
-                              <div>
-                                <div className="text-sm font-extrabold text-[#052011]">
-                                  {t("userDashboard.partnerLabel")}
-                                </div>
-                                <div className="text-sm text-[#052011]">
-                                  {conversation.partnerName || "-"}
-                                </div>
-                              </div>
-                              <button
-                                type="button"
-                                className="flex items-center gap-2 text-[#01351f] cursor-pointer hover:opacity-80 transition-opacity bg-transparent border-none p-0"
-                                onClick={() =>
-                                  setOpenConversation(conversation)
-                                }
-                              >
-                                <span className="text-sm font-semibold whitespace-nowrap">
-                                  {t("userDashboard.readMore")}
-                                </span>
-                                <img
-                                  src={chatModelImg}
-                                  alt="Chat"
-                                  className="w-5 h-5"
-                                />
-                              </button>
-                            </div>
-                            <div className="mt-1">
-                              <div className="text-sm font-extrabold text-[#052011] mb-1">
-                                {t("userDashboard.subjectLabel")}
-                              </div>
-                              <div className="text-sm text-[#052011] line-clamp-2">
-                                {conversation.messageSubject || "-"}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
 
-                      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {conversations.map((conversation) => (
-                          <div
-                            key={conversation.id}
-                            className="bg-white rounded-2xl p-5 border border-gray-200"
-                          >
-                            <div className="flex items-start justify-between mb-4">
-                              <div>
-                                <div className="text-base font-extrabold text-[#052011]">
-                                  {t("userDashboard.partnerLabel")}
-                                </div>
-                                <div className="text-sm text-[#052011]">
-                                  {conversation.partnerName || "-"}
-                                </div>
-                              </div>
-                              <button
-                                type="button"
-                                className="flex items-center gap-2 text-[#01351f] cursor-pointer hover:opacity-80 transition-opacity bg-transparent border-none p-0 relative z-10 flex-shrink-0"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  setOpenConversation(conversation);
-                                }}
-                              >
-                                <span className="text-sm font-semibold whitespace-nowrap">
-                                  {t("userDashboard.readMore")}
-                                </span>
-                                <img
-                                  src={chatModelImg}
-                                  alt="Chat"
-                                  className="w-5 h-5 flex-shrink-0"
-                                />
-                              </button>
-                            </div>
-                            <div>
-                              <div className="text-base font-extrabold text-[#052011] mb-1">
-                                {t("userDashboard.subjectLabel")}
-                              </div>
-                              <div className="text-sm text-[#052011] line-clamp-2">
-                                {conversation.messageSubject || "-"}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <div className="flex justify-center items-center h-64">
-                      <div className="text-white text-base sm:text-lg text-center">
-                        {t("userDashboard.noConversations")}
-                      </div>
-                    </div>
-                  )}
+                    {/* Title */}
+                    <h3 className="text-lg md:text-xl lg:text-2xl font-extrabold text-[#052011] mb-1">
+                      {category.name}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="text-sm md:text-base text-[#052011] leading-relaxed px-2">
+                      {category.description}
+                    </p>
+                  </div>
                 </div>
-              )}
-            </>
-          )}
-        </div>
+              );
+            })}
+          </div>
+        )}
 
+        {/* FAVORITES VIEW - Mobile */}
         {activeView === "favorites" && (
-          <section className="hidden md:block bg-[#01351f] w-full flex justify-center pt-0 pb-8 md:pt-2 md:pb-30 px-30 relative overflow-visible z-20">
+          <div className="md:hidden space-y-3">
             {favoritesLoading ? (
-              <div className="col-span-3 flex justify-center items-center h-64">
-                <div className="text-white text-lg">
+              <div className="flex justify-center items-center min-h-[400px]">
+                <div className="text-white text-base">
                   {t("userDashboard.loadingFavorites")}
                 </div>
               </div>
             ) : favorites.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-6 max-w-7xl px-4 md:px-7 w-full overflow-visible">
-                {favorites.map((favorite) => (
-                  <div
-                    key={favorite.id}
-                    className="flex justify-center overflow-visible"
-                  >
-                    <div
-                      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 w-full h-[320px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-4 md:px-8 md:py-10 text-center justify-between"
-                    >
-                      <div className="flex flex-col items-center w-full flex-1 min-h-0 overflow-hidden">
-                        <div className="mb-2 md:mb-6 flex-shrink-0">
-                          <img
-                            src={favorite.logoUrl}
-                            alt={favorite.partnerName || favorite.businessName || "Partner"}
-                            className="w-[144px] h-[72px] md:w-[240px] md:h-[120px] object-contain"
-                            onError={(e) => {
-                              (e.currentTarget as HTMLImageElement).src = dashboard1;
-                            }}
-                          />
-                        </div>
-                        <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-5 px-4 flex-shrink-0">
-                          {favorite.partnerName ||
-                            favorite.businessName}
-                        </h3>
-                        {favorite.descriptionShort && (
-                          <div className="flex items-start justify-center w-full mb-2 md:mb-6 overflow-hidden flex-1 min-h-0">
-                            <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-4 md:line-clamp-5">
-                              {favorite.descriptionShort}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                      <button
-                        onClick={() => handleFavoriteMoreInfo(favorite)}
-                        className="flex-shrink-0 mt-auto font-bold text-[14px] md:text-[16px] cursor-pointer transition-all duration-200 text-black hover:font-extrabold"
-                      >
-                        {t("userDashboard.moreInfo")}
-                      </button>
+              favorites.map((favorite) => (
+                <div
+                  key={favorite.id}
+                  className="bg-white rounded-lg p-4 flex items-center gap-3 border border-gray-100 cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => handleFavoriteMoreInfo(favorite)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleFavoriteMoreInfo(favorite);
+                    }
+                  }}
+                >
+                  {/* Logo */}
+                  <div className="w-14 h-14 flex items-center justify-center flex-shrink-0 bg-gray-50 rounded-lg">
+                    {favorite.logoUrl && (
+                      <img
+                        className="w-12 h-12 object-contain"
+                        src={favorite.logoUrl}
+                        alt=""
+                      />
+                    )}
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm font-extrabold text-[#000000] truncate">
+                        {favorite.partnerName || favorite.businessName || "N/A"}
+                      </span>
+                      <span className="text-xs text-[#6b7280] truncate">
+                        {getFavouriteCategory(favorite)}
+                      </span>
+                      <span className="text-xs font-semibold text-[#000000] truncate">
+                        {getFavouriteSubCategory(favorite)}
+                      </span>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-6 max-w-7xl px-4 md:px-7 w-full overflow-visible">
-                <div className="col-span-3 flex justify-center items-center h-64">
-                  <div className="text-white text-lg text-center">
-                    {t("userDashboard.noFavorites")}
-                  </div>
+              <div className="flex justify-center items-center min-h-[400px]">
+                <div className="text-white text-base text-center">
+                  {t("userDashboard.noFavorites")}
                 </div>
               </div>
             )}
-          </section>
+          </div>
         )}
-      </div>
 
-      {openConversation && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/50 cursor-pointer"
-            onClick={() => setOpenConversation(null)}
-          />
-          <div
-            className="relative z-[1001] w-[90%] max-w-md bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-[#1F7A58]/10"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="absolute right-4 top-3 text-black text-xl cursor-pointer hover:text-gray-700"
-              aria-label="Close"
-              onClick={() => setOpenConversation(null)}
-            >
-              <img src={closeImg} alt="" />
-            </button>
+        {/* MESSAGES VIEW */}
+        {activeView === "messages" && (
+          <div className="space-y-4">
+            {conversationsLoading ? (
+              <div className="flex justify-center items-center min-h-[400px]">
+                <div className="text-white text-base">
+                  {t("userDashboard.loadingConversations")}
+                </div>
+              </div>
+            ) : conversations.length > 0 ? (
+              <>
+                {/* Mobile View */}
+                <div className="md:hidden space-y-3">
+                  {conversations.map((conversation) => (
+                    <div
+                      key={conversation.id}
+                      className="bg-white rounded-xl p-4 border border-gray-200"
+                    >
+                      <div className="flex items-start justify-between mb-3 gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-extrabold text-[#052011]">
+                            {t("userDashboard.partnerLabel")}
+                          </div>
+                          <div className="text-sm text-[#052011] truncate">
+                            {conversation.partnerName || "-"}
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          className="flex items-center gap-2 text-[#01351f] cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0"
+                          onClick={() => setOpenConversation(conversation)}
+                        >
+                          <span className="text-sm font-semibold whitespace-nowrap">
+                            {t("userDashboard.readMore")}
+                          </span>
+                          <img
+                            src={chatModelImg}
+                            alt="Chat"
+                            className="w-5 h-5"
+                          />
+                        </button>
+                      </div>
+                      <div className="mt-3">
+                        <div className="text-sm font-extrabold text-[#052011] mb-1">
+                          {t("userDashboard.subjectLabel")}
+                        </div>
+                        <div className="text-sm text-[#052011] line-clamp-2">
+                          {conversation.messageSubject || "-"}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
-            <div className="flex flex-col items-center gap-2 mb-4">
-              <img
-                src={chatModelImg}
-                alt="chat"
-                className="w-[64px] h-[64px]"
-              />
-              <h3 className="text-center font-extrabold text-lg">{t("userDashboard.messageTitle")}</h3>
-            </div>
+                {/* Desktop View */}
+                <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                  {conversations.map((conversation) => (
+                    <div
+                      key={conversation.id}
+                      className="bg-white rounded-2xl p-5 border border-gray-200 hover:shadow-lg transition-shadow"
+                    >
+                      <div className="flex items-start justify-between mb-4 gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="text-base font-extrabold text-[#052011]">
+                            {t("userDashboard.partnerLabel")}
+                          </div>
+                          <div className="text-sm text-[#052011] truncate">
+                            {conversation.partnerName || "-"}
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          className="flex items-center gap-2 text-[#01351f] cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setOpenConversation(conversation);
+                          }}
+                        >
+                          <span className="text-sm font-semibold whitespace-nowrap">
+                            {t("userDashboard.readMore")}
+                          </span>
+                          <img
+                            src={chatModelImg}
+                            alt="Chat"
+                            className="w-5 h-5"
+                          />
+                        </button>
+                      </div>
+                      <div>
+                        <div className="text-base font-extrabold text-[#052011] mb-1">
+                          {t("userDashboard.subjectLabel")}
+                        </div>
+                        <div className="text-sm text-[#052011] line-clamp-2">
+                          {conversation.messageSubject || "-"}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="flex justify-center items-center min-h-[400px]">
+                <div className="text-white text-base text-center">
+                  {t("userDashboard.noConversations")}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </>
+    )}
+  </div>
 
-            <div className="space-y-4 text-[#052011]">
-              <div>
-                <div className="text-sm font-extrabold">{t("userDashboard.dateLabel")}</div>
-                <div className="text-sm">
-                  {formatConvDate(openConversation.createdDate)}
-                </div>
-              </div>
-              <div>
-                <div className="text-sm font-extrabold">{t("userDashboard.partnerLabel")}</div>
-                <div className="text-sm">
-                  {openConversation.partnerName || "-"}
-                </div>
-              </div>
-              <div>
-                <div className="text-sm font-extrabold">{t("userDashboard.subjectLabel")}</div>
-                <div className="text-sm">
-                  {openConversation.messageSubject || "-"}
-                </div>
-              </div>
-              <div>
-                <div className="text-sm font-extrabold">{t("userDashboard.descriptionLabel")}</div>
-                <div className="text-sm leading-relaxed">
-                  {openConversation.messageContent || "-"}
-                </div>
-              </div>
+  {/* FAVORITES VIEW - Desktop */}
+  {activeView === "favorites" && (
+    <section className="hidden md:block w-full pt-6 md:pt-8 pb-8 md:pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {favoritesLoading ? (
+          <div className="flex justify-center items-center min-h-[400px]">
+            <div className="text-white text-lg">
+              {t("userDashboard.loadingFavorites")}
             </div>
           </div>
-        </div>
-      )}
-      <Footer />
-    </div>
+        ) : favorites.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {favorites.map((favorite) => (
+              <div
+                key={favorite.id}
+                className="flex justify-center"
+              >
+                <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] w-full max-w-[413px] flex flex-col items-center px-6 py-8 md:px-8 md:py-10 text-center">
+                  {/* Logo */}
+                  <div className="mb-4 md:mb-6 flex-shrink-0">
+                    <img
+                      src={favorite.logoUrl}
+                      alt={favorite.partnerName || favorite.businessName || "Partner"}
+                      className="w-40 h-20 md:w-60 md:h-30 object-contain"
+                      onError={(e) => {
+                        e.currentTarget.src = dashboard1;
+                      }}
+                    />
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#000000] mb-3 md:mb-4 px-2">
+                    {favorite.partnerName || favorite.businessName}
+                  </h3>
+
+                  {/* Description */}
+                  {favorite.descriptionShort && (
+                    <div className="flex-1 w-full mb-4 md:mb-6 overflow-hidden">
+                      <p className="text-[#000000] font-normal text-sm md:text-base leading-relaxed line-clamp-4">
+                        {favorite.descriptionShort}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Button */}
+                  <button
+                    onClick={() => handleFavoriteMoreInfo(favorite)}
+                    className="mt-auto font-bold text-sm md:text-base cursor-pointer transition-all duration-200 text-black hover:font-extrabold hover:underline"
+                  >
+                    {t("userDashboard.moreInfo")}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex justify-center items-center min-h-[400px]">
+            <div className="text-white text-lg text-center">
+              {t("userDashboard.noFavorites")}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+</div>
+   </div>
+   </>
   );
 }
