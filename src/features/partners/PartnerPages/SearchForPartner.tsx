@@ -106,7 +106,7 @@ function SearchForPartner() {
 
   return (
     <>
-      <div className="bg-[#01351f] py-8 sm:py-12 md:py-16 flex-1">
+      <div className="bg-[#01351f] py-5 sm:py-5 md:py-5 flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
           {loading ? (
             <div className="flex justify-center items-center h-64">
@@ -119,23 +119,24 @@ function SearchForPartner() {
                   const assets = getCategoryAssets(index);
                   return (
                     <div
-  key={category.id}
-  onClick={() => handleCategoryClick(category)}
-  className="
-    w-[360px] 
-    h-[420px]
-    md:w-[374px]
-    md:h-[540px]
-    mx-auto
-    rounded-xl
-    bg-gradient-to-t from-white via-white to-transparent
-    transition-all
-    duration-300
-    cursor-pointer
-    overflow-hidden
-    hover:shadow-xl
-    flex
-    flex-col
+                     key={category.id}
+                     onClick={() => handleCategoryClick(category)}
+                     className="
+                    w-full
+                    max-w-[360px]
+                    md:max-w-none
+                    mx-auto
+                    md:h-[530px]
+                    rounded-xl
+                    transition-all
+                    duration-300
+                    cursor-pointer
+                    overflow-hidden
+                    hover:shadow-xl
+                    hover:scale-[1.02]
+                    flex
+                    flex-col
+                    bg-gradient-to-t from-white via-white to-transparent
   "
 >
   {/* IMAGE SECTION */}
