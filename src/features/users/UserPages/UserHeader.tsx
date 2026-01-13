@@ -21,7 +21,7 @@ import privacyPolicyIcon from "/src/assets/userImages/Privacypolicy.svg";
 import signOutIcon from "/src/assets/userImages/signOut.svg";
 
 function UserHeader({
-  fullHeight = true,
+  // fullHeight = true,
   showBackButton = true,
 }: {
   fullHeight?: boolean;
