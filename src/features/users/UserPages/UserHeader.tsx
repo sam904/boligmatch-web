@@ -33,7 +33,7 @@ function UserHeader({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalRole, setModalRole] = useState<"user" | "partner">("user");
   const [isChoiceModalOpen, setIsChoiceModalOpen] = useState(false);
-  // const [showLangDropdown, setShowLangDropdown] = useState(false);
+  const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [sidebarRendered, setSidebarRendered] = useState(false);
   const [sidebarTransitionActive, setSidebarTransitionActive] = useState(false);
@@ -182,7 +182,7 @@ function UserHeader({
   return (
     <>
       <header
-        className={`${fullHeight ? "md:h-[100vh] h-[366px]" : "h-20"} relative`}
+        className="h-16"
       >
         <div
           className={`fixed top-0 left-0 right-0 h-20 md:px-12 px-4 z-50 transition-colors duration-300 ${
@@ -238,7 +238,7 @@ function UserHeader({
                 </>
               )}
               {/* Language Dropdown - Commented out */}
-              {/* <div className="relative">
+              <div className="relative">
                 <button
                   onClick={() => setShowLangDropdown((v) => !v)}
                   className="px-2 py-1 rounded-md bg-white/10 text-white text-xs md:text-sm font-semibold hover:bg-white/20 transition-colors cursor-pointer min-w-[44px] text-center"
@@ -269,7 +269,7 @@ function UserHeader({
                     </button>
                   </div>
                 )}
-              </div> */}
+              </div>
 
               <button
                 onClick={() => {

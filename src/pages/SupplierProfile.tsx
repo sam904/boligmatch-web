@@ -720,178 +720,159 @@ const SupplierProfile = () => {
 
   return (
     <>
-      <div className="md:h-[100vh] bg-[#01351f]">
-        {/* Always render background image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat md:h-[100vh] h-[350px]"
-          style={{
-            backgroundImage: `url(${getBackgroundImage()})`,
-            display: showVideoElement ? "none" : "block",
-          }}
-        ></div>
+      <div className="relative md:h-[calc(100vh)] h-[350px]">
+  {/* Background Image */}
+  <div 
+    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+    style={{
+      backgroundImage: `url(${getBackgroundImage()})`,
+      display: showVideoElement ? "none" : "block",
+    }}
+  />
 
-        {/* Always render video element but control visibility */}
-        <video
-          ref={videoRef}
-          className="absolute inset-0 w-full md:h-full h-[368px] object-cover"
-          style={{
-            display: showVideoElement ? "block" : "none",
-          }}
-          playsInline={false}
-        >
-          <source src={partnerData?.videoUrl} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+  {/* Video Element */}
+  <video
+    ref={videoRef}
+    className="absolute inset-0 w-full h-full object-cover"
+    style={{
+      display: showVideoElement ? "block" : "none",
+    }}
+    playsInline={false}
+  >
+    <source src={partnerData?.videoUrl} type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+  
+  {/* Video Controls Overlay */}
+  <div className="absolute inset-0 bottom-25 md:bottom-50 z-40 ">
+    {/* Hover area - full video size */}
+    <div className="relative w-full h-full group">
+      {/* Controls container */}
+      <div className="absolute inset-0 flex flex-col items-center justify-between pointer-events-none">
 
-        {/* Custom video controls - show on hover only */}
-        <div className="absolute inset-0 z-40  video-controls-container">
-          {/* Hover area - full video size */}
-          <div className="relative w-full h-full group">
-            {/* Controls container - positioned higher up */}
-            <div className={`md:absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-auto `}>
+        {/* Centered Play Button */}
+        <div className="flex-1 flex items-center justify-center pointer-events-auto ">
+          {partnerData?.videoUrl && !isVideoPlaying && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePlayClick();
+              }}
+              className="text-white hover:scale-125 transition-all duration-300 rounded-full p-3 mt-32 cursor-pointer bg-black/50 rounded-full"
+              onMouseEnter={() => setShowControls(true)}
+            >
+              <img
+                src={PlayButton}
+                alt="Play"
+                className="h-12 w-12 drop-shadow-2xl"
+              />
+            </button>
+          )}
+        </div>
 
-              {/* Main play/pause button - centered */}
-              <div className=" md:flex md:h-[100vh] h-[120px] md:items-end md:justify-center md:mt-0 mt-10   md:w-full gap-6 transform translate-y-12 ">
-                <div className="flex md:items-end  ">
-                  {/* Play / Pause button */}
-                  {partnerData?.videoUrl && (
-                    <div className={`flex justify-center ${isPartner ? " md:pt-0 pt-16" : " "}  `}>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          isVideoPlaying ? handlePauseClick() : handlePlayClick();
-                        }}
-                        className={`text-white hover:scale-125 transition-all duration-300 
-                 ${!isVideoPlaying ? " bg-black/50" : ""} rounded-full p-3 cursor-pointer`}
-                        onMouseEnter={() => setShowControls(true)}
-                      >
-                        {!isVideoPlaying &&
-                          // <FaPauseCircle className="h-16 w-16 drop-shadow-2xl" />
-                          <img
-                            src={PlayButton}
-                            alt="Play"
-                            className="h-16 w-16 drop-shadow-2xl"
-                          />
-                        }
-                      </button>
-                    </div>
-                  )}
+        {/* Bottom Controls Bar */}
+        {isVideoPlaying && (
+          <div
+            className="w-full p-4 pt-8 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-auto"
+            onMouseEnter={() => setShowControls(true)}
+            onMouseLeave={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <div className="flex items-center justify-between mx-auto w-full px-4">
 
-                </div>
-              </div>
-
-
-              {/* Bottom controls bar - ALWAYS show when hovered */}
-              {isVideoPlaying && (
-                <div
-                  className={`absolute  ${isPartner ? " md:top-92 top-60" : " md:bottom-60"}  left-0 right-0  p-4 pt-8 md:opacity-0  md:group-hover:opacity-100 transition-opacity duration-300`}
-                  onMouseEnter={() => setShowControls(true)}
-                  onMouseLeave={(e) => {
-                    // Don't hide immediately when leaving controls
+              {/* Left side: Play/Pause */}
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={(e) => {
                     e.stopPropagation();
+                    if (isVideoPlaying) {
+                      handlePauseClick();
+                    } else {
+                      handlePlayClick();
+                    }
                   }}
+                  className="text-white hover:scale-110 transition-transform"
                 >
-                  <div className="flex items-center justify-between  mx-auto w-full px-4">
+                  {isVideoPlaying ? (
+                    <FaPauseCircle className="h-8 w-8" />
+                  ) : (
+                    <img
+                      src={PlayButton}
+                      alt="Play"
+                      className="h-8 w-8"
+                    />
+                  )}
+                </button>
 
-                    {/* Left side: Play/Pause */}
-                    <div
-                      className="flex items-center gap-4"
-                      onMouseEnter={() => setShowControls(true)}
-                    >
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (isVideoPlaying) {
-                            handlePauseClick();
-                          } else {
-                            handlePlayClick();
-                          }
-                        }}
-                        className="text-white hover:scale-110 transition-transform"
-                      >
-                        {isVideoPlaying ? (
-                          <FaPauseCircle className="h-8 w-8" />
-                        ) : (
-                          <img
-                            src={PlayButton}
-                            alt="Play"
-                            className="h-8 w-8"
-                          />
-                        )}
-                      </button>
-
-                      {/* Current time / Duration */}
-                      <div className="text-white text-sm font-medium">
-                        {formatTime(currentTime)} / {formatTime(duration)}
-                      </div>
-                    </div>
-
-                    {/* Right side: Additional controls */}
-                    <div
-                      className="flex items-center gap-4"
-                      onMouseEnter={() => setShowControls(true)}
-                    >
-                      {/* Volume control */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (videoRef.current) {
-                            videoRef.current.muted = !videoRef.current.muted;
-                          }
-                        }}
-                        className="text-white hover:scale-110 transition-transform"
-                      >
-                        {videoRef.current?.muted ? (
-                          <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
-                          </svg>
-                        ) : (
-                          <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-                          </svg>
-                        )}
-                      </button>
-
-                      {/* Fullscreen button */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (videoRef.current) {
-                            if (document.fullscreenElement) {
-                              document.exitFullscreen();
-                            } else {
-                              videoRef.current.requestFullscreen();
-                            }
-                          }
-                        }}
-                        className="text-white hover:scale-110 transition-transform"
-                      >
-                        <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
-                        </svg>
-                      </button>
-
-                      {/* Close video button */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handlePauseClick();
-                          setShowVideoElement(false);
-                        }}
-                        className="text-white hover:scale-110 transition-transform ml-2"
-                      >
-                        <IoClose className="h-7 w-7" />
-                      </button>
-                    </div>
-                  </div>
+                {/* Current time / Duration */}
+                <div className="text-white text-sm font-medium">
+                  {formatTime(currentTime)} / {formatTime(duration)}
                 </div>
-              )}
-              <div className="md:bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] md:h-[368px] w-full mt-20" >
-
               </div>
-              <div className="md:bg-[#01351f] w-full md:h-16"></div>
-              <div className=" md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] pt-0 w-full">
-                <div className="w-full mx-auto px-4 md:px-12 flex justify-center items-end max-w-7xl">
+
+              {/* Right side: Additional controls */}
+              <div className="flex items-center gap-4">
+                {/* Volume control */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (videoRef.current) {
+                      videoRef.current.muted = !videoRef.current.muted;
+                    }
+                  }}
+                  className="text-white hover:scale-110 transition-transform"
+                >
+                  {videoRef.current?.muted ? (
+                    <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
+                    </svg>
+                  ) : (
+                    <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+                    </svg>
+                  )}
+                </button>
+
+                {/* Fullscreen button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (videoRef.current) {
+                      if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                      } else {
+                        videoRef.current.requestFullscreen();
+                      }
+                    }
+                  }}
+                  className="text-white hover:scale-110 transition-transform"
+                >
+                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+                  </svg>
+                </button>
+
+                {/* Close video button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePauseClick();
+                    setShowVideoElement(false);
+                  }}
+                  className="text-white hover:scale-110 transition-transform ml-2"
+                >
+                  <IoClose className="h-7 w-7" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+  <div className="absolute -bottom-7 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,rgba(1,53,31,0.93)_48%,rgba(1,53,31,1)_100%)]  pt-0 w-full">
+        <div className="w-full mx-auto px-4 md:px-12 flex justify-center items-end max-w-7xl">
                   <div className="flex md:gap-4 gap-1.5 justify-center md:bottom-0 w-full pb-0 z-40">
                     {!isPartner && (
                       <>
@@ -1013,30 +994,24 @@ const SupplierProfile = () => {
                     )}
                   </div>
 
-                </div>
-              </div>
-              <div className={`${!isPartner && 'bg-[#01351f] md:bg-[#01351f] '} md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,rgba(1,53,31,0.93)_48%,rgba(1,53,31,1)_100%)]
- w-full ${isPartner ? (partnerData?.videoUrl ? (isVideoPlaying ? "pt-[80px]" : "pt-[82px]") : "pt-[66px]") : (partnerData?.videoUrl && isVideoPlaying ? "pt-[40px]" : "pt-[42px]")} md:mt-[0px] py-4`}>
+        </div>
+        <div className={`bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,rgba(1,53,31,0.93)_48%,rgba(1,53,31,1)_100%)]
+            w-full ${isPartner ? (partnerData?.videoUrl ? (isVideoPlaying ? "pt-[80px]" : "pt-[72px]") : "pt-[66px]") : (partnerData?.videoUrl && isVideoPlaying ? "pt-[40px]" : "pt-[22px]")} md:mt-[0px] py-4`}>
                 <h1 className={`font-extrabold md:text-6xl text-[32px] text-center text-white md:py-5 py-0 px-4 overflow-hidden text-ellipsis max-w-full leading-[34px]`}>
                   {partnerData?.businessName || partnerData?.fullName || "Loading..."}
                 </h1>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <UserHeader />
-
-
-        <div className="bg-[#01351f]">
+  </div>
+    <UserHeader/>
+  </div>
+       <div className="bg-[#01351f]">
           <div className="max-w-6xl m-auto px-4 md:px-8 py-10 md:py-8">
             <p className="text-white font-[400] md:text-[18px] text-[14px] text-left md:text-center px-4 md:px-8 leading-relaxed">
               {partnerData?.textField1 || "Loading..."}
             </p>
           </div>
         </div>
-
-        {/* Mobile layout with updated card order */}
+        {/* Mobile layout with desired card order */}
         <div className="bg-[#01351f] min-h-screen flex md:hidden justify-center items-center p-4">
           <div className="flex flex-col gap-6 max-w-7xl w-full mx-auto">
             {/* 1. ImageUrl2 card */}
@@ -1231,7 +1206,7 @@ const SupplierProfile = () => {
         </div>
 
         {/* Desktop / tablet layout */}
-        <div className="bg-[#01351f] min-h-screen hidden md:flex justify-center items-center p-4 md:p-8">
+        <div className="bg-[#01351f] hidden md:flex justify-center items-center p-4 md:p-8">
           <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl w-full mx-auto">
             {/* Trustpilot Section */}
             <div className="flex flex-col gap-6">
@@ -1427,9 +1402,7 @@ const SupplierProfile = () => {
             </div>
           </div>
         </div>
-        <Footer />
-
-        {/* Modals */}
+                <Footer />
         {modalRendered && (
           <div
             className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-300 ${isModalVisible ? "opacity-100" : "opacity-0"
@@ -1685,7 +1658,7 @@ const SupplierProfile = () => {
             </div>
           </div>
         )}
-      </div>
+  
     </>
   );
 };

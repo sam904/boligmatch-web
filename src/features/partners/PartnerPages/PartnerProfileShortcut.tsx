@@ -255,8 +255,6 @@ function PartnerProfileShortcut({
   return (
     <>
       <ScrollToTop />
-      {/* <div className="relative w-full md:h-[650px] h-[400px] overflow-hidden shadow-lg bg-[#01351F]"> */}
-      {/* className="inset-0 bg-cover bg-center bg-no-repeat w-full md:h-[100vh] h-[400px] bg-[#01351F] rounded-t-4xl" */}
       <div className="relative w-full md:h-[683px] h-[400px] overflow-hidden shadow-lg bg-[#01351F]">
         <div
           className="inset-0 bg-cover bg-center bg-no-repeat w-full md:h-[683px] h-[400px] bg-[#01351F] rounded-t-4xl"
@@ -264,13 +262,7 @@ function PartnerProfileShortcut({
             backgroundImage: `url(${getBackgroundImage()})`,
             display: showVideoElement ? "none" : "block",
           }}>
-          <div className="flex flex-col item-end justify-end">
-            <div className="h-[40vh]"></div>
-            <div className="h-[60vh]">
-              <div className="h-[45vh] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]"></div>
-              <div className="h-[15vh] bg-[#01351F]"></div>
-            </div>
-          </div>
+          
         </div>
 
         {/* Video Player */}
@@ -329,7 +321,7 @@ function PartnerProfileShortcut({
               {/* Bottom controls bar */}
               {isVideoPlaying && (
                 <div
-                  className="absolute md:bottom-60 bottom-20 left-0 right-0 p-2 md:p-4 pt-4 md:pt-8 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300"
+                  className="absolute md:bottom-40 bottom-20 left-0 right-0 p-2 md:p-4 pt-4 md:pt-8 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300"
                   onMouseLeave={(e) => {
                     e.stopPropagation();
                   }}

@@ -259,7 +259,7 @@ const UserSupplier = () => {
           }}
         />
         {categoryName && (
-          <div className="absolute z-10 pointer-events-none inset-x-0 top-42 md:inset-0 md:flex md:items-center md:justify-center px-4">
+          <div className="absolute z-10 pointer-events-none inset-x-0 top-56 md:inset-0 md:flex md:items-center md:justify-center px-4">
             <h1 className="text-white text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
               {categoryName}
             </h1>
