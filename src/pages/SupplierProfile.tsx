@@ -1016,12 +1016,11 @@ const SupplierProfile = () => {
                 </div>
               </div>
               <div className={`${!isPartner && 'bg-[#01351f] md:bg-[#01351f] '} md:bg-[#01351f] bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,rgba(1,53,31,0.93)_48%,rgba(1,53,31,1)_100%)]
- w-full ${isPartner ? (partnerData?.videoUrl ? (isVideoPlaying ? "pt-[80px]" : "pt-[72px]") : "pt-[66px]") : (partnerData?.videoUrl && isVideoPlaying ? "pt-[40px]" : "pt-[22px]")} md:mt-[0px] py-4`}>
+ w-full ${isPartner ? (partnerData?.videoUrl ? (isVideoPlaying ? "pt-[80px]" : "pt-[82px]") : "pt-[66px]") : (partnerData?.videoUrl && isVideoPlaying ? "pt-[40px]" : "pt-[42px]")} md:mt-[0px] py-4`}>
                 <h1 className={`font-extrabold md:text-6xl text-[32px] text-center text-white md:py-5 py-0 px-4 overflow-hidden text-ellipsis max-w-full leading-[34px]`}>
                   {partnerData?.businessName || partnerData?.fullName || "Loading..."}
                 </h1>
               </div>
-
             </div>
           </div>
         </div>
