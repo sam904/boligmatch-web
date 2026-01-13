@@ -737,7 +737,10 @@ const SupplierProfile = () => {
     style={{
       display: showVideoElement ? "block" : "none",
     }}
-    playsInline={false}
+    // Keep video inline on mobile (no native fullscreen controls)
+    playsInline
+    // Explicitly disable native controls – we render custom controls instead
+    controls={false}
   >
     <source src={partnerData?.videoUrl} type="video/mp4" />
     Your browser does not support the video tag.
