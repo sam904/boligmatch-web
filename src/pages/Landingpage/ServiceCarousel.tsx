@@ -4,7 +4,7 @@ import swaperImg1 from "/src/assets/userImages/swiper5.png";
 import swaperImg2 from "/src/assets/userImages/swiper4.png";
 import swaperImg3 from "/src/assets/userImages/swiper1.png";
 import swaperImg4 from "/src/assets/userImages/swiper2.png";
-import swaperImg5 from "/src/assets/userImages/swiper3.png";
+import swaperImg5 from "/src/assets/userImages/carousel2.png";
 import swaperImg6 from "/src/assets/userImages/swiper6.png";
 import swaperImg7 from "/src/assets/userImages/swaperImg7.png";
 import swaperImg8 from "/src/assets/userImages/swaperImg8.png";
