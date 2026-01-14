@@ -5,8 +5,8 @@ const SPACES_ACCESS_KEY = import.meta.env.VITE_DO_SPACES_ACCESS_KEY;
 const SPACES_SECRET_KEY = import.meta.env.VITE_DO_SPACES_SECRET_KEY;
 
 const s3Client = new S3Client({
-  region: 'blr1',
-  endpoint: 'https://blr1.digitaloceanspaces.com',
+  region: 'fra1',
+  endpoint: 'https://fra1.digitaloceanspaces.com',
   credentials: {
     accessKeyId: SPACES_ACCESS_KEY,
     secretAccessKey: SPACES_SECRET_KEY,
@@ -128,7 +128,7 @@ export const uploadService = {
       const uint8Array = new Uint8Array(arrayBuffer);
 
       const command = new PutObjectCommand({
-        Bucket: 'boligmatch',
+        Bucket: 'boligspace',
         Key: key,
         Body: uint8Array,
         ACL: 'public-read',
@@ -140,7 +140,7 @@ export const uploadService = {
 
       await s3Client.send(command);
 
-      return `https://boligmatch.blr1.digitaloceanspaces.com/${key}`;
+      return `https://boligspace.fra1.digitaloceanspaces.com/${key}`;
     } catch (error) {
       console.error('Upload error details:', error);
       throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -168,7 +168,7 @@ export const uploadService = {
       const uint8Array = new Uint8Array(arrayBuffer);
 
       const command = new PutObjectCommand({
-        Bucket: 'boligmatch',
+        Bucket: 'boligspace',
         Key: key,
         Body: uint8Array,
         ACL: 'public-read',
@@ -178,7 +178,7 @@ export const uploadService = {
 
       await s3Client.send(command);
 
-      return `https://boligmatch.blr1.digitaloceanspaces.com/${key}`;
+      return `https://boligspace.fra1.digitaloceanspaces.com/${key}`;
     } catch (error) {
       console.error('Video upload error details:', error);
       throw new Error(`Failed to upload video: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -206,7 +206,7 @@ export const uploadService = {
       const uint8Array = new Uint8Array(arrayBuffer);
 
       const command = new PutObjectCommand({
-        Bucket: 'boligmatch',
+        Bucket: 'boligspace',
         Key: key,
         Body: uint8Array,
         ACL: 'public-read',
@@ -216,7 +216,7 @@ export const uploadService = {
 
       await s3Client.send(command);
 
-      return `https://boligmatch.blr1.digitaloceanspaces.com/${key}`;
+      return `https://boligspace.fra1.digitaloceanspaces.com/${key}`;
     } catch (error) {
       console.error('Document upload error details:', error);
       throw new Error(`Failed to upload document: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -275,7 +275,7 @@ export const uploadService = {
       const uint8Array = new Uint8Array(arrayBuffer);
 
       const command = new PutObjectCommand({
-        Bucket: 'boligmatch',
+        Bucket: 'boligspace',
         Key: key,
         Body: uint8Array,
         ACL: 'public-read',
@@ -289,7 +289,7 @@ export const uploadService = {
 
       await s3Client.send(command);
 
-      return `https://boligmatch.blr1.digitaloceanspaces.com/${key}`;
+      return `https://boligspace.fra1.digitaloceanspaces.com/${key}`;
     } catch (error) {
       console.error('SVG upload error:', error);
       throw new Error(`Failed to upload SVG: ${error instanceof Error ? error.message : 'Unknown error'}`);
