@@ -11,11 +11,12 @@ export interface User {
   avatar?: string;
   role: number;
   roleIds: string;
+  roleId: number;
   roleName: string;
   franchiseId?: number;
   admissionId?: number;
   isActive: boolean;
-  status: "All" | "Active" | "InActive"; // Add this property
+  status: "All" | "Active" | "InActive";
   createdAt?: string;
   updatedAt?: string;
 }
@@ -32,6 +33,7 @@ export interface CreateUserRequest {
   status: "Active" | "InActive";
   role?: number;
   roleIds?: string;
+  roleId: number; 
 }
 
 export interface UpdateUserRequest extends CreateUserRequest {
