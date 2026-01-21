@@ -13,6 +13,7 @@ export interface AuthUser {
   avatar?: string;
   role: number;
   roleIds: string;
+  roleId: number;
   roleName: string;
   franchiseId?: number;
   partnerId?: number;

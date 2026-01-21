@@ -504,6 +504,7 @@ export default function SignUpModal({
         password: data.password,
         mobileNo: data.mobileNumber,
         postalCode: data.postalCode,
+        roleId: 3, 
         isActive: true,
         status: "Active",
       };
