@@ -79,6 +79,7 @@ const authSlice = createSlice({
           avatar: output.avatar,
           role: output.role,
           roleIds: output.roleIds,
+          roleId: output.roleId || output.role,
           roleName: output.roleName,
           franchiseId: output.franchiseId,
           admissionId: output.admissionId,

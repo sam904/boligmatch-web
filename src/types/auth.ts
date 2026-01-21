@@ -37,6 +37,7 @@ export interface LoginResponse {
     franchiseId: number;
     role: number;
     roleIds: string;
+    roleId: number;
     roleName: string;
     admissionId: number;
     mobileNo: string;
