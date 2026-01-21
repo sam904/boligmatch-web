@@ -103,7 +103,9 @@
     "svgSmallSize": "✓ Small file size",
     "fileSizeExceeded": "File size should be less than {sizeLimit}",
     "svgNotePreview": "SVG files are vector graphics that can be scaled without losing quality.",
-    "backgroundImage": "Background Image"
+    "backgroundImage": "Background Image",
+    "selectOption":"SelectOption",
+    "selectRole":"SelectRole"
   
   
   },
@@ -479,7 +481,8 @@
       "exportError": "Failed to export users",
       "noUsersCreated": "No users have been created yet",
       "addFirstUser": "Add Your First User",
-      "user": "User"
+      "user": "User",
+      "roleCannotBeChanged":"Role cannot be changed"
     },
     "testimonials": {
       "title": "Testimonials",
