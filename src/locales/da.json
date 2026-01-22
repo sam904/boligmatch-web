@@ -105,7 +105,8 @@
     "supportedFormats": "PNG, JPG, JPEG, WebP, SVG",
     "backgroundImage": "Upload baggrundsbillede",
     "selectOption":"vælgMulighed",
-    "selectRole":"vælgRolle"
+    "selectRole":"vælgRolle",
+    "removeCategory":"Fjern kategori"
   },
   "videoUpload": {
     "uploadVideo": "Upload video",
@@ -453,7 +454,15 @@
       "selectSubcategory": "Vælg Underkategori",
       "addTestimonial": "Tilføj udtalelse",
       "resetPassword": "Nulstil adgangskode",
-      "deletePartner": "Slet partner"
+      "deletePartner": "Slet partner",
+      "Category": "Kategori",
+      "addCategory":"Tilføj kategori",
+      "addSubcategory":"Tilføj underkategori",
+      "noSubcategoriesAdded":"Ingen underkategorier tilføjet",
+      "clickAddSubcategory":"Klik på Tilføj underkategori",
+      "categoriesAndSubCategories":"Tilføj kategorier / underkategorier",
+      "addCategoriesSubCategories":"Tilføj kategorier og underkategorier",
+      "addCategorySubCategory":"Tilføj kategorier og underkategorier"
     },
     "testimonials": {
       "title": "Udtalelser",

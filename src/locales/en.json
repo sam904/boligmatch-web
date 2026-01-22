@@ -105,7 +105,8 @@
     "svgNotePreview": "SVG files are vector graphics that can be scaled without losing quality.",
     "backgroundImage": "Background Image",
     "selectOption":"SelectOption",
-    "selectRole":"SelectRole"
+    "selectRole":"SelectRole",
+    "removeCategory":"Remove Category"
   
   
   },
@@ -449,7 +450,15 @@
       "noPartnersCreated": "No partners have been created yet",
       "addTestimonial": "Add Testimonial",
       "deletePartner": "Delete partner",
-      "status": "Status"
+      "status": "Status",
+      "Category":"Category",
+      "addCategory": "Add Category",
+      "addSubcategory": "Add Subcategory",
+      "noSubcategoriesAdded":"No Subcategories Added",
+      "clickAddSubcategory":"Click Add Subcategory",
+      "categoriesAndSubCategories":"Categories And SubCategories",
+      "addCategoriesSubCategories":"Add Categories SubCategories",
+      "addCategorySubCategory":"Add Category SubCategory"
     },
     "users": {
       "title": "Users",
