@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { partnerService } from "../../../services/partner.service";
-import { subCategoryService } from "../../../services/subCategory.service";
 import DataTable from "../../../components/common/DataTable/DataTable";
 import Pagination from "../../../components/common/Pagination";
 import SearchBar from "../../../components/common/SearchBar";
@@ -32,8 +31,7 @@ import type {
 } from "../../../types/partner";
 import { partnerDocumentService } from "../../../services/partnerdocument.service";
 import type { PartnerDocumentDto } from "../../../types/partnerdocument";
-import { categoryService } from "../../../services/category.service";
-import type { SubCategory } from "../../../types/subcategory";
+import { categoryService, } from "../../../services/category.service";
 import type { Category } from "../../../types/category";
 import SearchableSelectController from "../../../components/common/SearchableSelectController";
 import DocumentUpload from "../../../components/common/DocumentUpload";
@@ -63,6 +61,14 @@ interface ToastState {
   open: boolean;
 }
 
+// Type for subcategories by category from API
+type SubCategoryByCategory = {
+  id: number;
+  category: string;
+  categoryDescription: string;
+  subCategory: string;
+  subCategoryDescription: string;
+};
 
 // Update the ImagePreviewModal component in PartnersPage.tsx
 function ImagePreviewModal({
@@ -99,7 +105,6 @@ function ImagePreviewModal({
           {isSVG ? (
             <div className="w-full h-full flex items-center justify-center">
               <div className="text-center p-8">
-                {/* You can render the SVG directly if it's safe */}
                 <img
                   src={imageUrl}
                   alt="SVG Preview"
@@ -124,7 +129,6 @@ function ImagePreviewModal({
           >
             {t("common.openInNewTab") || "Open in new tab"}
           </a>
-         
         </div>
       </div>
     </div>
@@ -167,6 +171,7 @@ function LogoUploadWithValidation({
 const partnerSubCategorySchema = z.object({
   id: z.number().optional(),
   partnerId: z.number().optional(),
+  categoryId: z.number().min(1, "Category is required"),
   subCategoryId: z.number().min(1, "Sub Category is required"),
   isActive: z.boolean(),
 });
@@ -223,7 +228,7 @@ const partnerSchema = z.object({
   imageUrl5: z.string().optional(),
   thumbnail: z.string().optional(),
   isActive: z.boolean(),
-  status: z.enum(["Active", "InActive"]).default("Active"), // CHANGED: Remove "All" and add default
+  status: z.enum(["Active", "InActive"]).default("Active"),
   parSubCatlst: z
     .array(partnerSubCategorySchema)
     .min(1, "At least one sub category is required"),
@@ -300,6 +305,11 @@ export default function PartnersPage() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [toasts, setToasts] = useState<ToastState[]>([]);
+  const [subCategoriesByCategory, setSubCategoriesByCategory] = useState<
+    SubCategoryByCategory[]
+  >([]);
+  const [loadingSubCategoriesByCategory, setLoadingSubCategoriesByCategory] =
+    useState(false);
   const [documentDeleteConfirmation, setDocumentDeleteConfirmation] = useState<{
     isOpen: boolean;
     documentIndex: number | null;
@@ -314,6 +324,7 @@ export default function PartnersPage() {
     partner: Partner | null;
   }>({ isOpen: false, partner: null });
   const navigate = useNavigate();
+
   // Email and Mobile Validation States
   const [emailValidation, setEmailValidation] = useState<{
     checking: boolean;
@@ -405,6 +416,7 @@ export default function PartnersPage() {
       },
     });
   };
+
   // Email validation function
   const validateEmailAvailability = async (email: string) => {
     if (!email) {
@@ -416,7 +428,6 @@ export default function PartnersPage() {
       return;
     }
 
-    // Basic email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailValidation({
@@ -446,7 +457,6 @@ export default function PartnersPage() {
           message: "Email is available",
         });
       } else {
-        // Handle duplicate email case
         setEmailValidation({
           checking: false,
           available: false,
@@ -459,7 +469,6 @@ export default function PartnersPage() {
     } catch (error: any) {
       console.error("Email validation error:", error);
 
-      // Handle API errors specifically
       if (error.response?.status === 400) {
         setEmailValidation({
           checking: false,
@@ -477,7 +486,7 @@ export default function PartnersPage() {
     }
   };
 
-  // Mobile validation function - UPDATED FOR 8 DIGITS
+  // Mobile validation function
   const validateMobileAvailability = async (mobileNo: string) => {
     if (!mobileNo) {
       setMobileValidation({
@@ -488,10 +497,8 @@ export default function PartnersPage() {
       return;
     }
 
-    // Clean mobile number (remove spaces, dashes, etc.)
     const cleanMobile = mobileNo.replace(/[\s\-\(\)]+/g, "");
 
-    // UPDATED: Basic mobile validation - exactly 8 digits
     if (cleanMobile.length !== 8) {
       setMobileValidation({
         checking: false,
@@ -503,7 +510,6 @@ export default function PartnersPage() {
       return;
     }
 
-    // UPDATED: Validate that it contains only digits
     if (!/^\d+$/.test(cleanMobile)) {
       setMobileValidation({
         checking: false,
@@ -535,7 +541,6 @@ export default function PartnersPage() {
           message: "Mobile number is available",
         });
       } else {
-        // Handle duplicate mobile case
         setMobileValidation({
           checking: false,
           available: false,
@@ -548,7 +553,6 @@ export default function PartnersPage() {
     } catch (error: any) {
       console.error("Mobile validation error:", error);
 
-      // Handle API errors specifically
       if (error.response?.status === 400) {
         setMobileValidation({
           checking: false,
@@ -569,19 +573,45 @@ export default function PartnersPage() {
     }
   };
 
+  // Fetch subcategories by category when category changes
+ useEffect(() => {
+  const fetchSubCategoriesByCategory = async () => {
+    if (selectedCategoryId > 0) {
+      setLoadingSubCategoriesByCategory(true);
+      try {
+        const subCats = await categoryService.getSubCategoriesByCategoryId(
+          selectedCategoryId
+        );
+        console.log("API Response:", subCats);
+        console.log("First item structure:", subCats[0] ? Object.keys(subCats[0]) : []);
+        
+        // The API response should already be typed as SubCategoryByCategory[]
+        setSubCategoriesByCategory(subCats);
+      } catch (error) {
+        console.error("Error fetching subcategories by category:", error);
+        setSubCategoriesByCategory([]);
+      } finally {
+        setLoadingSubCategoriesByCategory(false);
+      }
+    } else {
+      setSubCategoriesByCategory([]);
+    }
+  };
+
+  fetchSubCategoriesByCategory();
+}, [selectedCategoryId]);
+
   // Debounced email validation handler
   const handleEmailChange = (email: string) => {
     setValue("email", email);
 
-    // Clear existing timer
     if (emailDebounceTimer) {
       clearTimeout(emailDebounceTimer);
     }
 
-    // Set new timer for debounced validation
     const timer = setTimeout(() => {
       validateEmailAvailability(email);
-    }, 800); // 800ms debounce
+    }, 800);
 
     setEmailDebounceTimer(timer);
   };
@@ -590,15 +620,13 @@ export default function PartnersPage() {
   const handleMobileChange = (mobileNo: string) => {
     setValue("mobileNo", mobileNo);
 
-    // Clear existing timer
     if (mobileDebounceTimer) {
       clearTimeout(mobileDebounceTimer);
     }
 
-    // Set new timer for debounced validation
     const timer = setTimeout(() => {
       validateMobileAvailability(mobileNo);
-    }, 800); // 800ms debounce
+    }, 800);
 
     setMobileDebounceTimer(timer);
   };
@@ -644,7 +672,7 @@ export default function PartnersPage() {
       mobileNo: "",
       address: "",
       trustPilotUrl: "",
-      parSubCatlst: [{ subCategoryId: 0, isActive: true }],
+      parSubCatlst: [{ categoryId: 0, subCategoryId: 0, isActive: true }],
       parDoclst: [],
     },
   });
@@ -688,7 +716,7 @@ export default function PartnersPage() {
   const emailValue = watch("email");
   const mobileNoValue = watch("mobileNo");
 
-  // Check if a step is completed - FIXED VERSION
+  // Check if a step is completed
   const isStepCompleted = async (step: number): Promise<boolean> => {
     const stepFields: Record<number, ValidFieldNames[]> = {
       1: [
@@ -714,14 +742,11 @@ export default function PartnersPage() {
       6: ["categoryId"],
     };
 
-    // For steps 5 and 6, we need to check array fields
     if (step === 5) {
-      // If there are no documents, step is automatically completed
       if (documentFields.length === 0) {
         return true;
       }
 
-      // If there are documents, validate them
       const documentValidations = documentFields.map((_, index) =>
         trigger([
           `parDoclst.${index}.documentName`,
@@ -745,19 +770,16 @@ export default function PartnersPage() {
       return categoryValid && subCategoryResults.every((result) => result);
     }
 
-    // For regular steps - ADD PROPER VALIDATION
     if (stepFields[step].length > 0) {
       const isValid = await trigger(stepFields[step] as any, {
         shouldFocus: false,
       });
 
-      // Additional check for step 1 to ensure email validation passes
       if (step === 1) {
         const hasEmailErrors = !!errors.email?.message;
         const hasEmailValidationErrors = emailValidation.available === false;
         const isEmailChecking = emailValidation.checking;
 
-        // Don't allow proceeding if email validation is in progress or failed
         if (isEmailChecking) {
           toast.error(
             t("admin.partners.waitEmailValidation") ||
@@ -783,20 +805,18 @@ export default function PartnersPage() {
     return true;
   };
 
-  // Add this function to handle document changes and auto-save
+  // Handle document changes and auto-save
   const handleDocumentChange = async (
     field: "documentName" | "documentUrl",
     value: string,
     index: number
   ) => {
-    // Update the form value
     if (field === "documentName") {
       setValue(`parDoclst.${index}.documentName`, value);
     } else {
       setValue(`parDoclst.${index}.documentUrl`, value);
     }
 
-    // If we're editing an existing partner and both fields have values, auto-save
     if (editingPartner?.id) {
       const currentDocument = watch(`parDoclst.${index}`);
       const documentName =
@@ -804,14 +824,12 @@ export default function PartnersPage() {
       const documentUrl =
         field === "documentUrl" ? value : currentDocument.documentUrl;
 
-      // Only save if both fields are filled
       if (
         documentName &&
         documentName.trim() !== "" &&
         documentUrl &&
         documentUrl.trim() !== ""
       ) {
-        // Debounce the save to avoid too many API calls
         const timeoutId = setTimeout(() => {
           handleDocumentSave(
             {
@@ -823,14 +841,14 @@ export default function PartnersPage() {
             },
             index
           );
-        }, 1000); // 1 second debounce
+        }, 1000);
 
         return () => clearTimeout(timeoutId);
       }
     }
   };
 
-  // Update the handleDocumentSave function
+  // Handle document save
   const handleDocumentSave = async (
     documentData: PartnerDocumentDto,
     index: number
@@ -843,7 +861,6 @@ export default function PartnersPage() {
       return;
     }
 
-    // Add to saving documents array to show loading state
     setSavingDocuments((prev) => [...prev, index]);
 
     try {
@@ -855,14 +872,11 @@ export default function PartnersPage() {
 
       let response;
       if (documentData.id && documentData.id > 0) {
-        // Update existing document
         response = await partnerDocumentService.updateDocument(payload);
       } else {
-        // Add new document
         response = await partnerDocumentService.addDocument(payload);
       }
 
-      // FIX: Remove .data since response is directly ApiResponse<PartnerDocument>
       if (response.isSuccess) {
         toast.success(
           t("admin.partners.documentSaved", {
@@ -870,7 +884,6 @@ export default function PartnersPage() {
           }) || `Document "${documentData.documentName}" saved successfully`
         );
 
-        // Update the local form state with the returned document (which includes the ID)
         if (response.output) {
           setValue(`parDoclst.${index}`, {
             ...documentData,
@@ -880,7 +893,6 @@ export default function PartnersPage() {
           });
         }
 
-        // Invalidate queries to refresh data
         queryClient.invalidateQueries({ queryKey: ["partners"] });
         queryClient.invalidateQueries({
           queryKey: ["partner", editingPartner.id],
@@ -895,17 +907,17 @@ export default function PartnersPage() {
           `Failed to save document: ${error.message}`
       );
     } finally {
-      // Remove from saving documents array
       setSavingDocuments((prev) => prev.filter((i) => i !== index));
     }
   };
+
+  
 
   // Update completed steps when current step changes
   useEffect(() => {
     const updateCompletedSteps = async () => {
       const newCompletedSteps = [...completedSteps];
 
-      // Check all previous steps
       for (let step = 1; step < currentStep; step++) {
         if (!newCompletedSteps.includes(step)) {
           const isValid = await isStepCompleted(step);
@@ -923,7 +935,7 @@ export default function PartnersPage() {
     }
   }, [currentStep]);
 
-  // UPDATED: Fetch partners with status filter
+  // Fetch partners with status filter
   const { data: paginatedData, isLoading } = useQuery({
     queryKey: [
       "partners",
@@ -951,21 +963,6 @@ export default function PartnersPage() {
     queryFn: () => categoryService.getAll(true),
     staleTime: 5 * 60 * 1000,
   });
-
-  const { data: subCategories = [], isLoading: isLoadingSubCategories } =
-    useQuery<SubCategory[]>({
-      queryKey: ["subCategories", selectedCategoryId],
-      queryFn: () => subCategoryService.getAll(true),
-      staleTime: 5 * 60 * 1000,
-      select: (data) => {
-        if (selectedCategoryId > 0) {
-          return data.filter(
-            (subCat) => subCat.categoryId === selectedCategoryId
-          );
-        }
-        return data;
-      },
-    });
 
   const getCategoryName = (categoryId: number) => {
     const category = categories.find((cat) => cat.id === categoryId);
@@ -1015,11 +1012,17 @@ export default function PartnersPage() {
             ? editingPartner.parSubCatlst.map((subCat) => ({
                 id: subCat.id,
                 partnerId: subCat.partnerId,
+                categoryId: subCat.categoryId || editingPartner.categoryId,
                 subCategoryId: subCat.subCategoryId,
                 isActive: subCat.isActive ?? true,
               }))
-            : [{ subCategoryId: 0, isActive: true }],
-        // CHANGED: Handle empty documents array
+            : [
+                {
+                  categoryId: editingPartner.categoryId,
+                  subCategoryId: 0,
+                  isActive: true,
+                },
+              ],
         parDoclst:
           editingPartner.parDoclst && editingPartner.parDoclst.length > 0
             ? editingPartner.parDoclst.map((doc) => ({
@@ -1029,12 +1032,12 @@ export default function PartnersPage() {
                 documentUrl: doc.documentUrl,
                 isActive: doc.isActive ?? true,
               }))
-            : [], // Empty array instead of default document
+            : [],
       };
       reset(formData);
       setSelectedCategoryId(editingPartner.categoryId);
 
-      // Reset validation states for editing mode
+      // Reset validation states
       setEmailValidation({
         checking: false,
         available: null,
@@ -1080,7 +1083,7 @@ export default function PartnersPage() {
       thumbnail: "",
       isActive: true,
       status: "Active",
-      parSubCatlst: [{ subCategoryId: 0, isActive: true }],
+      parSubCatlst: [{ categoryId: 0, subCategoryId: 0, isActive: true }],
       parDoclst: [],
     };
     reset(defaultValues);
@@ -1114,8 +1117,6 @@ export default function PartnersPage() {
     },
     onError: (error: any) => {
       console.error("Create partner error:", error);
-
-      // Extract the actual error message from the API response
       const apiError = error?.response?.data;
       const errorMessage =
         apiError?.failureReason ||
@@ -1144,8 +1145,6 @@ export default function PartnersPage() {
     },
     onError: (error: any) => {
       console.error("Update mutation error:", error);
-
-      // Extract the actual error message from the API response
       const apiError = error?.response?.data;
       const errorMessage =
         apiError?.failureReason ||
@@ -1199,7 +1198,7 @@ export default function PartnersPage() {
         toast.success(
           t("admin.partners.documentDeleted") || "Document deleted successfully"
         );
-        removeDocumentField(documentIndex);
+        removeDocument(documentIndex);
         queryClient.invalidateQueries({
           queryKey: ["partners"],
         });
@@ -1210,7 +1209,7 @@ export default function PartnersPage() {
         );
       }
     } else {
-      removeDocumentField(documentIndex);
+      removeDocument(documentIndex);
     }
 
     setDocumentDeleteConfirmation({
@@ -1226,7 +1225,7 @@ export default function PartnersPage() {
     });
   };
 
-  // UPDATED: Export function with status filter
+  // Export function with status filter
   const handleExportPartners = async () => {
     try {
       setIsExporting(true);
@@ -1259,7 +1258,6 @@ export default function PartnersPage() {
   const onSubmit = async (data: PartnerFormData) => {
     if (isSubmitting) return;
 
-    // Check if email or mobile validations are in progress
     if (emailValidation.checking || mobileValidation.checking) {
       toast.error(
         t("admin.partners.waitEmailValidation") ||
@@ -1268,13 +1266,11 @@ export default function PartnersPage() {
       return;
     }
 
-    // Check if email validation failed
     if (data.email && emailValidation.available === false) {
       toast.error("Please fix email validation errors before submitting");
       return;
     }
 
-    // Check if mobile validation failed
     if (data.mobileNo && mobileValidation.available === false) {
       toast.error(
         "Please fix mobile number validation errors before submitting"
@@ -1301,7 +1297,6 @@ export default function PartnersPage() {
         isActive: subCat.isActive,
       }));
 
-      // CHANGED: Handle empty documents array
       const documentsPayload = (data.parDoclst || []).map((doc) => ({
         id: doc.id,
         partnerId: editingPartner?.id || 0,
@@ -1314,20 +1309,13 @@ export default function PartnersPage() {
         ...data,
         id: editingPartner?.id,
         parSubCatlst: subCategoriesPayload,
-        parDoclst: documentsPayload, // This can now be empty array
+        parDoclst: documentsPayload,
         email: data.email || undefined,
         mobileNo: data.mobileNo || undefined,
         trustPilotUrl: data.trustPilotUrl || undefined,
       };
 
-      console.log(
-        "Final payload being sent:",
-        JSON.stringify(payload, null, 2)
-      );
-      console.log(
-        "Documents payload structure:",
-        documentsPayload.map((doc) => Object.keys(doc))
-      );
+      console.log("Final payload being sent:", JSON.stringify(payload, null, 2));
 
       if (editingPartner) {
         await updateMutation.mutateAsync(payload as any);
@@ -1341,19 +1329,16 @@ export default function PartnersPage() {
     }
   };
 
-  // Unified handleNext function for both create and update modes - FIXED VERSION
+  // Unified handleNext function
   const handleNext = async () => {
     if (isSubmitting) return;
 
-    // Check validation states for step 1 - ENHANCED VALIDATION
     if (currentStep === 1) {
-      // Check if email or mobile validations are in progress
       if (emailValidation.checking || mobileValidation.checking) {
         toast.error("Please wait for email/mobile validation to complete");
         return;
       }
 
-      // Check if email validation failed
       if (emailValue && emailValidation.available === false) {
         toast.error(
           t("admin.partners.fixEmailErrors") ||
@@ -1362,7 +1347,6 @@ export default function PartnersPage() {
         return;
       }
 
-      // Check if mobile validation failed
       if (mobileNoValue && mobileValidation.available === false) {
         toast.error(
           t("admin.partners.fixMobileErrors") ||
@@ -1371,7 +1355,6 @@ export default function PartnersPage() {
         return;
       }
 
-      // Check if required fields are empty
       const requiredFields = {
         businessName: watch("businessName"),
         email: watch("email"),
@@ -1416,24 +1399,20 @@ export default function PartnersPage() {
         "isActive",
         "status",
       ],
-      5: [], // Documents are optional, no required fields
+      5: [],
       6: ["categoryId"],
     };
 
-    // Validate current step fields
     if (stepFields[currentStep].length > 0) {
       isValid = await trigger(stepFields[currentStep] as any, {
         shouldFocus: true,
       });
     }
 
-    // Additional validation for array fields in steps 5 and 6
     if (currentStep === 5) {
-      // Documents are optional, so if there are no documents, step is valid
       if (documentFields.length === 0) {
         isValid = true;
       } else {
-        // If there are documents, validate them
         const documentValidations = documentFields.map((_, index) =>
           trigger([
             `parDoclst.${index}.documentName`,
@@ -1469,7 +1448,6 @@ export default function PartnersPage() {
       return;
     }
 
-    // In update mode, submit the current step before moving to next
     if (editingPartner && currentStep < steps.length) {
       setIsSubmitting(true);
       try {
@@ -1481,7 +1459,6 @@ export default function PartnersPage() {
           isActive: subCat.isActive,
         }));
 
-        // CHANGED: Handle empty documents array in update mode
         const documentsPayload = (data.parDoclst || []).map((doc) => ({
           id: doc.id,
           partnerId: editingPartner?.id || 0,
@@ -1504,7 +1481,6 @@ export default function PartnersPage() {
           t("admin.partners.stepUpdated", { step: currentStep }) ||
             `Step ${currentStep} updated successfully`
         );
-        // Move to next step after successful update
         setCurrentStep((prev) => prev + 1);
       } catch (error) {
         console.error("Step update error:", error);
@@ -1512,7 +1488,6 @@ export default function PartnersPage() {
         setIsSubmitting(false);
       }
     } else if (currentStep < steps.length) {
-      // In create mode, just move to next step
       setCurrentStep((prev) => prev + 1);
       if (!completedSteps.includes(currentStep)) {
         setCompletedSteps([...completedSteps, currentStep]);
@@ -1525,13 +1500,11 @@ export default function PartnersPage() {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  // New function to handle step click - FIXED VERSION
+  // Function to handle step click
   const handleStepClick = async (step: number) => {
     if (isSubmitting) return;
 
-    // In update mode, allow free navigation between steps
     if (editingPartner) {
-      // But still validate that we can navigate to the requested step
       if (step > currentStep) {
         const canNavigate = await isStepCompleted(currentStep);
         if (!canNavigate) {
@@ -1546,7 +1519,6 @@ export default function PartnersPage() {
       return;
     }
 
-    // For create mode, use original logic
     if (step < currentStep || completedSteps.includes(step)) {
       setCurrentStep(step);
     } else if (step === currentStep + 1) {
@@ -1587,7 +1559,7 @@ export default function PartnersPage() {
     setCurrentPage(1);
   };
 
-  // UPDATED: Status filter change handler
+  // Status filter change handler
   const handleStatusFilterChange = (filter: "All" | "Active" | "InActive") => {
     setStatusFilter(filter);
     setCurrentPage(1);
@@ -1623,7 +1595,6 @@ export default function PartnersPage() {
   const handleDeletePartner = (partner: Partner) => {
     if (!partner.id) return;
 
-    // Show delete confirmation modal
     setDeleteConfirmation({
       isOpen: true,
       partner: partner,
@@ -1641,7 +1612,7 @@ export default function PartnersPage() {
   };
 
   const addSubCategoryField = () => {
-    appendSubCategory({ subCategoryId: 0, isActive: true });
+    appendSubCategory({ categoryId: 0, subCategoryId: 0, isActive: true });
   };
 
   const removeSubCategoryField = (index: number) => {
@@ -1654,11 +1625,9 @@ export default function PartnersPage() {
     appendDocument({ documentName: "", documentUrl: "", isActive: true });
   };
 
-  const removeDocumentField = (index: number) => {
-    // CHANGED: Allow removing even when there's only one document
-    // since documents are optional
-    removeDocument(index);
-  };
+  // const removeDocumentField = (index: number) => {
+  //   removeDocument(index);
+  // };
 
   const handleImagePreview = (url: string) => {
     setPreviewImage({ url, isOpen: true });
@@ -1668,6 +1637,7 @@ export default function PartnersPage() {
     setPreviewVideo({ url, isOpen: true });
   };
 
+  // Handle category change
   const handleCategoryChange = (categoryId: number | string) => {
     console.log("Category changed to:", categoryId);
     const categoryIdNum =
@@ -1688,10 +1658,10 @@ export default function PartnersPage() {
   const totalItems = paginatedData?.output?.rowCount || 0;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
-  // UPDATED: Check if there are any records to display
+  // Check if there are any records to display
   const hasRecords = partners.length > 0;
 
-  // UPDATED: Columns with status field
+  // Columns with status field
   const columns: ColumnDef<Partner>[] = [
     { accessorKey: "id", header: t("admin.partners.id") || "ID" },
     {
@@ -1713,7 +1683,6 @@ export default function PartnersPage() {
           return <span className="text-gray-400">No subcategories</span>;
         }
 
-        // Get unique subcategory names
         const uniqueSubCategories = Array.from(
           new Set(
             subCategories
@@ -2302,7 +2271,6 @@ export default function PartnersPage() {
                     )}
                   </div>
 
-                  {/* FIXED: Always show remove button when there are documents */}
                   <div className="flex items-center justify-between">
                     <Button
                       type="button"
@@ -2339,48 +2307,223 @@ export default function PartnersPage() {
               {t("admin.partners.Categories&SubCategories") ||
                 "Categories & SubCategories"}
             </h3>
-            <div className="bg-[#F0F2EA] p-4 rounded-lg">
+
+            <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-medium text-gray-700 mb-3">
-                {t("admin.partners.SelectCategory") || "Select Category"}
+                {t("admin.partners.categoriesAndSubCategories") ||
+                  "Categories & SubCategories"}
               </h4>
-              {isLoadingCategories ? (
-                <div className="text-center py-2">
-                  <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 cursor-pointer"></div>
-                  <p className="mt-1 text-gray-600 text-sm">
-                    {t("common.loadingCategories") || "Loading categories..."}
+              <p className="text-sm text-gray-600 mb-4">
+                {t("admin.partners.addCategoriesSubCategories") ||
+                  "Add one or more category and subcategory combinations for this partner"}
+              </p>
+
+              {/* No categories/subcategories message */}
+              {subCategoryFields.length === 0 && (
+                <div className="text-center py-6 border-2 border-dashed border-gray-300 rounded-lg mb-4">
+                  <p className="text-gray-500 text-sm">
+                    {t("admin.partners.noCategoriesAdded") ||
+                      "No categories and subcategories added"}
+                  </p>
+                  <p className="text-gray-400 text-xs mt-1">
+                    {t("admin.partners.addAtLeastOne") ||
+                      "Add at least one category and subcategory combination"}
                   </p>
                 </div>
-              ) : (
-                <SearchableSelectController
-                  name="categoryId"
-                  control={control}
-                  label={t("admin.categories.title") || "Category"}
-                  error={
-                    errors.categoryId?.message &&
-                    t("validation.categoryRequired")
-                  }
-                  options={categories
-                    .filter((cat) => cat.isActive)
-                    .map((cat) => ({
-                      value: cat.id,
-                      label: cat.name,
-                    }))}
-                  placeholder={
-                    isLoadingCategories
-                      ? t("common.loadingCategories") || "Loading categories..."
-                      : categories.filter((cat) => cat.isActive).length === 0
-                      ? t("admin.partners.noActiveCategoriesWarning") ||
-                        "No active categories available"
-                      : t("common.selectCategory") || "Select Category"
-                  }
-                  disabled={
-                    isLoadingCategories ||
-                    categories.filter((cat) => cat.isActive).length === 0
-                  }
-                  required={true}
-                  onChange={handleCategoryChange}
-                />
               )}
+
+              {/* Category and Subcategory fields */}
+              {subCategoryFields.map((field, index) => {
+                const selectedCategoryId =
+                  watch(`parSubCatlst.${index}.categoryId`) || 0;
+
+                return (
+                  <div
+                    key={field.id}
+                    className="border border-gray-200 rounded-lg p-4 mb-4 bg-white"
+                  >
+                    <div className="space-y-4">
+                      {/* Category Selection */}
+                      <div>
+                        <SearchableSelectController
+                          name={`parSubCatlst.${index}.categoryId`}
+                          control={control}
+                          label={`${
+                            t("admin.categories.title") || "Category"
+                          } ${index + 1}`}
+                          error={
+                            errors.parSubCatlst?.[index]?.categoryId?.message &&
+                            t("validation.categoryRequired")
+                          }
+                          options={categories
+                            .filter((cat) => cat.isActive)
+                            .map((cat) => ({
+                              value: cat.id,
+                              label: cat.name,
+                            }))}
+                          placeholder={
+                            isLoadingCategories
+                              ? t("common.loadingCategories") ||
+                                "Loading categories..."
+                              : categories.filter((cat) => cat.isActive)
+                                  .length === 0
+                              ? t("admin.partners.noActiveCategoriesWarning") ||
+                                "No active categories available"
+                              : t("common.selectCategory") || "Select Category"
+                          }
+                          disabled={
+                            isLoadingCategories ||
+                            categories.filter((cat) => cat.isActive).length === 0
+                          }
+                          required={true}
+                          onChange={(categoryId) => {
+                            handleCategoryChange(categoryId);
+                          }}
+                        />
+                      </div>
+
+                      {/* Subcategory Selection - Fetch from API when category is selected */}
+                      {selectedCategoryId > 0 && (
+                        <div>
+                          <SearchableSelectController
+                            name={`parSubCatlst.${index}.subCategoryId`}
+                            control={control}
+                            label={`${
+                              t("admin.subcategories.title") || "Sub Category"
+                            } ${index + 1}`}
+                            error={
+                              errors.parSubCatlst?.[index]?.subCategoryId
+                                ?.message && t("validation.subCategoryRequired")
+                            }
+                           options={subCategoriesByCategory.map((subCat) => ({
+  value: subCat.id, // Use the id from API
+  label: subCat.subCategory, // Use subCategory from API
+}))}
+                            placeholder={
+                              loadingSubCategoriesByCategory
+                                ? t("admin.partners.loadingSubCategories") ||
+                                  "Loading sub categories..."
+                                : subCategoriesByCategory.length === 0
+                                ? t(
+                                    "admin.partners.noSubCategoriesAvailable"
+                                  ) ||
+                                  "No active sub categories available for this category"
+                                : t("admin.partners.selectSubcategory") ||
+                                  "Select Sub Category"
+                            }
+                            disabled={loadingSubCategoriesByCategory}
+                            required={true}
+                          />
+
+                          {/* Show loading state */}
+                          {loadingSubCategoriesByCategory && (
+                            <div className="flex items-center gap-2 text-blue-600 text-sm mt-2">
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 cursor-pointer"></div>
+                              {t("admin.partners.loadingSubCategories") ||
+                                "Loading sub categories..."}
+                            </div>
+                          )}
+
+                          {/* Warning if no subcategories available for selected category */}
+                          {!loadingSubCategoriesByCategory &&
+                            selectedCategoryId > 0 &&
+                            subCategoriesByCategory.length === 0 && (
+                              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
+                                <div className="flex items-center gap-2 text-yellow-800">
+                                  <svg
+                                    className="w-4 h-4 cursor-pointer"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                                    />
+                                  </svg>
+                                  <span className="text-sm font-medium">
+                                    {t(
+                                      "admin.partners.noActiveSubCategoriesWarning"
+                                    ) || "No Active Sub Categories Available"}
+                                  </span>
+                                </div>
+                                <p className="text-yellow-700 text-sm mt-1">
+                                  {t(
+                                    "admin.partners.noActiveSubCategoriesMessage"
+                                  ) ||
+                                    "There are no active subcategories available for the selected category."}
+                                </p>
+                              </div>
+                            )}
+                        </div>
+                      )}
+
+                      {/* Category not selected message */}
+                      {selectedCategoryId === 0 && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                          <div className="flex items-center gap-2 text-blue-800">
+                            <svg
+                              className="w-4 h-4 cursor-pointer"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            <span className="text-sm font-medium">
+                              {t("admin.partners.selectCategoryFirst") ||
+                                "Select a Category First"}
+                            </span>
+                          </div>
+                          <p className="text-blue-700 text-sm mt-1">
+                            {t("admin.partners.selectCategoryFirstMessage") ||
+                              "Please select a category to see available subcategories."}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Remove button for each row */}
+                    <div className="flex justify-end mt-4">
+                      <Button
+                        type="button"
+                        variant="danger"
+                        onClick={() => removeSubCategoryField(index)}
+                        disabled={subCategoryFields.length <= 1}
+                        className="cursor-pointer"
+                      >
+                        {t("common.remove") || "Remove"}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Add new category/subcategory row button */}
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={addSubCategoryField}
+                style={{
+                  backgroundColor: "#95C11F",
+                  borderColor: "#95C11F",
+                  color: "white",
+                }}
+                className="hover:bg-[#85B11F] hover:border-[#85B11F] cursor-pointer"
+              >
+                {t("admin.partners.addCategorySubCategory") ||
+                  "Add Category & SubCategory"}{" "}
+                +
+              </Button>
+
+              {/* Warning if no categories available */}
               {!isLoadingCategories &&
                 categories.filter((cat) => cat.isActive).length === 0 && (
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
@@ -2410,162 +2553,13 @@ export default function PartnersPage() {
                   </div>
                 )}
             </div>
-            {selectedCategoryId > 0 && (
-              <div className="bg-[#F0F2EA] p-4 rounded-lg">
-                <h4 className="font-medium text-gray-700 mb-3">
-                  {t("admin.subcategories.title") || "Sub Categories"}
-                </h4>
-                <p className="text-sm text-gray-600 mb-4">
-                  {t("admin.partners.addSubCategories") ||
-                    "Add one or more sub categories for this partner under the selected category"}
-                </p>
-                {isLoadingSubCategories ? (
-                  <div className="text-center py-4">
-                    <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 cursor-pointer"></div>
-                    <p className="mt-2 text-gray-600">
-                      {t("admin.partners.loadingSubCategories") ||
-                        "Loading sub categories..."}
-                    </p>
-                  </div>
-                ) : (
-                  <>
-                    {subCategoryFields.map((field, index) => (
-                      <div
-                        key={field.id}
-                        className="flex flex-col sm:flex-row items-end gap-3 sm:gap-4 p-4 border border-gray-200 rounded-lg mb-3"
-                      >
-                        <div className="flex-1 w-full">
-                          <SearchableSelectController
-                            name={`parSubCatlst.${index}.subCategoryId`}
-                            control={control}
-                            label={`${
-                              t("admin.subcategories.title") || "Sub Category"
-                            } ${index + 1}`}
-                            error={
-                              errors.parSubCatlst?.[index]?.subCategoryId
-                                ?.message && t("validation.subCategoryRequired")
-                            }
-                            options={subCategories
-                              .filter((subCat) => subCat.isActive)
-                              .map((subCat) => ({
-                                value: subCat.id,
-                                label: subCat.name,
-                              }))}
-                            placeholder={
-                              isLoadingSubCategories
-                                ? t("admin.partners.loadingSubCategories") ||
-                                  "Loading sub categories..."
-                                : subCategories.filter(
-                                    (subCat) => subCat.isActive
-                                  ).length === 0
-                                ? t(
-                                    "admin.partners.noSubCategoriesAvailable"
-                                  ) ||
-                                  "No active sub categories available for this category"
-                                : t("admin.partners.selectSubcategory") ||
-                                  "Select Sub Category"
-                            }
-                            disabled={
-                              isLoadingSubCategories ||
-                              subCategories.filter((subCat) => subCat.isActive)
-                                .length === 0
-                            }
-                            required={true}
-                          />
-                        </div>
-                        {subCategoryFields.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="danger"
-                            onClick={() => removeSubCategoryField(index)}
-                            className="mb-1 cursor-pointer w-full sm:w-auto"
-                          >
-                            {t("common.remove") || "Remove"}
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={addSubCategoryField}
-                      style={{
-                        backgroundColor: "#95C11F",
-                        borderColor: "#95C11F",
-                        color: "white",
-                      }}
-                      className="hover:bg-[#85B11F] hover:border-[#85B11F] cursor-pointer w-full sm:w-auto"
-                    >
-                      {t("admin.partners.AddsubCategory") ||
-                        "Add Sub Categories"}{" "}
-                      +
-                    </Button>
-                    {!isLoadingSubCategories &&
-                      subCategories.filter((subCat) => subCat.isActive)
-                        .length === 0 && (
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
-                          <div className="flex items-center gap-2 text-yellow-800">
-                            <svg
-                              className="w-4 h-4 cursor-pointer"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-                              />
-                            </svg>
-                            <span className="text-sm font-medium">
-                              {t(
-                                "admin.partners.noActiveSubCategoriesWarning"
-                              ) || "No Active Sub Categories Available"}
-                            </span>
-                          </div>
-                          <p className="text-yellow-700 text-sm mt-1">
-                            {t("admin.partners.noActiveSubCategoriesMessage") ||
-                              "There are no active subcategories available for the selected category."}
-                          </p>
-                        </div>
-                      )}
-                  </>
-                )}
-                {errors.parSubCatlst && !errors.parSubCatlst.root && (
-                  <p className="text-red-500 text-sm mt-2">
-                    {t("validation.atLeastOneSubCategory") ||
-                      "At least one sub category is required"}
-                  </p>
-                )}
-              </div>
-            )}
-            {selectedCategoryId === 0 && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
-                <div className="flex items-center justify-center gap-2 text-blue-800">
-                  <svg
-                    className="w-5 h-5 cursor-pointer"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span className="font-medium">
-                    {t("admin.partners.selectCategoryFirst") ||
-                      "Select a Category First"}
-                  </span>
-                </div>
-                <p className="text-blue-700 text-sm mt-1">
-                  {t("admin.partners.selectCategoryFirstMessage") ||
-                    "Please select a category above to see available subcategories."}
-                </p>
-              </div>
+
+            {/* Validation error for empty array */}
+            {errors.parSubCatlst && !errors.parSubCatlst.root && (
+              <p className="text-red-500 text-sm mt-2">
+                {t("validation.atLeastOneCategorySubCategory") ||
+                  "At least one category and subcategory combination is required"}
+              </p>
             )}
           </div>
         );
@@ -2718,7 +2712,7 @@ export default function PartnersPage() {
                 />
               </div>
 
-              {/* UPDATED: Export Button with hasRecords check */}
+              {/* Export Button with hasRecords check */}
               <Button
                 variant="outline"
                 size="md"
@@ -2796,7 +2790,7 @@ export default function PartnersPage() {
               </p>
             </div>
           ) : (
-            /* UPDATED: Data Table or No Records Message */
+            /* Data Table or No Records Message */
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               {hasRecords ? (
                 <>
@@ -2852,7 +2846,9 @@ export default function PartnersPage() {
         documentUrl={previewDocument.url}
         documentName={previewDocument.name}
         isOpen={previewDocument.isOpen}
-        onClose={() => setPreviewDocument({ url: "", name: "", isOpen: false })}
+        onClose={() =>
+          setPreviewDocument({ url: "", name: "", isOpen: false })
+        }
       />
       <ResetPasswordModal
         open={isPasswordModalOpen}
@@ -2873,3 +2869,28 @@ export default function PartnersPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

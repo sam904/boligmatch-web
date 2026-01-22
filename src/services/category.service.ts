@@ -11,12 +11,15 @@ export type Category = {
   isActive: boolean;
 };
 
-// Add this new type for subcategories by category
 export type SubCategoryByCategory = {
+  id: number;
   category: string;
   categoryDescription: string;
+  bgImageUrl?: string;
+  categoryIconUrl?: string;
   subCategory: string;
   subCategoryDescription: string;
+  subCategoryIconUrl?: string;
 };
 
 // Extend PaginatedQuery to include status
