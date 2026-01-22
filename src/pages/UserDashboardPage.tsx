@@ -21,8 +21,8 @@ import { conversationService } from "../services/conversation.service";
 import { toast } from "sonner";
 import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg";
 import { partnerService } from "../services/partner.service";
-// import Footer from "./Footer";
-// import closeImg from "/src/assets/userImages/close.svg";
+import Footer from "./Footer";
+import closeImg from "/src/assets/userImages/close.svg";
 
 interface FavouriteItem {
   id?: number;
@@ -68,27 +68,24 @@ export default function UserDashboardPage() {
   const [isMobile, setIsMobile] = useState(false);
   const [openConversation, setOpenConversation] =
     useState<ConversationItem | null>(null);
-  console.log("isMobile", isMobile);
-
-  console.log("openConversation", openConversation)
 
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // const formatConvDate = (value?: string) => {
-  //   if (!value) return "-";
-  //   const d = new Date(value);
-  //   if (isNaN(d.getTime())) return "-";
-  //   try {
-  //     return d.toLocaleDateString("da-DK", {
-  //       day: "2-digit",
-  //       month: "2-digit",
-  //       year: "2-digit",
-  //     });
-  //   } catch {
-  //     return d.toISOString().split("T")[0];
-  //   }
-  // };
+  const formatConvDate = (value?: string) => {
+    if (!value) return "-";
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return "-";
+    try {
+      return d.toLocaleDateString("da-DK", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+      });
+    } catch {
+      return d.toISOString().split("T")[0];
+    }
+  };
 
   const userData = useAppSelector((state) => state.auth.user);
 
@@ -729,6 +726,64 @@ export default function UserDashboardPage() {
           )}
         </div>
       </div>
+
+      {openConversation && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/50 cursor-pointer"
+            onClick={() => setOpenConversation(null)}
+          />
+          <div
+            className="relative z-[1001] w-[90%] max-w-md bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-[#1F7A58]/10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute right-4 top-3 text-black text-xl cursor-pointer hover:text-gray-700"
+              aria-label="Close"
+              onClick={() => setOpenConversation(null)}
+            >
+              <img src={closeImg} alt="" />
+            </button>
+
+            <div className="flex flex-col items-center gap-2 mb-4">
+              <img
+                src={chatModelImg}
+                alt="chat"
+                className="w-[64px] h-[64px]"
+              />
+              <h3 className="text-center font-extrabold text-lg">{t("userDashboard.messageTitle")}</h3>
+            </div>
+
+            <div className="space-y-4 text-[#052011]">
+              <div>
+                <div className="text-sm font-extrabold">{t("userDashboard.dateLabel")}</div>
+                <div className="text-sm">
+                  {formatConvDate(openConversation.createdDate)}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">{t("userDashboard.partnerLabel")}</div>
+                <div className="text-sm">
+                  {openConversation.partnerName || "-"}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">{t("userDashboard.subjectLabel")}</div>
+                <div className="text-sm">
+                  {openConversation.messageSubject || "-"}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">{t("userDashboard.descriptionLabel")}</div>
+                <div className="text-sm leading-relaxed">
+                  {openConversation.messageContent || "-"}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      <Footer />
     </>
   );
 }
