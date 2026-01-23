@@ -417,10 +417,11 @@ export default function PartnersPage() {
   const fetchSubCategoriesForCategory = async (categoryId: number) => {
     if (categoryId <= 0) return;
 
-    // Don't fetch if already loading or already fetched
+    // Check if already loading or already fetched (with actual data)
+    const existingData = subCategoriesByCategory[categoryId];
     if (
       isCategoryLoading(categoryId) ||
-      getSubCategoriesForCategory(categoryId).length > 0
+      (existingData && Array.isArray(existingData) && existingData.length > 0)
     ) {
       return;
     }
@@ -433,13 +434,14 @@ export default function PartnersPage() {
 
       setSubCategoriesByCategory((prev) => ({
         ...prev,
-        [categoryId]: subCats,
+        [categoryId]: subCats || [],
       }));
     } catch (error) {
       console.error(
         `Error fetching subcategories for category ${categoryId}:`,
         error,
       );
+      // Set empty array to prevent repeated attempts
       setSubCategoriesByCategory((prev) => ({
         ...prev,
         [categoryId]: [],
@@ -453,7 +455,20 @@ export default function PartnersPage() {
     categoryId: number,
   ): SubCategoryByCategory[] => {
     // Return cached subcategories or empty array
-    return subCategoriesByCategory[categoryId] || [];
+    const cached = subCategoriesByCategory[categoryId];
+
+    // If we have cached data, return it
+    if (cached && Array.isArray(cached) && cached.length > 0) {
+      return cached;
+    }
+
+    // If category is selected but no cached data, trigger fetch
+    if (categoryId > 0 && !isCategoryLoading(categoryId)) {
+      // Don't await here - let it fetch in background
+      fetchSubCategoriesForCategory(categoryId);
+    }
+
+    return [];
   };
 
   const isCategoryLoading = (categoryId: number): boolean => {
@@ -707,6 +722,31 @@ export default function PartnersPage() {
       if (mobileDebounceTimer) clearTimeout(mobileDebounceTimer);
     };
   }, [emailDebounceTimer, mobileDebounceTimer]);
+
+  // Add this useEffect to load subcategories for existing partner categories
+  useEffect(() => {
+    if (editingPartner && showForm) {
+      // Load subcategories for each existing category in the partner
+      const loadExistingSubCategories = async () => {
+        const uniqueCategoryIds = Array.from(
+          new Set(
+            editingPartner.parSubCatlst.map((subCat) => subCat.categoryId),
+          ),
+        );
+
+        for (const categoryId of uniqueCategoryIds) {
+          if (
+            categoryId > 0 &&
+            !getSubCategoriesForCategory(categoryId).length
+          ) {
+            await fetchSubCategoriesForCategory(categoryId);
+          }
+        }
+      };
+
+      loadExistingSubCategories();
+    }
+  }, [editingPartner, showForm]);
 
   const steps = [
     t("admin.partners.BasicInformation") || "Basic Information",
@@ -2474,12 +2514,32 @@ export default function PartnersPage() {
                               errors.parSubCatlst?.[index]?.subCategoryId
                                 ?.message
                             }
-                            options={getSubCategoriesForCategory(
-                              rowCategoryId,
-                            ).map((subCat) => ({
-                              value: subCat.id,
-                              label: subCat.subCategory,
-                            }))}
+                            // In the Step 6 case, update the subcategory options section:
+                            options={(() => {
+                              const subCats =
+                                getSubCategoriesForCategory(rowCategoryId);
+
+                              // If no subcategories but category is selected, try to fetch again
+                              if (
+                                rowCategoryId > 0 &&
+                                subCats.length === 0 &&
+                                !isCategoryLoading(rowCategoryId)
+                              ) {
+                                // Trigger fetch if not already loading
+                                setTimeout(
+                                  () =>
+                                    fetchSubCategoriesForCategory(
+                                      rowCategoryId,
+                                    ),
+                                  0,
+                                );
+                              }
+
+                              return subCats.map((subCat) => ({
+                                value: subCat.id,
+                                label: subCat.subCategory,
+                              }));
+                            })()}
                             placeholder={
                               isCategoryLoading(rowCategoryId)
                                 ? t("admin.partners.loadingSubCategories") ||
