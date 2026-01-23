@@ -458,7 +458,8 @@
       "clickAddSubcategory":"Click Add Subcategory",
       "categoriesAndSubCategories":"Categories And SubCategories",
       "addCategoriesSubCategories":"Add Categories SubCategories",
-      "addCategorySubCategory":"Add Category SubCategory"
+      "addCategorySubCategory":"Add Category SubCategory",
+      "selectCategorySubCategory":"Select Category And SubCategory"
     },
     "users": {
       "title": "Users",
