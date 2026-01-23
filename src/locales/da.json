@@ -462,7 +462,8 @@
       "clickAddSubcategory":"Klik på Tilføj underkategori",
       "categoriesAndSubCategories":"Tilføj kategorier / underkategorier",
       "addCategoriesSubCategories":"Tilføj kategorier og underkategorier",
-      "addCategorySubCategory":"Tilføj kategorier og underkategorier"
+      "addCategorySubCategory":"Tilføj kategorier og underkategorier",
+      "selectCategorySubCategory":"Vælg kategori og underkategori"
     },
     "testimonials": {
       "title": "Udtalelser",

@@ -31,7 +31,7 @@ import type {
 } from "../../../types/partner";
 import { partnerDocumentService } from "../../../services/partnerdocument.service";
 import type { PartnerDocumentDto } from "../../../types/partnerdocument";
-import { categoryService, } from "../../../services/category.service";
+import { categoryService } from "../../../services/category.service";
 import type { Category } from "../../../types/category";
 import SearchableSelectController from "../../../components/common/SearchableSelectController";
 import DocumentUpload from "../../../components/common/DocumentUpload";
@@ -187,7 +187,7 @@ const partnerDocumentSchema = z.object({
 // UPDATED PARTNER SCHEMA WITH STATUS FIELD
 const partnerSchema = z.object({
   userId: z.number().optional(),
-  categoryId: z.number().min(1, "Category is required"),
+  //categoryId: z.number().min(1, "Category is required"),
   address: z.string().min(1, "Address is required"),
   businessName: z.string().min(1, "Business Name is required"),
   email: z
@@ -237,7 +237,7 @@ const partnerSchema = z.object({
 
 type PartnerFormData = {
   userId?: number;
-  categoryId: number;
+  //categoryId: number;
   address: string;
   businessName: string;
   email?: string;
@@ -275,7 +275,7 @@ export default function PartnersPage() {
   const { t } = useTranslation();
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
   const [resettingPartner, setResettingPartner] = useState<Partner | null>(
-    null
+    null,
   );
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -302,14 +302,17 @@ export default function PartnersPage() {
     name: string;
     isOpen: boolean;
   }>({ url: "", name: "", isOpen: false });
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
+  //const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [toasts, setToasts] = useState<ToastState[]>([]);
   const [subCategoriesByCategory, setSubCategoriesByCategory] = useState<
-    SubCategoryByCategory[]
-  >([]);
-  const [loadingSubCategoriesByCategory, setLoadingSubCategoriesByCategory] =
-    useState(false);
+    Record<number, SubCategoryByCategory[]>
+  >({});
+  const [loadingCategories, setLoadingCategories] = useState<
+    Record<number, boolean>
+  >({});
+  //const [rowSubCategories, setRowSubCategories] = useState<SubCategoryByCategory[]>([]);
+
   const [documentDeleteConfirmation, setDocumentDeleteConfirmation] = useState<{
     isOpen: boolean;
     documentIndex: number | null;
@@ -361,7 +364,7 @@ export default function PartnersPage() {
     type: AdminToastType,
     message: string,
     title?: string,
-    subtitle?: string
+    subtitle?: string,
   ) => {
     const id = Math.random().toString(36).substring(2, 9);
     const newToast: ToastState = {
@@ -379,7 +382,9 @@ export default function PartnersPage() {
 
   const hideToast = (id: string) => {
     setToasts((prev) =>
-      prev.map((toast) => (toast.id === id ? { ...toast, open: false } : toast))
+      prev.map((toast) =>
+        toast.id === id ? { ...toast, open: false } : toast,
+      ),
     );
 
     setTimeout(() => {
@@ -408,6 +413,58 @@ export default function PartnersPage() {
     }
     return defaultMessage;
   };
+
+  const fetchSubCategoriesForCategory = async (categoryId: number) => {
+    if (categoryId <= 0) return;
+
+    // Don't fetch if already loading or already fetched
+    if (
+      isCategoryLoading(categoryId) ||
+      getSubCategoriesForCategory(categoryId).length > 0
+    ) {
+      return;
+    }
+
+    setLoadingCategories((prev) => ({ ...prev, [categoryId]: true }));
+
+    try {
+      const subCats =
+        await categoryService.getSubCategoriesByCategoryId(categoryId);
+
+      setSubCategoriesByCategory((prev) => ({
+        ...prev,
+        [categoryId]: subCats,
+      }));
+    } catch (error) {
+      console.error(
+        `Error fetching subcategories for category ${categoryId}:`,
+        error,
+      );
+      setSubCategoriesByCategory((prev) => ({
+        ...prev,
+        [categoryId]: [],
+      }));
+    } finally {
+      setLoadingCategories((prev) => ({ ...prev, [categoryId]: false }));
+    }
+  };
+
+  const getSubCategoriesForCategory = (
+    categoryId: number,
+  ): SubCategoryByCategory[] => {
+    // Return cached subcategories or empty array
+    return subCategoriesByCategory[categoryId] || [];
+  };
+
+  const isCategoryLoading = (categoryId: number): boolean => {
+    return !!loadingCategories[categoryId];
+  };
+
+  // useEffect(() => {
+  //   if (selectedCategoryId > 0) {
+  //     fetchSubCategoriesForCategory(selectedCategoryId);
+  //   }
+  // }, [selectedCategoryId]);
 
   const handleAddTestimonial = (partner: Partner) => {
     navigate(`/admin/testimonial/${partner.id}`, {
@@ -530,9 +587,8 @@ export default function PartnersPage() {
     });
 
     try {
-      const response = await userService.checkEmailOrMobileAvailability(
-        cleanMobile
-      );
+      const response =
+        await userService.checkEmailOrMobileAvailability(cleanMobile);
 
       if (response.isSuccess) {
         setMobileValidation({
@@ -573,33 +629,46 @@ export default function PartnersPage() {
     }
   };
 
-  // Fetch subcategories by category when category changes
- useEffect(() => {
-  const fetchSubCategoriesByCategory = async () => {
-    if (selectedCategoryId > 0) {
-      setLoadingSubCategoriesByCategory(true);
-      try {
-        const subCats = await categoryService.getSubCategoriesByCategoryId(
-          selectedCategoryId
-        );
-        console.log("API Response:", subCats);
-        console.log("First item structure:", subCats[0] ? Object.keys(subCats[0]) : []);
-        
-        // The API response should already be typed as SubCategoryByCategory[]
-        setSubCategoriesByCategory(subCats);
-      } catch (error) {
-        console.error("Error fetching subcategories by category:", error);
-        setSubCategoriesByCategory([]);
-      } finally {
-        setLoadingSubCategoriesByCategory(false);
-      }
-    } else {
-      setSubCategoriesByCategory([]);
-    }
-  };
+  //   useEffect(() => {
+  //   const loadSubCategories = async () => {
+  //     if (selectedCategoryId > 0) {
+  //       const subCats = await fetchSubCategoriesForCategory(selectedCategoryId);
+  //       setRowSubCategories(subCats);
+  //     } else {
+  //       setRowSubCategories([]);
+  //     }
+  //   };
 
-  fetchSubCategoriesByCategory();
-}, [selectedCategoryId]);
+  //   loadSubCategories();
+  // }, [selectedCategoryId]);
+
+  // Fetch subcategories by category when category changes
+  //  useEffect(() => {
+  //   const fetchSubCategoriesByCategory = async () => {
+  //     if (selectedCategoryId > 0) {
+  //       setLoadingSubCategoriesByCategory(true);
+  //       try {
+  //         const subCats = await categoryService.getSubCategoriesByCategoryId(
+  //           selectedCategoryId
+  //         );
+  //         console.log("API Response:", subCats);
+  //         console.log("First item structure:", subCats[0] ? Object.keys(subCats[0]) : []);
+
+  //         // The API response should already be typed as SubCategoryByCategory[]
+  //         setSubCategoriesByCategory(subCats);
+  //       } catch (error) {
+  //         console.error("Error fetching subcategories by category:", error);
+  //         setSubCategoriesByCategory([]);
+  //       } finally {
+  //         setLoadingSubCategoriesByCategory(false);
+  //       }
+  //     } else {
+  //       setSubCategoriesByCategory([]);
+  //     }
+  //   };
+
+  //   fetchSubCategoriesByCategory();
+  // }, [selectedCategoryId]);
 
   // Debounced email validation handler
   const handleEmailChange = (email: string) => {
@@ -665,7 +734,7 @@ export default function PartnersPage() {
       status: "Active",
       cvr: 0,
       businessUnit: 1,
-      categoryId: 0,
+      //categoryId: 0,
       userId: 2,
       businessName: "",
       email: "",
@@ -711,11 +780,12 @@ export default function PartnersPage() {
   const imageUrl4Value = watch("imageUrl4");
   const imageUrl5Value = watch("imageUrl5");
   const thumbnailValue = watch("thumbnail");
-  const categoryIdValue = watch("categoryId");
+  //const categoryIdValue = watch("categoryId");
   const isActiveValue = watch("isActive");
   const emailValue = watch("email");
   const mobileNoValue = watch("mobileNo");
 
+  // Check if a step is completed
   // Check if a step is completed
   const isStepCompleted = async (step: number): Promise<boolean> => {
     const stepFields: Record<number, ValidFieldNames[]> = {
@@ -739,7 +809,7 @@ export default function PartnersPage() {
         "status",
       ],
       5: [], // Documents are optional
-      6: ["categoryId"],
+      6: [], // No top-level categoryId
     };
 
     if (step === 5) {
@@ -752,22 +822,23 @@ export default function PartnersPage() {
           `parDoclst.${index}.documentName`,
           `parDoclst.${index}.documentUrl`,
           `parDoclst.${index}.isActive`,
-        ] as any)
+        ] as any),
       );
       const documentResults = await Promise.all(documentValidations);
       return documentResults.every((result) => result);
     }
 
     if (step === 6) {
-      const categoryValid = await trigger("categoryId", { shouldFocus: false });
+      // Validate all category rows
       const subCategoryValidations = subCategoryFields.map((_, index) =>
         trigger([
+          `parSubCatlst.${index}.categoryId`,
           `parSubCatlst.${index}.subCategoryId`,
           `parSubCatlst.${index}.isActive`,
-        ] as any)
+        ] as any),
       );
       const subCategoryResults = await Promise.all(subCategoryValidations);
-      return categoryValid && subCategoryResults.every((result) => result);
+      return subCategoryResults.every((result) => result);
     }
 
     if (stepFields[step].length > 0) {
@@ -783,7 +854,7 @@ export default function PartnersPage() {
         if (isEmailChecking) {
           toast.error(
             t("admin.partners.waitEmailValidation") ||
-              "Please wait for email validation to complete"
+              "Please wait for email validation to complete",
           );
           return false;
         }
@@ -791,7 +862,7 @@ export default function PartnersPage() {
         if (hasEmailValidationErrors) {
           toast.error(
             t("admin.partners.fixEmailErrors") ||
-              "Please fix email validation errors before proceeding"
+              "Please fix email validation errors before proceeding",
           );
           return false;
         }
@@ -809,7 +880,7 @@ export default function PartnersPage() {
   const handleDocumentChange = async (
     field: "documentName" | "documentUrl",
     value: string,
-    index: number
+    index: number,
   ) => {
     if (field === "documentName") {
       setValue(`parDoclst.${index}.documentName`, value);
@@ -839,7 +910,7 @@ export default function PartnersPage() {
               documentUrl: documentUrl.trim(),
               isActive: currentDocument.isActive ?? true,
             },
-            index
+            index,
           );
         }, 1000);
 
@@ -851,12 +922,12 @@ export default function PartnersPage() {
   // Handle document save
   const handleDocumentSave = async (
     documentData: PartnerDocumentDto,
-    index: number
+    index: number,
   ) => {
     if (!editingPartner?.id) {
       toast.error(
         t("admin.partners.savePartnerFirst") ||
-          "Please save partner basic information first"
+          "Please save partner basic information first",
       );
       return;
     }
@@ -881,7 +952,7 @@ export default function PartnersPage() {
         toast.success(
           t("admin.partners.documentSaved", {
             name: documentData.documentName,
-          }) || `Document "${documentData.documentName}" saved successfully`
+          }) || `Document "${documentData.documentName}" saved successfully`,
         );
 
         if (response.output) {
@@ -904,14 +975,12 @@ export default function PartnersPage() {
       console.error("Document save error:", error);
       toast.error(
         t("admin.partners.documentSaveError", { error: error.message }) ||
-          `Failed to save document: ${error.message}`
+          `Failed to save document: ${error.message}`,
       );
     } finally {
       setSavingDocuments((prev) => prev.filter((i) => i !== index));
     }
   };
-
-  
 
   // Update completed steps when current step changes
   useEffect(() => {
@@ -969,11 +1038,11 @@ export default function PartnersPage() {
     return category ? category.name : `Category ${categoryId}`;
   };
 
-  useEffect(() => {
-    if (categoryIdValue && categoryIdValue > 0) {
-      setSelectedCategoryId(categoryIdValue);
-    }
-  }, [categoryIdValue]);
+  // useEffect(() => {
+  //   if (categoryIdValue && categoryIdValue > 0) {
+  //     setSelectedCategoryId(categoryIdValue);
+  //   }
+  // }, [categoryIdValue]);
 
   useEffect(() => {
     console.log("useEffect for editing partner triggered:", {
@@ -983,7 +1052,7 @@ export default function PartnersPage() {
     if (editingPartner && showForm) {
       const formData: PartnerFormData = {
         userId: editingPartner.userId || 2,
-        categoryId: editingPartner.categoryId,
+        //categoryId: editingPartner.categoryId,
         address: editingPartner.address,
         businessName: editingPartner.businessName,
         email: editingPartner.email || "",
@@ -1035,7 +1104,7 @@ export default function PartnersPage() {
             : [],
       };
       reset(formData);
-      setSelectedCategoryId(editingPartner.categoryId);
+      //setSelectedCategoryId(editingPartner.categoryId);
 
       // Reset validation states
       setEmailValidation({
@@ -1059,7 +1128,7 @@ export default function PartnersPage() {
   const resetForm = () => {
     const defaultValues: PartnerFormData = {
       userId: 2,
-      categoryId: 0,
+      //categoryId: 0,
       address: "",
       businessUnit: 1,
       businessName: "",
@@ -1089,7 +1158,7 @@ export default function PartnersPage() {
     reset(defaultValues);
     setCurrentStep(1);
     setEditingPartner(null);
-    setSelectedCategoryId(0);
+    //setSelectedCategoryId(0);
     setCompletedSteps([]);
     setSavingDocuments([]);
 
@@ -1111,7 +1180,7 @@ export default function PartnersPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["partners"], exact: false });
       toast.success(
-        t("admin.partners.createSuccess") || "Partner created successfully"
+        t("admin.partners.createSuccess") || "Partner created successfully",
       );
       handleFormClose();
     },
@@ -1137,7 +1206,7 @@ export default function PartnersPage() {
       queryClient.invalidateQueries({ queryKey: ["partners"] });
       queryClient.invalidateQueries({ queryKey: ["partner", variables.id] });
       toast.success(
-        t("admin.partners.updateSuccess") || "Partner updated successfully"
+        t("admin.partners.updateSuccess") || "Partner updated successfully",
       );
       if (currentStep === steps.length) {
         handleFormClose();
@@ -1163,13 +1232,13 @@ export default function PartnersPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["partners"], exact: false });
       toast.success(
-        t("admin.partners.deleteSuccess") || "Partner deleted successfully"
+        t("admin.partners.deleteSuccess") || "Partner deleted successfully",
       );
       setDeleteConfirmation({ isOpen: false, partner: null });
     },
     onError: () => {
       toast.error(
-        t("admin.partners.deleteError") || "Failed to delete partner"
+        t("admin.partners.deleteError") || "Failed to delete partner",
       );
       setDeleteConfirmation({ isOpen: false, partner: null });
     },
@@ -1196,7 +1265,8 @@ export default function PartnersPage() {
       try {
         await partnerDocumentService.deleteDocument(documentId);
         toast.success(
-          t("admin.partners.documentDeleted") || "Document deleted successfully"
+          t("admin.partners.documentDeleted") ||
+            "Document deleted successfully",
         );
         removeDocument(documentIndex);
         queryClient.invalidateQueries({
@@ -1205,7 +1275,8 @@ export default function PartnersPage() {
       } catch (error) {
         console.error("Delete document error:", error);
         toast.error(
-          t("admin.partners.documentDeleteError") || "Failed to delete document"
+          t("admin.partners.documentDeleteError") ||
+            "Failed to delete document",
         );
       }
     } else {
@@ -1243,7 +1314,8 @@ export default function PartnersPage() {
       console.log("Exporting partners with params:", exportParams);
       await exportToExcel("Partner", exportParams);
       toast.success(
-        t("admin.partners.partnersExported") || "Partners exported successfully"
+        t("admin.partners.partnersExported") ||
+          "Partners exported successfully",
       );
     } catch (error) {
       console.error("Export failed:", error);
@@ -1261,7 +1333,7 @@ export default function PartnersPage() {
     if (emailValidation.checking || mobileValidation.checking) {
       toast.error(
         t("admin.partners.waitEmailValidation") ||
-          "Please wait for email/mobile validation to complete"
+          "Please wait for email/mobile validation to complete",
       );
       return;
     }
@@ -1273,7 +1345,7 @@ export default function PartnersPage() {
 
     if (data.mobileNo && mobileValidation.available === false) {
       toast.error(
-        "Please fix mobile number validation errors before submitting"
+        "Please fix mobile number validation errors before submitting",
       );
       return;
     }
@@ -1293,6 +1365,7 @@ export default function PartnersPage() {
       const subCategoriesPayload = data.parSubCatlst.map((subCat) => ({
         id: subCat.id,
         partnerId: editingPartner?.id || 0,
+        categoryId: subCat.categoryId,
         subCategoryId: subCat.subCategoryId,
         isActive: subCat.isActive,
       }));
@@ -1308,6 +1381,7 @@ export default function PartnersPage() {
       const payload = {
         ...data,
         id: editingPartner?.id,
+        categoryId: data.parSubCatlst[0]?.categoryId || 0,
         parSubCatlst: subCategoriesPayload,
         parDoclst: documentsPayload,
         email: data.email || undefined,
@@ -1315,7 +1389,10 @@ export default function PartnersPage() {
         trustPilotUrl: data.trustPilotUrl || undefined,
       };
 
-      console.log("Final payload being sent:", JSON.stringify(payload, null, 2));
+      console.log(
+        "Final payload being sent:",
+        JSON.stringify(payload, null, 2),
+      );
 
       if (editingPartner) {
         await updateMutation.mutateAsync(payload as any);
@@ -1342,7 +1419,7 @@ export default function PartnersPage() {
       if (emailValue && emailValidation.available === false) {
         toast.error(
           t("admin.partners.fixEmailErrors") ||
-            "Please fix email validation errors before proceeding"
+            "Please fix email validation errors before proceeding",
         );
         return;
       }
@@ -1350,7 +1427,7 @@ export default function PartnersPage() {
       if (mobileNoValue && mobileValidation.available === false) {
         toast.error(
           t("admin.partners.fixMobileErrors") ||
-            "Please fix mobile number validation errors before proceeding"
+            "Please fix mobile number validation errors before proceeding",
         );
         return;
       }
@@ -1370,13 +1447,13 @@ export default function PartnersPage() {
       if (emptyFields.length > 0) {
         toast.error(
           t("admin.partners.fillRequiredFields") ||
-            `Please fill in all required fields: ${emptyFields.join(", ")}`
+            `Please fill in all required fields: ${emptyFields.join(", ")}`,
         );
         return;
       }
     }
 
-    let isValid = true;
+    let isValid = true; // Make sure to declare this variable
 
     const stepFields: Record<number, ValidFieldNames[]> = {
       1: [
@@ -1400,7 +1477,7 @@ export default function PartnersPage() {
         "status",
       ],
       5: [],
-      6: ["categoryId"],
+      6: [], // No top-level categoryId anymore
     };
 
     if (stepFields[currentStep].length > 0) {
@@ -1418,7 +1495,7 @@ export default function PartnersPage() {
             `parDoclst.${index}.documentName`,
             `parDoclst.${index}.documentUrl`,
             `parDoclst.${index}.isActive`,
-          ] as any)
+          ] as any),
         );
         const documentResults = await Promise.all(documentValidations);
         isValid = isValid && documentResults.every((result) => result);
@@ -1426,14 +1503,17 @@ export default function PartnersPage() {
     }
 
     if (currentStep === 6) {
-      const categoryValid = await trigger("categoryId", { shouldFocus: true });
-      isValid = isValid && categoryValid;
+      // REMOVE this line - categoryId is no longer a top-level field
+      // const categoryValid = await trigger("categoryId", { shouldFocus: true });
+      // isValid = isValid && categoryValid;
 
+      // Validate ALL fields in each category row
       const subCategoryValidations = subCategoryFields.map((_, index) =>
         trigger([
+          `parSubCatlst.${index}.categoryId`, // Add categoryId validation
           `parSubCatlst.${index}.subCategoryId`,
           `parSubCatlst.${index}.isActive`,
-        ] as any)
+        ] as any),
       );
       const subCategoryResults = await Promise.all(subCategoryValidations);
       isValid = isValid && subCategoryResults.every((result) => result);
@@ -1443,7 +1523,7 @@ export default function PartnersPage() {
       console.log("Validation errors:", errors);
       toast.error(
         t("admin.partners.fixStepErrors") ||
-          "Please fix all form errors in this step before proceeding"
+          "Please fix all form errors in this step before proceeding",
       );
       return;
     }
@@ -1479,7 +1559,7 @@ export default function PartnersPage() {
         await updateMutation.mutateAsync(payload as any);
         toast.success(
           t("admin.partners.stepUpdated", { step: currentStep }) ||
-            `Step ${currentStep} updated successfully`
+            `Step ${currentStep} updated successfully`,
         );
         setCurrentStep((prev) => prev + 1);
       } catch (error) {
@@ -1510,7 +1590,7 @@ export default function PartnersPage() {
         if (!canNavigate) {
           toast.error(
             t("admin.partners.completeStepBefore", { currentStep, step }) ||
-              `Please complete step ${currentStep} before proceeding to step ${step}`
+              `Please complete step ${currentStep} before proceeding to step ${step}`,
           );
           return;
         }
@@ -1531,7 +1611,7 @@ export default function PartnersPage() {
         if (!isValid) {
           canNavigate = false;
           toast.error(
-            `Please complete step ${i} before proceeding to step ${step}`
+            `Please complete step ${i} before proceeding to step ${step}`,
           );
           break;
         }
@@ -1637,21 +1717,18 @@ export default function PartnersPage() {
     setPreviewVideo({ url, isOpen: true });
   };
 
-  // Handle category change
-  const handleCategoryChange = (categoryId: number | string) => {
-    console.log("Category changed to:", categoryId);
-    const categoryIdNum =
-      typeof categoryId === "string" ? parseInt(categoryId, 10) : categoryId;
+  // Keep your handleCategoryChange function (if needed)
+  // const handleCategoryChange = (categoryId: number | string) => {
+  //   const categoryIdNum = typeof categoryId === "string" ? parseInt(categoryId, 10) : categoryId;
+  //   setSelectedCategoryId(categoryIdNum);
 
-    setSelectedCategoryId(categoryIdNum);
-
-    if (subCategoryFields.length > 0) {
-      subCategoryFields.forEach((_, index) => {
-        setValue(`parSubCatlst.${index}.subCategoryId`, 0);
-        setValue(`parSubCatlst.${index}.isActive`, true);
-      });
-    }
-  };
+  //   if (subCategoryFields.length > 0) {
+  //     subCategoryFields.forEach((_, index) => {
+  //       setValue(`parSubCatlst.${index}.subCategoryId`, 0);
+  //       setValue(`parSubCatlst.${index}.isActive`, true);
+  //     });
+  //   }
+  // };
 
   // Get data from API response
   const partners = paginatedData?.output?.result || [];
@@ -1687,8 +1764,8 @@ export default function PartnersPage() {
           new Set(
             subCategories
               .filter((subCat) => subCat.subCategories)
-              .map((subCat) => subCat.subCategories)
-          )
+              .map((subCat) => subCat.subCategories),
+          ),
         );
 
         if (uniqueSubCategories.length === 0) {
@@ -2226,7 +2303,7 @@ export default function PartnersPage() {
                           handleDocumentChange(
                             "documentName",
                             e.target.value,
-                            index
+                            index,
                           )
                         }
                         placeholder={
@@ -2251,7 +2328,7 @@ export default function PartnersPage() {
                         onPreview={(url) =>
                           handleDocumentPreview(
                             url,
-                            watch(`parDoclst.${index}.documentName`)
+                            watch(`parDoclst.${index}.documentName`),
                           )
                         }
                         folder="partners/documents"
@@ -2308,39 +2385,23 @@ export default function PartnersPage() {
                 "Categories & SubCategories"}
             </h3>
 
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-700 mb-3">
-                {t("admin.partners.categoriesAndSubCategories") ||
-                  "Categories & SubCategories"}
-              </h4>
-              <p className="text-sm text-gray-600 mb-4">
-                {t("admin.partners.addCategoriesSubCategories") ||
+            <div>
+              {/* <h4 className="font-medium text-gray-700 mb-3">
+          {t("admin.partners.categoriesAndSubCategories") || "Categories & SubCategories"}
+        </h4> */}
+              <p className="text-sm font-Figtree text-gray-900 mb-2">
+                {t("admin.partners.selectCategorySubCategory") ||
                   "Add one or more category and subcategory combinations for this partner"}
               </p>
 
-              {/* No categories/subcategories message */}
-              {subCategoryFields.length === 0 && (
-                <div className="text-center py-6 border-2 border-dashed border-gray-300 rounded-lg mb-4">
-                  <p className="text-gray-500 text-sm">
-                    {t("admin.partners.noCategoriesAdded") ||
-                      "No categories and subcategories added"}
-                  </p>
-                  <p className="text-gray-400 text-xs mt-1">
-                    {t("admin.partners.addAtLeastOne") ||
-                      "Add at least one category and subcategory combination"}
-                  </p>
-                </div>
-              )}
-
-              {/* Category and Subcategory fields */}
               {subCategoryFields.map((field, index) => {
-                const selectedCategoryId =
+                const rowCategoryId =
                   watch(`parSubCatlst.${index}.categoryId`) || 0;
 
                 return (
                   <div
                     key={field.id}
-                    className="border border-gray-200 rounded-lg p-4 mb-4 bg-white"
+                    className="border border-gray-200 rounded-lg p-4 mb-4 bg-[#F0F2EA]"
                   >
                     <div className="space-y-4">
                       {/* Category Selection */}
@@ -2348,12 +2409,9 @@ export default function PartnersPage() {
                         <SearchableSelectController
                           name={`parSubCatlst.${index}.categoryId`}
                           control={control}
-                          label={`${
-                            t("admin.categories.title") || "Category"
-                          } ${index + 1}`}
+                          label={`${t("admin.categories.title") || "Category"} ${index + 1}`}
                           error={
-                            errors.parSubCatlst?.[index]?.categoryId?.message &&
-                            t("validation.categoryRequired")
+                            errors.parSubCatlst?.[index]?.categoryId?.message
                           }
                           options={categories
                             .filter((cat) => cat.isActive)
@@ -2366,57 +2424,85 @@ export default function PartnersPage() {
                               ? t("common.loadingCategories") ||
                                 "Loading categories..."
                               : categories.filter((cat) => cat.isActive)
-                                  .length === 0
-                              ? t("admin.partners.noActiveCategoriesWarning") ||
-                                "No active categories available"
-                              : t("common.selectCategory") || "Select Category"
+                                    .length === 0
+                                ? t(
+                                    "admin.partners.noActiveCategoriesWarning",
+                                  ) || "No active categories available"
+                                : t("common.selectCategory") ||
+                                  "Select Category"
                           }
                           disabled={
                             isLoadingCategories ||
-                            categories.filter((cat) => cat.isActive).length === 0
+                            categories.filter((cat) => cat.isActive).length ===
+                              0
                           }
                           required={true}
                           onChange={(categoryId) => {
-                            handleCategoryChange(categoryId);
+                            const categoryIdNum =
+                              typeof categoryId === "string"
+                                ? parseInt(categoryId, 10)
+                                : categoryId;
+
+                            // Set the category ID for this specific row
+                            setValue(
+                              `parSubCatlst.${index}.categoryId`,
+                              categoryIdNum,
+                            );
+
+                            // Reset subcategory for this row
+                            setValue(`parSubCatlst.${index}.subCategoryId`, 0);
+
+                            // Fetch subcategories for this specific category if not already loaded
+                            if (
+                              categoryIdNum > 0 &&
+                              !getSubCategoriesForCategory(categoryIdNum).length
+                            ) {
+                              fetchSubCategoriesForCategory(categoryIdNum);
+                            }
                           }}
                         />
                       </div>
 
-                      {/* Subcategory Selection - Fetch from API when category is selected */}
-                      {selectedCategoryId > 0 && (
+                      {/* Subcategory Selection */}
+                      {rowCategoryId > 0 && (
                         <div>
                           <SearchableSelectController
                             name={`parSubCatlst.${index}.subCategoryId`}
                             control={control}
-                            label={`${
-                              t("admin.subcategories.title") || "Sub Category"
-                            } ${index + 1}`}
+                            label={`${t("admin.subcategories.title") || "Sub Category"} ${index + 1}`}
                             error={
                               errors.parSubCatlst?.[index]?.subCategoryId
-                                ?.message && t("validation.subCategoryRequired")
+                                ?.message
                             }
-                           options={subCategoriesByCategory.map((subCat) => ({
-  value: subCat.id, // Use the id from API
-  label: subCat.subCategory, // Use subCategory from API
-}))}
+                            options={getSubCategoriesForCategory(
+                              rowCategoryId,
+                            ).map((subCat) => ({
+                              value: subCat.id,
+                              label: subCat.subCategory,
+                            }))}
                             placeholder={
-                              loadingSubCategoriesByCategory
+                              isCategoryLoading(rowCategoryId)
                                 ? t("admin.partners.loadingSubCategories") ||
                                   "Loading sub categories..."
-                                : subCategoriesByCategory.length === 0
-                                ? t(
-                                    "admin.partners.noSubCategoriesAvailable"
-                                  ) ||
-                                  "No active sub categories available for this category"
-                                : t("admin.partners.selectSubcategory") ||
-                                  "Select Sub Category"
+                                : getSubCategoriesForCategory(rowCategoryId)
+                                      .length === 0
+                                  ? t(
+                                      "admin.partners.noSubCategoriesAvailable",
+                                    ) ||
+                                    "No active sub categories available for this category"
+                                  : t("admin.partners.selectSubcategory") ||
+                                    "Select Sub Category"
                             }
-                            disabled={loadingSubCategoriesByCategory}
+                            disabled={
+                              isCategoryLoading(rowCategoryId) ||
+                              getSubCategoriesForCategory(rowCategoryId)
+                                .length === 0
+                            }
                             required={true}
                           />
 
                           {/* Show loading state */}
-                          {loadingSubCategoriesByCategory && (
+                          {isCategoryLoading(rowCategoryId) && (
                             <div className="flex items-center gap-2 text-blue-600 text-sm mt-2">
                               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 cursor-pointer"></div>
                               {t("admin.partners.loadingSubCategories") ||
@@ -2425,9 +2511,10 @@ export default function PartnersPage() {
                           )}
 
                           {/* Warning if no subcategories available for selected category */}
-                          {!loadingSubCategoriesByCategory &&
-                            selectedCategoryId > 0 &&
-                            subCategoriesByCategory.length === 0 && (
+                          {!isCategoryLoading(rowCategoryId) &&
+                            rowCategoryId > 0 &&
+                            getSubCategoriesForCategory(rowCategoryId)
+                              .length === 0 && (
                               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
                                 <div className="flex items-center gap-2 text-yellow-800">
                                   <svg
@@ -2445,13 +2532,13 @@ export default function PartnersPage() {
                                   </svg>
                                   <span className="text-sm font-medium">
                                     {t(
-                                      "admin.partners.noActiveSubCategoriesWarning"
+                                      "admin.partners.noActiveSubCategoriesWarning",
                                     ) || "No Active Sub Categories Available"}
                                   </span>
                                 </div>
                                 <p className="text-yellow-700 text-sm mt-1">
                                   {t(
-                                    "admin.partners.noActiveSubCategoriesMessage"
+                                    "admin.partners.noActiveSubCategoriesMessage",
                                   ) ||
                                     "There are no active subcategories available for the selected category."}
                                 </p>
@@ -2459,38 +2546,9 @@ export default function PartnersPage() {
                             )}
                         </div>
                       )}
-
-                      {/* Category not selected message */}
-                      {selectedCategoryId === 0 && (
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                          <div className="flex items-center gap-2 text-blue-800">
-                            <svg
-                              className="w-4 h-4 cursor-pointer"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                            <span className="text-sm font-medium">
-                              {t("admin.partners.selectCategoryFirst") ||
-                                "Select a Category First"}
-                            </span>
-                          </div>
-                          <p className="text-blue-700 text-sm mt-1">
-                            {t("admin.partners.selectCategoryFirstMessage") ||
-                              "Please select a category to see available subcategories."}
-                          </p>
-                        </div>
-                      )}
                     </div>
 
-                    {/* Remove button for each row */}
+                    {/* Remove button */}
                     <div className="flex justify-end mt-4">
                       <Button
                         type="button"
@@ -2506,7 +2564,7 @@ export default function PartnersPage() {
                 );
               })}
 
-              {/* Add new category/subcategory row button */}
+              {/* Add new row button */}
               <Button
                 type="button"
                 variant="secondary"
@@ -2522,45 +2580,7 @@ export default function PartnersPage() {
                   "Add Category & SubCategory"}{" "}
                 +
               </Button>
-
-              {/* Warning if no categories available */}
-              {!isLoadingCategories &&
-                categories.filter((cat) => cat.isActive).length === 0 && (
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
-                    <div className="flex items-center gap-2 text-yellow-800">
-                      <svg
-                        className="w-4 h-4 cursor-pointer"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-                        />
-                      </svg>
-                      <span className="text-sm font-medium">
-                        {t("admin.partners.noActiveCategoriesWarning") ||
-                          "No Active Categories Available"}
-                      </span>
-                    </div>
-                    <p className="text-yellow-700 text-sm mt-1">
-                      {t("admin.partners.noActiveCategoriesMessage") ||
-                        "You need to create active categories before adding partners."}
-                    </p>
-                  </div>
-                )}
             </div>
-
-            {/* Validation error for empty array */}
-            {errors.parSubCatlst && !errors.parSubCatlst.root && (
-              <p className="text-red-500 text-sm mt-2">
-                {t("validation.atLeastOneCategorySubCategory") ||
-                  "At least one category and subcategory combination is required"}
-              </p>
-            )}
           </div>
         );
 
@@ -2615,8 +2635,8 @@ export default function PartnersPage() {
             {isSubmitting
               ? t("common.Submitting") || "Submitting..."
               : editingPartner
-              ? t("common.update")
-              : t("common.create")}
+                ? t("common.update")
+                : t("common.create")}
           </Button>
         )}
       </div>
@@ -2846,9 +2866,7 @@ export default function PartnersPage() {
         documentUrl={previewDocument.url}
         documentName={previewDocument.name}
         isOpen={previewDocument.isOpen}
-        onClose={() =>
-          setPreviewDocument({ url: "", name: "", isOpen: false })
-        }
+        onClose={() => setPreviewDocument({ url: "", name: "", isOpen: false })}
       />
       <ResetPasswordModal
         open={isPasswordModalOpen}
@@ -2857,7 +2875,7 @@ export default function PartnersPage() {
           toast.success(
             t("admin.partners.passwordResetSuccess", {
               email: resettingPartner?.email,
-            }) || `Password reset successfully for ${resettingPartner?.email}`
+            }) || `Password reset successfully for ${resettingPartner?.email}`,
           );
           setResettingPartner(null);
         }}
@@ -2869,28 +2887,3 @@ export default function PartnersPage() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
