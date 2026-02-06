@@ -677,13 +677,13 @@ export default function UserDashboardPage() {
                         key={favorite.id}
                         className="flex justify-center"
                       >
-                        <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] w-full max-w-[413px] flex flex-col items-center px-6 py-8 md:px-8 md:py-10 text-center">
+                        <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 w-full h-[320px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-4 md:px-8 md:py-10 text-center justify-between">
                           {/* Logo */}
-                          <div className="mb-4 md:mb-6 flex-shrink-0">
+                          <div className="mb-2 md:mb-6 flex-shrink-0">
                             <img
                               src={favorite.logoUrl}
                               alt={favorite.partnerName || favorite.businessName || "Partner"}
-                              className="w-40 h-20 md:w-60 md:h-30 object-contain"
+                              className="w-[144px] h-[72px] md:w-[240px] md:h-[120px] object-contain"
                               onError={(e) => {
                                 e.currentTarget.src = dashboard1;
                               }}
@@ -691,14 +691,14 @@ export default function UserDashboardPage() {
                           </div>
 
                           {/* Title */}
-                          <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#000000] mb-3 md:mb-4 px-2">
+                          <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-5 px-4">
                             {favorite.partnerName || favorite.businessName}
                           </h3>
 
                           {/* Description */}
                           {favorite.descriptionShort && (
-                            <div className="flex-1 w-full mb-4 md:mb-6 overflow-hidden">
-                              <p className="text-[#000000] font-normal text-sm md:text-base leading-relaxed line-clamp-4">
+                            <div className="flex items-start justify-center w-full mb-2 md:mb-6 overflow-hidden flex-1 min-h-0">
+                              <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-4 md:line-clamp-5">
                                 {favorite.descriptionShort}
                               </p>
                             </div>
@@ -707,7 +707,7 @@ export default function UserDashboardPage() {
                           {/* Button */}
                           <button
                             onClick={() => handleFavoriteMoreInfo(favorite)}
-                            className="mt-auto font-bold text-sm md:text-base cursor-pointer transition-all duration-200 text-black hover:font-extrabold hover:underline"
+                            className="flex-shrink-0 mt-auto font-bold text-[14px] md:text-[16px] cursor-pointer transition-all duration-200 text-black hover:font-extrabold"
                           >
                             {t("userDashboard.moreInfo")}
                           </button>
