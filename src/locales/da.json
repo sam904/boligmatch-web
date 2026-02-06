@@ -626,7 +626,8 @@
     "descriptionRequired": "Beskrivelse er påkrævet",
     "invalidEmail": "Ugyldig e-mailadresse",
     "commentTooLong": "Kommentar er for lang - skal være mindre end 100 tegn",
-    "commentRequired": "Kommentar er påkrævet"
+    "commentRequired": "Kommentar er påkrævet",
+    "backgroundImageRequired":"Baggrundsbillede påkrævet"
   },
   "deleteConfirmation": {
     "title": "Bekræft sletning",

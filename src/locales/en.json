@@ -612,7 +612,8 @@
     "commentTooLong":"comment Too Long must be less than 100 characters",
     "commentRequired":"Comment is required",
     "postalCodeNumeric": "Postnummer skal være numerisk",
-    "validationInProgress": "Vent venligst på email/mobil validering afsluttes"
+    "validationInProgress": "Vent venligst på email/mobil validering afsluttes",
+    "backgroundImageRequired":"Background Image Required"
     
   },
   "deleteConfirmation": {

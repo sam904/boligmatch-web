@@ -171,9 +171,14 @@ const UserSupplier = () => {
         );
         if (subCategoriesData) {
           const parsedData = JSON.parse(subCategoriesData);
-          setSubCategories(parsedData.output);
-          // select first subcategory by default
-          setActive(parsedData.output?.[0]?.id ?? null);
+          const parsedSubCategories: SubCategoryData[] = parsedData.output;
+
+          setSubCategories(parsedSubCategories);
+
+          // Always start with the first subcategory active on this page
+          const initialActiveId = parsedSubCategories?.[0]?.id ?? null;
+
+          setActive(initialActiveId);
         } else {
           console.log("No subcategories data found in localStorage");
         }
@@ -245,16 +250,21 @@ const UserSupplier = () => {
     };
 
     // Check after a small delay to ensure DOM is updated
-    const timeoutId = setTimeout(checkDesktopOverflow, 100);
-    
+    const timeoutId = setTimeout(checkDesktopOverflow, 150);
+
     // Also check on window resize
     window.addEventListener("resize", checkDesktopOverflow);
-    
+
     return () => {
       clearTimeout(timeoutId);
       window.removeEventListener("resize", checkDesktopOverflow);
     };
   }, [subCategories, loading]);
+
+  // Also show desktop arrow when there are many categories,
+  // so new ones added to the right will still be discoverable
+  const shouldShowDesktopArrow =
+    desktopHasOverflow || subCategories.length > 8;
 
   return (
     <>
@@ -303,7 +313,9 @@ const UserSupplier = () => {
                 subCategories.map((sub) => (
                   <button
                     key={sub.id}
-                    onClick={() => setActive(sub.id)}
+                    onClick={() => {
+                      setActive(sub.id);
+                    }}
                     className={`flex flex-col items-center gap-1 py-2 rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent md:min-w-[80px]
                         ${active === sub.id
                         ? "bg-[#95C11F] text-white px-3"
@@ -349,12 +361,12 @@ const UserSupplier = () => {
           </div>
         </section>
 
-        {/* Desktop: horizontal scroll bar with arrow */}
+        {/* Desktop: horizontal scroll bar with arrow (layout like reference screenshot) */}
         <section className="absolute h-[120px] bottom-15 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex items-center justify-center w-full p-2 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]">
           <div className="w-full py-3 px-4 relative">
             <div
               ref={desktopScrollRef}
-              className="flex items-center justify-center gap-1 overflow-x-auto no-scrollbar py-4 relative"
+              className="flex items-center justify-center gap-4 md:gap-10 overflow-x-auto no-scrollbar py-4 relative"
             >
               {loading ? (
                 <div className="text-white">
@@ -364,8 +376,10 @@ const UserSupplier = () => {
                 subCategories.map((sub) => (
                   <button
                     key={sub.id}
-                    onClick={() => setActive(sub.id)}
-                    className={`flex items-center gap-1 md:gap-[2px] px-[12px] py-[5px] rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
+                    onClick={() => {
+                      setActive(sub.id);
+                    }}
+                    className={`flex items-center gap-1 width md:gap-[2px] px-[12px] py-[5px] rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
               ${active === sub.id
                         ? "bg-[#95C11F] text-black shadow-md"
                         : "bg-transparent hover:bg-white/10"
@@ -385,7 +399,7 @@ const UserSupplier = () => {
                         }}
                       />
                     )}
-                    <span className="text-[18px] font-[600] pl-2 figtree">
+                    <span className="text-[16px] md:text-[18px] font-[600] pl-2 figtree">
                       {sub.subCategory}
                     </span>
                   </button>
@@ -394,7 +408,7 @@ const UserSupplier = () => {
                 <div className="text-white">{t("userSupplier.noSubcategories")}</div>
               )}
             </div>
-            {desktopHasOverflow && (
+            {shouldShowDesktopArrow && (
               <button
                 type="button"
                 aria-label="Next"
