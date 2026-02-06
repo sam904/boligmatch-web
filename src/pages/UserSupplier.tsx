@@ -175,8 +175,29 @@ const UserSupplier = () => {
 
           setSubCategories(parsedSubCategories);
 
-          // Always start with the first subcategory active on this page
-          const initialActiveId = parsedSubCategories?.[0]?.id ?? null;
+          const savedSelectionRaw = localStorage.getItem("bm_selectedSubcategory");
+          let initialActiveId = parsedSubCategories?.[0]?.id ?? null;
+          if (savedSelectionRaw) {
+            try {
+              const savedSelection = JSON.parse(savedSelectionRaw) as {
+                id: number;
+                category?: string;
+              };
+              const currentCategory = parsedSubCategories?.[0]?.category;
+              const isValidCategory =
+                !savedSelection.category ||
+                !currentCategory ||
+                savedSelection.category === currentCategory;
+              const existsInList = parsedSubCategories.some(
+                (s) => s.id === savedSelection.id
+              );
+              if (isValidCategory && existsInList) {
+                initialActiveId = savedSelection.id;
+              }
+            } catch {
+              /* empty */
+            }
+          }
 
           setActive(initialActiveId);
         } else {
@@ -315,6 +336,12 @@ const UserSupplier = () => {
                     key={sub.id}
                     onClick={() => {
                       setActive(sub.id);
+                      try {
+                        localStorage.setItem(
+                          "bm_selectedSubcategory",
+                          JSON.stringify({ id: sub.id, category: sub.category })
+                        );
+                      } catch { /* empty */ }
                     }}
                     className={`flex flex-col items-center gap-1 py-2 rounded-[8px] transition-all duration-200 cursor-pointer whitespace-nowrap border border-transparent md:min-w-[80px]
                         ${active === sub.id
@@ -378,6 +405,12 @@ const UserSupplier = () => {
                     key={sub.id}
                     onClick={() => {
                       setActive(sub.id);
+                      try {
+                        localStorage.setItem(
+                          "bm_selectedSubcategory",
+                          JSON.stringify({ id: sub.id, category: sub.category })
+                        );
+                      } catch { /* empty */ }
                     }}
                     className={`flex items-center gap-1 width md:gap-[2px] px-[12px] py-[5px] rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
               ${active === sub.id
