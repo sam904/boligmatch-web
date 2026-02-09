@@ -389,12 +389,12 @@ const UserSupplier = () => {
         </section>
 
         {/* Desktop: horizontal scroll bar with arrow (layout like reference screenshot) */}
-        <section className="absolute h-[120px] bottom-15 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex items-center justify-center w-full p-2 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]">
-          <div className="w-full py-3 px-4 relative">
-            <div
+        <section className="absolute h-[120px] bottom-26 px-8 hidden md:flex items-center justify-center p-2 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]"> 
+               <div
               ref={desktopScrollRef}
-              className="flex items-center justify-center gap-4 md:gap-10 overflow-x-auto no-scrollbar py-4 relative"
+              className="flex items-center justify-center gap-4 md:gap-6 overflow-x-auto no-scrollbar py-4 relative"
             >
+              <div className="w-full flex items-center gap-2 px-4">
               {loading ? (
                 <div className="text-white">
                   {t("userSupplier.loadingSubcategories")}
@@ -412,7 +412,7 @@ const UserSupplier = () => {
                         );
                       } catch { /* empty */ }
                     }}
-                    className={`flex items-center gap-1 width md:gap-[2px] px-[12px] py-[5px] rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
+                    className={`flex items-center gap-1 width md:gap-[2px] px-[12px] py-[5px] rounded-[8px] transition-all duration-200 text-white cursor-pointer  border border-transparent
               ${active === sub.id
                         ? "bg-[#95C11F] text-black shadow-md"
                         : "bg-transparent hover:bg-white/10"
@@ -424,7 +424,7 @@ const UserSupplier = () => {
                       <img
                         src={sub.subCategoryIconUrl}
                         alt={sub.subCategory}
-                        className={`w-[32px] h-[32px] md:w-[40px] md:h-[40px] relative opacity-100 rounded object-contain
+                        className={`w-[32px] h-[32px] md:w-[40px] md:h-[32px] relative opacity-100 rounded object-contain
                   ${active === sub.id ? "" : "brightness-0 invert"}`}
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).style.display =
@@ -441,7 +441,8 @@ const UserSupplier = () => {
                 <div className="text-white">{t("userSupplier.noSubcategories")}</div>
               )}
             </div>
-            {shouldShowDesktopArrow && (
+            </div>
+             {shouldShowDesktopArrow && (
               <button
                 type="button"
                 aria-label="Next"
@@ -453,7 +454,6 @@ const UserSupplier = () => {
                 <img className="h-[24px] w-[24px]" src={nextArrow} alt="" />
               </button>
             )}
-          </div>
         </section>
       </div>
 
