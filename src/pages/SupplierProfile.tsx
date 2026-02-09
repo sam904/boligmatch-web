@@ -93,6 +93,43 @@ const SupplierProfile = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(false);
   console.log("showControls", showControls)
+  // Fullscreen helper that works on iOS Safari too
+  const toggleFullscreen = () => {
+    const videoEl = videoRef.current as (HTMLVideoElement & {
+      webkitEnterFullscreen?: () => void;
+      webkitRequestFullscreen?: () => Promise<void> | void;
+    }) | null;
+    if (!videoEl) return;
+
+    const doc = document as Document & {
+      webkitFullscreenElement?: Element | null;
+      webkitExitFullscreen?: () => Promise<void> | void;
+    };
+
+    const isFullscreen = doc.fullscreenElement || doc.webkitFullscreenElement;
+
+    if (isFullscreen) {
+      if (doc.exitFullscreen) {
+        doc.exitFullscreen().catch(() => { });
+      } else if (doc.webkitExitFullscreen) {
+        doc.webkitExitFullscreen();
+      }
+      return;
+    }
+
+    if (videoEl.requestFullscreen) {
+      videoEl.requestFullscreen().catch(() => {
+        // Fallback for iOS Safari
+        if (videoEl.webkitEnterFullscreen) {
+          videoEl.webkitEnterFullscreen();
+        }
+      });
+    } else if (videoEl.webkitRequestFullscreen) {
+      videoEl.webkitRequestFullscreen();
+    } else if (videoEl.webkitEnterFullscreen) {
+      videoEl.webkitEnterFullscreen();
+    }
+  };
 
   // Recommendation form
   const {
@@ -841,13 +878,7 @@ const SupplierProfile = () => {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (videoRef.current) {
-                      if (document.fullscreenElement) {
-                        document.exitFullscreen();
-                      } else {
-                        videoRef.current.requestFullscreen();
-                      }
-                    }
+                    toggleFullscreen();
                   }}
                   className="text-white hover:scale-110 transition-transform"
                 >

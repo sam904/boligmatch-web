@@ -72,6 +72,7 @@ export default function UpdateProfileModal({
         id: user.userId,
         ...data,
         postalCode: (user as any).postalCode || "",
+         roleId: user.roleId || 1,
         isActive: true,
         status: "Active" as const,
       });

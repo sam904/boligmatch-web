@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userService } from "../../../services/user.service";
+import { userRoleService, type UserRole } from "../../../services/userRole.service";
 import DataTable from "../../../components/common/DataTable/DataTable";
 import Pagination from "../../../components/common/Pagination";
 import SearchBar from "../../../components/common/SearchBar";
@@ -18,6 +19,7 @@ import { z } from "zod";
 import ResetPasswordModal from "../../../components/common/ResetPasswordModal";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "../../../hooks/useDebounce";
+import SearchableSelectController from "../../../components/common/SearchableSelectController";
 import {
   IconPencil,
   IconTrash,
@@ -40,6 +42,21 @@ interface ToastState {
   title?: string;
   subtitle?: string;
   open: boolean;
+}
+
+// Update the UserRolesApiResponse interface
+interface UserRolesApiResponse {
+  errorMessage?: string | null;
+  fileContent?: string | null;
+  fileName?: string | null;
+  contentType?: string | null;
+  failureReason?: string | null;
+  isSuccess?: boolean;
+  output?: UserRole[]; // Direct array, not nested result
+  result?: UserRole[];
+  success?: boolean;
+  message?: string;
+  items?: UserRole[];
 }
 
 export default function UsersListPage() {
@@ -86,6 +103,7 @@ export default function UsersListPage() {
             "Postal code must be exactly 4 digits",
         }
       ),
+    roleId: z.number().min(1, t("validation.roleRequired") || "Role is required"),
     isActive: z.boolean(),
   });
 
@@ -103,6 +121,8 @@ export default function UsersListPage() {
   >("All");
   const [isExporting, setIsExporting] = useState(false);
   const [toasts, setToasts] = useState<ToastState[]>([]);
+  const [userRoles, setUserRoles] = useState<UserRole[]>([]);
+  const [isLoadingRoles, setIsLoadingRoles] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const queryClient = useQueryClient();
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
@@ -139,6 +159,9 @@ export default function UsersListPage() {
   const [mobileDebounceTimer, setMobileDebounceTimer] = useState<ReturnType<
     typeof setTimeout
   > | null>(null);
+
+  // Check if editing user has Partner role
+  const isEditingPartnerUser = editingUser && editingUser.roleId === 2; // Assuming 2 is Partner role ID
 
   // Toast management functions
   const showToast = (
@@ -193,6 +216,53 @@ export default function UsersListPage() {
     return defaultMessage;
   };
 
+  // Fetch user roles on component mount with proper error handling
+  useEffect(() => {
+    const fetchUserRoles = async () => {
+      try {
+        setIsLoadingRoles(true);
+        const response = await userRoleService.getAll(true) as unknown as UserRolesApiResponse;
+        // Handle different response structures
+        let roles: UserRole[] = [];
+        
+        if (response && typeof response === 'object') {
+          // Check for your API response structure - output is directly an array
+          if (Array.isArray(response.output)) {
+            roles = response.output;
+          } 
+          // Also check for other possible structures
+          else if (Array.isArray(response.result)) {
+            roles = response.result;
+          } else if (Array.isArray(response.items)) {
+            roles = response.items;
+          } else if (Array.isArray(response)) {
+            // Direct array response (fallback)
+            roles = response;
+          } else {
+            console.warn("Unexpected user roles response structure:", response);
+          }
+        }
+        
+        setUserRoles(roles || []);
+        
+        if (roles.length === 0) {
+          console.warn("No user roles found in response");
+        }
+        
+      } catch (error) {
+        console.error("Failed to fetch user roles:", error);
+        toast.error(
+          t("admin.users.rolesFetchError") || "Failed to load user roles"
+        );
+        setUserRoles([]);
+      } finally {
+        setIsLoadingRoles(false);
+      }
+    };
+
+    fetchUserRoles();
+  }, [t]);
+
   // Fetch users with error handling
   const {
     data: paginatedData,
@@ -238,6 +308,7 @@ export default function UsersListPage() {
     setValue,
     formState: { errors },
     reset,
+    control,
     watch,
     setError,
     clearErrors,
@@ -250,6 +321,7 @@ export default function UsersListPage() {
       email: "",
       mobileNo: "",
       postalCode: "",
+      roleId: undefined,
       isActive: true,
     },
   });
@@ -264,6 +336,7 @@ export default function UsersListPage() {
         email: editingUser.email || "",
         mobileNo: editingUser.mobileNo || "",
         postalCode: editingUser.postalCode || "",
+        roleId: editingUser.roleId || undefined,
         isActive: editingUser.isActive,
       });
 
@@ -285,6 +358,7 @@ export default function UsersListPage() {
         email: "",
         mobileNo: "",
         postalCode: "",
+        roleId: undefined,
         isActive: true,
       });
 
@@ -308,7 +382,13 @@ export default function UsersListPage() {
       data: UserFormData & { status: "Active" | "InActive" }
     ) => {
       try {
-        return await userService.add(data);
+        // Prepare the data for API with roleId and roleIds
+        const apiData = {
+          ...data,
+          roleId: data.roleId,
+          roleIds: data.roleId.toString(), // Convert to string for roleIds
+        };
+        return await userService.add(apiData);
       } catch (error) {
         const errorMessage = getErrorMessage(
           error,
@@ -360,7 +440,13 @@ export default function UsersListPage() {
       data: UserFormData & { status: "Active" | "InActive"; id: number }
     ) => {
       try {
-        return await userService.update(data);
+        // Prepare the data for API with roleId and roleIds
+        const apiData = {
+          ...data,
+          roleId: data.roleId,
+          roleIds: data.roleId.toString(), // Convert to string for roleIds
+        };
+        return await userService.update(apiData);
       } catch (error) {
         const errorMessage = getErrorMessage(
           error,
@@ -779,6 +865,8 @@ export default function UsersListPage() {
       const apiData = {
         ...data,
         postalCode: data.postalCode,
+        roleId: data.roleId,
+        roleIds: data.roleId.toString(), // Convert to string for roleIds
         status: data.isActive
           ? "Active"
           : ("InActive" as "Active" | "InActive"),
@@ -922,6 +1010,28 @@ export default function UsersListPage() {
   // Check if there are any records to display
   const hasRecords = users.length > 0;
 
+  // Get available roles (excluding Partner)
+  const availableRoles = userRoles.filter(
+    (role) => role.isActive && role.roleName !== "Partner"
+  );
+
+  // Get role name for display
+  const getRoleDisplayName = (user: User) => {
+    // First try to get roleName from user object
+    if (user.roleName) {
+      return user.roleName;
+    }
+    
+    // If no roleName, try to find it from userRoles
+    if (user.roleId && userRoles.length > 0) {
+      const role = userRoles.find(r => r.id === user.roleId);
+      return role ? role.roleName : `Role ${user.roleId}`;
+    }
+    
+    // Default fallback
+    return "User";
+  };
+
   const columns: ColumnDef<User>[] = [
     {
       accessorKey: "id",
@@ -949,7 +1059,7 @@ export default function UsersListPage() {
     {
       accessorKey: "roleName",
       header: t("admin.users.role") || "Role",
-      cell: ({ row }) => row.original.roleName || "User",
+      cell: ({ row }) => getRoleDisplayName(row.original),
     },
     {
       accessorKey: "status",
@@ -1186,6 +1296,7 @@ export default function UsersListPage() {
             placeholder={t("admin.users.EnterlastName") || "Enter last name"}
             disabled={createMutation.isPending || updateMutation.isPending}
           />
+          
           {/* Updated Email Field with Validation */}
           <div className="space-y-1">
             <Input
@@ -1361,6 +1472,90 @@ export default function UsersListPage() {
             disabled={createMutation.isPending || updateMutation.isPending}
           />
 
+          {/* Role Dropdown Field - Hide for Partner users */}
+          {!isEditingPartnerUser ? (
+            <div className="space-y-1">
+              {isLoadingRoles ? (
+                <div className="text-center py-2">
+                  <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 cursor-pointer"></div>
+                  <p className="mt-1 text-gray-600 text-sm">
+                    {t("common.loading") || "Loading roles..."}
+                  </p>
+                </div>
+              ) : (
+                <SearchableSelectController
+                  name="roleId"
+                  control={control}
+                  label={t("admin.users.role") || "Role"}
+                  error={errors.roleId?.message}
+                  options={availableRoles.map((role) => ({
+                    value: role.id,
+                    label: role.roleName,
+                  }))}
+                  placeholder={
+                    isLoadingRoles
+                      ? t("common.loading") || "Loading roles..."
+                      : availableRoles.length === 0
+                      ? t("admin.users.noActiveRolesWarning") || "No active roles available"
+                      : t("common.selectRole") || "Select Role"
+                  }
+                  disabled={
+                    isLoadingRoles ||
+                    createMutation.isPending ||
+                    updateMutation.isPending ||
+                    availableRoles.length === 0
+                  }
+                  required={true}
+                />
+              )}
+              
+              {/* Show warning if no available roles (excluding Partner) */}
+              {!isLoadingRoles && availableRoles.length === 0 && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
+                  <div className="flex items-center gap-2 text-yellow-800">
+                    <svg
+                      className="w-4 h-4 cursor-pointer"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                      />
+                    </svg>
+                    <span className="text-sm font-medium">
+                      {t("admin.users.noActiveRolesWarning") || "No Active Roles Available"}
+                    </span>
+                  </div>
+                  <p className="text-yellow-700 text-sm mt-1">
+                    {t("admin.users.noActiveRolesMessage") ||
+                      "You need to create active roles (Admin or User) before adding users."}
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : (
+            // Show read-only role display for Partner users
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">
+                {t("admin.users.role") || "Role"}
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <div className="p-2 bg-gray-50 border border-gray-300 rounded-md">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700">Partner</span>
+                  <span className="text-xs text-gray-500 italic">
+                    {t("admin.users.roleCannotBeChanged") || "Role cannot be changed"}
+                  </span>
+                </div>
+              </div>
+             
+            </div>
+          )}
+
           {/* Toggle Switch for Active Status */}
           <ToggleSwitch
             label={t("common.active") || "Active"}
@@ -1396,6 +1591,7 @@ export default function UsersListPage() {
                 {errors.postalCode?.message && (
                   <li>{errors.postalCode.message}</li>
                 )}
+                {errors.roleId && <li>{errors.roleId.message}</li>}
               </ul>
             </div>
           )}

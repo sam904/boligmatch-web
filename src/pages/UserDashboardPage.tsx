@@ -21,8 +21,8 @@ import { conversationService } from "../services/conversation.service";
 import { toast } from "sonner";
 import categoryGradientImg from "/src/assets/userImages/categoryGradient.svg";
 import { partnerService } from "../services/partner.service";
-// import Footer from "./Footer";
-// import closeImg from "/src/assets/userImages/close.svg";
+import Footer from "./Footer";
+import closeImg from "/src/assets/userImages/close.svg";
 
 interface FavouriteItem {
   id?: number;
@@ -66,29 +66,27 @@ export default function UserDashboardPage() {
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [conversationsLoading, setConversationsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  console.log("isMobile",isMobile)
   const [openConversation, setOpenConversation] =
     useState<ConversationItem | null>(null);
-  console.log("isMobile", isMobile);
-
-  console.log("openConversation", openConversation)
 
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // const formatConvDate = (value?: string) => {
-  //   if (!value) return "-";
-  //   const d = new Date(value);
-  //   if (isNaN(d.getTime())) return "-";
-  //   try {
-  //     return d.toLocaleDateString("da-DK", {
-  //       day: "2-digit",
-  //       month: "2-digit",
-  //       year: "2-digit",
-  //     });
-  //   } catch {
-  //     return d.toISOString().split("T")[0];
-  //   }
-  // };
+  const formatConvDate = (value?: string) => {
+    if (!value) return "-";
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return "-";
+    try {
+      return d.toLocaleDateString("da-DK", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+      });
+    } catch {
+      return d.toISOString().split("T")[0];
+    }
+  };
 
   const userData = useAppSelector((state) => state.auth.user);
 
@@ -679,13 +677,13 @@ export default function UserDashboardPage() {
                         key={favorite.id}
                         className="flex justify-center"
                       >
-                        <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] w-full max-w-[413px] flex flex-col items-center px-6 py-8 md:px-8 md:py-10 text-center">
+                        <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 w-full h-[320px] md:w-[413px] md:h-[453px] flex flex-col items-center px-6 py-4 md:px-8 md:py-10 text-center justify-between">
                           {/* Logo */}
-                          <div className="mb-4 md:mb-6 flex-shrink-0">
+                          <div className="mb-2 md:mb-6 flex-shrink-0">
                             <img
                               src={favorite.logoUrl}
                               alt={favorite.partnerName || favorite.businessName || "Partner"}
-                              className="w-40 h-20 md:w-60 md:h-30 object-contain"
+                              className="w-[144px] h-[72px] md:w-[240px] md:h-[120px] object-contain"
                               onError={(e) => {
                                 e.currentTarget.src = dashboard1;
                               }}
@@ -693,14 +691,14 @@ export default function UserDashboardPage() {
                           </div>
 
                           {/* Title */}
-                          <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#000000] mb-3 md:mb-4 px-2">
+                          <h3 className="text-[18px] md:text-[24px] font-bold text-[#000000] mb-2 md:mb-5 px-4">
                             {favorite.partnerName || favorite.businessName}
                           </h3>
 
                           {/* Description */}
                           {favorite.descriptionShort && (
-                            <div className="flex-1 w-full mb-4 md:mb-6 overflow-hidden">
-                              <p className="text-[#000000] font-normal text-sm md:text-base leading-relaxed line-clamp-4">
+                            <div className="flex items-start justify-center w-full mb-2 md:mb-6 overflow-hidden flex-1 min-h-0">
+                              <p className="text-[#000000] font-[400] text-[12px] leading-[1.4] md:text-[14px] md:leading-[1.6] line-clamp-4 md:line-clamp-5">
                                 {favorite.descriptionShort}
                               </p>
                             </div>
@@ -709,7 +707,7 @@ export default function UserDashboardPage() {
                           {/* Button */}
                           <button
                             onClick={() => handleFavoriteMoreInfo(favorite)}
-                            className="mt-auto font-bold text-sm md:text-base cursor-pointer transition-all duration-200 text-black hover:font-extrabold hover:underline"
+                            className="flex-shrink-0 mt-auto font-bold text-[14px] md:text-[16px] cursor-pointer transition-all duration-200 text-black hover:font-extrabold"
                           >
                             {t("userDashboard.moreInfo")}
                           </button>
@@ -729,6 +727,64 @@ export default function UserDashboardPage() {
           )}
         </div>
       </div>
+
+      {openConversation && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/50 cursor-pointer"
+            onClick={() => setOpenConversation(null)}
+          />
+          <div
+            className="relative z-[1001] w-[90%] max-w-md bg-[#E5E7EB] rounded-[18px] shadow-xl p-6 border border-[#1F7A58]/10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute right-4 top-3 text-black text-xl cursor-pointer hover:text-gray-700"
+              aria-label="Close"
+              onClick={() => setOpenConversation(null)}
+            >
+              <img src={closeImg} alt="" />
+            </button>
+
+            <div className="flex flex-col items-center gap-2 mb-4">
+              <img
+                src={chatModelImg}
+                alt="chat"
+                className="w-[64px] h-[64px]"
+              />
+              <h3 className="text-center font-extrabold text-lg">{t("userDashboard.messageTitle")}</h3>
+            </div>
+
+            <div className="space-y-4 text-[#052011]">
+              <div>
+                <div className="text-sm font-extrabold">{t("userDashboard.dateLabel")}</div>
+                <div className="text-sm">
+                  {formatConvDate(openConversation.createdDate)}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">{t("userDashboard.partnerLabel")}</div>
+                <div className="text-sm">
+                  {openConversation.partnerName || "-"}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">{t("userDashboard.subjectLabel")}</div>
+                <div className="text-sm">
+                  {openConversation.messageSubject || "-"}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm font-extrabold">{t("userDashboard.descriptionLabel")}</div>
+                <div className="text-sm leading-relaxed">
+                  {openConversation.messageContent || "-"}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      <Footer />
     </>
   );
 }

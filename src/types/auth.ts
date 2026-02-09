@@ -13,6 +13,7 @@ export interface AuthUser {
   avatar?: string;
   role: number;
   roleIds: string;
+  roleId: number;
   roleName: string;
   franchiseId?: number;
   partnerId?: number;
@@ -36,6 +37,7 @@ export interface LoginResponse {
     franchiseId: number;
     role: number;
     roleIds: string;
+    roleId: number;
     roleName: string;
     admissionId: number;
     mobileNo: string;

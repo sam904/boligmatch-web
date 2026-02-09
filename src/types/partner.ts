@@ -69,6 +69,7 @@ export interface PartnerDto {
 export interface PartnerSubCategory {
   id?: number;
   partnerId?: number;
+  categoryId: number;
   subCategoryId: number;
   isActive: boolean;
   subCategories?: string;

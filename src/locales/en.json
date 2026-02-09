@@ -103,7 +103,10 @@
     "svgSmallSize": "✓ Small file size",
     "fileSizeExceeded": "File size should be less than {sizeLimit}",
     "svgNotePreview": "SVG files are vector graphics that can be scaled without losing quality.",
-    "backgroundImage": "Background Image"
+    "backgroundImage": "Background Image",
+    "selectOption":"SelectOption",
+    "selectRole":"SelectRole",
+    "removeCategory":"Remove Category"
   
   
   },
@@ -447,7 +450,16 @@
       "noPartnersCreated": "No partners have been created yet",
       "addTestimonial": "Add Testimonial",
       "deletePartner": "Delete partner",
-      "status": "Status"
+      "status": "Status",
+      "Category":"Category",
+      "addCategory": "Add Category",
+      "addSubcategory": "Add Subcategory",
+      "noSubcategoriesAdded":"No Subcategories Added",
+      "clickAddSubcategory":"Click Add Subcategory",
+      "categoriesAndSubCategories":"Categories And SubCategories",
+      "addCategoriesSubCategories":"Add Categories SubCategories",
+      "addCategorySubCategory":"Add Category SubCategory",
+      "selectCategorySubCategory":"Select Category And SubCategory"
     },
     "users": {
       "title": "Users",
@@ -479,7 +491,8 @@
       "exportError": "Failed to export users",
       "noUsersCreated": "No users have been created yet",
       "addFirstUser": "Add Your First User",
-      "user": "User"
+      "user": "User",
+      "roleCannotBeChanged":"Role cannot be changed"
     },
     "testimonials": {
       "title": "Testimonials",
@@ -599,7 +612,8 @@
     "commentTooLong":"comment Too Long must be less than 100 characters",
     "commentRequired":"Comment is required",
     "postalCodeNumeric": "Postnummer skal være numerisk",
-    "validationInProgress": "Vent venligst på email/mobil validering afsluttes"
+    "validationInProgress": "Vent venligst på email/mobil validering afsluttes",
+    "backgroundImageRequired":"Background Image Required"
     
   },
   "deleteConfirmation": {
