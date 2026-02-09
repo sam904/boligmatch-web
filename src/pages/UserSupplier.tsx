@@ -389,72 +389,80 @@ const UserSupplier = () => {
         </section>
 
         {/* Desktop: horizontal scroll bar with arrow (layout like reference screenshot) */}
-        <section className="absolute h-[120px] bottom-15 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 hidden md:flex items-center justify-center w-full p-2 bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)]">
-          <div className="w-full py-3 px-4 relative">
-            <div
-              ref={desktopScrollRef}
-              className="flex items-center justify-center gap-4 md:gap-10 overflow-x-auto no-scrollbar py-4 relative"
-            >
-              {loading ? (
-                <div className="text-white">
-                  {t("userSupplier.loadingSubcategories")}
-                </div>
-              ) : subCategories.length > 0 ? (
-                subCategories.map((sub) => (
-                  <button
-                    key={sub.id}
-                    onClick={() => {
-                      setActive(sub.id);
-                      try {
-                        localStorage.setItem(
-                          "bm_selectedSubcategory",
-                          JSON.stringify({ id: sub.id, category: sub.category })
-                        );
-                      } catch { /* empty */ }
-                    }}
-                    className={`flex items-center gap-1 width md:gap-[2px] px-[12px] py-[5px] rounded-[8px] transition-all duration-200 text-white cursor-pointer whitespace-nowrap border border-transparent
-              ${active === sub.id
-                        ? "bg-[#95C11F] text-black shadow-md"
-                        : "bg-transparent hover:bg-white/10"
-                      }`}
-                    aria-pressed={active === sub.id}
-                    title={sub.subCategory}
-                  >
-                    {sub.subCategoryIconUrl && (
-                      <img
-                        src={sub.subCategoryIconUrl}
-                        alt={sub.subCategory}
-                        className={`w-[32px] h-[32px] md:w-[40px] md:h-[40px] relative opacity-100 rounded object-contain
-                  ${active === sub.id ? "" : "brightness-0 invert"}`}
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).style.display =
-                            "none";
-                        }}
-                      />
-                    )}
-                    <span className="text-[16px] md:text-[18px] font-[600] pl-2 figtree">
-                      {sub.subCategory}
-                    </span>
-                  </button>
-                ))
-              ) : (
-                <div className="text-white">{t("userSupplier.noSubcategories")}</div>
-              )}
-            </div>
-            {shouldShowDesktopArrow && (
-              <button
-                type="button"
-                aria-label="Next"
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-[32px] w-[32px] text-white flex items-center justify-center z-10 bg-[#01351F]/80 rounded-full"
-                onClick={() =>
-                  desktopScrollRef.current?.scrollBy({ left: 200, behavior: "smooth" })
-                }
-              >
-                <img className="h-[24px] w-[24px]" src={nextArrow} alt="" />
-              </button>
-            )}
-          </div>
-        </section>
+       <section className="absolute bottom-26 h-[120px] px-8 hidden md:flex items-center bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] w-full">
+  
+  {/* SCROLL CONTAINER */}
+  <div
+    ref={desktopScrollRef}
+    className="relative flex items-center gap-4 md:gap-3 overflow-x-auto no-scrollbar py-4 flex-nowrap whitespace-nowrap w-full"
+  >
+    {loading ? (
+      <div className="text-white">
+        {t("userSupplier.loadingSubcategories")}
+      </div>
+    ) : subCategories.length > 0 ? (
+      subCategories.map((sub) => (
+        <button
+          key={sub.id}
+          onClick={() => {
+            setActive(sub.id);
+            localStorage.setItem(
+              "bm_selectedSubcategory",
+              JSON.stringify({ id: sub.id, category: sub.category })
+            );
+          }}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 border shrink-0
+            ${
+              active === sub.id
+                ? "bg-[#95C11F] text-white shadow-md border-transparent"
+                : "bg-transparent text-white hover:bg-white/10 border-transparent"
+            }`}
+          aria-pressed={active === sub.id}
+          title={sub.subCategory}
+        >
+          {sub.subCategoryIconUrl && (
+            <img
+              src={sub.subCategoryIconUrl}
+              alt={sub.subCategory}
+              className={`w-8 h-8 object-contain ${
+                active === sub.id ? "" : "brightness-0 invert"
+              }`}
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+          )}
+
+          <span className="text-[16px] md:text-[18px] font-semibold figtree">
+            {sub.subCategory}
+          </span>
+        </button>
+      ))
+    ) : (
+      <div className="text-white">
+        {t("userSupplier.noSubcategories")}
+      </div>
+    )}
+  </div>
+
+  {/* RIGHT ARROW */}
+  {shouldShowDesktopArrow && (
+    <button
+      type="button"
+      aria-label="Next"
+      className="absolute right-4 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-full bg-[#01351F]/80 text-white z-10"
+      onClick={() =>
+        desktopScrollRef.current?.scrollBy({
+          left: 240,
+          behavior: "smooth",
+        })
+      }
+    >
+      <img className="h-5 w-5" src={nextArrow} alt="" />
+    </button>
+  )}
+</section>
+
       </div>
 
       {/* Fixed: Added overflow-visible and adjusted z-index to prevent clipping */}
