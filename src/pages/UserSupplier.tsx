@@ -474,7 +474,7 @@ const UserSupplier = () => {
           )}
           <div
             ref={desktopScrollRef}
-            className="relative flex items-center gap-4 md:gap-3 overflow-x-auto no-scrollbar py-4 flex-nowrap whitespace-nowrap w-full"
+            className="relative flex items-center justify-center gap-4 md:gap-3 overflow-x-auto no-scrollbar py-4 flex-nowrap whitespace-nowrap w-full"
           >
             {loading ? (
               <div className="text-white">
@@ -491,7 +491,7 @@ const UserSupplier = () => {
                       JSON.stringify({ id: sub.id, category: sub.category })
                     );
                   }}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 border shrink-0
+                  className={`flex items-center gap-2  px-4 py-2 rounded-lg transition-all duration-200 border shrink-0
             ${active === sub.id
                       ? "bg-[#95C11F] text-white shadow-md border-transparent"
                       : "bg-transparent text-white hover:bg-white/10 border-transparent"
