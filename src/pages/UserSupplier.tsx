@@ -220,6 +220,7 @@ const UserSupplier = () => {
       const detail = await partnerService.getById(partner.partnerId);
       console.log("Partner detail response:", detail);
       localStorage.setItem("bm_currentPartner", JSON.stringify(detail));
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       partnerData
         ? navigate("/partner/supplier-profile")
         : navigate("/user/supplier-profile");
