@@ -421,7 +421,7 @@ function PartnerProfileShortcut({
               )}
 
               {/* Gradient overlay at bottom */}
-              <div className="bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] h-[80px] w-full"></div>
+              <div className="bg-[linear-gradient(180deg,rgba(1,53,31,0)_0%,#01351F_100%)] h-full w-full"></div>
 
               {/* Bottom section with partner info */}
               <div className="bg-[#043428] pt-0 w-full">
